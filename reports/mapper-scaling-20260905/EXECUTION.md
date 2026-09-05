@@ -854,3 +854,33 @@ The paper includes all six panels and keeps request uncertainty distinct.
 Next work remains matched-budget adaptation and external-baseline
 correctness, selected transfer and untouched confirmation after selection
 freeze. Further large-data fitting stays paused.
+
+## Controlled PARD numerical replay and equal-data adaptation calibration
+
+PARD cache replay 27840, source 6da0644, passed in 26 seconds on four
+L40S GPUs. All preceding AR argmaxes and PARD top-five scores reproduced
+exactly. The original final AR scores and the original 13-token PARD
+verification scores also reproduced. All cache copies were verified
+identical before intervention. Changing future token values preserved
+the checked prefix logits exactly at every tested query length.
+
+The 145-position committed caches differ across the serial and PARD
+trajectories (maximum absolute K/V difference 3.625 across 72 tensors).
+With the PARD-prefix cache, serial and five-token queries choose token
+14806, while queries of length 8, 13 and 16 choose token 8123 at the
+leading-score tie. With the AR-prefix cache, every tested query chooses
+14806. This demonstrates both accumulated cache-value and query-shape
+effects at this recorded prefix. It does not identify an exact CUDA
+kernel or prove task quality. The original exact-AR gate remains failed.
+
+The next adaptation calibration expands the successful 64-record pilot
+to 512 existing records and 128 batch-four updates, one pass, with CPU
+prepared records to bound GPU memory. It retains the connector-only CE
+arm, rank8 and duplicate rank32 drafter LoRA arms. Model loading, teacher
+preparation and fitting are charged separately. Raw trainable tensors,
+optimizer state, RNG state and data order are now saved for continuation.
+A direct input-fusion placement check uses the same mapper in the public
+drafter's fc module and compares logits against relay conditioning.
+This is an implementation-equivalence check, not a separate method.
+Thirteen relevant CPU tests and targeted lint pass. Actual 512-record
+fitting, export, duplicate equality and decoding still require this pilot.

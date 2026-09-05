@@ -22,6 +22,8 @@ def main():
     python = os.environ["RELAYSPEC_PYTHON"]
     output.mkdir(parents=True, exist_ok=True)
     started = time.perf_counter()
+    declared_config = yaml.safe_load(args.config.read_text())
+    declared_settings = declared_config["adaptation_pilot"]
     subprocess.run(
         [
             python,
@@ -42,7 +44,9 @@ def main():
         if (
             gate["status"] != "pass"
             or not gate["inherited_weights_unchanged"]
-            or gate["updates"] != 16
+            or gate["updates"] != declared_settings["pilot_updates"]
+            or gate["prepared_distinct_examples"]
+            != declared_settings["pilot_distinct_examples"]
         ):
             raise ValueError("incomplete bounded adaptation fit")
         gates.append(gate)

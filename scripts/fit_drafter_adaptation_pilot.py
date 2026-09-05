@@ -44,6 +44,16 @@ def main():
     args = parser.parse_args()
     config = yaml.safe_load(args.config.read_text())
     settings = config["adaptation_pilot"]
+    count = settings["pilot_distinct_examples"]
+    updates = settings["pilot_updates"]
+    batch_size = settings["batch_size"]
+    if not 1 <= count <= 2048 or updates <= 0 or batch_size != 4:
+        raise ValueError(
+            "bounded adaptation requires at most 2048 records and batch four"
+        )
+    record_device = settings.get("prepared_records_device", "cuda")
+    if record_device not in {"cpu", "cuda"}:
+        raise ValueError("unsupported prepared-record device")
     diagnostics = settings.get("diagnostics", False)
     if settings.get("deterministic_algorithms", False):
         if (
@@ -111,11 +121,13 @@ def main():
     if taps != tuple(index["metadata"]["target_layer_ids"]):
         raise ValueError("initial mapper taps differ from feature cache")
     mapper = mapper.to(device).eval().requires_grad_(False)
+    model_load_seconds = time.perf_counter() - started
+    preparation_started = time.perf_counter()
     block = 16
     records = []
-    entries = [entry for entry in index["entries"] if entry["split"] == "train"][:64]
-    if len(entries) != 64:
-        raise ValueError("pilot requires exactly 64 distinct cached records")
+    entries = [entry for entry in index["entries"] if entry["split"] == "train"][:count]
+    if len(entries) != count or len({e["file"] for e in entries}) != count:
+        raise ValueError("pilot requires its declared distinct cached records")
     with torch.no_grad():
         for entry in entries:
             path = cache_root / entry["file"]
@@ -137,21 +149,22 @@ def main():
             noise[:, 0] = ids[:, prefix]
             records.append(
                 (
-                    saved["x"][:, :prefix].to(device),
-                    source.model.embed_tokens(noise),
-                    torch.arange(ids.shape[1], device=device).unsqueeze(0),
-                    labels,
+                    saved["x"][:, :prefix].to(record_device),
+                    source.model.embed_tokens(noise).to(record_device),
+                    torch.arange(ids.shape[1], device=record_device).unsqueeze(0),
+                    labels.to(record_device),
                 )
             )
     head = source.lm_head
     del source, target
     torch.cuda.empty_cache()
-    torch.manual_seed(1729)
-    torch.cuda.manual_seed_all(1729)
+    preparation_seconds = time.perf_counter() - preparation_started
+    torch.manual_seed(config["seed"])
+    torch.cuda.manual_seed_all(config["seed"])
     base_digest = frozen_base_digest(draft)
 
     def logits(record, model=draft):
-        features, noise, positions, _ = record
+        features, noise, positions = (value.to(device) for value in record[:3])
         with torch.autocast("cuda", dtype=torch.bfloat16):
             context = model.hidden_norm(mapper(features))
             hidden = _conditioned_dflash_forward(
@@ -165,9 +178,52 @@ def main():
 
     with torch.no_grad():
         initial_logits = logits(records[0]).clone()
-    lora_rank = (0, 8, 32, 32)[rank]
+    fusion_equivalence = None
+    if settings.get("check_direct_fusion_equivalence", False):
+        inherited_fc = draft.fc
+        comparisons = []
+        try:
+            draft.fc = mapper
+            with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
+                for record in records[:4]:
+                    features, noise, positions = (
+                        value.to(device) for value in record[:3]
+                    )
+                    fused_hidden = draft(
+                        position_ids=positions,
+                        noise_embedding=noise,
+                        target_hidden=features,
+                        past_key_values=None,
+                        use_cache=True,
+                        is_causal=False,
+                    )
+                    fused_logits = head(fused_hidden[:, 1 - block :])
+                    comparisons.append(torch.equal(fused_logits, logits(record)))
+        finally:
+            draft.fc = inherited_fc
+        if not all(comparisons):
+            raise ValueError(
+                "direct input-fusion placement differs from relay conditioning"
+            )
+        fusion_equivalence = {
+            "status": "pass",
+            "records": len(comparisons),
+            "logits_bit_identical": True,
+            "scope": "The same mapper is installed as the official drafter fc module. "
+            "Implementation equivalence on four teacher-forced records, not a new competitor "
+            "or full cached-decoding equivalence claim.",
+        }
+    ranks = settings["lora_ranks"]
+    if len(ranks) != 2:
+        raise ValueError("pilot requires two declared LoRA ranks")
+    lora_rank = (0, ranks[0], ranks[1], ranks[1])[rank]
     if lora_rank:
-        trainable = inject_lora(draft, ("q_proj", "v_proj"), lora_rank, 2 * lora_rank)
+        trainable = inject_lora(
+            draft,
+            tuple(settings["target_suffixes"]),
+            lora_rank,
+            settings["lora_alpha_multiplier"] * lora_rank,
+        )
         with torch.no_grad():
             if not torch.equal(logits(records[0]), initial_logits):
                 raise ValueError("zero-initialized LoRA changes the drafter")
@@ -181,7 +237,9 @@ def main():
     else:
         mapper.requires_grad_(True)
         trainable = list(mapper.parameters())
-    optimizer = torch.optim.AdamW(trainable, lr=2e-4, weight_decay=0.0)
+    optimizer = torch.optim.AdamW(
+        trainable, lr=settings["learning_rate"], weight_decay=0.0
+    )
     diagnostic = {}
     if diagnostics:
         diagnostic = {
@@ -209,16 +267,17 @@ def main():
     history = []
     torch.cuda.synchronize()
     loop_started = time.perf_counter()
-    for step in range(16):
+    for step in range(updates):
         optimizer.zero_grad(set_to_none=True)
         loss_value = 0.0
         if diagnostics and step == 0:
             initial_rng = torch.cuda.get_rng_state(device)
             initial_cpu_rng = torch.get_rng_state()
             microsteps = []
-        for record in records[step * 4 : step * 4 + 4]:
+        batch = [records[(step * batch_size + i) % count] for i in range(batch_size)]
+        for record in batch:
             prediction = logits(record)
-            loss = greedy_agreement_ce(prediction, record[-1]) / 4
+            loss = greedy_agreement_ce(prediction, record[-1].to(device)) / batch_size
             loss.backward()
             loss_value += float(loss.detach())
             if diagnostics and step == 0:
@@ -238,10 +297,12 @@ def main():
             torch.cuda.set_rng_state(initial_rng, device)
             torch.set_rng_state(initial_cpu_rng)
             repeat_logits = []
-            for record in records[:4]:
+            for record in batch:
                 prediction = logits(record)
                 repeat_logits.append(tensors_sha([("logits", prediction)]))
-                (greedy_agreement_ce(prediction, record[-1]) / 4).backward()
+                (
+                    greedy_agreement_ce(prediction, record[-1].to(device)) / batch_size
+                ).backward()
             diagnostic["first_step"] = {
                 "microsteps": microsteps,
                 "repeat_logits_bit_identical": repeat_logits
@@ -269,7 +330,14 @@ def main():
         if not any(torch.count_nonzero(p.grad) for p in trainable):
             raise ValueError("all adaptation gradients are zero")
         optimizer.step()
-        history.append({"step": step + 1, "loss": loss_value})
+        history.append(
+            {
+                "step": step + 1,
+                "loss": loss_value,
+                "loop_elapsed_seconds": time.perf_counter() - loop_started,
+                "presentations": (step + 1) * batch_size,
+            }
+        )
     torch.cuda.synchronize()
     loop_seconds = time.perf_counter() - loop_started
     if frozen_base_digest(draft) != base_digest:
@@ -316,13 +384,44 @@ def main():
         }
         checkpoint["adaptation_pilot"] = {
             "objective": "teacher_forced_greedy_ce",
-            "additional_updates": 16,
+            "additional_updates": updates,
         }
         torch.save(checkpoint, output / "mapper.pt")
     torch.save(
-        {"optimizer": optimizer.state_dict(), "updates": 16, "lora_rank": lora_rank},
+        {
+            "optimizer": optimizer.state_dict(),
+            "updates": updates,
+            "lora_rank": lora_rank,
+        },
         output / "optimizer.pt",
     )
+    training_model = draft if lora_rank else mapper
+    training_state = {
+        "format": "relayspec-adaptation-training-state-v1",
+        "trainable": {
+            name: p.detach().cpu().clone()
+            for name, p in training_model.named_parameters()
+            if p.requires_grad
+        },
+        "optimizer": optimizer.state_dict(),
+        "updates": updates,
+        "lora_rank": lora_rank,
+        "cpu_rng": torch.get_rng_state(),
+        "cuda_rng": torch.cuda.get_rng_state(device),
+        "config_sha256": sha(args.config),
+        "initial_mapper_sha256": settings["initial_mapper_sha256"],
+        "feature_cache_index_sha256": sha(index_path),
+        "ordered_record_files": [entry["file"] for entry in entries],
+    }
+    torch.save(training_state, output / "training-state.pt")
+    reloaded_state = torch.load(
+        output / "training-state.pt", weights_only=True, map_location="cpu"
+    )
+    if any(
+        not torch.equal(value, reloaded_state["trainable"][name])
+        for name, value in training_state["trainable"].items()
+    ):
+        raise ValueError("trainable checkpoint serialization changed values")
     (output / "training.jsonl").write_text(
         "".join(json.dumps(row) + "\n" for row in history)
     )
@@ -332,11 +431,18 @@ def main():
                 "status": "pass",
                 "rank": rank,
                 "lora_rank": lora_rank,
-                "updates": 16,
-                "distinct_examples": 64,
-                "batch_size": 4,
+                "updates": updates,
+                "distinct_examples": min(count, updates * batch_size),
+                "prepared_distinct_examples": count,
+                "presentations": updates * batch_size,
+                "batch_size": batch_size,
+                "prepared_records_device": record_device,
+                "ordered_record_files": [entry["file"] for entry in entries],
+                "training_state_sha256": sha(output / "training-state.pt"),
                 "trainable_parameters": sum(p.numel() for p in trainable),
                 "setup_seconds": setup_seconds,
+                "model_load_seconds": model_load_seconds,
+                "teacher_and_feature_preparation_seconds": preparation_seconds,
                 "loop_seconds": loop_seconds,
                 "total_seconds": time.perf_counter() - started,
                 "feature_cache_index_sha256": sha(index_path),
@@ -344,6 +450,7 @@ def main():
                 "inherited_drafter_sha256": base_digest,
                 "inherited_weights_unchanged": True,
                 "export": export_gate,
+                "direct_fusion_equivalence": fusion_equivalence,
                 "config_sha256": sha(args.config),
                 "scope": "Resource/correctness pilot. Teacher-forced target greedy labels on the last 15 proposal positions. Separate rank0 connector-only CE control and ranks1/2/3 frozen-connector drafter LoRA. Ranks2/3 are duplicate-seed checks. No full matched-compute or task-quality conclusion.",
             },
