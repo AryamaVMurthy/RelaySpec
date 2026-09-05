@@ -188,3 +188,18 @@ as parameter count: small preloaded-data workers finish before the larger
 streaming worker. Preserve scientific cell definitions while improving
 scheduling. A GPU-resident small-data cache or work queue needs its own
 short equivalence/resource pilot before changing the fitting path.
+
+## First full MLP data curve completed, 23:58 IST
+
+Job27726 passed in8m08s. Each MLP512 fit used8192updates/32768presentations.
+At N128/512/2048/8192, fixed1024-record validation objective was respectively
+0.37380/0.30818/0.28776/0.28184. The corresponding epochs were256/64/16/4.
+Training diagnostics were0.24254/0.26714/0.28123/0.28295, using min(N,256)
+training-pool records. These single-seed fitting results support further
+large-data study, but do not establish full-answer speed or quality gains.
+Source-gated checkpoints/trajectories are in initial-mlp-data-curve.json.
+
+The smaller fits' loops took123-147seconds; the N8192 streaming loop took
+440seconds, including375seconds recorded in input I/O. This measured cost
+should guide the next scheduling/cache optimization pilot. Matching linear
+job27727 is now running and large-data27728 remains queued behind it.
