@@ -1,0 +1,1431 @@
+{
+  "status": "complete",
+  "run": "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/eagle-early-decoding/run-27826",
+  "input_sha256": {
+    "configs/submission/scaling/campaign-eagle3-capacity-validation.yaml": "12e240d25aac014ef727aae46951e97882fc049a7e5d4eb2178860fb710cfd9d",
+    "configs/submission/scaling/campaign-eagle3-capacity-validation.provenance.json": "56aa7d252e9b3e6a3880236a7c1408d8e47f91305dc6cd4a8375129b6aef1457",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/eagle-early-decoding/run-27826/completion-gate.json": "f1a824979f87ed3be0aefc4655bc753e40a04010e76d43a634d5e76ac76d6e9f",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/eagle-early-decoding/run-27826/analysis.json": "ae9a5e31ca2ae22843ca0b1bbb8e3b9a9047e2e15b03f7bbef7e2e67b85e8f00",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/eagle-early-decoding/run-27826/benchmark-rank0.jsonl": "add3e39921a659d2889290fc4e85869cedc259fab59ecc76eaa0031c25327836",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/eagle-early-decoding/run-27826/benchmark-rank1.jsonl": "4c7c7eeba86c06dae77cc5f28057d7257c035b6de99c08b14120b41e0aa04a47",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/eagle-early-decoding/run-27826/benchmark-rank2.jsonl": "9df6dbf5e60a76e51ba529206b3aea655a69268010534bcfdeed3d57819331ce",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/eagle-early-decoding/run-27826/benchmark-rank3.jsonl": "d64e7e19c169cee5fad623f171633ea7493c9b2ab03297dc5b72ee3e013e5e04"
+  },
+  "variants": {
+    "relay_eagle3_dense_n512": {
+      "trial": {
+        "name": "eagle3-dense-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "e916ce4532e5ec253778d3c690e54634d431c91b80eec26d8782e50f077b6dfb",
+      "fit_gate_sha256": "96d4387fb0013808cccbb347ede391e8b31b747dab898111479792f3ac2e2bb0",
+      "selected_step": 1024,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "887ecc5afda3aa6388d9d08283c879b85bfdb2464758005df26a92c38a14f65a"
+    },
+    "relay_eagle3_dense_n512_endpoint": {
+      "trial": {
+        "name": "eagle3-dense-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "24bc7558727ef402b14a27b261991c46b2c91ac2e701156ea75574b8beb9e40c",
+      "fit_gate_sha256": "96d4387fb0013808cccbb347ede391e8b31b747dab898111479792f3ac2e2bb0",
+      "selected_step": 8192,
+      "selection": "fixed_exposure_endpoint",
+      "validation_sha256": "887ecc5afda3aa6388d9d08283c879b85bfdb2464758005df26a92c38a14f65a"
+    },
+    "relay_eagle3_factorized128_n512": {
+      "trial": {
+        "name": "eagle3-factorized128-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 128,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "67f5298860c76ec358263649555c44998da2f17af9a64495243e77b173f30c47",
+      "fit_gate_sha256": "223b46ca8a0b7873f3f72b6c0c3cb3c83bd9ec1349df3b5457de8c87d4d2db9f",
+      "selected_step": 8192,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "16006c335902adf036d1e99ca8af3d0b4081488113199e4a4bb317586b6c4169"
+    },
+    "relay_eagle3_factorized512_n512": {
+      "trial": {
+        "name": "eagle3-factorized512-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 512,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "d4ab9e56c223666086bb7a0eaad67f56c3250b96f02f372d96925b4d42940965",
+      "fit_gate_sha256": "64b372fa6ce790502d4421ba5ced4408ecdf05e68b987d6a96bfc13a9939e220",
+      "selected_step": 2048,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "8992360b8e4fdd4527d09aa1fa32905b21c2f359871226c5afcdf313b3a156db"
+    },
+    "relay_eagle3_factorized512_n512_endpoint": {
+      "trial": {
+        "name": "eagle3-factorized512-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 512,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "1ff3a33b9375d6b7743488721db4485ef537c3741db9102e8b8c70e89a5a7807",
+      "fit_gate_sha256": "64b372fa6ce790502d4421ba5ced4408ecdf05e68b987d6a96bfc13a9939e220",
+      "selected_step": 8192,
+      "selection": "fixed_exposure_endpoint",
+      "validation_sha256": "8992360b8e4fdd4527d09aa1fa32905b21c2f359871226c5afcdf313b3a156db"
+    },
+    "relay_eagle3_factorized2048_n512": {
+      "trial": {
+        "name": "eagle3-factorized2048-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 2048,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "16e6c115f1703754d0e745d0a895d4b85cba9059ff585758f407cb18ead2a048",
+      "fit_gate_sha256": "8b22a5b7eac50d7def40a525f6fa3fa910d4b2be2932a62dcf409ecdc0acecfa",
+      "selected_step": 2048,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "49594e87fd08e480d47fcb0efa6f5260554ec829e269c9bbbb9efe63f9f32475"
+    },
+    "relay_eagle3_factorized2048_n512_endpoint": {
+      "trial": {
+        "name": "eagle3-factorized2048-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 2048,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "4e9633cfd9ea01c2c5263f163628e6f4379d42f8ae1fc46d8879f382cff2ffdb",
+      "fit_gate_sha256": "8b22a5b7eac50d7def40a525f6fa3fa910d4b2be2932a62dcf409ecdc0acecfa",
+      "selected_step": 8192,
+      "selection": "fixed_exposure_endpoint",
+      "validation_sha256": "49594e87fd08e480d47fcb0efa6f5260554ec829e269c9bbbb9efe63f9f32475"
+    },
+    "relay_eagle3_mlp128_n512": {
+      "trial": {
+        "name": "eagle3-mlp128-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 128,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "e52f72478081dee37f91d885f0108584793724ed9b17b9c35fedf6b2045db6eb",
+      "fit_gate_sha256": "223b46ca8a0b7873f3f72b6c0c3cb3c83bd9ec1349df3b5457de8c87d4d2db9f",
+      "selected_step": 8192,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "85d5826efe82951fd0aeba808294e634207b8cc6407530661f62d503cef97481"
+    },
+    "relay_eagle3_mlp512_n512": {
+      "trial": {
+        "name": "eagle3-mlp512-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 512,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "128963dace73d0b7eee373d5c1360fc58678ac7935a8fc4730c321bc123e58c2",
+      "fit_gate_sha256": "64b372fa6ce790502d4421ba5ced4408ecdf05e68b987d6a96bfc13a9939e220",
+      "selected_step": 8192,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "e669758b05d95cff5f452422b15fa0dbdfce9c8fdb18ec8d915e60a1efef0219"
+    },
+    "relay_eagle3_mlp2048_n512": {
+      "trial": {
+        "name": "eagle3-mlp2048-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 2048,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "e5383caf936c96a5e13601f90a46ae8d1aa49ef8dc6b0fd0eff2da7e634f5ad8",
+      "fit_gate_sha256": "8b22a5b7eac50d7def40a525f6fa3fa910d4b2be2932a62dcf409ecdc0acecfa",
+      "selected_step": 2048,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "1932877872de190ec3f635b0a67ea8bfc05b373239daf29fb4a81f5813046ce8"
+    },
+    "relay_eagle3_mlp2048_n512_endpoint": {
+      "trial": {
+        "name": "eagle3-mlp2048-n512-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 2048,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "8d549b425c2be73a2d459103b9f64b9769e0796438d1fd479595f2d5adffe2bb",
+      "fit_gate_sha256": "8b22a5b7eac50d7def40a525f6fa3fa910d4b2be2932a62dcf409ecdc0acecfa",
+      "selected_step": 8192,
+      "selection": "fixed_exposure_endpoint",
+      "validation_sha256": "1932877872de190ec3f635b0a67ea8bfc05b373239daf29fb4a81f5813046ce8"
+    },
+    "relay_eagle3_dense_n2048": {
+      "trial": {
+        "name": "eagle3-dense-n2048-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "a9d212138a5b04e9ada0672e4c589c4f238c0649fc4a833e6a54e3409af4a4fe",
+      "fit_gate_sha256": "96d4387fb0013808cccbb347ede391e8b31b747dab898111479792f3ac2e2bb0",
+      "selected_step": 2048,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "e3286029a106c0026d06fef807dc3ee4cfb3923851b364315ca9cd455350b42c"
+    },
+    "relay_eagle3_dense_n2048_endpoint": {
+      "trial": {
+        "name": "eagle3-dense-n2048-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "9473895b22877755087aa2e6986f5bb05eef63d8effb5883187da4ca94b6c99e",
+      "fit_gate_sha256": "96d4387fb0013808cccbb347ede391e8b31b747dab898111479792f3ac2e2bb0",
+      "selected_step": 8192,
+      "selection": "fixed_exposure_endpoint",
+      "validation_sha256": "e3286029a106c0026d06fef807dc3ee4cfb3923851b364315ca9cd455350b42c"
+    },
+    "relay_eagle3_factorized128_n2048": {
+      "trial": {
+        "name": "eagle3-factorized128-n2048-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 128,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "6d42396ef0ee5eb5448a423bc122d000ae458dc1d01197e7cfc23166a48669e6",
+      "fit_gate_sha256": "223b46ca8a0b7873f3f72b6c0c3cb3c83bd9ec1349df3b5457de8c87d4d2db9f",
+      "selected_step": 8192,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "b23fcaaddd64e5c4a3d3901019a0fee0f12394312b1b97c69aa6909566987a6b"
+    },
+    "relay_eagle3_factorized512_n2048": {
+      "trial": {
+        "name": "eagle3-factorized512-n2048-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 512,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "1252e39b89c190fb5fb379dc5419120202c091892603c901f64e67cb607f9056",
+      "fit_gate_sha256": "64b372fa6ce790502d4421ba5ced4408ecdf05e68b987d6a96bfc13a9939e220",
+      "selected_step": 8192,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "98f44ded53cfcb871fddd302ed64fd5dc14b53afc58197bbda209cb62b4ede29"
+    },
+    "relay_eagle3_factorized2048_n2048": {
+      "trial": {
+        "name": "eagle3-factorized2048-n2048-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 2048,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "e9cf7e28da9ce56485651b22aa71104d23d8342fa5303e15e6fc8de80de7c1ac",
+      "fit_gate_sha256": "8b22a5b7eac50d7def40a525f6fa3fa910d4b2be2932a62dcf409ecdc0acecfa",
+      "selected_step": 8192,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "b22722b011bf679421ffb5498575d43c27adf2c330b118c9c9295b4349e5a307"
+    },
+    "relay_eagle3_mlp128_n2048": {
+      "trial": {
+        "name": "eagle3-mlp128-n2048-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 128,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "c5277cf1d8664142a7514f6ff85cb5ff5b1933a5071f86332f2f5d550ad811e1",
+      "fit_gate_sha256": "223b46ca8a0b7873f3f72b6c0c3cb3c83bd9ec1349df3b5457de8c87d4d2db9f",
+      "selected_step": 8192,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "ea94df9008c11100465969afaf73bab57aec2a76911d6c450fb11eec230c8b6f"
+    },
+    "relay_eagle3_mlp512_n2048": {
+      "trial": {
+        "name": "eagle3-mlp512-n2048-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 512,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "092cbce6123286dfd6146591360411c6f1c37f748c10ba51ff20b14e588f307b",
+      "fit_gate_sha256": "64b372fa6ce790502d4421ba5ced4408ecdf05e68b987d6a96bfc13a9939e220",
+      "selected_step": 8192,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "9473ebe48d2ebd38c035d349f604971ce07f764c286d6cc3269b6f3a1c675b8b"
+    },
+    "relay_eagle3_mlp2048_n2048": {
+      "trial": {
+        "name": "eagle3-mlp2048-n2048-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 2048,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "34d8eaae58fd7194da2d05418373ee8fb157dcd4a55c4e713e7fb9eb2bee7d8a",
+      "fit_gate_sha256": "8b22a5b7eac50d7def40a525f6fa3fa910d4b2be2932a62dcf409ecdc0acecfa",
+      "selected_step": 4096,
+      "selection": "minimum_feature_validation_before_decoding",
+      "validation_sha256": "9a918cc8e891130fe0f802282fed710e2b7ce64bd1838de1a62f2d8498f7d476"
+    },
+    "relay_eagle3_mlp2048_n2048_endpoint": {
+      "trial": {
+        "name": "eagle3-mlp2048-n2048-s1729",
+        "study": "eagle3_family_replication",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 2048,
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint_sha256": "888b92a125d74f580029b6e1d2b9c37302eccef52458dbf32da7a4d31b563c80",
+      "fit_gate_sha256": "8b22a5b7eac50d7def40a525f6fa3fa910d4b2be2932a62dcf409ecdc0acecfa",
+      "selected_step": 8192,
+      "selection": "fixed_exposure_endpoint",
+      "validation_sha256": "9a918cc8e891130fe0f802282fed710e2b7ce64bd1838de1a62f2d8498f7d476"
+    }
+  },
+  "against_reference": {
+    "requests": 16,
+    "clusters": 16,
+    "reference": "relay_eagle3_dense_n2048_endpoint",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.17282018652797,
+        "throughput_ratio": 0.39480812477018723,
+        "throughput_ci95": [
+          0.3547295927280921,
+          0.4378593045466898
+        ],
+        "request_time_ratio": 0.39123038766107704,
+        "request_time_ci95": [
+          0.34911993463039914,
+          0.4358296122586645
+        ],
+        "mean_output_tokens": 255.1875,
+        "token_matches": 8,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 109.83831680007279
+      },
+      "native_target_eagle3": {
+        "tokens_per_second": 94.31493045595573,
+        "throughput_ratio": 1.0017077166677157,
+        "throughput_ci95": [
+          0.9639386996017529,
+          1.0356604504094047
+        ],
+        "request_time_ratio": 1.0017077166677157,
+        "request_time_ci95": [
+          0.9639386996017528,
+          1.0356604504094047
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 5.350326797385621,
+        "request_seconds": 42.89882821775973
+      },
+      "relay_eagle3_dense_n2048": {
+        "tokens_per_second": 92.30439724984387,
+        "throughput_ratio": 0.9803540813796163,
+        "throughput_ci95": [
+          0.9693093505009821,
+          0.9917342083670575
+        ],
+        "request_time_ratio": 0.9803540813796164,
+        "request_time_ci95": [
+          0.9693093505009821,
+          0.9917342083670576
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.634920634920635,
+        "request_seconds": 43.833231357857585
+      },
+      "relay_eagle3_dense_n2048_endpoint": {
+        "tokens_per_second": 94.15414185856939,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.7398843930635834,
+        "request_seconds": 42.97208726173267
+      },
+      "relay_eagle3_dense_n512": {
+        "tokens_per_second": 88.72522634547073,
+        "throughput_ratio": 0.942340130705524,
+        "throughput_ci95": [
+          0.9156325418118868,
+          0.9656752515187698
+        ],
+        "request_time_ratio": 0.9423401307055241,
+        "request_time_ci95": [
+          0.9156325418118868,
+          0.9656752515187698
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.463467829880043,
+        "request_seconds": 45.60146157583222
+      },
+      "relay_eagle3_dense_n512_endpoint": {
+        "tokens_per_second": 93.40466901841788,
+        "throughput_ratio": 0.9920399376452572,
+        "throughput_ci95": [
+          0.966518998896411,
+          1.0160250875046268
+        ],
+        "request_time_ratio": 0.9920399376452572,
+        "request_time_ci95": [
+          0.966518998896411,
+          1.016025087504627
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.7026406429391505,
+        "request_seconds": 43.31689242646098
+      },
+      "relay_eagle3_factorized128_n2048": {
+        "tokens_per_second": 55.16667194821416,
+        "throughput_ratio": 0.5859186952293718,
+        "throughput_ci95": [
+          0.5527296672292485,
+          0.625817922330606
+        ],
+        "request_time_ratio": 0.5859186952293718,
+        "request_time_ci95": [
+          0.5527296672292485,
+          0.6258179223306061
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.747638326585695,
+        "request_seconds": 73.34138270653784
+      },
+      "relay_eagle3_factorized128_n512": {
+        "tokens_per_second": 53.65225132425101,
+        "throughput_ratio": 0.5698342129743269,
+        "throughput_ci95": [
+          0.5352751230078553,
+          0.6078315677851804
+        ],
+        "request_time_ratio": 0.5698342129743269,
+        "request_time_ci95": [
+          0.5352751230078553,
+          0.6078315677851805
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.675427069645204,
+        "request_seconds": 75.41156056150794
+      },
+      "relay_eagle3_factorized2048_n2048": {
+        "tokens_per_second": 91.81073961624614,
+        "throughput_ratio": 0.975111002064643,
+        "throughput_ci95": [
+          0.9507284498420133,
+          0.9981589060863978
+        ],
+        "request_time_ratio": 0.975111002064643,
+        "request_time_ci95": [
+          0.9507284498420132,
+          0.9981589060863979
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.6241534988713315,
+        "request_seconds": 44.06891848286614
+      },
+      "relay_eagle3_factorized2048_n512": {
+        "tokens_per_second": 90.27162595554076,
+        "throughput_ratio": 0.9587642579881337,
+        "throughput_ci95": [
+          0.9330702204316402,
+          0.9865922242920611
+        ],
+        "request_time_ratio": 0.9587642579881337,
+        "request_time_ci95": [
+          0.9330702204316402,
+          0.9865922242920611
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.558398220244716,
+        "request_seconds": 44.82028496963903
+      },
+      "relay_eagle3_factorized2048_n512_endpoint": {
+        "tokens_per_second": 93.66466976557749,
+        "throughput_ratio": 0.994801374816552,
+        "throughput_ci95": [
+          0.9589335363061701,
+          1.0350400240874875
+        ],
+        "request_time_ratio": 0.994801374816552,
+        "request_time_ci95": [
+          0.9589335363061701,
+          1.0350400240874875
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.749419953596288,
+        "request_seconds": 43.196650456637144
+      },
+      "relay_eagle3_factorized512_n2048": {
+        "tokens_per_second": 81.34106034957165,
+        "throughput_ratio": 0.8639137773859752,
+        "throughput_ci95": [
+          0.8305938672528694,
+          0.894749752149359
+        ],
+        "request_time_ratio": 0.8639137773859753,
+        "request_time_ci95": [
+          0.8305938672528694,
+          0.8947497521493591
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.095904095904096,
+        "request_seconds": 49.741176013834774
+      },
+      "relay_eagle3_factorized512_n512": {
+        "tokens_per_second": 79.20775932560836,
+        "throughput_ratio": 0.8412562396308358,
+        "throughput_ci95": [
+          0.8199967750163445,
+          0.8628154240856174
+        ],
+        "request_time_ratio": 0.841256239630836,
+        "request_time_ci95": [
+          0.8199967750163445,
+          0.8628154240856175
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 3.9922103213242455,
+        "request_seconds": 51.0808541290462
+      },
+      "relay_eagle3_factorized512_n512_endpoint": {
+        "tokens_per_second": 81.76808947826935,
+        "throughput_ratio": 0.8684492032341461,
+        "throughput_ci95": [
+          0.8369701347309413,
+          0.8996898912771264
+        ],
+        "request_time_ratio": 0.8684492032341461,
+        "request_time_ci95": [
+          0.8369701347309412,
+          0.8996898912771264
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.116700201207244,
+        "request_seconds": 49.481405592523515
+      },
+      "relay_eagle3_mlp128_n2048": {
+        "tokens_per_second": 46.78755645287095,
+        "throughput_ratio": 0.496925101002475,
+        "throughput_ci95": [
+          0.46577604163000463,
+          0.5302956939458244
+        ],
+        "request_time_ratio": 0.49692510100247506,
+        "request_time_ci95": [
+          0.46577604163000463,
+          0.5302956939458244
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.3291356611333716,
+        "request_seconds": 86.4759843586944
+      },
+      "relay_eagle3_mlp128_n512": {
+        "tokens_per_second": 45.773447028963574,
+        "throughput_ratio": 0.4861543648044786,
+        "throughput_ci95": [
+          0.4527264559993203,
+          0.5214868136720403
+        ],
+        "request_time_ratio": 0.4861543648044786,
+        "request_time_ci95": [
+          0.4527264559993204,
+          0.5214868136720403
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.288688801350591,
+        "request_seconds": 88.3918573455885
+      },
+      "relay_eagle3_mlp2048_n2048": {
+        "tokens_per_second": 88.69879878447641,
+        "throughput_ratio": 0.942059446707214,
+        "throughput_ci95": [
+          0.9164651647099655,
+          0.9680850589748906
+        ],
+        "request_time_ratio": 0.942059446707214,
+        "request_time_ci95": [
+          0.9164651647099656,
+          0.9680850589748906
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.472191930207197,
+        "request_seconds": 45.61504840478301
+      },
+      "relay_eagle3_mlp2048_n2048_endpoint": {
+        "tokens_per_second": 87.00702803103917,
+        "throughput_ratio": 0.9240913497117734,
+        "throughput_ci95": [
+          0.9032679042355326,
+          0.9453244208374093
+        ],
+        "request_time_ratio": 0.9240913497117735,
+        "request_time_ci95": [
+          0.9032679042355326,
+          0.9453244208374094
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.3886509635974305,
+        "request_seconds": 46.50199060421437
+      },
+      "relay_eagle3_mlp2048_n512": {
+        "tokens_per_second": 83.05260942288854,
+        "throughput_ratio": 0.8820919375766106,
+        "throughput_ci95": [
+          0.858933741956231,
+          0.9033011153633557
+        ],
+        "request_time_ratio": 0.8820919375766108,
+        "request_time_ci95": [
+          0.858933741956231,
+          0.9033011153633556
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.188524590163935,
+        "request_seconds": 48.716109320521355
+      },
+      "relay_eagle3_mlp2048_n512_endpoint": {
+        "tokens_per_second": 85.83087740209241,
+        "throughput_ratio": 0.9115995930483919,
+        "throughput_ci95": [
+          0.8766229480888414,
+          0.9429365278271834
+        ],
+        "request_time_ratio": 0.9115995930483919,
+        "request_time_ci95": [
+          0.8766229480888416,
+          0.9429365278271835
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.338282078472958,
+        "request_seconds": 47.139212862122804
+      },
+      "relay_eagle3_mlp512_n2048": {
+        "tokens_per_second": 78.49868933128937,
+        "throughput_ratio": 0.8337252911210603,
+        "throughput_ci95": [
+          0.8019494393545196,
+          0.8664062653695048
+        ],
+        "request_time_ratio": 0.8337252911210604,
+        "request_time_ci95": [
+          0.8019494393545196,
+          0.8664062653695047
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 3.9421965317919074,
+        "request_seconds": 51.54226184496656
+      },
+      "relay_eagle3_mlp512_n512": {
+        "tokens_per_second": 76.68560936031365,
+        "throughput_ratio": 0.8144687832799163,
+        "throughput_ci95": [
+          0.7927829177954945,
+          0.8382641869950319
+        ],
+        "request_time_ratio": 0.8144687832799163,
+        "request_time_ci95": [
+          0.7927829177954944,
+          0.8382641869950319
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 3.857547169811321,
+        "request_seconds": 52.76087695918977
+      },
+      "source_reuse_eagle3": {
+        "tokens_per_second": 64.50884995041041,
+        "throughput_ratio": 0.6851408623882983,
+        "throughput_ci95": [
+          0.6674927911259945,
+          0.703585059887627
+        ],
+        "request_time_ratio": 0.6851408623882984,
+        "request_time_ci95": [
+          0.6674927911259945,
+          0.703585059887627
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.961259079903147,
+        "request_seconds": 62.72007644083351
+      }
+    }
+  },
+  "early_vs_endpoint": {
+    "relay_eagle3_dense_n512": {
+      "trial": "eagle3-dense-n512-s1729",
+      "selected_step": 1024,
+      "endpoint_step": 8192,
+      "reference": "relay_eagle3_dense_n512_endpoint",
+      "tokens_per_second": 88.72522634547073,
+      "throughput_ratio": 0.9499014051211462,
+      "throughput_ci95": [
+        0.9238982953355019,
+        0.9759374782326613
+      ],
+      "request_time_ratio": 0.9499014051211462,
+      "request_time_ci95": [
+        0.9238982953355018,
+        0.9759374782326612
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 4.463467829880043,
+      "request_seconds": 45.60146157583222
+    },
+    "relay_eagle3_factorized512_n512": {
+      "trial": "eagle3-factorized512-n512-s1729",
+      "selected_step": 2048,
+      "endpoint_step": 8192,
+      "reference": "relay_eagle3_factorized512_n512_endpoint",
+      "tokens_per_second": 79.20775932560836,
+      "throughput_ratio": 0.9686879054042052,
+      "throughput_ci95": [
+        0.948181780329609,
+        0.988248101520715
+      ],
+      "request_time_ratio": 0.9686879054042052,
+      "request_time_ci95": [
+        0.9481817803296091,
+        0.988248101520715
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 3.9922103213242455,
+      "request_seconds": 51.0808541290462
+    },
+    "relay_eagle3_factorized2048_n512": {
+      "trial": "eagle3-factorized2048-n512-s1729",
+      "selected_step": 2048,
+      "endpoint_step": 8192,
+      "reference": "relay_eagle3_factorized2048_n512_endpoint",
+      "tokens_per_second": 90.27162595554076,
+      "throughput_ratio": 0.9637745606905059,
+      "throughput_ci95": [
+        0.9222419474236127,
+        1.0033976902861612
+      ],
+      "request_time_ratio": 0.9637745606905059,
+      "request_time_ci95": [
+        0.9222419474236128,
+        1.0033976902861612
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 4.558398220244716,
+      "request_seconds": 44.82028496963903
+    },
+    "relay_eagle3_mlp2048_n512": {
+      "trial": "eagle3-mlp2048-n512-s1729",
+      "selected_step": 2048,
+      "endpoint_step": 8192,
+      "reference": "relay_eagle3_mlp2048_n512_endpoint",
+      "tokens_per_second": 83.05260942288854,
+      "throughput_ratio": 0.9676309031982918,
+      "throughput_ci95": [
+        0.9423776719126122,
+        0.9955959969534093
+      ],
+      "request_time_ratio": 0.9676309031982919,
+      "request_time_ci95": [
+        0.9423776719126121,
+        0.9955959969534093
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 4.188524590163935,
+      "request_seconds": 48.716109320521355
+    },
+    "relay_eagle3_dense_n2048": {
+      "trial": "eagle3-dense-n2048-s1729",
+      "selected_step": 2048,
+      "endpoint_step": 8192,
+      "reference": "relay_eagle3_dense_n2048_endpoint",
+      "tokens_per_second": 92.30439724984387,
+      "throughput_ratio": 0.9803540813796163,
+      "throughput_ci95": [
+        0.9693093505009821,
+        0.9917342083670575
+      ],
+      "request_time_ratio": 0.9803540813796164,
+      "request_time_ci95": [
+        0.9693093505009821,
+        0.9917342083670576
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 4.634920634920635,
+      "request_seconds": 43.833231357857585
+    },
+    "relay_eagle3_mlp2048_n2048": {
+      "trial": "eagle3-mlp2048-n2048-s1729",
+      "selected_step": 4096,
+      "endpoint_step": 8192,
+      "reference": "relay_eagle3_mlp2048_n2048_endpoint",
+      "tokens_per_second": 88.69879878447641,
+      "throughput_ratio": 1.019444070113896,
+      "throughput_ci95": [
+        0.9950381224943488,
+        1.046423009907664
+      ],
+      "request_time_ratio": 1.019444070113896,
+      "request_time_ci95": [
+        0.9950381224943488,
+        1.046423009907664
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 4.472191930207197,
+      "request_seconds": 45.61504840478301
+    }
+  },
+  "seed_panels": [],
+  "scope": "Paired development decoding at the declared token cap. Checkpoint choices were declared before decoding. Request bootstrap uses 10000 samples and seed 1729. These descriptive intervals do not adjust for multiple comparisons or establish task quality. Seed panels report observed throughput ranges separately from request intervals, not confidence intervals over fitting randomness. No training-data expansion."
+}

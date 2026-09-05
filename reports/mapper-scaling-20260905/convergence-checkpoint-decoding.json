@@ -1,0 +1,1516 @@
+{
+  "status": "complete",
+  "run": "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/convergence-seed-wave/run-27817",
+  "input_sha256": {
+    "configs/submission/scaling/campaign-convergence-small.yaml": "8ec26bb09f9944ffd5fa4388bbeed1f78bac3a30e25b7f88d052d9bfd6a6c378",
+    "configs/submission/scaling/campaign-convergence-small.provenance.json": "8227689b27f1779345417f2738eaf0bba7f8e76f8840bfd216343772b0d3d99f",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/convergence-seed-wave/run-27817/completion-gate.json": "f1a824979f87ed3be0aefc4655bc753e40a04010e76d43a634d5e76ac76d6e9f",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/convergence-seed-wave/run-27817/analysis.json": "07ebaf51777f8a6ed1dd53d3569c58b21d424ce0e5a5f327e757e1e1f05ebac5",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/convergence-seed-wave/run-27817/benchmark-rank0.jsonl": "a5c91fa43588318dad5b56cc52ad57cd6d76e0d08b116e2e9ec680f49da23f1b",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/convergence-seed-wave/run-27817/benchmark-rank1.jsonl": "e6737f4e51c2fc389d1b728d5d9c45aa1da375c9b981a35414b220a281f1e5d7",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/convergence-seed-wave/run-27817/benchmark-rank2.jsonl": "e508cb9f9761c3d16d775e4a6d290929d2646974e8004320cdc670a678083017",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/convergence-seed-wave/run-27817/benchmark-rank3.jsonl": "7822420f8238bef0ae0653119733f9040cdc1ee8fa2feeacdd63070204ac1d89"
+  },
+  "variants": {
+    "relay_dense_n2048_step8192": {
+      "trial": {
+        "name": "dense-n2048-s1729",
+        "study": "core",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "5631b89afc6a4966afa146efa79fe66c9b51182e2edf7f15e6975198a9dd143a",
+      "registry_sha256": "59d254dc7eef0777b149225a77cf401417032e633cefa4a369bb33e2629f5d23",
+      "raw_directory": "reports/mapper-scaling-20260905/focused-wave1/run-27737/fitting/dense-n2048-s1729",
+      "fit_sha256": "b091ae8fd72254074c9db7a13e541f618edf502b87892e3765360ad66a0e78a1",
+      "validation_sha256": "f2a23736ad589cad96cd68935f03f6757f7a80ffaa16584bd253f66f7c525d38",
+      "batch_gate_sha256": "7c63ee876f184bcf95f15cc60a6b2f9f400916109a2671cd519fdc22401ac644"
+    },
+    "relay_factorized1024_n512_step8192": {
+      "trial": {
+        "name": "factorized1024-n512-s1729",
+        "study": "core",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 1024,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "39a8de3c12646417492ae41fbb9b008168832c7a2ef14b4bcca30b3d92d66663",
+      "registry_sha256": "59d254dc7eef0777b149225a77cf401417032e633cefa4a369bb33e2629f5d23",
+      "raw_directory": "reports/mapper-scaling-20260905/focused-wave3/run-27744/fitting/factorized1024-n512-s1729",
+      "fit_sha256": "9b7523a80ce0e7497c18486069c3d9f0cf994b8ce14bea56b34310a49e13fbd4",
+      "validation_sha256": "df25538c4fec1b929d516ecca10e6b898cad11ccea7977cf5144eea3535feff7",
+      "batch_gate_sha256": "5dccafec8f9a63808948ec5aa2c4a15f65ff533235c76a271897a653f5fcb3ee"
+    },
+    "relay_factorized4096_n2048_step8192": {
+      "trial": {
+        "name": "factorized4096-n2048-s1729",
+        "study": "core",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "75175762f031d6a3f69e41079fc7c424014d85c4f6f6f30b3be169069d9b6e6a",
+      "registry_sha256": "59d254dc7eef0777b149225a77cf401417032e633cefa4a369bb33e2629f5d23",
+      "raw_directory": "reports/mapper-scaling-20260905/focused-wave4/run-27746/fitting/factorized4096-n2048-s1729",
+      "fit_sha256": "39cf7d666e7ec5fc8de2410f233d807ceb33b6bc785c793a7a8a24932d59d015",
+      "validation_sha256": "dbc6e26589da9b9eec8b7f2c21147888e7fda5efa8b198841594e3366ed5abe3",
+      "batch_gate_sha256": "505877b5ab96f77fa56a6e93880c6d629a60a8f5fc883f8bffe441c656e98486"
+    },
+    "relay_factorized4096_n512_step4096": {
+      "trial": {
+        "name": "factorized4096-n512-s1729",
+        "study": "core",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 4096,
+      "selection": "minimum_development_validation",
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "764b675af025fe6e283c6ff7d548fdd3390e79dc01bf7f6040d2c1e7a5047870",
+      "registry_sha256": "59d254dc7eef0777b149225a77cf401417032e633cefa4a369bb33e2629f5d23",
+      "raw_directory": "reports/mapper-scaling-20260905/focused-wave4/run-27746/fitting/factorized4096-n512-s1729",
+      "fit_sha256": "727c19c57c7b429a1fabffbb998280b35f2b908dcd3de54a92257a61aeb1ee16",
+      "validation_sha256": "833801c8f1867d255a7cc6d4a77d9ad466e90bdeebd87b3c30caba4abcae91d1",
+      "batch_gate_sha256": "505877b5ab96f77fa56a6e93880c6d629a60a8f5fc883f8bffe441c656e98486"
+    },
+    "relay_factorized4096_n512_step8192": {
+      "trial": {
+        "name": "factorized4096-n512-s1729",
+        "study": "core",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "23cb53ad042adc4be0c703ad244612ee6ecc820299b66548f1ec870703e8045c",
+      "registry_sha256": "59d254dc7eef0777b149225a77cf401417032e633cefa4a369bb33e2629f5d23",
+      "raw_directory": "reports/mapper-scaling-20260905/focused-wave4/run-27746/fitting/factorized4096-n512-s1729",
+      "fit_sha256": "727c19c57c7b429a1fabffbb998280b35f2b908dcd3de54a92257a61aeb1ee16",
+      "validation_sha256": "833801c8f1867d255a7cc6d4a77d9ad466e90bdeebd87b3c30caba4abcae91d1",
+      "batch_gate_sha256": "505877b5ab96f77fa56a6e93880c6d629a60a8f5fc883f8bffe441c656e98486"
+    },
+    "relay_mlp4096_n2048_step8192": {
+      "trial": {
+        "name": "mlp4096-n2048-s1729",
+        "study": "core",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "3530064fc8f7f1c273405f8f3f05fe5db33e6d002ee4aabe714e269f018dfae7",
+      "registry_sha256": "59d254dc7eef0777b149225a77cf401417032e633cefa4a369bb33e2629f5d23",
+      "raw_directory": "reports/mapper-scaling-20260905/focused-wave4/run-27746/fitting/mlp4096-n2048-s1729",
+      "fit_sha256": "4b4131be9806450d79d5673429df73a0d26004541973c386910af9354c09471f",
+      "validation_sha256": "8124600f2ebbda7388f6da8a75de64e7d7611cd66d519e9cccc4f6ae7fa72c1a",
+      "batch_gate_sha256": "505877b5ab96f77fa56a6e93880c6d629a60a8f5fc883f8bffe441c656e98486"
+    },
+    "relay_mlp4096_n512_step4096": {
+      "trial": {
+        "name": "mlp4096-n512-s1729",
+        "study": "core",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 4096,
+      "selection": "minimum_development_validation",
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "b4f4ee9fde5529738a01b68444d6174a140c1ac6990766fb6808ed995466f57c",
+      "registry_sha256": "59d254dc7eef0777b149225a77cf401417032e633cefa4a369bb33e2629f5d23",
+      "raw_directory": "reports/mapper-scaling-20260905/focused-wave4/run-27746/fitting/mlp4096-n512-s1729",
+      "fit_sha256": "d82a247c02bdb89c3adcc23efbc9588463e8a16932fbc1e2eafbc733c8b82b2a",
+      "validation_sha256": "9414886d5a182e81b8e38cae49a2fb803fde8a42b04d22c767bc6efdc928e0ac",
+      "batch_gate_sha256": "505877b5ab96f77fa56a6e93880c6d629a60a8f5fc883f8bffe441c656e98486"
+    },
+    "relay_mlp4096_n512_step8192": {
+      "trial": {
+        "name": "mlp4096-n512-s1729",
+        "study": "core",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "667e704066ffd75f12707b14582127d0d3368ae2161369c6d8ebc16178074a8a",
+      "registry_sha256": "59d254dc7eef0777b149225a77cf401417032e633cefa4a369bb33e2629f5d23",
+      "raw_directory": "reports/mapper-scaling-20260905/focused-wave4/run-27746/fitting/mlp4096-n512-s1729",
+      "fit_sha256": "d82a247c02bdb89c3adcc23efbc9588463e8a16932fbc1e2eafbc733c8b82b2a",
+      "validation_sha256": "9414886d5a182e81b8e38cae49a2fb803fde8a42b04d22c767bc6efdc928e0ac",
+      "batch_gate_sha256": "505877b5ab96f77fa56a6e93880c6d629a60a8f5fc883f8bffe441c656e98486"
+    },
+    "relay_factorized4096_n2048_lr_0p0002_step8192": {
+      "trial": {
+        "name": "factorized4096-n2048-s1729-lr-0.0002",
+        "study": "learning_rate_convergence",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "84086b6da91791cf8b7e55a144cb9d026e2030ab967bb08620c516a25419bb74",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27796/fitting/factorized4096-n2048-s1729-lr-0.0002",
+      "fit_sha256": "27141c71f72c42ef668790df68fcfa2c259e5cf1bbda66608e43dd9b8c899e76",
+      "validation_sha256": "e12f1f3cdced3f446dc460d3df1e7c0f5c9f83ff77380dae7bbc6c96d82bf1c8",
+      "batch_gate_sha256": "f6acf04073e81088d26cea625ad45a7066c2c7dfa227b24443f408f4ae7146e7"
+    },
+    "relay_factorized4096_n2048_lr_0p0018_step8192": {
+      "trial": {
+        "name": "factorized4096-n2048-s1729-lr-0.0018",
+        "study": "learning_rate_convergence",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0018,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "1f6e2dd50d63a37429c0dcf842045b29b80b5fd733282b50a2e482174099b179",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27796/fitting/factorized4096-n2048-s1729-lr-0.0018",
+      "fit_sha256": "5c65ab22fad8a0b2b150086b5eb272291b49139c0d9cdea0859c4397b4d06ce4",
+      "validation_sha256": "82fd4e62984a851cd147ff73b7237c84e4117c67ca69f6b74ee91e14eb0df169",
+      "batch_gate_sha256": "f6acf04073e81088d26cea625ad45a7066c2c7dfa227b24443f408f4ae7146e7"
+    },
+    "relay_factorized4096_n512_lr_0p0002_step4096": {
+      "trial": {
+        "name": "factorized4096-n512-s1729-lr-0.0002",
+        "study": "learning_rate_convergence",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 4096,
+      "selection": "minimum_development_validation",
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "33683a0995a3205d73473fe7b881a8bf864d7e155001de77e1934e9ebdfa613b",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27796/fitting/factorized4096-n512-s1729-lr-0.0002",
+      "fit_sha256": "68b679ef7ced340aee7db4c44c9bb003b479e4a7b530693b4a902da53b4164b1",
+      "validation_sha256": "468e5ac95e755132a8e2d876adc74c4d2398e4ff6a76d402797997fdca46db09",
+      "batch_gate_sha256": "f6acf04073e81088d26cea625ad45a7066c2c7dfa227b24443f408f4ae7146e7"
+    },
+    "relay_factorized4096_n512_lr_0p0002_step8192": {
+      "trial": {
+        "name": "factorized4096-n512-s1729-lr-0.0002",
+        "study": "learning_rate_convergence",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "3ae68f7e7c234580f949fda29dbb2aba182c1acd456558c617dfc2a1596c1139",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27796/fitting/factorized4096-n512-s1729-lr-0.0002",
+      "fit_sha256": "68b679ef7ced340aee7db4c44c9bb003b479e4a7b530693b4a902da53b4164b1",
+      "validation_sha256": "468e5ac95e755132a8e2d876adc74c4d2398e4ff6a76d402797997fdca46db09",
+      "batch_gate_sha256": "f6acf04073e81088d26cea625ad45a7066c2c7dfa227b24443f408f4ae7146e7"
+    },
+    "relay_factorized4096_n512_lr_0p0018_step4096": {
+      "trial": {
+        "name": "factorized4096-n512-s1729-lr-0.0018",
+        "study": "learning_rate_convergence",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0018,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 4096,
+      "selection": "minimum_development_validation",
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "3a010d6edad127f0a76979b68e287f1299c9304f1d85cfe0bc3cf06caedfd3c0",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27796/fitting/factorized4096-n512-s1729-lr-0.0018",
+      "fit_sha256": "3202797cd8bd810fdf97a714b57b37eead8ccc99836e8cfdba49cf552859f1ee",
+      "validation_sha256": "b8f8552fc3dd4df0807e96f53d25a32a9077931eed7d9e43215e6547da4c2cf7",
+      "batch_gate_sha256": "f6acf04073e81088d26cea625ad45a7066c2c7dfa227b24443f408f4ae7146e7"
+    },
+    "relay_factorized4096_n512_lr_0p0018_step8192": {
+      "trial": {
+        "name": "factorized4096-n512-s1729-lr-0.0018",
+        "study": "learning_rate_convergence",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0018,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "d9fad86f45a131d36ca1fbf1d71e4432a50b9cf12bd10825e200320f071f9b0f",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27796/fitting/factorized4096-n512-s1729-lr-0.0018",
+      "fit_sha256": "3202797cd8bd810fdf97a714b57b37eead8ccc99836e8cfdba49cf552859f1ee",
+      "validation_sha256": "b8f8552fc3dd4df0807e96f53d25a32a9077931eed7d9e43215e6547da4c2cf7",
+      "batch_gate_sha256": "f6acf04073e81088d26cea625ad45a7066c2c7dfa227b24443f408f4ae7146e7"
+    },
+    "relay_mlp4096_n2048_lr_0p0002_step8192": {
+      "trial": {
+        "name": "mlp4096-n2048-s1729-lr-0.0002",
+        "study": "learning_rate_convergence",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "11b206a306c75ab8e4039958d46678ed3ab60c750351087d0145d053b1678bf2",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27797/fitting/mlp4096-n2048-s1729-lr-0.0002",
+      "fit_sha256": "4186e521dd8cbd7adbe208bb1b88947c748517d130da54510a2a6c79fd65ca4a",
+      "validation_sha256": "a0214238264922fed0a30d6535c2bcf0636a5527306d29b78e1025f3968e756a",
+      "batch_gate_sha256": "e254c0d95d9932b93ad74eaf2f2f92c8254d217ae9e4d54f5f5b655394cd51e3"
+    },
+    "relay_mlp4096_n2048_lr_0p0018_step8192": {
+      "trial": {
+        "name": "mlp4096-n2048-s1729-lr-0.0018",
+        "study": "learning_rate_convergence",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0018,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "a596da367a38be736a3b6029e6e0d42edd2a6ae051c72766a9a990cc636a0243",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27797/fitting/mlp4096-n2048-s1729-lr-0.0018",
+      "fit_sha256": "9072d575429c2dd01ccc303e59908bdc46d419caf7ad6bc23fd25835ecc4cb91",
+      "validation_sha256": "68688389997447bd8e5638a40d04f1cfb8ce310ca1ca1a9de93161fb5ce33dd8",
+      "batch_gate_sha256": "e254c0d95d9932b93ad74eaf2f2f92c8254d217ae9e4d54f5f5b655394cd51e3"
+    },
+    "relay_mlp4096_n512_lr_0p0002_step2048": {
+      "trial": {
+        "name": "mlp4096-n512-s1729-lr-0.0002",
+        "study": "learning_rate_convergence",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 2048,
+      "selection": "minimum_development_validation",
+      "best_validation_step": 2048,
+      "checkpoint_sha256": "ee103b8d1fb7a599ef024fc7bb1f5369c89257691e8545ee450b37f5e61915ea",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27797/fitting/mlp4096-n512-s1729-lr-0.0002",
+      "fit_sha256": "69b1fd4722463d11812c947fb854e8ab39d8adac200d9b0da5cff4cac093b5bd",
+      "validation_sha256": "ee9b9516ba7e042c95e0e886d261d2e88efee69316041067865a44382ea14b35",
+      "batch_gate_sha256": "e254c0d95d9932b93ad74eaf2f2f92c8254d217ae9e4d54f5f5b655394cd51e3"
+    },
+    "relay_mlp4096_n512_lr_0p0002_step8192": {
+      "trial": {
+        "name": "mlp4096-n512-s1729-lr-0.0002",
+        "study": "learning_rate_convergence",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 2048,
+      "checkpoint_sha256": "3541c9d73b9c8f881eef8322fce1b35f4b45de9a7338186df3087ce3e636a87a",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27797/fitting/mlp4096-n512-s1729-lr-0.0002",
+      "fit_sha256": "69b1fd4722463d11812c947fb854e8ab39d8adac200d9b0da5cff4cac093b5bd",
+      "validation_sha256": "ee9b9516ba7e042c95e0e886d261d2e88efee69316041067865a44382ea14b35",
+      "batch_gate_sha256": "e254c0d95d9932b93ad74eaf2f2f92c8254d217ae9e4d54f5f5b655394cd51e3"
+    },
+    "relay_mlp4096_n512_lr_0p0018_step4096": {
+      "trial": {
+        "name": "mlp4096-n512-s1729-lr-0.0018",
+        "study": "learning_rate_convergence",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0018,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 4096,
+      "selection": "minimum_development_validation",
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "dee4413e1b86273679487323c2628a59525253b29edb4cf18fef8a6b7a318428",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27797/fitting/mlp4096-n512-s1729-lr-0.0018",
+      "fit_sha256": "0cf99e7e830b5c7a20836b7c0b2377c5152d7baf9c3bf8bffca5e187b241e54c",
+      "validation_sha256": "c5c622b209c2cc343575b893f2463a3dcdae57b02a125103b6b03398d9a8ae8c",
+      "batch_gate_sha256": "e254c0d95d9932b93ad74eaf2f2f92c8254d217ae9e4d54f5f5b655394cd51e3"
+    },
+    "relay_mlp4096_n512_lr_0p0018_step8192": {
+      "trial": {
+        "name": "mlp4096-n512-s1729-lr-0.0018",
+        "study": "learning_rate_convergence",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0018,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "step": 8192,
+      "selection": "fixed8192",
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "52954006d50705c2b89ff2694f696344346355feb1af3ce84ef0593c57f9e746",
+      "registry_sha256": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+      "raw_directory": "reports/mapper-scaling-20260905/learning-rate-wave1/run-27797/fitting/mlp4096-n512-s1729-lr-0.0018",
+      "fit_sha256": "0cf99e7e830b5c7a20836b7c0b2377c5152d7baf9c3bf8bffca5e187b241e54c",
+      "validation_sha256": "c5c622b209c2cc343575b893f2463a3dcdae57b02a125103b6b03398d9a8ae8c",
+      "batch_gate_sha256": "e254c0d95d9932b93ad74eaf2f2f92c8254d217ae9e4d54f5f5b655394cd51e3"
+    }
+  },
+  "against_reference": {
+    "requests": 16,
+    "clusters": 16,
+    "reference": "relay_dense_n2048_step8192",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.74005460118677,
+        "throughput_ratio": 0.2041178110901447,
+        "throughput_ci95": [
+          0.1756986379661789,
+          0.23468157233756212
+        ],
+        "request_time_ratio": 0.20226810278489477,
+        "request_time_ci95": [
+          0.17339418169482937,
+          0.23373699350156335
+        ],
+        "mean_output_tokens": 255.1875,
+        "token_matches": 5,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 108.18744284147397
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 189.5488156852866,
+        "throughput_ratio": 1.0251784148503413,
+        "throughput_ci95": [
+          0.9904949455701161,
+          1.0585146133575447
+        ],
+        "request_time_ratio": 1.0251784148503413,
+        "request_time_ci95": [
+          0.9904949455701162,
+          1.0585146133575447
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 7.236013986013986,
+        "request_seconds": 21.345424846746027
+      },
+      "optimized_source_reuse": {
+        "tokens_per_second": 109.59109078101004,
+        "throughput_ratio": 0.5927255220372065,
+        "throughput_ci95": [
+          0.5679732995192295,
+          0.6198655437887617
+        ],
+        "request_time_ratio": 0.5927255220372064,
+        "request_time_ci95": [
+          0.5679732995192295,
+          0.6198655437887617
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 7.032258064516129,
+        "request_seconds": 36.91905948892236
+      },
+      "relay_dense_n2048_step8192": {
+        "tokens_per_second": 184.89349067396967,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.981450252951096,
+        "request_seconds": 21.882868808694184
+      },
+      "relay_factorized1024_n512_step8192": {
+        "tokens_per_second": 179.9267020554525,
+        "throughput_ratio": 0.9731370282403543,
+        "throughput_ci95": [
+          0.9497960088567764,
+          0.9944876630657963
+        ],
+        "request_time_ratio": 0.9731370282403542,
+        "request_time_ci95": [
+          0.9497960088567764,
+          0.9944876630657963
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.7655737704918035,
+        "request_seconds": 22.48693470051512
+      },
+      "relay_factorized4096_n2048_lr_0p0002_step8192": {
+        "tokens_per_second": 183.90525736712297,
+        "throughput_ratio": 0.9946551211551883,
+        "throughput_ci95": [
+          0.9755856885696742,
+          1.012178700170351
+        ],
+        "request_time_ratio": 0.9946551211551883,
+        "request_time_ci95": [
+          0.9755856885696741,
+          1.012178700170351
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.974747474747475,
+        "request_seconds": 22.00045859441161
+      },
+      "relay_factorized4096_n2048_lr_0p0018_step8192": {
+        "tokens_per_second": 185.51018681420658,
+        "throughput_ratio": 1.0033354129341652,
+        "throughput_ci95": [
+          0.9932561638002252,
+          1.015503385706092
+        ],
+        "request_time_ratio": 1.0033354129341652,
+        "request_time_ci95": [
+          0.9932561638002252,
+          1.015503385706092
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 7.01358234295416,
+        "request_seconds": 21.810123042203486
+      },
+      "relay_factorized4096_n2048_step8192": {
+        "tokens_per_second": 185.82366122581647,
+        "throughput_ratio": 1.005030845317789,
+        "throughput_ci95": [
+          0.990073445223959,
+          1.01995379915098
+        ],
+        "request_time_ratio": 1.005030845317789,
+        "request_time_ci95": [
+          0.990073445223959,
+          1.01995379915098
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 7.042589437819421,
+        "request_seconds": 21.77333055064082
+      },
+      "relay_factorized4096_n512_lr_0p0002_step4096": {
+        "tokens_per_second": 184.52520056493205,
+        "throughput_ratio": 0.9980080958626768,
+        "throughput_ci95": [
+          0.9783663375430749,
+          1.0166024644513956
+        ],
+        "request_time_ratio": 0.9980080958626767,
+        "request_time_ci95": [
+          0.9783663375430749,
+          1.0166024644513956
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.966329966329966,
+        "request_seconds": 21.92654438316822
+      },
+      "relay_factorized4096_n512_lr_0p0002_step8192": {
+        "tokens_per_second": 183.12143448969354,
+        "throughput_ratio": 0.9904158000489003,
+        "throughput_ci95": [
+          0.9711491567433292,
+          1.0107147239026697
+        ],
+        "request_time_ratio": 0.9904158000489002,
+        "request_time_ci95": [
+          0.9711491567433292,
+          1.0107147239026697
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.878333333333333,
+        "request_seconds": 22.09462814265862
+      },
+      "relay_factorized4096_n512_lr_0p0018_step4096": {
+        "tokens_per_second": 183.17782449569404,
+        "throughput_ratio": 0.9907207864807911,
+        "throughput_ci95": [
+          0.9673624790572403,
+          1.012359597891494
+        ],
+        "request_time_ratio": 0.9907207864807911,
+        "request_time_ci95": [
+          0.9673624790572404,
+          1.012359597891494
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.848333333333334,
+        "request_seconds": 22.087826466653496
+      },
+      "relay_factorized4096_n512_lr_0p0018_step8192": {
+        "tokens_per_second": 182.68855125243107,
+        "throughput_ratio": 0.9880745427353813,
+        "throughput_ci95": [
+          0.9632690015814929,
+          1.0132038386260855
+        ],
+        "request_time_ratio": 0.9880745427353813,
+        "request_time_ci95": [
+          0.9632690015814928,
+          1.0132038386260853
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.855481727574751,
+        "request_seconds": 22.14698169240728
+      },
+      "relay_factorized4096_n512_step4096": {
+        "tokens_per_second": 184.10217636487874,
+        "throughput_ratio": 0.995720161341503,
+        "throughput_ci95": [
+          0.9662893706555382,
+          1.0245823236358482
+        ],
+        "request_time_ratio": 0.9957201613415029,
+        "request_time_ci95": [
+          0.9662893706555382,
+          1.0245823236358482
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.967959527824621,
+        "request_seconds": 21.97692650835961
+      },
+      "relay_factorized4096_n512_step8192": {
+        "tokens_per_second": 182.51880359719533,
+        "throughput_ratio": 0.9871564592776189,
+        "throughput_ci95": [
+          0.9570317724255683,
+          1.0200873380805984
+        ],
+        "request_time_ratio": 0.9871564592776189,
+        "request_time_ci95": [
+          0.9570317724255683,
+          1.0200873380805984
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.861435726210351,
+        "request_seconds": 22.16757901245728
+      },
+      "relay_mlp4096_n2048_lr_0p0002_step8192": {
+        "tokens_per_second": 183.86286055342305,
+        "throughput_ratio": 0.9944258171729584,
+        "throughput_ci95": [
+          0.9696264412870468,
+          1.0203104086959953
+        ],
+        "request_time_ratio": 0.9944258171729584,
+        "request_time_ci95": [
+          0.9696264412870468,
+          1.0203104086959953
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.864548494983278,
+        "request_seconds": 22.005531665403396
+      },
+      "relay_mlp4096_n2048_lr_0p0018_step8192": {
+        "tokens_per_second": 180.16544794587656,
+        "throughput_ratio": 0.974428289980039,
+        "throughput_ci95": [
+          0.9466583337314984,
+          0.9997559100495143
+        ],
+        "request_time_ratio": 0.974428289980039,
+        "request_time_ci95": [
+          0.9466583337314985,
+          0.9997559100495144
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.788524590163934,
+        "request_seconds": 22.457136183045805
+      },
+      "relay_mlp4096_n2048_step8192": {
+        "tokens_per_second": 179.4455374575255,
+        "throughput_ratio": 0.9705346402591816,
+        "throughput_ci95": [
+          0.9471751650558136,
+          0.9943323606353943
+        ],
+        "request_time_ratio": 0.9705346402591816,
+        "request_time_ci95": [
+          0.9471751650558135,
+          0.9943323606353944
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.817434210526316,
+        "request_seconds": 22.547231083735824
+      },
+      "relay_mlp4096_n512_lr_0p0002_step2048": {
+        "tokens_per_second": 177.03534215689098,
+        "throughput_ratio": 0.9574990526251933,
+        "throughput_ci95": [
+          0.9301800411322114,
+          0.9857964416102929
+        ],
+        "request_time_ratio": 0.9574990526251933,
+        "request_time_ci95": [
+          0.9301800411322114,
+          0.9857964416102929
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.6231884057971016,
+        "request_seconds": 22.854193692095578
+      },
+      "relay_mlp4096_n512_lr_0p0002_step8192": {
+        "tokens_per_second": 175.13837971379493,
+        "throughput_ratio": 0.9472392947711917,
+        "throughput_ci95": [
+          0.9167483704504058,
+          0.9777014904269887
+        ],
+        "request_time_ratio": 0.9472392947711917,
+        "request_time_ci95": [
+          0.9167483704504058,
+          0.9777014904269888
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.547770700636943,
+        "request_seconds": 23.101732507813722
+      },
+      "relay_mlp4096_n512_lr_0p0018_step4096": {
+        "tokens_per_second": 168.08698040877658,
+        "throughput_ratio": 0.9091016660244211,
+        "throughput_ci95": [
+          0.8790694951158682,
+          0.9392070674922851
+        ],
+        "request_time_ratio": 0.909101666024421,
+        "request_time_ci95": [
+          0.8790694951158682,
+          0.9392070674922851
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.305343511450381,
+        "request_seconds": 24.070870867930353
+      },
+      "relay_mlp4096_n512_lr_0p0018_step8192": {
+        "tokens_per_second": 174.953140036749,
+        "throughput_ratio": 0.9462374224155414,
+        "throughput_ci95": [
+          0.9179529017298388,
+          0.9730539897628395
+        ],
+        "request_time_ratio": 0.9462374224155414,
+        "request_time_ci95": [
+          0.9179529017298388,
+          0.9730539897628394
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.575516693163752,
+        "request_seconds": 23.126192528754473
+      },
+      "relay_mlp4096_n512_step4096": {
+        "tokens_per_second": 169.83126609942835,
+        "throughput_ratio": 0.9185356687266987,
+        "throughput_ci95": [
+          0.8895839082298508,
+          0.9460118037859079
+        ],
+        "request_time_ratio": 0.9185356687266986,
+        "request_time_ci95": [
+          0.8895839082298508,
+          0.946011803785908
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.423913043478261,
+        "request_seconds": 23.823646216187626
+      },
+      "relay_mlp4096_n512_step8192": {
+        "tokens_per_second": 173.69740456651382,
+        "throughput_ratio": 0.9394457529757044,
+        "throughput_ci95": [
+          0.9102834732999396,
+          0.9681435023974505
+        ],
+        "request_time_ratio": 0.9394457529757044,
+        "request_time_ci95": [
+          0.9102834732999396,
+          0.9681435023974505
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 6.553968253968254,
+        "request_seconds": 23.293382017407566
+      }
+    }
+  },
+  "early_vs_endpoint": {
+    "relay_factorized4096_n512_step4096": {
+      "trial": "factorized4096-n512-s1729",
+      "selected_step": 4096,
+      "endpoint_step": 8192,
+      "reference": "relay_factorized4096_n512_step8192",
+      "tokens_per_second": 184.10217636487874,
+      "throughput_ratio": 1.0086751213380611,
+      "throughput_ci95": [
+        0.9805687873109928,
+        1.0397673872461293
+      ],
+      "request_time_ratio": 1.0086751213380611,
+      "request_time_ci95": [
+        0.9805687873109927,
+        1.0397673872461293
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 6.967959527824621,
+      "request_seconds": 21.97692650835961
+    },
+    "relay_mlp4096_n512_step4096": {
+      "trial": "mlp4096-n512-s1729",
+      "selected_step": 4096,
+      "endpoint_step": 8192,
+      "reference": "relay_mlp4096_n512_step8192",
+      "tokens_per_second": 169.83126609942835,
+      "throughput_ratio": 0.9777421057226849,
+      "throughput_ci95": [
+        0.960868413356098,
+        0.9976209419622509
+      ],
+      "request_time_ratio": 0.977742105722685,
+      "request_time_ci95": [
+        0.9608684133560981,
+        0.9976209419622509
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 6.423913043478261,
+      "request_seconds": 23.823646216187626
+    },
+    "relay_factorized4096_n512_lr_0p0002_step4096": {
+      "trial": "factorized4096-n512-s1729-lr-0.0002",
+      "selected_step": 4096,
+      "endpoint_step": 8192,
+      "reference": "relay_factorized4096_n512_lr_0p0002_step8192",
+      "tokens_per_second": 184.52520056493205,
+      "throughput_ratio": 1.0076657660483623,
+      "throughput_ci95": [
+        0.9846644381146504,
+        1.0286345433214439
+      ],
+      "request_time_ratio": 1.0076657660483623,
+      "request_time_ci95": [
+        0.9846644381146504,
+        1.0286345433214439
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 6.966329966329966,
+      "request_seconds": 21.92654438316822
+    },
+    "relay_factorized4096_n512_lr_0p0018_step4096": {
+      "trial": "factorized4096-n512-s1729-lr-0.0018",
+      "selected_step": 4096,
+      "endpoint_step": 8192,
+      "reference": "relay_factorized4096_n512_lr_0p0018_step8192",
+      "tokens_per_second": 183.17782449569404,
+      "throughput_ratio": 1.0026781822939026,
+      "throughput_ci95": [
+        0.9784467550243247,
+        1.0293367484213294
+      ],
+      "request_time_ratio": 1.0026781822939026,
+      "request_time_ci95": [
+        0.9784467550243248,
+        1.0293367484213294
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 6.848333333333334,
+      "request_seconds": 22.087826466653496
+    },
+    "relay_mlp4096_n512_lr_0p0002_step2048": {
+      "trial": "mlp4096-n512-s1729-lr-0.0002",
+      "selected_step": 2048,
+      "endpoint_step": 8192,
+      "reference": "relay_mlp4096_n512_lr_0p0002_step8192",
+      "tokens_per_second": 177.03534215689098,
+      "throughput_ratio": 1.0108312206964345,
+      "throughput_ci95": [
+        0.9861085561353372,
+        1.0387241043795314
+      ],
+      "request_time_ratio": 1.0108312206964343,
+      "request_time_ci95": [
+        0.9861085561353372,
+        1.0387241043795312
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 6.6231884057971016,
+      "request_seconds": 22.854193692095578
+    },
+    "relay_mlp4096_n512_lr_0p0018_step4096": {
+      "trial": "mlp4096-n512-s1729-lr-0.0018",
+      "selected_step": 4096,
+      "endpoint_step": 8192,
+      "reference": "relay_mlp4096_n512_lr_0p0018_step8192",
+      "tokens_per_second": 168.08698040877658,
+      "throughput_ratio": 0.9607542932551529,
+      "throughput_ci95": [
+        0.9394979573303378,
+        0.9830946223120671
+      ],
+      "request_time_ratio": 0.9607542932551528,
+      "request_time_ci95": [
+        0.9394979573303377,
+        0.9830946223120671
+      ],
+      "mean_output_tokens": 252.875,
+      "token_matches": 16,
+      "progress_per_cycle": 6.305343511450381,
+      "request_seconds": 24.070870867930353
+    }
+  },
+  "seed_panels": [],
+  "scope": "Paired development decoding at the declared token cap. Checkpoint choices were declared before decoding. Request bootstrap uses 10000 samples and seed 1729. These descriptive intervals do not adjust for multiple comparisons or establish task quality. Seed panels report observed throughput ranges separately from request intervals, not confidence intervals over fitting randomness. No training-data expansion."
+}

@@ -59,6 +59,9 @@ paper-eagle-capacity-assets:
 paper-small-quality-assets:
 	$(PYTHON) scripts/build_small_quality_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
 
+paper-checkpoint-assets:
+	$(PYTHON) scripts/build_checkpoint_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
+
 paper:
 	cd $(PAPER_DIR) && pdflatex -interaction=nonstopmode -halt-on-error $(PAPER_NAME).tex
 	cd $(PAPER_DIR) && bibtex $(PAPER_NAME)

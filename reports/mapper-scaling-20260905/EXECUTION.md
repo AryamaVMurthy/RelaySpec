@@ -816,3 +816,41 @@ Cache tensor equality and the numerical cause are not yet established,
 and the original failed gate remains failed. A mutation check confirms
 that the auditor rejects an altered cache position even with an updated
 row hash. Targeted lint and source-backed asset regeneration pass.
+
+## Actual decoding at validation minima and three fitting seeds
+
+Selected-checkpoint decoding 27836, source bc71679, completed in 4m08s
+on four L40S GPUs. It evaluates existing checkpoints only. The immutable
+source and configuration are recorded in selected-seed-decoding/jobs.json.
+All future large-data expansion remains paused.
+
+The source-verified checkpoint auditor reproduces the complete DFlash
+27817 and EAGLE 27826 campaigns, with all twelve distinct early-stop versus
+endpoint comparisons. For EAGLE dense N512, the 1024-update validation
+minimum retains 94.99% of endpoint throughput [92.39, 97.59]. For DFlash
+MLP4096 N512 at learning rate 0.0006, the 4096-update validation minimum
+retains 97.77% [96.09, 99.76]. Several other request intervals include one.
+These are descriptive development comparisons, not simultaneous tests or
+full-answer quality evidence. Feature-validation minima therefore cannot
+be assumed to optimize decoding speed. The paper includes every pair,
+with regenerated source hashes and no training-data expansion.
+
+The updated 25-page paper compiles with nine main-text pages, 42 resolved
+citations and all technical audit checks passing. Page 22 was visually
+inspected with a legible table and no clipping. Full final color and
+grayscale review remains outstanding. Raw-timing and checkpoint-identity
+mutation checks confirm that the new auditor rejects corrupted evidence.
+
+All 416 rows from 27836 were collected and audited against the declared
+23 mapper checkpoint hashes plus three controls. The six complete seed
+panels report endpoint and validation-selected results separately.
+Endpoint throughput ranges across three seeds are 184.34--184.68 tok/s
+for dense N512, 186.11--189.22 for dense N2048, 179.47--181.23 for
+linear1024 N512, 185.36--187.81 for linear4096 N2048 at learning rate
+0.0002, 183.92--184.78 for MLP4096 N2048 at that rate, and
+174.53--177.30 for MLP4096 N512 at that rate. These are observed fit
+and runtime ranges, not confidence intervals over fitting randomness.
+The paper includes all six panels and keeps request uncertainty distinct.
+Next work remains matched-budget adaptation and external-baseline
+correctness, selected transfer and untouched confirmation after selection
+freeze. Further large-data fitting stays paused.

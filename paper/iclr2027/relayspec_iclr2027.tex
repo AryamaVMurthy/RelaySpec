@@ -972,9 +972,57 @@ seed stability for the other architectures or for decoding performance.
 \caption{EAGLE-3 fitting-validation trajectories at fixed distinct-data
 counts. Additional updates can worsen validation, most visibly for the
 dense mapper at $N=512$. The horizontal axis counts updates rather than
-new examples. Actual decoding requires a separate checkpoint comparison.}
+new examples. The subsequent checkpoint comparison measures actual decoding.}
 \label{fig:eagle-small-epochs}
 \end{figure}
+
+\clearpage
+\subsection{Feature-validation minima and decoding}
+
+We compare each distinct saved feature-validation minimum with its
+8,192-update endpoint in two declared decoding campaigns. Each uses
+16 paired development questions, greedy decoding and a 256-token cap.
+Checkpoint selection precedes decoding. Table~\ref{tab:checkpoint-decoding}
+includes every distinct early-versus-endpoint pair in these campaigns.
+
+\begin{table}[H]
+\caption{Decoding throughput at the minimum feature-validation checkpoint
+relative to the same fit's endpoint. Intervals resample paired requests
+10,000 times. They are descriptive, without multiple-comparison adjustment,
+and do not measure variation across fitting seeds.}
+\label{tab:checkpoint-decoding}
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{generated/checkpoint_decoding_table.tex}
+\end{table}
+
+Lower feature-validation loss does not consistently predict faster decoding.
+For EAGLE-3's dense $N=512$ fit, the selected 1,024-update checkpoint
+retains 94.99\% of endpoint throughput, with interval [92.39, 97.59]\%.
+For the DFlash width-4096 MLP at $N=512$ and learning rate 0.0006,
+the selected 4,096-update checkpoint retains 97.77\%, with interval
+[96.09, 99.76]\%. Other intervals cross equal throughput. These results
+support treating feature regression as a surrogate and measuring decoding
+when selecting a connector. They do not establish full-answer quality
+or justify selection on untouched evaluation data.
+
+\begin{table}[H]
+\caption{Observed throughput ranges across three fitting seeds in a
+separate 16-question, 256-token development campaign. Selected uses each
+fit's minimum saved feature-validation checkpoint. These ranges describe
+the three measured fits and runtime variation, not confidence intervals.}
+\label{tab:seed-decoding}
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{generated/seed_decoding_table.tex}
+\end{table}
+
+All six settings in Table~\ref{tab:seed-decoding} use the same cached
+features and seeds 1729, 1730 and 1731. The dense $N=512$ endpoints
+span 184.34--184.68 tokens/s. The width-4096 $N=2048$ MLP improves on its
+$N=512$ counterpart, while the dense connector remains competitive.
+These short development runs do not establish the minimum sufficient
+data count or distinguish small architecture gaps from runtime variation.
 
 \clearpage
 \subsection{Longer development outputs for small-data mappers}
