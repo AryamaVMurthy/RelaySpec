@@ -1,0 +1,51 @@
+{
+  "protocol_version": 1,
+  "source_commit": "00f578aaabc4d48efd9a10ccd0e8d0297bdc6e07",
+  "source_sha256": {
+    "create_synth_ds.py": "897097ee656ec6e495e7dc53ca208922c68d541d82046d6a26dbd15e93067cb4",
+    "eval.py": "fdfe53d4a272f63587870e492aea76df69c55cbce1e599ce24570e3c430bbed1",
+    "main.py": "94aa8c1ae9d3c175abbe7c2286daded6bd4d89ec17a6146c99cda4d5bc188955",
+    "src/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/data.py": "df72fab7df70c581b30cb33b808abf53bc558251214868ef9eac7963103f041e",
+    "src/eagle.py": "146d9498d73e64a0d8615b47a2423eb7e0adcda02575a6b0655aae2e5b34efed",
+    "src/model.py": "145a91bf28ff3db05da0d50c64751bd47ee873f1b0d5677f7545742e5d88860c",
+    "src/models/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/models/llama.py": "cdcfd39a656ca4c3d8221ec9a521ba5144eff281666d4ef6934f61e24a55df7e",
+    "src/models/qwen.py": "282f7c4ae126464d0a98ec229e39a7f1cd696b08b33adf97867c98467e026107",
+    "src/util.py": "9c937d1eceacb07a3fe77071436c9ab21686400d852b97013063ff13f4e78cec",
+    "upload_to_hf.py": "0ae87e83d9b9f08f21250b41264739fae098afc8db260e3a54a283de75b22fbc"
+  },
+  "target": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+  },
+  "drafter": {
+    "id": "Qwen/Qwen3-0.6B",
+    "revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+    "weights_sha256": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+  },
+  "runtime": {
+    "transformers": "4.52.4",
+    "lightning": "2.5.1",
+    "pytorch-lightning": "2.5.1",
+    "torchmetrics": "1.7.1",
+    "wandb": "0.19.9",
+    "datasets": "3.5.0",
+    "numpy": "1.26.4"
+  },
+  "training": {
+    "finetune_drafter": "none",
+    "guide_method": "merged",
+    "v_layer": [
+      3,
+      16,
+      33
+    ],
+    "d_layer": "all",
+    "ngram": 8,
+    "pos_method": "regular",
+    "pool_examples": 512,
+    "max_length": 192
+  },
+  "scope": "CPU preparation then bounded compatibility pilot for the public SD-square frozen-drafter training path. Released fully tuned weights are not relabeled as frozen. No large-data scaling or final quality claim."
+}
