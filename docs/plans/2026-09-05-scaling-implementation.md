@@ -138,3 +138,23 @@ The capacity pilot is replaced before it runs so the epoch logging and optimizer
 round-trip checks are exercised within its10minute limit. No full fits have
 been submitted against the v1 matrix. The original declaration remains for
 provenance.
+
+## User scope update, 6 September 2026
+
+Further large-data scaling is PAUSED at the user's request. Do not restart
+the32,768-example job27728 or submit new large-data/four-epoch replicas.
+Preserve the completed128--8192 fitting curves and the verified full cache.
+The partially run27728 is a stopped attempt, not a completed scientific cell.
+
+Current priorities are capacity, matched linear/MLP comparisons, explicit L2
+and AdamW decay, convergence/learning-rate checks, seeds, model/family
+replication, actual decoding/quality and the other pending paper baselines.
+Use512 and2048 distinct fitting records for the focused capacity and
+regularization study. Existing8192 outcomes can be analyzed, but further
+large-data expansion is deferred. This user change supersedes the earlier
+requirement to execute all32768 cells now.
+
+Cache-access pilot27730 is an implementation speed/equivalence check using
+4096 records for mapped I/O and512 for GPU residency, not a new32k data
+scaling experiment. Keep its10minute ceiling; its results may accelerate
+the remaining smaller-data fits.
