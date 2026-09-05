@@ -15,13 +15,14 @@ set the formatting and page requirements. They do not prescribe one universal
 order of scientific headings. We use the following order:
 
 1. Introduction
-2. Related work
+2. Related work and positioning
 3. Preliminaries
 4. Method
 5. Experiments, including setup, results and ablation studies
 6. Conclusion, including the scope of the measurements
 
-Unnumbered AI use, ethics and reproducibility statements follow the main text.
+Unnumbered AI use and reproducibility statements follow the main text.
+The optional ethics statement was removed at the author's request.
 References precede the lettered appendix. Appendix A–F covers implementation,
 complete workloads, fitting studies, acceptance and numerical agreement, data
 checks, and fitting time and memory.
@@ -87,3 +88,28 @@ citations, statements, asset consistency and the PDF-specific visual record.
 The standalone source archive is compiled separately from the repository.
 These checks establish artifact consistency and presentation quality, not an
 acceptance prediction or resolution of the outstanding research plan.
+
+## Positioning and placement update
+
+Related work and positioning stays immediately after the introduction, so the
+source-trained frozen-drafter use case is distinguished before the method. The
+introduction gives the brief contribution. Section 2 compares the learned
+operation with PARD, SD², RepSpec and Draft-OPD and connects it to model stitching.
+It acknowledges frozen SD² variants and does not claim that frozen-model
+adaptation or linear mapping alone is new. Novelty is scoped to fitting the
+existing source-context interface for retargeting and source-transformer removal,
+with normalization matched to two released decoder families. No unmeasured
+head-to-head speed advantage over these related methods is claimed.
+
+Table 1 follows its section heading and opening explanation on page 2. All
+figures and tables are anchored at their declared source positions, preventing
+them from moving ahead of the relevant section. Main-text figures are rendered
+at 92 percent of the text width. Repeated prose was tightened to retain nine
+main-text pages. All experimental tables, assumptions and 42 references remain.
+The official style files are unchanged.
+
+The current [ICLR guidelines](https://iclr.cc/Conferences/2027/AuthorGuidelines)
+label the ethics statement recommended and optional. Its removal does not remove
+the required AI-use statement. PARD's target-independent design and SD²'s steering
+were checked against their [paper](https://arxiv.org/html/2504.18583v4) and
+[publisher record](https://ojs.aaai.org/index.php/AAAI/article/view/40255).

@@ -19,7 +19,7 @@ OFFICIAL_HASHES = {
 }
 REQUIRED_SECTIONS = (
     "Introduction",
-    "Related work",
+    "Related work and positioning",
     "Preliminaries",
     "Method",
     "Experiments",
@@ -362,7 +362,6 @@ def audit_manuscript(root: Path, *, write_report: bool = True) -> dict[str, Any]
         for heading in (
             "\\section*{AI use statement}",
             "\\section*{Reproducibility statement}",
-            "\\section*{Ethics statement}",
             "\\section*{Appendix}",
         )
     )
