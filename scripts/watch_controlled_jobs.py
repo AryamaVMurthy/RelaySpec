@@ -80,11 +80,17 @@ def main():
                         check=True,
                         timeout=180,
                     )
-                    evaluations = (
-                        sorted(destination.glob("evaluation-step-*"))
-                        if job["kind"] == "scaling"
-                        else [destination]
-                    )
+                    if job["kind"] == "cache_pilot":
+                        gate = json.loads((destination / "pilot-gate.json").read_text())
+                        if gate["status"] != "pass":
+                            raise ValueError("cached fitting pilot gate did not pass")
+                        evaluations = [destination / "evaluation"]
+                    else:
+                        evaluations = (
+                            sorted(destination.glob("evaluation-step-*"))
+                            if job["kind"] == "scaling"
+                            else [destination]
+                        )
                     if not evaluations:
                         raise ValueError("completed job has no evaluations")
                     for evaluation in evaluations:

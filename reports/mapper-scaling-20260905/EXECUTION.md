@@ -111,3 +111,24 @@ a separate unresolved task.
 
 No universal minimum/optimum, completed autoresearch campaign, or paper-ready
 status has been established.
+
+## Verified update, 23:24 IST
+
+- Commit b7efe32 implements hashed frozen-feature extraction, independent cached
+  fitting on four GPUs, and shared-reference multi-mapper decoding. 239 CPU tests
+  passed (3 manuscript tests excluded). End-to-end pilot 27722 passed in 1m51s:
+  64 train / 16 validation records, four simultaneous 16-update fits, cache
+  integrity and BF16 gradient-equivalence gates, and exact duplicate-mapper
+  decoding/acceptance isolation. It is plumbing evidence, not a capacity result.
+- Full data256 job 27677 completed in 22m41s; fitting took 97.93s. It achieved
+  4.542x AR. The complete single-seed historical curve's smallest tested set
+  within 5% of the best measured throughput remains 512. Independent confirmation
+  is outstanding. All seven data sizes are collected and scored.
+- Dense directional 27711 completed in 3m18s (97.04s fitting); factor512 27712
+  completed, with MLP and regularized directional trials progressing.
+- CPU code quality jobs 27708/27709 completed and were collected. CODE_QUALITY.md
+  and code-quality-ar.json contain official EvalPlus base/plus AR-relative paired
+  outcomes and uncertainty. 8B MBPP plus loses four passes; 14B gains two.
+- Full cache extraction is now a separate gated stage. Pilot estimates about
+  300 GB for 33,792 records; scratch has about 14 TB free. Extraction cost and
+  model-loading wall time are logged separately and charged to the study.
