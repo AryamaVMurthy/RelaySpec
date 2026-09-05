@@ -12,7 +12,11 @@ from pathlib import Path
 import torch
 
 from relayspec.benchmarking import benchmark_turns
-from relayspec.sd_square_adapter import committed_tokens, load_sd_square
+from relayspec.sd_square_adapter import (
+    collate_sd_square_records,
+    committed_tokens,
+    load_sd_square,
+)
 
 
 def digest(path):
@@ -69,6 +73,36 @@ def main():
     config = json.loads(config_path.read_text())
     setup_path = Path(os.environ["SD_SQUARE_SETUP_GATE"])
     setup = json.loads(setup_path.read_text())
+    prospective = pilot.get("verification_protocol")
+    if prospective:
+        protocol_path = Path(prospective["path"])
+        protocol = json.loads(protocol_path.read_text())
+        if digest(protocol_path) != prospective["sha256"] or any(
+            digest(Path(p)) != sha for p, sha in protocol["input_sha256"].items()
+        ):
+            raise ValueError("prospective external-baseline evidence changed")
+        causal_path = Path(os.environ["SD_SQUARE_CAUSAL_GATE"])
+        causal = json.loads(causal_path.read_text())
+        if (
+            digest(causal_path) != prospective["causal_gate_sha256"]
+            or causal["status"] != "pass"
+            or causal["original_ar_identity_gate"] != "failed_preserved"
+            or not all(
+                causal["causal_probes"][name]["prefix_logits_bit_identical"]
+                for name in ("sdpa", "eager")
+            )
+        ):
+            raise ValueError("prospective SD-square causal prerequisite failed")
+        expected = protocol["fitting"]["sd_square_first_complete_pool_pilot"]
+        if (
+            pilot["batch_size"] != expected["batch_size"]
+            or pilot["updates"] != expected["updates"]
+            or pilot["worker_objectives"] != expected["objectives"]
+            or pilot["warmup_steps"] != expected["warmup_steps"]
+            or pilot["learning_rate"] != expected["learning_rate"]
+            or pilot["learning_rate_end"] != expected["learning_rate_end"]
+        ):
+            raise ValueError("full-pool pilot differs from prospective declaration")
     if (
         digest(config_path) != pilot["setup_config_sha256"]
         or setup["status"] != "pass"
@@ -98,6 +132,12 @@ def main():
         "objective": pilot["worker_objectives"][rank],
         "seed": pilot["seed"],
     }
+    if prospective:
+        gate.update(
+            verification_protocol_sha256=digest(protocol_path),
+            causal_gate_sha256=digest(causal_path),
+            original_exact_ar_gates=protocol["original_exact_ar_gates"],
+        )
     started = time.perf_counter()
     try:
         upstream = load_sd_square("vendor/sd-square", config, setup["models"])
@@ -159,7 +199,10 @@ def main():
             raise ValueError("SD-square pilot requires declared512-example pool")
         gate["ordered_pool_files"] = [r["file"] for r in entries]
         records = []
-        for entry in entries[: pilot["updates"]]:
+        batch_size = pilot["batch_size"]
+        if batch_size not in (1, 4) or pilot["updates"] * batch_size > len(entries):
+            raise ValueError("pilot exceeds its declared distinct pool")
+        for entry in entries[: pilot["updates"] * batch_size]:
             path = cache / entry["file"]
             if digest(path) != entry["sha256"]:
                 raise ValueError("SD-square pilot input record changed")
@@ -193,14 +236,23 @@ def main():
         optimizer, scheduler = optim["optimizer"], optim["lr_scheduler"]["scheduler"]
         gate["phase"] = "training"
         history = []
-        for step, tokens in enumerate(records, 1):
+        for step in range(1, pilot["updates"] + 1):
             torch.cuda.synchronize()
             tick = time.perf_counter()
             optimizer.zero_grad(set_to_none=True)
-            with torch.autocast("cuda", dtype=torch.bfloat16):
-                loss, _ = model.process_batch(
-                    {"targets": tokens}, log_extras=False, compute_tvd=True
+            begin = (step - 1) * batch_size
+            batch_records = records[begin : begin + batch_size]
+            if prospective:
+                batch, lengths = collate_sd_square_records(
+                    batch_records, model.pad_token_id
                 )
+            else:
+                batch, lengths = (
+                    {"targets": batch_records[0]},
+                    [batch_records[0].shape[1]],
+                )
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                loss, _ = model.process_batch(batch, log_extras=False, compute_tvd=True)
             loss.backward()
             if not torch.isfinite(loss) or any(
                 p.grad is not None and not torch.isfinite(p.grad).all() for p in params
@@ -218,9 +270,15 @@ def main():
                     "loss": float(loss.detach()),
                     "gradient_norm": float(norm),
                     "seconds": time.perf_counter() - tick,
-                    "record": entries[step - 1]["file"],
+                    "record": entries[begin]["file"],
                 }
             )
+            if prospective:
+                history[-1].update(
+                    records=[r["file"] for r in entries[begin : begin + batch_size]],
+                    lengths=lengths,
+                    loss_tokens=int(batch["loss_mask"].sum()),
+                )
             (output / f"training-rank{rank}.json").write_text(
                 json.dumps(history, indent=2) + "\n"
             )
@@ -241,6 +299,7 @@ def main():
             training=history,
             distinct_records_seen=len(records),
             training_seconds=sum(r["seconds"] for r in history),
+            batch_size=batch_size,
         )
         gate["phase"] = "checkpoint"
         named = [(n, p) for n, p in model.named_parameters() if id(p) in ids_trainable]
@@ -317,6 +376,14 @@ def main():
         output_tokens, raw = committed_tokens(
             model._relayspec_trace, pilot["max_new_tokens"], model.eot_id
         )
+        if prospective and (
+            not output_tokens
+            or (
+                len(output_tokens) < pilot["max_new_tokens"]
+                and output_tokens[-1] != model.eot_id
+            )
+        ):
+            raise ValueError("SD-square stopped before EOS or the declared token cap")
         row = {
             "problem": problem,
             "input_ids": ids[0].tolist(),
@@ -326,12 +393,15 @@ def main():
             "ar_exact": output_tokens == ar,
             "request_seconds_with_observer": seconds,
             "trace": model._relayspec_trace,
+            "verifier_token_checks_passed": all(
+                b["tokens"] == b["verifier_argmax"] for b in model._relayspec_trace
+            ),
         }
         (output / f"decoding-rank{rank}.json").write_text(
             json.dumps(row, indent=2) + "\n"
         )
         gate.update(
-            status="pass" if row["ar_exact"] else "fail",
+            status="pass" if prospective or row["ar_exact"] else "fail",
             phase="complete",
             ar_exact=row["ar_exact"],
             peak_gpu_bytes=torch.cuda.max_memory_allocated(device),

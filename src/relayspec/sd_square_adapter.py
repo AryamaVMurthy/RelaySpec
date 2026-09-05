@@ -125,3 +125,25 @@ def committed_tokens(trace, cap, eos):
     if eos in raw[:end]:
         end = raw.index(eos) + 1
     return raw[:end], raw
+
+
+def collate_sd_square_records(records, pad_token_id):
+    """Right-pad cached token records and retain the public default token loss mask."""
+    import torch
+
+    if not records or any(
+        r.ndim != 2 or r.shape[0] != 1 or not 1 < r.shape[1] <= 192 for r in records
+    ):
+        raise ValueError(
+            "SD-square collation requires nonempty single-sequence records capped at192"
+        )
+    if any(r.dtype != torch.long or r.device != records[0].device for r in records):
+        raise ValueError("SD-square records differ in dtype or device")
+    lengths = [r.shape[1] for r in records]
+    targets = records[0].new_full((len(records), max(lengths)), pad_token_id)
+    mask = torch.zeros_like(targets, dtype=torch.float32)
+    for i, record in enumerate(records):
+        targets[i, : lengths[i]] = record[0]
+        mask[i, : lengths[i]] = record[0].ne(pad_token_id).float()
+        mask[i, 0] = 1.0  # Same first-position rule as public process_batch.
+    return {"targets": targets, "loss_mask": mask}, lengths

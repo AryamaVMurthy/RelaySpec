@@ -31,11 +31,20 @@ export RELAYSPEC_OUTPUT="$PWD/outputs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}"
 mkdir -p "$RELAYSPEC_OUTPUT" "$TMP_PATH" "$RELAYSPEC_FIT_OUTPUT"
 cp SOURCE_COMMIT "$RELAYSPEC_OUTPUT/source-commit.txt"
 cp "$SD_SQUARE_SETUP_GATE" "$RELAYSPEC_OUTPUT/setup-gate.json"
-tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm vendor/sd-square SOURCE_COMMIT
+extra_evidence=()
+if [[ -n "${SD_SQUARE_TRAIN_CONFIG:-}" ]]; then
+  cp "${SD_SQUARE_CAUSAL_GATE:?causal prerequisite required}" "$RELAYSPEC_OUTPUT/causal-gate.json"
+  extra_evidence=(reports/external-baselines-20260906)
+fi
+tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm vendor/sd-square SOURCE_COMMIT "${extra_evidence[@]}"
 "$RELAYSPEC_PYTHON" scripts/check_allocation.py > "$RELAYSPEC_OUTPUT/allocation.jsonl"
 nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used --format=csv -l 10 > "$RELAYSPEC_OUTPUT/gpu.csv" &
 monitor=$!
 trap 'kill "$monitor" 2>/dev/null || true' EXIT
 timeout --signal=TERM --kill-after=10s 540s "$RELAYSPEC_PYTHON" -m torch.distributed.run \
-  --standalone --nproc_per_node=4 scripts/pilot_sd_square.py --config configs/submission/baselines/sd-square-pilot.json
-"$RELAYSPEC_PYTHON" scripts/summarize_sd_square_pilot.py
+  --standalone --nproc_per_node=4 scripts/pilot_sd_square.py --config "${SD_SQUARE_TRAIN_CONFIG:-configs/submission/baselines/sd-square-pilot.json}"
+if [[ -n "${SD_SQUARE_TRAIN_CONFIG:-}" ]]; then
+  "$RELAYSPEC_PYTHON" scripts/summarize_sd_square_fullpilot.py --config "$SD_SQUARE_TRAIN_CONFIG"
+else
+  "$RELAYSPEC_PYTHON" scripts/summarize_sd_square_pilot.py
+fi

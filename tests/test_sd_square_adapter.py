@@ -3,7 +3,11 @@ from types import SimpleNamespace
 import pytest
 import torch
 
-from relayspec.sd_square_adapter import capture_sd_square_step, committed_tokens
+from relayspec.sd_square_adapter import (
+    capture_sd_square_step,
+    collate_sd_square_records,
+    committed_tokens,
+)
 
 
 def test_observer_keeps_eos_before_public_mask_clears_finished_block():
@@ -91,3 +95,14 @@ def test_detailed_observer_distinguishes_physical_cache_from_valid_prefix():
     assert row["query_ids"] == [1, 3, 2]
     assert row["query_positions"] == [2, 3, 4]
     assert row["output_start"] == 0
+
+
+def test_collation_preserves_records_and_excludes_padding_from_public_loss_mask():
+    records = [torch.tensor([[9, 2, 3]]), torch.tensor([[4, 5]])]
+    batch, lengths = collate_sd_square_records(records, pad_token_id=9)
+    assert lengths == [3, 2]
+    assert batch["targets"].tolist() == [[9, 2, 3], [4, 5, 9]]
+    assert batch["loss_mask"].tolist() == [[1, 1, 1], [1, 1, 0]]
+    assert records[1].tolist() == [[4, 5]]
+    with pytest.raises(ValueError, match="capped at192"):
+        collate_sd_square_records([torch.ones(1, 193, dtype=torch.long)], 9)

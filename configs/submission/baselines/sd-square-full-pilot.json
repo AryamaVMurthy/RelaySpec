@@ -1,0 +1,26 @@
+{
+  "setup_config": "configs/submission/baselines/sd-square-compatibility.json",
+  "setup_config_sha256": "4f882be369fc364b60b33b0b0ac75fc4d6f973c5be7ada71c62217e22d78519a",
+  "seed": 1729,
+  "feature_cache_index_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+  "manifest_path": "configs/eval_manifest.json",
+  "updates": 128,
+  "batch_size": 4,
+  "learning_rate": 1e-05,
+  "learning_rate_end": 1e-06,
+  "warmup_steps": 8,
+  "gradient_clip": 0.5,
+  "max_new_tokens": 64,
+  "worker_objectives": [
+    "tvd",
+    "tvd",
+    "kl",
+    "kl"
+  ],
+  "scope": "Prospective complete512-example training-path pilot. Batch4 and128updates, duplicate frozen SD-square TVD/KL fits at1e-5. All inherited weights frozen, exact duplicate training and checkpoint/optimizer reload, strictly observed greedy-verifier decisions. Exact-AR agreement is reported separately and prior failures are preserved. No full-answer quality, untouched confirmation or final baseline superiority claim.",
+  "verification_protocol": {
+    "path": "configs/submission/baselines/external-verification-protocol.json",
+    "sha256": "488d60999dcb0b80fba7e8c1106aa474fc15a8bfe0af4296fa359e153b65b9f0",
+    "causal_gate_sha256": "2a701f7c79cd24a3a0b487043a71e581794e2b7918376ed8cb93bf443471e5cc"
+  }
+}
