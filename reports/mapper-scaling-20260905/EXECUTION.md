@@ -171,3 +171,20 @@ to20pages with main text ending onpage9 and42 resolved citations. Changed
 pages16-17 were rendered and inspected. The full color/grayscale visual-review
 record is stale and remains pending the final paper build. New Numina capacity
 results, seeds, family/task transfer and autoresearch are still outstanding.
+
+## Large-data batch queued, 23:56 IST
+
+Job27728 follows27727 and fits dense, MLP2048, factorized4096 and MLP4096
+on32,768 distinct records, each through four epochs (32,768updates).
+The same trajectory includes the8192-update fixed-exposure checkpoint.
+Its ledger and independent collector are matrix-large-data/jobs.json.
+The full-cache path, source13ab419 and successful capacity pilot27725
+remain fixed. The current MLP512 job27726 has reached7424/8192updates
+on its last, streaming-data worker; the three smaller-data fits are ahead.
+Do not infer all matrix cells are complete from these initial batches.
+
+Measured execution suggests grouping remaining batches by cache I/O as well
+as parameter count: small preloaded-data workers finish before the larger
+streaming worker. Preserve scientific cell definitions while improving
+scheduling. A GPU-resident small-data cache or work queue needs its own
+short equivalence/resource pilot before changing the fitting path.
