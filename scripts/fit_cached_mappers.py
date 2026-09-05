@@ -25,6 +25,7 @@ from relayspec.relay import TargetFeatureRelay
 
 
 def main():
+    worker_started = time.perf_counter()
     parser = argparse.ArgumentParser()
     parser.add_argument("--trials", type=Path, required=True)
     parser.add_argument("--equivalence-pilot", action="store_true")
@@ -240,12 +241,17 @@ def main():
         torch.cuda.set_rng_state(state["cuda_rng_state"], device)
         tokens_seen = state["tokens_seen"]
         del state
+    initial_validation_started = time.perf_counter()
     diagnostics(start_step)
+    initial_validation_seconds = time.perf_counter() - initial_validation_started
     started = time.perf_counter()
     validation_seconds = 0.0
     io_seconds = 0.0
+    training_update_seconds = 0.0
+    checkpoint_export_seconds = 0.0
     with (output / "training.jsonl").open("x") as log:
         for step in range(start_step + 1, steps + 1):
+            update_started = time.perf_counter()
             io_start = time.perf_counter()
             selected = [entries[((step - 1) * 4 + j) % n] for j in range(4)]
             x, y, mask = pad_feature_batch([get_example(e) for e in selected], device)
@@ -286,10 +292,12 @@ def main():
                 )
                 + "\n"
             )
+            training_update_seconds += time.perf_counter() - update_started
             if step in saves:
                 validation_started = time.perf_counter()
                 diagnostics(step)
                 validation_seconds += time.perf_counter() - validation_started
+                export_started = time.perf_counter()
                 checkpoint = {
                     "relay": relay.state_dict(),
                     "target_layer_ids": metadata["target_layer_ids"],
@@ -315,6 +323,7 @@ def main():
                 if any(not torch.isfinite(p).all() for p in relay.parameters()):
                     raise ValueError("nonfinite cached mapper checkpoint")
                 torch.save(checkpoint, output / f"step-{step:06d}.pt")
+                checkpoint_export_seconds += time.perf_counter() - export_started
             if step == 1 or step % 128 == 0:
                 print(
                     json.dumps(
@@ -330,6 +339,7 @@ def main():
     # Preserve the optimizer as well as the map so a still-improving endpoint
     # can be extended without restarting or silently resetting Adam moments.
     continuation = output / "continuation.pt"
+    export_started = time.perf_counter()
     torch.save(
         {
             "relay": relay.state_dict(),
@@ -345,6 +355,7 @@ def main():
         },
         continuation,
     )
+    checkpoint_export_seconds += time.perf_counter() - export_started
     (output / "fit-complete.json").write_text(
         json.dumps(
             {
@@ -359,6 +370,16 @@ def main():
                 "epochs": steps * 4 / n,
                 "distinct_records_seen": min(n, steps * 4),
                 "loop_seconds": time.perf_counter() - started,
+                "training_update_seconds": training_update_seconds,
+                "initial_validation_seconds": initial_validation_seconds,
+                "checkpoint_export_seconds": checkpoint_export_seconds,
+                "worker_total_seconds": time.perf_counter() - worker_started,
+                "timing_scope": "Training-update time includes data access, loss/gradient "
+                "computation, optimizer steps and training-log writes. It excludes "
+                "validation and checkpoint export. Worker total includes model/cache "
+                "setup and initial validation, but excludes Python import startup "
+                "and this completion-record/hash write. Outer batch wall time records "
+                "the full launched process cost.",
                 "validation_seconds": validation_seconds,
                 "input_io_seconds": io_seconds,
                 "setup_seconds": setup_seconds,

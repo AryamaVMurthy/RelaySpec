@@ -87,6 +87,7 @@ def main():
     )
     fit_wall = time.perf_counter() - started
     checkpoint_hashes = {}
+    reference_checks = []
     for trial in trials:
         folder = fits / trial["name"]
         complete = json.loads((folder / "fit-complete.json").read_text())
@@ -129,6 +130,37 @@ def main():
             ):
                 raise ValueError("checkpoint step or finite-weight gate failed")
             checkpoint_hashes[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
+            if step == trial["steps"] and "reference_checkpoint" in trial:
+                reference = trial["reference_checkpoint"]
+                reference_path = Path(reference["path"])
+                if (
+                    hashlib.sha256(reference_path.read_bytes()).hexdigest()
+                    != reference["sha256"]
+                ):
+                    raise ValueError("timing calibration reference checkpoint changed")
+                expected = torch.load(
+                    reference_path, weights_only=True, map_location="cpu"
+                )
+                if (
+                    state["relay"].keys() != expected["relay"].keys()
+                    or state["target_layer_ids"] != expected["target_layer_ids"]
+                    or any(
+                        not torch.equal(value, expected["relay"][name])
+                        for name, value in state["relay"].items()
+                    )
+                ):
+                    raise ValueError(
+                        "timing instrumentation changed the reference mapper"
+                    )
+                reference_checks.append(
+                    {
+                        "trial": trial["name"],
+                        "step": step,
+                        "reference_sha256": reference["sha256"],
+                        "weights_bit_identical": True,
+                    }
+                )
+                del expected
             del state
         destination = output / "fitting" / trial["name"]
         destination.mkdir(parents=True, exist_ok=False)
@@ -187,6 +219,7 @@ def main():
                     else None
                 ),
                 "checkpoint_sha256": checkpoint_hashes,
+                "reference_checkpoint_checks": reference_checks,
                 "fit_wall_seconds": fit_wall,
                 "total_wall_seconds": time.perf_counter() - started,
                 "scope": "Declared cached fitting/checkpoint completion. Pilot additionally checks BF16 batch equivalence, streaming, width extremes and duplicate-map decoding. This is not full task-quality evidence.",
