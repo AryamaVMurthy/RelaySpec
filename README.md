@@ -27,6 +27,7 @@ software tests does not establish that these research issues are resolved.
 
 - [Current submission review and known issues](reports/ICLR_SUBMISSION_REVIEW_2026-09-05.md)
 - [Detailed research execution plan and next experiments](docs/plans/2026-09-05-relayspec-evidence-execution-plan.md)
+- [Time estimate and four-GPU Turing budget](docs/plans/2026-09-05-relayspec-time-estimate.md)
 - [Paper framing, figure/table blueprint and result-presentation rules](docs/plans/2026-09-05-relayspec-paper-framing-plan.md)
 - [Study of 42 public reviews across 11 related submissions](docs/research/2026-09-05-openreview-review-study.md)
 - [Manuscript source](paper/iclr2027/relayspec_iclr2027.tex) and [draft PDF](paper/iclr2027/relayspec_iclr2027.pdf)

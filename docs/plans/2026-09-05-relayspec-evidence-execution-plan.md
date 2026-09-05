@@ -269,6 +269,8 @@ Complexity earns a place by answering a question the simple method fails to answ
 
 ## 6. Calendar and compute allocation
 
+**Updated estimate after checking Turing job accounting:** see the [four-GPU time and compute budget](2026-09-05-relayspec-time-estimate.md). The user authorized at most four simultaneous Turing GPUs. The complete static plan is estimated at 140–280 researcher-hours and approximately 350–760 GPU-hours including reserve; the dates below are aggressive targets for a reduced scope, not a comfortable forecast for the entire expanded plan.
+
 Use at most the existing four-worker configuration as a planning reference; confirm available hardware before execution. This plan does not reserve resources or assume queued GPU time. Four workers can process independent requests; that is not four-way parallel execution of one request.
 
 | Window | Deliverables | If delayed |
