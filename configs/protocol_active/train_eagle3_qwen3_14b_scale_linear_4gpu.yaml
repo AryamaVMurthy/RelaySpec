@@ -1,0 +1,33 @@
+protocol_version: 1
+run_name: qwen3-14b-eagle3-4b-relay-scale-linear
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/train
+target:
+  id: Qwen/Qwen3-14B
+  revision: 40c069824f4251a91eefaf281ebe4c544efd3e18
+proposer:
+  family: eagle3
+  id: deepseek-ai/eagle3_qwen3_4b_ttt7
+  revision: b0b90fd15d052217c226be5e46d468d8d129e0cd
+  source_commit: 005e03b81cec38b7da6399833d609ee89a2587f2
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers: [1, 9, 17, 25, 33]
+relay_training:
+  manifest_path: configs/train_math_4096.json
+  fit_examples: 4096
+  steps: 1024
+  max_length: 192
+  learning_rate: 0.0006
+  weight_decay: 0.0
+  gradient_clip: 1.0
+  target_layer_ids: [1, 10, 19, 28, 37]
+  relay_architecture: scale_preserving_linear
+  feature_objective: relative_interface_mse
+  proposal_kl_weight: 0.0

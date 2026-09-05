@@ -1,0 +1,38 @@
+protocol_version: 1
+run_name: qwen3-14b-eagle3-4b-relay-mtbench-two-turn
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-14B
+  revision: 40c069824f4251a91eefaf281ebe4c544efd3e18
+proposer:
+  family: eagle3
+  id: deepseek-ai/eagle3_qwen3_4b_ttt7
+  revision: b0b90fd15d052217c226be5e46d468d8d129e0cd
+  source_commit: 005e03b81cec38b7da6399833d609ee89a2587f2
+generation:
+  enable_thinking: false
+  max_new_tokens: 2048
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/eval_manifest_full_v4.json
+  benchmarks: [mtbench]
+  methods: [source_reuse_eagle3, relay_eagle3]
+  max_prompts: 80
+  warmups: 1
+  draft_length: 7
+  profile_regions: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers: [1, 9, 17, 25, 33]
+relay_probe:
+  checkpoint_path: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/checkpoints/qwen3-14b-eagle3-4b-relay-scale-linear/relay.pt
+  repetitions: 1

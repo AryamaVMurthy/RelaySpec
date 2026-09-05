@@ -1,0 +1,46 @@
+{
+  "_provenance": "Every ratio below is a paired bootstrap over requests (paired_bootstrap_speedup, ratio of summed paired request time, 10,000 replicates, seed 1729) computed from the per-rank benchmark-rank*.jsonl rows of a single benchmark run per pair, in which plain autoregressive decoding, optimized source reuse, RelaySpec, and (where a public checkpoint exists) the target-specific proposer were all measured together on the same 500 MATH-500 prompts. Source jobs: dflash-8b-pairedAR-v2-27357, dflash-14b-pairedAR-27325, eagle3-8b-pairedAR-v3-27396, eagle3-14b-pairedAR-v3-27397. Accepted tokens per cycle are micro-averages over every proposal cycle in the run.",
+  "requests": 500,
+  "pairs": [
+    {
+      "family": "dflash",
+      "target": "8b",
+      "relay_vs_ar": {"estimate": 5.0183, "lower": 4.8697, "upper": 5.1735},
+      "source_reuse_vs_ar": {"estimate": 3.2778, "lower": 3.1827, "upper": 3.3772},
+      "relay_vs_source_reuse": {"estimate": 1.5310, "lower": 1.5232, "upper": 1.5385},
+      "target_specific_vs_ar": {"estimate": 5.5590, "lower": 5.3972, "upper": 5.7283},
+      "accept_source_reuse": 7.6635,
+      "accept_relay": 6.9838
+    },
+    {
+      "family": "dflash",
+      "target": "14b",
+      "relay_vs_ar": {"estimate": 5.1432, "lower": 4.9832, "upper": 5.2983},
+      "source_reuse_vs_ar": {"estimate": 4.0553, "lower": 3.9297, "upper": 4.1774},
+      "relay_vs_source_reuse": {"estimate": 1.2683, "lower": 1.2600, "upper": 1.2765},
+      "target_specific_vs_ar": null,
+      "accept_source_reuse": 7.4387,
+      "accept_relay": 6.4927
+    },
+    {
+      "family": "eagle3",
+      "target": "8b",
+      "relay_vs_ar": {"estimate": 2.3967, "lower": 2.3323, "upper": 2.4627},
+      "source_reuse_vs_ar": {"estimate": 1.8751, "lower": 1.8256, "upper": 1.9260},
+      "relay_vs_source_reuse": {"estimate": 1.2782, "lower": 1.2719, "upper": 1.2845},
+      "target_specific_vs_ar": {"estimate": 2.6562, "lower": 2.5860, "upper": 2.7279},
+      "accept_source_reuse": 5.1486,
+      "accept_relay": 4.3350
+    },
+    {
+      "family": "eagle3",
+      "target": "14b",
+      "relay_vs_ar": {"estimate": 2.6250, "lower": 2.5625, "upper": 2.6879},
+      "source_reuse_vs_ar": {"estimate": 2.3937, "lower": 2.3370, "upper": 2.4504},
+      "relay_vs_source_reuse": {"estimate": 1.0966, "lower": 1.0909, "upper": 1.1023},
+      "target_specific_vs_ar": {"estimate": 2.9452, "lower": 2.8749, "upper": 3.0147},
+      "accept_source_reuse": 5.0686,
+      "accept_relay": 4.0129
+    }
+  ]
+}

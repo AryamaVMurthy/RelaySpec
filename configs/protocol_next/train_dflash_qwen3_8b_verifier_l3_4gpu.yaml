@@ -1,0 +1,43 @@
+protocol_version: 1
+run_name: qwen3-8b-dflash4b-relay-verifier-l3
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/train
+target:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers: [1, 9, 17, 25, 33]
+relay_training:
+  manifest_path: configs/train_math_4096.json
+  fit_examples: 4096
+  steps: 1024
+  max_length: 192
+  learning_rate: 0.0006
+  weight_decay: 0.0
+  gradient_clip: 1.0
+  target_layer_ids: [1, 9, 17, 25, 33]
+  relay_architecture: normalized_linear
+  feature_objective: relative_interface_mse
+  proposal_kl_weight: 0.0
+  # Source-free retargeting (Axis A = L1). See
+  # docs/plans/2026-09-02-relayspec-source-free-adaptive-relay-plan.md
+  # section 3.1. supervision=target_verifier means the source transformer
+  # trunk is never given a sequence forward pass anywhere in this run: only
+  # its embedding table and LM head, single matrices belonging to the
+  # released DFlash proposer contract, are read.
+  supervision: target_verifier
+  verifier_objective: accepted_prefix_surrogate
+  verifier_block_size: 16
+  regression_anchor_weight: 0.0

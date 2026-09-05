@@ -1,0 +1,36 @@
+name: Manuscript audit
+
+# Manual gate: a fresh PDF needs its own visual review record.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  manuscript:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.12'
+      - name: Install Python and PDF tools
+        run: |
+          uv venv
+          uv pip install torch --index-url https://download.pytorch.org/whl/cpu
+          uv export --locked --no-hashes --no-emit-project --extra paper > /tmp/relayspec-constraints.txt
+          uv pip install -c /tmp/relayspec-constraints.txt -e '.[paper]' pytest
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-science poppler-utils ghostscript
+      - name: Compile and audit
+        run: make audit-paper
+      - name: Save PDF and audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: manuscript-audit
+          path: |
+            paper/iclr2027/relayspec_iclr2027.pdf
+            reports/ICLR_MANUSCRIPT_QA.md

@@ -1,0 +1,430 @@
+protocol_version: 1
+status: frozen_before_full_quality_scoring
+scope: relayspec_dflash_eagle3_qwen3_4b_to_8b_14b
+
+amendment_log:
+  - date: 2026-08-28
+    change: corrected the EAGLE benchmark driver to preserve per-method conversation history and execute both MT-Bench turns after the first completed breadth artifact exposed only turn zero; math/code rows remain unchanged and dedicated two-turn runs replace the incomplete EAGLE MT-Bench cells without changing any method choice
+  - date: 2026-08-28
+    change: selected coefficient-free relative interface MSE at both DFlash target scales after the preregistered matched objective comparison; the conditional cosine-weight bracket was not triggered
+  - date: 2026-08-28
+    change: froze the scale-preserving EAGLE rule after the registered 32-prompt development ablation and before full scoring
+  - date: 2026-08-28
+    change: added the normalized-hash 468-question confirmatory complement after auditing development overlap, while full generation was running and before aggregate speed or quality scoring; the conventional 500 table remains reported separately
+
+active_config_globs:
+  - configs/protocol_active/**/*.yaml
+
+required_artifacts:
+  - docs/research/relayspec-decision-register.md
+  - docs/research/relayspec-source-log.md
+  - reports/claim-evidence-map.md
+  - reports/RELATED_PAPER_EXPERIMENT_REQUIREMENTS.md
+  - reports/design-selection/eagle3/ARCHITECTURE_SELECTION.md
+  - reports/final/FIT_EVALUATION_OVERLAP_AUDIT.json
+  - configs/eval_manifest_math500_confirmatory_468.json
+  - configs/eval_manifest_math500_confirmatory_468.sha256
+  - docs/archive/references.bib
+
+decisions:
+  - id: generation.non_thinking
+    value: false
+    evidence_class: P
+    status: frozen
+    scope: all final generation
+    source_locator: chen2026dflash, experimental setup and Table 1
+
+  - id: generation.max_new_tokens
+    value: 2048
+    evidence_class: P
+    status: frozen
+    scope: all full math, code, and chat evaluation
+    source_locator: chen2026dflash, experimental setup and Table 1
+
+  - id: generation.temperature
+    value: 0.0
+    evidence_class: P
+    status: frozen
+    scope: primary exact-agreement evaluation
+    source_locator: chen2026dflash, greedy decoding setup; li2025eagle3, evaluation setup
+
+  - id: generation.top_p
+    value: 1.0
+    evidence_class: F
+    status: frozen
+    scope: greedy evaluation
+    derivation: top-p is inactive when temperature-zero argmax is used
+
+  - id: generation.top_k
+    value: 0
+    evidence_class: F
+    status: frozen
+    scope: greedy evaluation
+    derivation: top-k filtering is disabled so target argmax is unchanged
+
+  - id: resources.gpu_count
+    value: 4
+    evidence_class: A
+    status: frozen
+    scope: every Slurm experiment
+    rationale: user-specified maximum and fixed hardware comparison budget
+
+  - id: evaluation.batch_size
+    value: 1
+    evidence_class: P
+    status: frozen
+    scope: latency-oriented primary evaluation
+    source_locator: chen2026dflash primary latency evaluation; li2025eagle3 single-request evaluation
+
+  - id: evaluation.compute_dtype
+    value: bfloat16
+    evidence_class: O
+    status: frozen
+    scope: every source, relay, proposer, and verifier path
+    source_locator: pinned Qwen3, DFlash, and DeepSpec checkpoint dtypes; allocation artifacts verify the live dtype path
+
+  - id: evaluation.attention_backend
+    value: sdpa
+    evidence_class: A
+    status: frozen
+    scope: matched PyTorch batch-one comparisons
+    rationale: one available dense backend is held identical across paired methods; no production-serving or alternative-kernel claim is inferred
+
+  - id: evaluation.method_order
+    value: rotate_by_request
+    evidence_class: F
+    status: frozen
+    scope: every paired benchmark
+    derivation: rotating the first method across requests balances deterministic order, warm-cache, and thermal effects without changing either method
+
+  - id: evaluation.warmup_policy
+    value: one_excluded_request_per_rank_and_method
+    evidence_class: A
+    status: frozen
+    scope: every timed GPU benchmark
+    rationale: materializes lazy kernels and caches once; warm-up rows are excluded from all point estimates and intervals
+
+  - id: statistics.resampling_unit
+    value: paired_request_mtbench_conversation
+    evidence_class: F
+    status: frozen
+    scope: every reported bootstrap interval
+    derivation: paired methods share each request; the two MT-Bench turns additionally share conversation history and are therefore resampled as one conversation cluster
+
+  - id: relay.optimizer
+    value: AdamW
+    evidence_class: O
+    status: frozen
+    scope: all relay fits
+    source_locator: pinned DeepSpec DFlash and EAGLE-3 training configurations use AdamW; zero weight decay is registered separately
+
+  - id: relay.projection_bias
+    value: false
+    evidence_class: F
+    status: frozen
+    scope: all final relay maps
+    derivation: a bias-free linear map is the minimal interface change and matches the frozen source fusion; adding a free offset would introduce an unsupported hypothesis
+
+  - id: evaluation.scorers
+    value: pinned_qwen_math_and_evalplus
+    evidence_class: O
+    status: frozen
+    scope: MATH, GSM8K, HumanEval, and MBPP quality
+    source_locator: scorer revisions and source hashes are recorded inside every scored result directory
+
+  - id: dflash.block_size
+    value: 16
+    evidence_class: P
+    status: frozen
+    scope: primary DFlash evaluation
+    source_locator: chen2026dflash, released block-16 model; reports/d8-block-ablation/RESULTS.md
+
+  - id: dflash.source_layers
+    value: 34
+    evidence_class: F
+    status: frozen
+    scope: optimized Qwen3-4B source-reuse baseline for DFlash and EAGLE-3
+    derivation: the final consumed source tap is zero-based layer 33, so layers 34 and 35 cannot affect proposer context and are removed
+
+  - id: dflash.source_taps
+    value: [1, 9, 17, 25, 33]
+    evidence_class: O
+    status: frozen
+    scope: released Qwen3-4B DFlash and EAGLE-3 conditioning interfaces
+    source_locator: pinned DFlash revision b74e3a329c4d963783143b1e970d95b002be72bd and DeepSpec EAGLE-3 revision b0b90fd15d052217c226be5e46d468d8d129e0cd
+
+  - id: eagle3.draft_length
+    value: 7
+    evidence_class: O
+    status: frozen
+    scope: all EAGLE-3 results
+    source_locator: pinned DeepSpec Qwen3 checkpoints are ttt7 releases and their official evaluation path uses maximum draft length seven
+
+  - id: software.deepspec_commit
+    value: 005e03b81cec38b7da6399833d609ee89a2587f2
+    evidence_class: O
+    status: frozen
+    scope: all EAGLE-3 implementation and evaluation
+    source_locator: deepseek-ai/DeepSpec Git commit 005e03b81cec38b7da6399833d609ee89a2587f2
+
+  - id: eagle3.qwen3_4b_checkpoint_revision
+    value: b0b90fd15d052217c226be5e46d468d8d129e0cd
+    evidence_class: O
+    status: frozen
+    scope: source EAGLE-3 proposer
+    source_locator: deepseek-ai/eagle3_qwen3_4b_ttt7 Hugging Face immutable revision
+
+  - id: relay.tap_count
+    value: 5
+    evidence_class: O
+    status: frozen
+    scope: EAGLE-3 interface transplantation
+    source_locator: the pinned released EAGLE-3 checkpoint contract consumes exactly five fused target depths; RelaySpec transplants that contract rather than modifying the proposer
+
+  - id: relay.rank
+    value: full
+    evidence_class: F
+    status: frozen
+    scope: primary relay
+    derivation: the unrestricted linear map is the minimal single-affine hypothesis without an arbitrary rank bottleneck; measured relay runtime is below 0.5 percent so factorization cannot materially improve end-to-end speed but can reduce expressivity
+
+  - id: relay.fit_examples
+    value: 4096
+    evidence_class: A
+    status: frozen
+    scope: controlled relay-fit compute budget, not claimed optimal
+    rationale: exactly 1024 optimizer steps times four disjoint rank shards; matches the completed DFlash relay budget and keeps adaptation below two minutes on four GPUs
+
+  - id: relay.weight_decay
+    value: 0.0
+    evidence_class: O
+    status: frozen
+    scope: linear interface translator optimization
+    source_locator: DeepSpec commit 005e03b81cec38b7da6399833d609ee89a2587f2, config/eagle3/eagle3_qwen3_8b.py train.weight_decay=0.0; the pinned DFlash Qwen3 config agrees
+
+  - id: relay.learning_rate
+    value: 0.0006
+    evidence_class: V
+    status: frozen
+    scope: shared linear relay fit setting; empirically selected for EAGLE-3 and held fixed rather than claimed optimal for DFlash
+    source_locator: DeepSpec commit 005e03b81cec38b7da6399833d609ee89a2587f2, config/eagle3/eagle3_qwen3_8b.py and config/dflash/dflash_qwen3_8b.py both use 6e-4; matched RelaySpec pilots 25548/25549 gave 0.586 versus 0.413 relative loss for 2e-4 versus 6e-4, after which 6e-4 was frozen
+
+  - id: relay.training_steps
+    value: 1024
+    evidence_class: A
+    status: frozen
+    scope: controlled four-GPU fit budget, not claimed optimal
+    rationale: matches the completed DFlash translator update budget; 128 steps is used only for development screening
+
+  - id: relay.max_length
+    value: 192
+    evidence_class: A
+    status: frozen
+    scope: low-cost non-thinking math interface fitting, not claimed optimal
+    rationale: matches the completed DFlash translator fit and holds the comparison compute budget fixed across proposer families
+
+  - id: relay.gradient_clip
+    value: 1.0
+    evidence_class: O
+    status: frozen
+    scope: EAGLE relay optimization
+    source_locator: DeepSpec commit 005e03b81cec38b7da6399833d609ee89a2587f2, config/eagle3/eagle3_qwen3_8b.py train.max_grad_norm=1.0; the pinned DFlash Qwen3 config agrees
+
+  - id: relay.target_taps
+    value: [1, 9, 10, 17, 19, 25, 28, 33, 37]
+    evidence_class: O
+    status: frozen
+    scope: exact Qwen3-8B set [1,9,17,25,33] or Qwen3-14B set [1,10,19,28,37]
+    source_locator: pinned DeepSpec Qwen3-8B and Qwen3-14B EAGLE-3 checkpoint feature depths
+
+  - id: relay.proposal_kl_weight
+    value: 0.0
+    evidence_class: F
+    status: frozen
+    scope: coefficient-free EAGLE core objective
+    derivation: relative interface MSE is the complete core objective and adding a functional loss would introduce an ungrounded mixing coefficient
+
+  - id: relay.loss
+    value: relative_interface_mse
+    evidence_class: F
+    status: frozen
+    scope: primary translator candidate
+    derivation: normalized squared error equals rho^2 + 1 - 2 rho cos(theta), covering magnitude and angle without a mixing coefficient
+
+  - id: relay.architecture
+    value:
+      dflash: normalized_linear
+      eagle3: scale_preserving_linear
+    evidence_class: V
+    status: frozen
+    scope: proposer-interface-specific rule
+    source_locator: reports/design-selection/eagle3/ARCHITECTURE_SELECTION.md; DFlash consumes an output-normalized interface, whereas pinned DeepSpec EAGLE-3 consumes the raw post-fusion linear state
+
+  - id: evaluation.math500_count
+    value: 500
+    evidence_class: P
+    status: frozen
+    scope: primary reasoning benchmark
+    source_locator: chen2026dflash Table 1 and HuggingFaceH4/MATH-500 pinned manifest
+
+  - id: evaluation.gsm8k_count
+    value: 128
+    evidence_class: A
+    status: frozen
+    scope: short-math confirmation subset
+    rationale: user-specified reduced-cost confirmation; deterministic manifest is reported
+
+  - id: evaluation.max_quality_delta_percentage_points
+    value: 1.0
+    evidence_class: A
+    status: frozen
+    scope: RelaySpec versus optimized source-reuse study acceptance criterion
+    rationale: user-specified tolerance of no loss or less than one absolute percentage point; paired point delta and confidence interval are both reported rather than hiding uncertainty behind the threshold
+
+  - id: evaluation.humaneval_count
+    value: 164
+    evidence_class: P
+    status: frozen
+    scope: code benchmark
+    source_locator: canonical HumanEval dataset and DFlash evaluation suite
+
+  - id: evaluation.mbpp_count
+    value: 378
+    evidence_class: O
+    status: frozen
+    scope: EvalPlus MBPP base subset
+    source_locator: pinned EvalPlus manifest configs/eval_manifest_full_v4.json
+
+  - id: evaluation.mtbench_questions
+    value: 80
+    evidence_class: P
+    status: frozen
+    scope: chat benchmark
+    source_locator: canonical MT-Bench question set and DFlash evaluation suite
+
+  - id: evaluation.confidence_level
+    value: 0.95
+    evidence_class: A
+    status: frozen
+    scope: paired uncertainty intervals
+    rationale: conventional reporting level declared before Part-2 test results
+
+  - id: statistics.bootstrap_replicates
+    value: 10000
+    evidence_class: A
+    status: frozen
+    scope: paired request-cluster percentile intervals
+    rationale: declared Monte Carlo budget; at a 2.5% tail its binomial CDF standard error is approximately 0.16 percentage points
+
+  - id: statistics.bootstrap_seed
+    value: 1729
+    evidence_class: A
+    status: frozen
+    scope: deterministic uncertainty artifacts
+    rationale: preregistered reproducibility seed with no scientific optimality claim
+
+  - id: historical.cosine_weight
+    value: 0.1
+    evidence_class: V
+    status: historical
+    scope: preregistered matched DFlash development comparator only
+    source_locator: reports/d8-feature-math500/RESULTS.md; retained as a historical candidate and not assumed optimal
+
+  - id: selection.dflash_objective
+    value: staged_highest_gate_passing_paired_speed_per_target
+    evidence_class: A
+    status: frozen
+    scope: DFlash 8B and 14B objective selection on the registered 32-prompt development split
+    rationale: speed is the paper objective; selection is target-specific because each target has a separately trained translator, while exactness, paired confidence, acceptance, and Amdahl gates prevent choosing an unstable fast candidate; if historical weight 0.1 beats coefficient-free relative MSE, log-neighbors 0.03 and 0.3 must also be tested before that coefficient can enter a final checkpoint
+
+  - id: selection.dflash_objective_outcome
+    value:
+      qwen3_8b: relative_interface_mse
+      qwen3_14b: relative_interface_mse
+    evidence_class: V
+    status: frozen
+    scope: final DFlash relay checkpoints
+    source_locator: reports/design-selection/dflash/OBJECTIVE_SELECTION.md
+
+  - id: historical.kl_weight
+    value: 0.1
+    evidence_class: T
+    status: historical
+    scope: completed Part-1 objective ablation only
+    source_locator: reports/d8-proposal-math500/RESULTS.md
+
+controlled_config_paths:
+  - pattern: generation.max_new_tokens
+    decision_id: generation.max_new_tokens
+  - pattern: generation.temperature
+    decision_id: generation.temperature
+  - pattern: generation.top_p
+    decision_id: generation.top_p
+  - pattern: generation.top_k
+    decision_id: generation.top_k
+  - pattern: resources.gpu_count
+    decision_id: resources.gpu_count
+  - pattern: benchmark.block_size
+    decision_id: dflash.block_size
+  - pattern: source_trunk.layers
+    decision_id: dflash.source_layers
+  - pattern: source_trunk.tap_layers.*
+    decision_id: dflash.source_taps
+  - pattern: benchmark.draft_length
+    decision_id: eagle3.draft_length
+  - pattern: relay_training.tap_count
+    decision_id: relay.tap_count
+  - pattern: relay_training.rank
+    decision_id: relay.rank
+  - pattern: relay_training.fit_examples
+    decision_id: relay.fit_examples
+  - pattern: relay_training.weight_decay
+    decision_id: relay.weight_decay
+  - pattern: relay_training.learning_rate
+    decision_id: relay.learning_rate
+  - pattern: relay_training.steps
+    decision_id: relay.training_steps
+  - pattern: relay_training.max_length
+    decision_id: relay.max_length
+  - pattern: relay_training.gradient_clip
+    decision_id: relay.gradient_clip
+  - pattern: relay_training.target_layer_ids.*
+    decision_id: relay.target_taps
+  - pattern: relay_training.proposal_kl_weight
+    decision_id: relay.proposal_kl_weight
+  - pattern: relay_training.historical_cosine_weight
+    decision_id: historical.cosine_weight
+  - pattern: benchmark.max_prompts.math500
+    decision_id: evaluation.math500_count
+  - pattern: benchmark.max_prompts.gsm8k
+    decision_id: evaluation.gsm8k_count
+  - pattern: benchmark.max_prompts.humaneval
+    decision_id: evaluation.humaneval_count
+  - pattern: benchmark.max_prompts.mbpp
+    decision_id: evaluation.mbpp_count
+  - pattern: benchmark.max_prompts.mtbench
+    decision_id: evaluation.mtbench_questions
+  - pattern: statistics.confidence_level
+    decision_id: evaluation.confidence_level
+
+administrative_config_paths:
+  - protocol_version
+  - seed
+  - resources.cpu_count
+  - benchmark.max_prompts
+  - benchmark.warmups
+  - relay_probe.repetitions
+  - logging.*
+  - model_dimensions.*
+  - checkpoint_step
+
+administrative_path_rationales:
+  protocol_version: schema identity used by the audit, not an algorithmic hyperparameter
+  seed: deterministic data order and method-order rotation; greedy target decoding makes token choice seed independent
+  resources.cpu_count: host scheduling request only; GPU timing regions are synchronized and do not use CPU count as a scientific factor
+  benchmark.max_prompts: execution cap equal to the immutable manifest cell count (32 development, 500 MATH, 750 breadth, or 8 isolated-memory requests); task counts are separately registered
+  benchmark.warmups: one unreported request per rank materializes lazy kernels and caches before timed requests; warm-up output is excluded from every statistic
+  relay_probe.repetitions: one complete paired request is run for every immutable manifest item after warm-up; uncertainty is estimated across paired requests rather than treating repeated executions of the same prompt as independent evidence
+  logging.*: telemetry and checkpoint cadence affects artifact granularity only and is excluded from model outputs and timed CUDA regions
+  model_dimensions.*: dimensions are copied metadata from pinned checkpoints and checked by interface-conformance tests, not chosen values
+  checkpoint_step: immutable artifact identity recorded after a declared training budget, not a separately selected hyperparameter

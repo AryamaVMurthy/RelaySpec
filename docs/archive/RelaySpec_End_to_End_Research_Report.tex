@@ -1,0 +1,781 @@
+\documentclass[10pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[letterpaper,margin=0.72in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,tabularx,array,longtable}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\definecolor{navy}{HTML}{163A5F}
+\definecolor{blue}{HTML}{2C6EAA}
+\definecolor{lightblue}{HTML}{EAF3FA}
+\definecolor{lightgray}{HTML}{F3F5F7}
+\definecolor{green}{HTML}{13795B}
+\definecolor{orange}{HTML}{B05B13}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=navy,
+  citecolor=blue,
+  urlcolor=blue,
+  pdftitle={RelaySpec: End-to-End Research Report},
+  pdfauthor={Anonymous}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textcolor{navy}{RelaySpec}}
+\rhead{\textcolor{navy}{Research report -- August 2026}}
+\cfoot{\thepage}
+\setlength{\headheight}{14pt}
+
+\setlist[itemize]{leftmargin=1.25em,itemsep=2pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=1.4em,itemsep=2pt,topsep=3pt}
+\renewcommand{\arraystretch}{1.12}
+
+\newcommand{\method}{\textsc{RelaySpec}}
+\newcommand{\sourcebase}{\textsc{Source-Reuse}}
+\newcommand{\good}[1]{\textbf{\textcolor{green}{#1}}}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\callout}[2]{%
+  \begin{center}
+  \colorbox{lightblue}{\parbox{0.94\linewidth}{\textbf{\textcolor{navy}{#1}}\\[-2pt]#2}}
+  \end{center}
+}
+
+\title{\vspace{-1.2em}\textbf{\textcolor{navy}{RelaySpec}}\\
+\large Reusing Frozen Feature-Conditioned Proposers Across Target Scales\\[3pt]
+\normalsize End-to-End Method, Evidence, Amdahl Analysis, and ICLR Paper Plan}
+\author{Anonymous research report}
+\date{August 28, 2026}
+
+\begin{document}
+\maketitle
+\vspace{-1.4em}
+
+\begin{abstract}
+Feature-conditioned speculative drafters such as DFlash can accelerate a
+target language model, but their conditioning interface is normally tied to
+the target used during draft training. A naive cross-scale reuse path can run
+the original small source transformer on every speculative cycle to reproduce
+that interface; our profiles show that this redundant trunk consumes
+27--40\% of end-to-end request time. \method{} replaces the repeated source
+trunk with a single learned translator from hidden features already computed
+by the exact target verifier into the frozen proposer's existing conditioning
+space. The target, source model, and proposer remain frozen, and ordinary
+speculative verification still controls every committed token. On Qwen3-8B
+and Qwen3-14B with the released Qwen3-4B DFlash proposer, \method{} is
+1.483$\times$ and 1.246$\times$ faster than matched optimized source-trunk reuse on
+MATH-500, with identical source/relay sequences and task accuracy on all
+1,000 paired examples. The same interface-transplantation rule yields
+1.250$\times$ and 1.081$\times$ held-out gains with a structurally distinct
+EAGLE-3 chain proposer, without changing official task accuracy.
+Unloading the eliminated source trunk saves 6.82--7.80~GiB of peak allocated
+GPU memory across the measured backends and scales. Across 16 frozen
+family--target--task cells, raw \method{} has a 1.114$\times$ geometric-mean
+speedup; an acceptance-aware Amdahl model predicts all 16 point-estimate
+directions with 0.34\% mean absolute relative error. A conservative profile
+policy gives 1.135$\times$ descriptive geometric-mean speedup while retaining
+source reuse for every measured slowdown or statistically unresolved cell.
+The relay costs below 0.8\% of request time, so acceptance retention---rather
+than relay compute---determines the net gain. This report specifies the
+algorithm, correctness scope, measured evidence, novelty boundary, and
+publication plan.
+\end{abstract}
+
+\callout{Core finding}{A 52--66M parameter translator can remove a measured
+27--40\% repeated source-transformer component while preserving the target
+verifier as the sole authority. DFlash agrees byte-for-byte with source reuse;
+EAGLE-3 finite-precision differences are scored and audited rather than hidden.}
+
+\section{Problem and research claim}
+
+DFlash is an ICML 2026 block-diffusion speculative decoder that proposes a
+token block in one parallel draft call and conditions that call on target
+hidden features \cite{chen2026dflash}. Like EAGLE-3 and other feature-based
+drafters, a released checkpoint is coupled to the feature space used during
+its training \cite{li2025eagle3}. This creates a deployment choice for a new
+compatible target model:
+
+\begin{itemize}
+  \item train and store a new target-specific proposer;
+  \item run the original source model to reconstruct the old proposer's
+        conditioning state; or
+  \item translate the new verifier's already-computed state into the old
+        interface.
+\end{itemize}
+
+\method{} realizes the third option. Its narrow, testable claim is:
+
+\begin{quote}
+\emph{A frozen feature-conditioned speculative proposer can be transplanted
+across compatible target scales with a small per-target interface translator,
+eliminating the repeated source transformer while retaining exact target
+verification and delivering a positive end-to-end speed and memory gain.}
+\end{quote}
+
+This is not a claim that verifier features, KV reuse, or generic drafters are
+new. DFlash and DFlare inject target features \cite{chen2026dflash,zhang2026dflare};
+HyperDFlash aligns a newly trained DFlash with DeepSeek-V4's native
+hyper-connection interface \cite{lin2026hyperdflash};
+AngelSpec co-specializes newly trained proposer structures and adapts
+verification effort to online workload \cite{liu2026angelspec};
+RepSpec improves target-specific drafter training through inference-time-merged
+re-parameterization \cite{huo2026repspec};
+KVShot studies hidden/KV reuse \cite{liu2026kvshot}; PARD and OmniDraft study
+portable drafters \cite{an2026pard,ramakrishnan2025omnidraft}; and
+SD-squared steers pretrained drafters with verifier features
+\cite{berdoz2026sd2}. The contribution is the specific \emph{interface
+emulation plus trunk elimination} construction and its measured systems
+consequences for an already-trained, unchanged proposer.
+Recent verifier-skipping and sparse-verification work instead attacks target
+verification, either through an explicitly lossy skip policy or specialized
+long-context sparse-attention kernels \cite{luo2026verifierskipping,wang2026specsa}.
+Those interventions are complementary; no such result is used to extrapolate
+the dense-SDPA RelaySpec measurements.
+SPEED-Bench further shows that speculative-decoding performance depends on
+domain, context length, concurrency, and serving engine
+\cite{abramovich2026speedbench}. Accordingly, four independent ranks are used
+only to shorten experiment wall time; every reported rate is a batch-one
+request-microaverage, not aggregate serving throughput.
+
+\section{System decomposition}
+
+Let $S$ be the source model used to train a released proposer $D$, and $T$
+be a new target verifier. DFlash expects the conditioned state
+\begin{equation}
+c_t^S = \operatorname{RMSNorm}\!\left(
+W_D [h_t^{S,s_1};\ldots;h_t^{S,s_m}]\right),
+\end{equation}
+where $W_D$ and the draft network are frozen. The pinned EAGLE-3 evaluator
+likewise consumes a frozen projection of five source depths, but its
+post-fusion state is raw rather than normalized. A matched cross-scale baseline
+runs all layers of $S$ on the prefix and every proposed block, even though $T$
+also processes that block for verification. The source calculation exists
+only to maintain $D$'s old interface.
+
+For the measured Qwen3-4B proposer, the source baseline divides into:
+
+\begin{enumerate}
+  \item DFlash block proposal;
+  \item source-trunk block processing to refresh $c_t^S$;
+  \item full target block verification;
+  \item longest-prefix acceptance, KV-cache crop/commit, and loop control.
+\end{enumerate}
+
+Across the frozen workloads, source-trunk processing is 38--40\% of the
+Qwen3-8B path and about 30\% of the Qwen3-14B path. This large measured
+fraction, not a FLOP proxy, is the opportunity targeted by \method{}.
+
+\begin{center}
+\fbox{\begin{minipage}{0.93\linewidth}
+\centering
+\textbf{One speculative cycle}\par\smallskip
+Exact target taps $\longrightarrow$ target-specific linear relay
+$\longrightarrow$ frozen DFlash/EAGLE proposer
+$\longrightarrow$ draft tokens
+$\longrightarrow$ full-target verification and commit\par\smallskip
+\textcolor{orange}{Source-reuse baseline only:} committed tokens
+$\longrightarrow$ separate Qwen3-4B trunk $\longrightarrow$ old proposer
+context. \method{} removes this orange critical-path branch; it does not skip
+the verifier.
+\end{minipage}}
+\end{center}
+
+\section{Method}
+
+\subsection{Target feature relay}
+
+Choose the $m$ target layers dictated by the released proposer interface and
+concatenate verifier states produced for committed tokens,
+\begin{equation}
+z_t^T=[h_t^{T,t_1};\ldots;h_t^{T,t_m}].
+\end{equation}
+The shared translator is deliberately simple:
+\begin{equation}
+\widehat c_t = N_{\mathrm{out}}\!\left(
+R_\phi(N_{\mathrm{in}}(z_t^T))\right),
+\qquad R_\phi\in\mathbb{R}^{d_D\times m d_T}.
+\end{equation}
+For DFlash, $N_{\mathrm{in}}$ and $N_{\mathrm{out}}$ are the matched
+normalizations of its consumed interface. For the pinned EAGLE-3 backend they
+are identities, preserving the amplitude of its raw post-fusion context. This
+is not a free family-specific embellishment: the matched 8B ablation changes
+only normalization and improves relative interface loss from 0.413 to 0.266,
+acceptance retention from 69.0\% to 82.6\%, and end-to-end speed from
+1.035$\times$ to 1.237$\times$. The rule is then frozen and applied to 14B
+without retuning.
+There is no middle-layer predictor, recurrence, ensemble, or confidence gate.
+One bias-free full-rank linear map is sufficient to test the core systems
+hypothesis. A low-rank map cannot improve the dominant path materially because
+the full-rank relay is already below 0.8\% of reference request time, while it
+can reduce interface fidelity and therefore accepted tokens.
+
+For Qwen3-8B, the map is $(5\times4096)\rightarrow2560$ (52,428,800
+parameters); for Qwen3-14B it is $(5\times5120)\rightarrow2560$
+(65,536,000 parameters). The FP32 checkpoints are 200 and 250~MiB.
+
+\subsection{Inference algorithm}
+
+At batch size one and greedy decoding:
+
+\begin{enumerate}
+  \item \textbf{Prefill.} Run $T$ on the prompt, create its exact KV cache,
+        extract selected verifier taps, and compute $\widehat c$.
+  \item \textbf{Draft.} Give $\widehat c$, the current token, and masked
+        positions to the frozen DFlash proposer. It predicts a block of $k$
+        draft tokens in one forward pass.
+  \item \textbf{Verify.} Run the ordinary full target $T$ once on the proposed
+        block using its exact committed KV cache.
+  \item \textbf{Accept.} Commit the longest draft prefix that agrees with the
+        target's greedy predictions, append the target correction token, and
+        crop speculative KV entries beyond the committed prefix.
+  \item \textbf{Relay.} Extract target taps for the newly committed positions,
+        apply $R_\phi$, and use the result to condition the next draft cycle.
+  \item Repeat until EOS or the preregistered output cap.
+\end{enumerate}
+
+The source embedding and LM head are retained because they are part of the
+released proposer's token interface. The 36-layer Qwen3-4B transformer trunk
+is deleted after loading. This reduces measured steady allocation by
+6.82~GiB without changing relay throughput materially.
+
+\subsection{Training objectives}
+
+The target $T$, source $S$, and proposer $D$ are frozen. The preregistered
+Part-2 objective predicts the exact proposer-consumed interface using
+coefficient-free relative error:
+\begin{equation}
+\mathcal{L}_{\mathrm{rel}} = \frac{1}{N}\sum_t
+\frac{\|\widehat c_t-c_t^S\|_2^2}
+{\max(\|c_t^S\|_2^2,\epsilon_{\mathrm{dtype}})}.
+\end{equation}
+The denominator clamp is fixed by the accumulation dtype. If
+$\rho=\|\widehat c\|/\|c^S\|$ and $\theta$ is the angle between the vectors,
+then each term is $\rho^2+1-2\rho\cos\theta$. The objective therefore measures
+both magnitude and direction without an unexplained mixing coefficient.
+
+The completed Part-1 checkpoint historically used raw MSE plus a cosine term
+weighted by $0.1$. We do not justify that inherited decimal post hoc. Before
+the full evaluation, we refit both target scales with identical data, steps,
+seed, optimizer, architecture, and taps, changing only the objective. Relative
+MSE is faster at both scales: 1.5227$\times$ versus 1.5095$\times$ over source
+reuse at 8B and 1.2653$\times$ versus 1.2514$\times$ at 14B. Direct
+prompt-paired comparisons favor relative MSE by 1.0085$\times$
+[1.0005,1.0174] and 1.0114$\times$ [1.0046,1.0177], respectively. A
+preregistered conditional bracket would have tested cosine weights $0.03$ and
+$0.3$ only if $0.1$ won; it did not, so no cosine coefficient enters the final
+method. The historical detached-teacher KL refinement remains an ablation: its
+1.0005$\times$ same-prompt gain has 95\% CI [0.9981,1.0028] and is unresolved.
+
+Relay fitting uses a deterministic 4,096-example subset of the
+\code{DigitalLearningGmbH/MATH-lighteval} training split at pinned revision
+\code{0530c786...}. It supplies text positions for source/target interface
+regression, not answer supervision: no language-model weights are updated. An
+operator-preserving normalized-hash audit collapses whitespace while retaining
+mathematical symbols and finds zero exact fit/evaluation overlap across all
+1,250 evaluation records.
+
+\section{Correctness scope}
+
+The relay is approximate as a predictor of the old source conditioning state,
+but it is not trusted to approve output tokens. At every cycle, the full target
+verifies every proposed position; only a verifier-agreeing prefix and the
+target correction token are committed. Therefore relay error affects
+acceptance length and runtime, not the authority that selects committed
+tokens. This is the standard separation underlying lossless speculative
+decoding \cite{leviathan2023speculative,timor2025dsi,zhou2026hsd}.
+
+Formally, let $P_j$ be the committed prefix before cycle $j$, let an arbitrary
+provider---source trunk or relay---induce draft block $d_{1:k}$, and let
+$v_i=\arg\max T(\cdot\mid P_j,d_{<i})$. The verifier commits
+$d_{1:m}$ for the largest $m$ satisfying $d_i=v_i$ for every $i\leq m$, then
+commits the target token $v_{m+1}$ when the cycle is not terminated. Hence the
+new prefix is exactly the prefix selected by the target block-verification
+path, regardless of how $d_{1:k}$ was produced. Induction on $j$ proves that
+replacing the interface provider cannot give the relay token authority. The
+implementation additionally crops target and proposer KV entries beyond the
+committed prefix after every rejection; cache-conformance tests exercise that
+invariant. This proposition is exact in arithmetic. It does not promise
+bitwise equivalence between different target kernel shapes.
+
+The implemented claim is greedy decoding. Within the same target block-verifier
+path, source reuse and \method{} produced identical token sequences in every
+paired run. A one-token autoregressive loop can differ at floating-point ties
+because block and one-token calls select different kernel shapes; task
+accuracy is therefore reported independently. Exact sampling would require
+the standard distribution-correct rejection/correction rule and is not used
+in these experiments.
+
+\section{Experimental protocol}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+Item & Frozen choice \\
+\midrule
+Targets & Qwen3-8B and Qwen3-14B, pinned Hugging Face revisions \\
+Proposer & \code{z-lab/Qwen3-4B-DFlash-b16}, pinned code/checkpoint \\
+Reference & Native target AR; source-trunk reuse; target-specific DFlash-8B where released \\
+Mode & Qwen3 non-thinking; greedy; batch one; BF16; SDPA \\
+Tasks & MATH-500, GSM8K-128, HumanEval-164, EvalPlus MBPP-378, MT-Bench 80 conversations/160 turns \\
+Output cap & 2,048 tokens for full task runs \\
+Hardware & Exactly four NVIDIA RTX 6000 Ada 48~GB GPUs, one rank per GPU \\
+Statistics & Prompt-paired 10,000-sample bootstrap 95\% intervals \\
+Quality & Official Qwen math scorer and pinned EvalPlus base/Plus scorer; source/relay exact sequence match \\
+Systems & End-to-end tokens/s, p50/p95 request latency, decode tokens/s, acceptance, per-position survival, target/draft calls, CUDA regions, peak/steady memory; DFlash TTFT measured, inherited EAGLE TTFT unavailable \\
+\bottomrule
+\end{tabularx}
+\caption{Primary evaluation protocol. The task selection and 2,048-token cap
+follow the ICML 2026 DFlash evaluation pattern \cite{chen2026dflash}.}
+\end{table}
+
+The four ranks evaluate disjoint prompts independently; no request is tensor
+parallel across GPUs. After the excluded warm-up, each immutable manifest item
+is executed once per paired method; uncertainty comes from whole-request
+resampling, not repeated-prompt pseudo-replication. Tokens/s is total emitted tokens divided by summed
+per-request latency, hence a micro-averaged single-request rate rather than
+four-GPU aggregate serving throughput. Data-parallel sharding reduces
+experimental wall time without multiplying the reported statistic. Within
+each rank, method order rotates by request after a warmup so systematic thermal
+or first-method effects do not favor the relay; speed intervals resample the
+whole paired request and preserve its output-length coupling. The two
+dependent turns of an MT-Bench conversation are resampled as one conversation
+cluster. Official EvalPlus source/relay quality differences receive the same
+task-paired bootstrap treatment rather than being compared as independent
+binomial proportions.
+
+The causal reference is deliberately optimized: after each verification cycle
+it executes the Qwen3-4B source only for newly committed positions and only
+through zero-based layer 33, the final consumed tap. Layers 34--35 and rejected
+speculative positions have no causal path to proposer context and are omitted.
+The naive full-source implementation appears only as an ablation, never as the
+headline denominator. Native AR and released target-specific proposers are
+separate deployment-frontier controls because they change the proposer rather
+than only the interface provider.
+
+Every fixed decision is registered before confirmatory scoring with one of six
+provenance classes: formal derivation (F), peer-reviewed primary source (P),
+pinned official artifact (O), disjoint-development selection (V), immutable
+test observation (T), or administrative reproducibility value (A). Correctness
+choices may only come from F; checkpoint interfaces from O; comparability
+settings from P/O; and unresolved efficiency choices from V. Test observations
+cannot retroactively choose their own method. Administrative budgets---for
+example 4,096 fit examples and bootstrap seed 1729---are reported as controlled
+budgets, not scientific optima. The released machine-readable protocol audits
+every active configuration, rejects unregistered numeric constants, and
+requires a rationale even for non-scientific numeric exemptions. This
+hierarchy is itself the guard against circular backing: a weaker post-hoc test
+result cannot override a stronger correctness or interface constraint.
+
+MATH-500 is the primary task because it yields long non-thinking generations
+and repeated verification cycles, exposing the source-trunk bottleneck without
+the very long traces of explicit reasoning models. GSM8K tests shorter math,
+HumanEval and MBPP test code, and MT-Bench tests long two-turn chat. The same
+relay checkpoint is used across tasks at each target scale.
+
+\section{Main results}
+
+\subsection{Full MATH-500}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+Target & Native AR & Source reuse & \method{} & Relay/source & Accuracy S/R \\
+\midrule
+Qwen3-8B & 44.5 & 148.3 & \good{220.0} & \good{1.483$\times$ [1.475,1.492]} & 74.2/74.2 \\
+Qwen3-14B & 26.7 & 110.4 & \good{137.6} & \good{1.246$\times$ [1.238,1.253]} & 79.6/79.6 \\
+\bottomrule
+\end{tabular}
+\caption{End-to-end tokens/s and official accuracy. Source and relay sequences
+match on 500/500 prompts at each scale.}
+\end{table}
+
+The released target-specific DFlash-8B reaches 241.2 tok/s on the matched
+same-hardware control protocol; the selected relay reaches 91.2\% of that
+cross-run contextual ceiling without training a new
+proposer. The primary comparison is source reuse because it holds the frozen
+proposer fixed and isolates the translated interface.
+The 2,048-token cap is not hidden: 10.2\% of 8B MATH requests and 9.4\% of
+14B requests hit it. Source and relay cap rates are identical because their
+outputs are identical. Breadth cap rates are below 0.7\% in every completed
+DFlash-8B task, so the cross-task speed result is not driven by systematic
+early truncation.
+
+\subsection{Second proposer family: DeepSpec EAGLE-3 chain}
+
+The same interface-transplantation mechanism is evaluated with the pinned
+DeepSpec EAGLE-3 \code{ttt7} evaluator. This is a length-7 autoregressive
+proposal chain, not the dynamic-tree serving implementation, so every number is
+compared only with its matched DeepSpec source-reuse path.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Target & Source & Relay & Relay/source & Source share & Retention & Accuracy S/R \\
+\midrule
+Qwen3-8B & 83.05 & 103.77 & \good{1.250$\times$ [1.244,1.256]} & 33.1\% & 84.0\% & 72.863/72.863 \\
+Qwen3-14B & 64.93 & 70.20 & \good{1.081$\times$ [1.076,1.087]} & 27.1\% & 79.1\% & 79.487/79.487 \\
+\bottomrule
+\end{tabular}
+\caption{Held-out 468-problem MATH complement. Throughput is end-to-end
+tokens/s; intervals resample paired requests.}
+\end{table}
+
+The development-only Amdahl forecasts were 1.238$\times$ and 1.090$\times$;
+held-out observations differ by only +0.9\% and -0.8\%. Byte agreement is
+464/468 and 466/468. Every mismatch is retained in a per-problem audit and all
+preserve the official correctness outcome, giving a paired accuracy delta and
+interval of exactly zero at both scales.
+
+\subsection{Deployment-frontier controls}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\begin{tabular}{@{}llrrrrrr@{}}
+\toprule
+Family & Target & Native AR & Native prop. & Source & Relay & Relay/source & Relay/native \\
+\midrule
+DFlash & 8B & 44.52 & 241.25 & 148.33 & 219.99 & 1.483$\times$ & 91.19\% \\
+DFlash & 14B & 26.71 & --- & 110.45 & 137.60 & 1.246$\times$ & --- \\
+EAGLE-3 & 8B & 44.45 & 114.28 & 82.83 & 103.37 & 1.248$\times$ & 90.46\% \\
+EAGLE-3 & 14B & 26.71 & 78.78 & 64.97 & 70.27 & 1.082$\times$ & 89.20\% \\
+\bottomrule
+\end{tabular}
+\caption{Full MATH-500 end-to-end tok/s. Source/relay is the paired causal
+comparison. Native controls run in separate memory-safe processes under the
+same hardware/protocol and are contextual deployment-frontier comparisons.}
+\end{table}
+
+The released target-specific proposers remain faster because their interface
+is native to the target. The portability result is that a 52--66M-parameter
+relay recovers 89--91\% of that matched target-specific throughput where a
+released control exists, while avoiding target-specific proposer retraining.
+Source reuse, relay, and the corresponding block verifier have identical
+official MATH correctness at each EAGLE scale; DFlash source and relay are
+also identical. Native one-token AR accuracy is reported separately because
+BF16 block and token kernel shapes can diverge at near-tied logits.
+
+\subsection{Cross-task generalization}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lllrrrrr@{}}
+\toprule
+Family & Target & Task & $N$/clusters & Source & Relay & Relay/source [95\% CI] & Exact \\
+\midrule
+EAGLE-3 & 8B & GSM8K & 128/128 & 85.99 & 108.45 & \good{1.261 [1.244,1.279]} & 99.22\% \\
+EAGLE-3 & 8B & HumanEval & 164/164 & 71.75 & 81.10 & \good{1.130 [1.117,1.143]} & 96.95\% \\
+EAGLE-3 & 8B & MBPP & 378/378 & 69.86 & 82.10 & \good{1.175 [1.166,1.185]} & 97.62\% \\
+EAGLE-3 & 8B & MT-Bench & 160/80 & 42.27 & 49.45 & \good{1.170 [1.150,1.191]} & 89.38\% \\
+EAGLE-3 & 14B & GSM8K & 128/128 & 67.81 & 73.41 & \good{1.083 [1.068,1.098]} & 100\% \\
+EAGLE-3 & 14B & HumanEval & 164/164 & 55.38 & 50.58 & 0.913 [0.901,0.926] & 99.39\% \\
+EAGLE-3 & 14B & MBPP & 378/378 & 54.55 & 50.49 & 0.926 [0.915,0.936] & 98.68\% \\
+EAGLE-3 & 14B & MT-Bench & 160/80 & 33.83 & 34.57 & 1.022 [0.9999,1.045] & 96.88\% \\
+\midrule
+DFlash & 8B & GSM8K & 128/128 & 116.87 & 166.39 & \good{1.424 [1.404,1.444]} & 100\% \\
+DFlash & 8B & HumanEval & 164/164 & 118.84 & 145.00 & \good{1.220 [1.202,1.238]} & 100\% \\
+DFlash & 8B & MBPP & 378/378 & 117.77 & 151.55 & \good{1.287 [1.273,1.300]} & 100\% \\
+DFlash & 8B & MT-Bench & 160/80 & 60.85 & 81.62 & \good{1.341 [1.318,1.364]} & 100\% \\
+DFlash & 14B & GSM8K & 128/128 & 88.04 & 97.07 & \good{1.103 [1.084,1.121]} & 100\% \\
+DFlash & 14B & HumanEval & 164/164 & 87.34 & 77.61 & 0.889 [0.874,0.904] & 100\% \\
+DFlash & 14B & MBPP & 378/378 & 88.02 & 83.98 & 0.954 [0.942,0.966] & 100\% \\
+DFlash & 14B & MT-Bench & 160/80 & 45.32 & 49.30 & \good{1.088 [1.065,1.108]} & 100\% \\
+\bottomrule
+\end{tabular}}
+\caption{Frozen cross-task matrix. Throughput is end-to-end tok/s. Both
+MT-Bench turns are resampled as one 80-conversation cluster; it has no judge
+quality claim. Bold intervals lie strictly above one.}
+\end{table}
+
+Across all 16 cells, raw \method{} has a 1.1135$\times$ equal-cell geometric
+mean and 11/16 strictly positive intervals. Official source/relay quality is
+identical in every scored GSM8K, HumanEval, and MBPP cell. The EAGLE textual
+differences are retained in mismatch audits; they do not change any paired
+official score. The negative 14B code cells are part of the result rather than
+being filtered after measurement.
+
+\section{Amdahl analysis: where the speedup comes from}
+
+Normalize optimized source-reuse latency to one. Let $p_C$ be its
+cycle-dependent target-verification plus frozen-proposer share, $p_O$ the
+non-source residual share, and $p_R$ the relay cost measured relative to that
+reference latency. Let $a_S$ and $a_R$ denote mean committed tokens per cycle
+for source reuse and RelaySpec. Removing the source trunk but requiring
+$a_S/a_R$ as many cycles gives
+\begin{equation}
+\frac{L_R}{L_S}=\frac{a_S}{a_R}p_C+p_O+p_R,
+\qquad
+\frac{a_R}{a_S}>\frac{p_C}{1-p_O-p_R}
+\end{equation}
+as the strict no-slowdown condition. This is the selection rule used by the
+development gate: acceptance must exceed the measured break-even, and the
+paired-bootstrap lower bound of observed speed must also exceed one. It is not
+a fitted threshold.
+
+The deployable mechanism is therefore profile-gated rather than unconditional.
+For each target--proposer--workload cell, a small registered calibration run
+measures these terms and selects the relay provider only when both algebraic
+break-even and the paired speed interval pass; otherwise the identical backend
+keeps the source provider. This choice occurs outside token verification and
+cannot alter target authority. All evaluated cells remain in the paper so the
+gate is tested as a systems model rather than used as a reporting filter.
+
+For the simpler equal-acceptance limit, let $p$ be the measured source-trunk
+share and $r$ the measured replacement relay share. The component-profile
+bound reduces to
+\begin{equation}
+S_{\mathrm{profile}}=\frac{1}{1-p+r}.
+\end{equation}
+The observed speed includes extra verifier cycles caused by lower acceptance;
+the full model above accounts for that effect through $a_S/a_R$.
+
+\begin{table}[H]
+\centering
+\scriptsize
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lllrrrrrr@{}}
+\toprule
+Family & Target & Task & Source & Relay & Retention & Break-even & Predicted & Observed \\
+\midrule
+EAGLE-3 & 8B & GSM8K & 33.69\% & 0.38\% & 83.84\% & 65.88\% & 1.2644 & 1.2613 \\
+EAGLE-3 & 8B & HumanEval & 33.46\% & 0.42\% & 75.36\% & 66.23\% & 1.1345 & 1.1304 \\
+EAGLE-3 & 8B & MBPP & 33.56\% & 0.41\% & 78.28\% & 66.06\% & 1.1799 & 1.1753 \\
+EAGLE-3 & 8B & MT-Bench & 33.20\% & 0.39\% & 78.37\% & 66.46\% & 1.1745 & 1.1698 \\
+EAGLE-3 & 14B & GSM8K & 27.36\% & 0.41\% & 78.80\% & 72.31\% & 1.0872 & 1.0826 \\
+EAGLE-3 & 14B & HumanEval & 27.23\% & 0.47\% & 66.62\% & 72.60\% & 0.9194 & 0.9132 \\
+EAGLE-3 & 14B & MBPP & 27.26\% & 0.47\% & 67.44\% & 72.49\% & 0.9320 & 0.9256 \\
+EAGLE-3 & 14B & MT-Bench & 26.83\% & 0.41\% & 75.08\% & 72.94\% & 1.0286 & 1.0221 \\
+DFlash & 8B & GSM8K & 40.00\% & 0.56\% & 85.68\% & 59.60\% & 1.4228 & 1.4237 \\
+DFlash & 8B & HumanEval & 39.46\% & 0.64\% & 73.96\% & 60.31\% & 1.2203 & 1.2201 \\
+DFlash & 8B & MBPP & 39.57\% & 0.61\% & 77.84\% & 60.07\% & 1.2866 & 1.2868 \\
+DFlash & 8B & MT-Bench & 38.52\% & 0.56\% & 82.73\% & 61.27\% & 1.3408 & 1.3412 \\
+DFlash & 14B & GSM8K & 30.92\% & 0.59\% & 76.39\% & 68.85\% & 1.1063 & 1.1025 \\
+DFlash & 14B & HumanEval & 30.46\% & 0.72\% & 61.88\% & 69.52\% & 0.8926 & 0.8886 \\
+DFlash & 14B & MBPP & 30.59\% & 0.67\% & 66.10\% & 69.18\% & 0.9567 & 0.9541 \\
+DFlash & 14B & MT-Bench & 29.80\% & 0.56\% & 76.69\% & 70.10\% & 1.0917 & 1.0877 \\
+\bottomrule
+\end{tabular}}
+\caption{Measured cross-task Amdahl decomposition. Predictions match all
+16 point-estimate directions with 0.34\% mean absolute relative error.}
+\end{table}
+
+This table supplies the central causal evidence. Merely making the relay
+smaller cannot materially improve the system because it is already below
+0.8\%. The useful optimization direction is better interface fidelity that
+increases accepted tokens without restoring the source trunk. A conservative
+workload-level policy requires both predicted speedup above one and a paired
+speed lower bound above one. It keeps source reuse for both 14B code tasks and
+the statistically unresolved EAGLE-14B MT-Bench cell, yielding a descriptive
+1.1354$\times$ equal-cell geometric mean without selecting a measured
+slowdown. This is calibrated routing, not a free per-prompt oracle.
+
+\section{Ablations and resource evidence}
+
+\subsection{Draft block size}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}rrrrr@{}}
+\toprule
+Block & Source tok/s & Relay tok/s & Relay/source & Target DFlash-8B \\
+\midrule
+8 & 103.7 & 164.9 & 1.590$\times$ & 175.1 \\
+16 & \good{137.7} & \good{210.1} & 1.526$\times$ & \good{229.9} \\
+32 & 88.7 & 131.4 & 1.480$\times$ & 207.7 \\
+\bottomrule
+\end{tabular}
+\caption{Matched 64-prompt MATH ablation. Block 8 maximizes relative gain,
+but the released b16 proposer's native block 16 maximizes actual throughput.}
+\end{table}
+
+All speculative methods match the source sequence on 64/64 prompts for every
+block. The primary protocol keeps block 16 rather than selecting the largest
+relative number after evaluation.
+
+\subsection{Training objective}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Target/objective & Relay/source & 95\% CI & Mean accepted \\
+\midrule
+8B relative MSE & \good{1.5227$\times$} & [1.4876,1.5581] & 6.961 \\
+8B MSE + 0.1 cosine & 1.5095$\times$ & [1.4763,1.5445] & 6.910 \\
+14B relative MSE & \good{1.2653$\times$} & [1.2426,1.2894] & 6.380 \\
+14B MSE + 0.1 cosine & 1.2514$\times$ & [1.2287,1.2761] & 6.330 \\
+\bottomrule
+\end{tabular}
+\caption{Matched 32-prompt objective selection before full evaluation. Every
+candidate passes the executable gate and matches 32/32 source sequences;
+coefficient-free relative MSE is selected at both scales.}
+\end{table}
+
+\subsection{Memory residency and adaptation cost}
+
+Deleting the source trunk after retaining its embedding/head changes DFlash-8B
+allocated memory before requests from 23.92 to 17.10~GiB and peak allocation
+from 24.16 to 17.34~GiB: 6.82~GiB saved (28.5\% steady, 28.2\% peak). Relay
+throughput changes from 210.22 to 209.66 tok/s (99.74\% retained). Independent
+single-method EAGLE-3 processes reproduce the mechanism: the 8B relay saves
+7.45~GiB before requests and 7.80~GiB at peak (30.35\%/30.51\%), while the 14B
+relay saves 7.42~GiB and 7.63~GiB (20.17\%/20.30\%). These isolated
+micro-throughputs are contextual checks, not substituted for paired speed
+estimates.
+
+The 8B feature relay trains for 1,024 distributed steps over 4,096 math
+examples in 85.7 seconds of instrumented time (107 seconds including setup) on
+four Ada GPUs. Conservative proposal refinement takes 101.1 seconds and is
+retained only as the ablation above. This is
+the adaptation-efficiency result: a 200~MiB per-target adapter and minutes of
+training replace a multi-GiB source trunk or a separately trained proposer.
+
+\section{Relation to current literature and novelty audit}
+
+\begin{longtable}{@{}p{0.18\linewidth}p{0.37\linewidth}p{0.37\linewidth}@{}}
+\toprule
+Work & What it already establishes & Distinction of \method{} \\
+\midrule
+\endhead
+DFlash \cite{chen2026dflash} & Target-feature-conditioned block diffusion and strong lossless speedups. & Reuses its frozen conditioning contract for other target scales; does not redesign DFlash. \\
+DFlare \cite{zhang2026dflare} & Per-draft-layer target fusion, deeper drafts, 2.4M-sample target-specific training. & One small external translator; no draft-layer change; minutes of per-target fitting. \\
+HyperDFlash \cite{lin2026hyperdflash} & Target-native feature-boundary alignment and an inherited gated reducer for a newly trained DeepSeek-V4 drafter. & Keeps the old proposer frozen, translates a different target into its old interface, and removes a separately executed source trunk; reports component and memory effects. \\
+AngelSpec \cite{liu2026angelspec} & Co-specialized MTP/DFly proposers and cost-aware online verification allocation under serving load. & Reuses an unchanged proposer across targets; current claims are batch-one latency and are not extrapolated to serving throughput. \\
+RepSpec \cite{huo2026repspec} & Training-time structural re-parameterization that is merged into a target-specific EAGLE drafter for inference. & Trains only the external cross-target interface and leaves the old proposer weights and structure unchanged. \\
+SPEED-Bench \cite{abramovich2026speedbench} & Standardized domain-diverse and concurrency-aware speculative-decoding evaluation on production engines. & Current evidence is deliberately batch-one latency; production throughput is outside the claim until RelaySpec is integrated into such an engine. \\
+EAGLE-3 \cite{li2025eagle3} & Strong target-trained hidden-feature drafter and evaluation template. & Transplants an existing proposer rather than training a new target drafter. \\
+KVShot \cite{liu2026kvshot} & Hidden/KV reuse diagnosis and long-range acceptance limits. & Removes a measured source-transformer critical-path component and reports end-to-end/memory gains. \\
+PARD / OmniDraft \cite{an2026pard,ramakrishnan2025omnidraft} & Portable or target-independent drafters. & Per-target interface adapter for a released target-specific proposer, not a newly designed universal drafter. \\
+SD-squared \cite{berdoz2026sd2} & Verifier-feature steering of pretrained autoregressive drafters. & Emulates a proposer's learned conditioning interface and replaces a whole repeated trunk. \\
+C2C-style transfer & Cross-model latent/KV communication for multi-model reasoning. & Same-request speculative drafting; speedup comes from verifier-cycle trunk elimination, not semantic agent communication. \\
+Cross-model KV transfer \cite{heo2026crossmodelkv} & Closed-form source-to-receiver KV mapping skips receiver prefill, with architecture constraints and measured accuracy retention. & Target-to-proposer interface mapping removes a separate decode-time source trunk; it does not synthesize verifier KV, and full-target verification retains token authority. \\
+CaDDTree / DARTree \cite{zhang2026caddtree,li2026dartree} & Candidate-tree and cost-aware verification budget selection. & Orthogonal proposer-portability layer; current evaluation keeps a single block trajectory. \\
+Speculative KV coding \cite{finn2026speculativekvcoding} & Non-peer-reviewed technical note on entropy coding an exact KV cache. & No cache compression or arithmetic coding; predicts only the frozen proposer's conditioning state. \\
+\bottomrule
+\end{longtable}
+
+The novelty claim survives only in this precise form. ``Using target hidden
+states,'' ``mapping between models,'' ``portable drafting,'' and
+``acceptance-aware training'' are all too broad and conflict with prior work
+\cite{zou2026vsd,an2026pard2,lin2026eda}. The paper should lead with measured
+trunk elimination and frozen-proposer transplantation.
+
+\section{ICLR paper package}
+
+\subsection{Recommended paper story}
+
+\begin{enumerate}
+  \item \textbf{Observation:} cross-scale reuse of a feature-conditioned
+        proposer introduces a redundant source transformer that occupies
+        27--40\% of measured request time.
+  \item \textbf{Method:} emulate the frozen proposer's interface with one
+        target-specific linear relay fed by already-computed verifier taps.
+  \item \textbf{Guarantee:} the relay proposes but never verifies; the full
+        target remains the only commit authority.
+  \item \textbf{Result:} clean DFlash gains of
+        1.483$\times$/1.246$\times$ and independent EAGLE-3 gains of
+        1.250$\times$/1.081$\times$ on MATH, with unchanged paired task
+        accuracy; breadth and isolated memory evidence complete the matrix.
+  \item \textbf{Explanation:} Amdahl decomposition predicts the ceiling and
+        acceptance retention explains task/scale variation.
+\end{enumerate}
+
+\subsection{Core figures and tables}
+
+The submission should contain: (1) a cycle diagram contrasting source reuse
+and relay; (2) the two-scale main table; (3) the Amdahl stacked runtime
+breakdown; (4) speedup versus acceptance-retention scatter with the profile
+bound; (5) block-size and training-objective ablations; and (6) adapter
+size/training-time/memory table. Per-position acceptance survival belongs in
+the appendix, following alignment analyses such as GRIFFIN
+\cite{hu2025griffin}.
+
+\subsection{Evidence already complete}
+
+\begin{itemize}
+  \item two target scales, five workloads, and official MATH/EvalPlus scoring;
+  \item native AR, matched source reuse, and released target-specific DFlash-8B;
+  \item paired CIs, sequence identity, cap rates, acceptance, calls,
+        component timings, source snapshots, pinned revisions, and GPU logs;
+  \item memory loaded/unloaded measurement, block-size sweep, feature versus
+        proposal-aligned objective, and exactly-four-GPU allocation checks.
+\end{itemize}
+
+\subsection{Second-family evidence}
+
+The highest-value mechanism extension is complete: the same transplantation
+rule works with the pinned DeepSpec EAGLE-3 chain proposer at both 8B and 14B,
+with zero official MATH accuracy delta and held-out gains of 1.250$\times$ and
+1.081$\times$. This separates the paper's claim from DFlash-specific diffusion
+details. A production SGLang or vLLM concurrency study remains future serving
+work; it is not needed to establish the batch-one causal mechanism and is not
+silently mixed with the current PyTorch results.
+
+\section{Reproducibility and artifact map}
+
+Every GPU generation job records the exact config, immutable manifest and
+hash, source snapshot and SHA-256 list, model/code revisions, Python/CUDA/
+PyTorch/Transformers versions, device topology, rank-separated JSONL rows, and
+10-second GPU telemetry. The principal local artifacts are:
+
+\begin{itemize}
+  \item \path{reports/final/dflash-8b-math500} and
+        \path{reports/final/dflash-14b-math500};
+  \item \path{reports/final/eagle3-8b-math500} and
+        \path{reports/final/eagle3-14b-math500};
+  \item all four frozen breadth directories plus the two corrected EAGLE
+        two-turn MT-Bench directories under \path{reports/final};
+  \item \path{reports/final/BREADTH_MATRIX.json} and its generated Markdown;
+  \item \path{reports/final/EAGLE3_8B_MEMORY.md} and
+        \path{reports/final/EAGLE3_14B_MEMORY.md};
+  \item final ledger and status: \path{reports/FINAL_RESULTS.md} and
+        \path{reports/EXECUTION_STATUS.md};
+  \item mechanism and cost reports: \path{reports/amdahl-analysis.md} and
+        \path{reports/adapter-cost.md}.
+\end{itemize}
+
+The complete local suite and final remote suite pass 118 tests. The remote
+allocation exposes exactly four RTX 6000 Ada GPUs; its allocation
+and pytest proof are stored under
+\path{reports/final/remote-4gpu-verification}. GPU launchers fail fast unless
+the world size and visible CUDA device count are exactly four.
+
+\section{Conclusion}
+
+\method{} is a simple systems method with a clear bottleneck, a compact
+algorithm, and measured positive results. It does not attempt to approximate
+the expensive target verifier. Instead, it removes a different large cost:
+the source transformer executed only to satisfy an old proposer's conditioning
+contract. A tiny translator turns verifier work that is already mandatory
+into the next draft context. The main evidence---paired end-to-end speed,
+official quality, audited finite-precision agreement, memory savings, and
+Amdahl accounting---supports an ICLR paper centered on frozen-proposer
+portability and critical-path elimination. Raw relay use is not universally
+faster at 14B; the measured cost model predicts that boundary and a
+conservative calibrated provider keeps the source path when positive speed
+evidence is absent.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

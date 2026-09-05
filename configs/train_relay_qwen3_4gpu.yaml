@@ -1,0 +1,34 @@
+run_name: qwen3-14b-dflash4b-refined
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/train
+target:
+  id: Qwen/Qwen3-14B
+  revision: 40c069824f4251a91eefaf281ebe4c544efd3e18
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 128
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 36
+  tap_layers: [1, 9, 17, 25, 33]
+relay_training:
+  manifest_path: configs/train_math_4096.json
+  steps: 1024
+  max_length: 192
+  learning_rate: 0.0002
+  gradient_clip: 1.0
+  target_layer_ids: [1, 10, 19, 28, 37]
+  initial_checkpoint_path: /scratch/aryama.murthy/relayspec-runtime-20260826/checkpoints/qwen3-14b-dflash4b-fullpass/relay.pt

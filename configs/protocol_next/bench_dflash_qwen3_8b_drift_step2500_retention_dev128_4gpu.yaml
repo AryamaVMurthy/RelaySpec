@@ -1,0 +1,47 @@
+protocol_version: 1
+run_name: qwen3-8b-drift-step2500-retention
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/validation
+target:
+  id: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/lora_sft_checkpoints/qwen3-8b-ultrachat-drift/checkpoint-step-2500
+  revision: main
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 2048
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/eval_manifest.json
+  benchmarks:
+  - math500
+  methods:
+  - native_ar
+  - optimized_source_reuse
+  - relay_p
+  max_prompts: 128
+  warmups: 1
+  block_size: 16
+  profile_regions: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  checkpoint_path: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/checkpoints/qwen3-8b-dflash4b-relay-relative-final/relay.pt
+  repetitions: 1

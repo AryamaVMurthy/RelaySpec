@@ -1,0 +1,14 @@
+{
+  "pdf_sha256": "88915c8caac8300177b02dde8f66a4a966ee120dea2a75dfaa6fda41cdc003b7",
+  "pages": 17,
+  "color_rendered_pages": 17,
+  "grayscale_rendered_pages": 17,
+  "page_by_page_review": true,
+  "no_clipping_or_overlap": true,
+  "tables_and_equations_legible": true,
+  "figures_legible_in_color": true,
+  "figures_legible_in_grayscale": true,
+  "float_order_reviewed": true,
+  "link_boxes_hidden": true,
+  "notes": "All 17 pages rendered at 110 DPI in color and grayscale and read page by page against the final PDF. This pass rewrote the paper around the plain-autoregressive baseline and removed the delta/drift material. Five real defects were caught by the review itself and fixed. (1) Figure 3 annotated each row with the old source-reuse ratio (1.483x, 1.246x, 1.248x, 1.082x), contradicting Table 2 on the facing spread; it now reads relay_vs_ar out of MAIN_PAIRED_AR.json, the same artifact Table 2 is generated from. (2) Figure 4b hardcoded 91.2/90.5/89.2 recovery against the text's 90.3/90.2/89.1; it now recomputes recovery from the same artifact. (3) Table 7 reported 7.76/7.07 accepted tokens per cycle for DFlash at 8B where Table 2 reported 7.66/6.98 for the identical quantity; both now come from MAIN_PAIRED_AR.json. (4) Figure 1's feedback connector began in empty space above the verifier and the one diagonal arrow grazed a box corner; both loops are now fully orthogonal with every endpoint anchored on a box edge. (5) The grayscale pass caught Figure 6's caption asking the reader to tell green rows from blue rows, a distinction that vanishes in grayscale; the two groups now also differ by hatching and the caption names the hatch. Also removed in this pass: the negative source-free-fitting appendix, the failed 8-prompt cross-tokenizer narration, the 32-prompt development-forecast table (the last small-sample artifact in the paper), the decision-procedure flowchart, and a stale 1.483x reference in Appendix F. Figure 5 is the one figure not framed against plain AR, because that breadth sweep was run without an AR arm; its caption now says so explicitly and points to Table 2 for the plain-AR comparison. Main-text boundary verified on page 9, zero overfull boxes, no N/A or dash placeholder in any table, and every table cell populated. A final numeric sweep also caught the breadth retention range printed as '62 to 86 percent' where the measured cells span 61.5 to 85.4 percent, rounding outward on both ends; the exact values are now printed."
+}

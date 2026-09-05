@@ -1,0 +1,970 @@
+\documentclass{article}
+\usepackage{iclr2027_conference,times}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{tikz}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usetikzlibrary{shapes.geometric,arrows.meta,positioning,fit,calc}
+\hypersetup{hidelinks}
+
+\input{generated/results_macros.tex}
+
+\definecolor{relaygreen}{RGB}{206,227,186}
+\definecolor{relayblue}{RGB}{201,218,238}
+\definecolor{relayorange}{RGB}{255,224,153}
+\definecolor{relaygray}{RGB}{224,224,224}
+\definecolor{relaydark}{RGB}{80,80,80}
+
+\newtheorem{proposition}{Proposition}
+\newcommand{\method}{RelaySpec}
+
+\title{RelaySpec: Reusing a Frozen Speculative Proposer\\on a New Target Model with One Linear Map}
+
+\author{Anonymous Authors}
+
+% \iclrfinalcopy
+
+\begin{document}
+
+\maketitle
+\lhead{}
+
+\begin{abstract}
+Speculative decoding accelerates generation by letting a small proposer
+guess several tokens ahead and letting the target model verify all of them
+in one pass. The strongest proposers, such as DFlash and EAGLE-3, condition
+on hidden states read out of the exact model they were trained with, which
+we call the source model. That coupling is the problem: serving a different
+target model with the same proposer normally means training a new proposer,
+which DFlash reports as 800{,}000 examples over 6 epochs, or keeping the
+source model resident forever purely to rebuild the proposer's input. We
+show that a single linear map removes the coupling. The map is fitted on
+4{,}096 unlabeled examples in under two minutes, reads five hidden states
+the new target already computes while verifying, and emits the tensor the
+frozen proposer expects, after which the source model can be deleted
+entirely. On MATH-500, against plain autoregressive decoding measured in
+the same paired run, \method{} reaches \PairedDFlashEightAr{}x and
+\PairedDFlashFourteenAr{}x with DFlash on Qwen3-8B and Qwen3-14B, and
+\PairedEagleEightAr{}x and \PairedEagleFourteenAr{}x with EAGLE-3, while
+retaining \RecoveryLow{} to \RecoveryHigh{} percent of the throughput a
+proposer trained for that exact target reaches and cutting peak GPU memory
+by 20 to 31 percent. The same frozen proposer moves further than its own
+training pair: onto an independently fine-tuned descendant with no
+refitting (\TransferDescendant{}x), onto a larger target through an adapter
+(\TransferAdapter{}x), into a different family and onto a target smaller
+than its own source (\TransferCrossFamily{}x), and across a tokenizer
+boundary (\TransferCrossTokenizer{}x). Every speedup
+we report is measured against plain autoregressive decoding, paired
+request by request, with bootstrap confidence intervals.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+A speculative decoder pairs a small proposer with a large target model. The
+proposer guesses several tokens, the target checks them all in one forward
+pass, and every token the target disagrees with is thrown away. Output text
+is unchanged, so the only question is speed.
+
+The strongest proposers today do not read tokens alone. DFlash
+\citep{chen2026dflash} and EAGLE-3 \citep{li2025eagle3} also read internal
+hidden states from the model they were trained against. This makes them
+accurate, and it also ties them to that one model. Serving a different
+target model with the same proposer means either training a new proposer,
+or running the old source model on every decoding step purely to rebuild
+the proposer's input, even though that source model never approves a single
+token.
+
+Training a new proposer is expensive. DFlash trains its drafter on about
+800{,}000 examples for 6 epochs, and EAGLE-3 uses roughly 532{,}000
+examples. Neither reports GPU-hours, but both are separate training runs
+per target model.
+
+We ask whether the tensor the proposer needs can simply be rebuilt from the
+new target, and answer yes for a useful range of cases. \method{} fits one
+linear map that reads five hidden states the target model already produces
+during ordinary verification, and outputs the tensor the frozen proposer
+expects. Fitting uses 4{,}096 unlabeled examples and takes 86 to 119
+seconds on four GPUs. Nothing inside the proposer changes. After fitting,
+the source model can be deleted. Figure~\ref{fig:overview} shows the
+change.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.94\linewidth]{figures/system_overview.pdf}
+    \caption{Left: reusing a proposer today. The source model runs every
+    step just to rebuild the proposer's input. Right: \method{}. One linear
+    map rebuilds the same input from hidden states the target already
+    computed, and the source model is gone. The target model verifies every
+    token in both cases.}
+    \label{fig:overview}
+\end{figure}
+
+We make four contributions.
+
+\textbf{A two-minute replacement for retraining a proposer.} One linear
+map, fitted on 4{,}096 unlabeled examples, delivers
+\PairedDFlashEightAr{}x to \PairedDFlashFourteenAr{}x over plain
+autoregressive decoding with DFlash and \PairedEagleEightAr{}x to
+\PairedEagleFourteenAr{}x with EAGLE-3, retaining \RecoveryLow{} to
+\RecoveryHigh{} percent of what a proposer trained for that exact target
+reaches, at roughly three orders of magnitude less adaptation data
+(Section~\ref{sec:results}).
+
+\textbf{A rule that says in advance when it will pay off.} A short
+equation over measured timing and accepted tokens per cycle predicts
+whether removing the source model helps or hurts. It gets the direction
+right in all 16 additional task settings we test (Section~\ref{sec:cost}).
+
+\textbf{One frozen proposer, four kinds of target change.} The same map
+transfers onto an independently fine-tuned descendant of the target with
+no refitting, onto a larger target through an adapter over a frozen
+decoder, into a different model family and onto a smaller target than the
+proposer's own source, and across a tokenizer boundary. All four remain
+well above plain autoregressive decoding (Section~\ref{sec:transfer}).
+
+\textbf{Design evidence that a plain linear map is the right hypothesis.}
+Against a closed-form solution of the same objective and a nonlinear map
+at the same fitting budget, the linear map fitted by gradient descent wins
+clearly, and fit quality is still improving at 8{,}192 examples
+(Appendix~\ref{app:ablations}).
+
+\section{What one decoding cycle does}
+\label{sec:setting}
+
+At each cycle the proposer produces a block of candidate tokens. The target
+model runs once over that block and produces, at every position, the token
+it would have generated itself. We keep the longest starting run where the
+candidates match the target's own choices, then append the target's next
+token. Everything after the first disagreement is discarded. Because every
+committed token is a token the target itself produced, output text does not
+depend on proposal quality. Proposal quality only changes how many cycles
+are needed.
+
+A feature-conditioned proposer needs one extra input: a continuous context
+tensor built from the source model's hidden states. \method{} produces that
+tensor from the target instead. Figure~\ref{fig:pipeline} shows the loop.
+
+\begin{figure}[t]
+    \centering
+    \resizebox{0.92\linewidth}{!}{%
+    \begin{tikzpicture}[
+        every node/.style={font=\small},
+        box/.style={draw=relaydark, rounded corners=2pt, fill=#1,
+            text width=3.55cm, minimum height=1.05cm, align=center,
+            inner sep=4pt},
+        arrow/.style={-{Latex[length=2mm]}, thick, relaydark}
+    ]
+        \node[box=relayblue] (prefill) {1. Run the target on the prompt and
+        keep its cache};
+        \node[box=relaygreen, right=0.9cm of prefill] (taps) {2. Read five
+        target hidden states, apply the linear map};
+        \node[box=relayorange, right=0.9cm of taps] (proposer) {3. Frozen
+        proposer generates candidate tokens};
+        \node[box=relayblue, below=0.9cm of proposer] (verify) {4. Target
+        model verifies every candidate position};
+        \node[box=relaygray, left=0.9cm of verify] (commit) {5. Commit
+        agreeing prefix plus correction token, crop cache};
+        \node[box=relaygreen, left=0.9cm of commit] (next) {6. Translate new
+        hidden states for the next cycle};
+
+        \draw[arrow] (prefill) -- (taps);
+        \draw[arrow] (taps) -- (proposer);
+        \draw[arrow] (proposer) -- (verify);
+        \draw[arrow] (verify) -- (commit);
+        \draw[arrow] (commit) -- (next);
+        \coordinate (loopside) at ($(next.west)+(-0.7,0)$);
+        \draw[arrow] (next.west) -- (loopside)
+            |- ($(taps.north)+(0,0.6)$) -- (taps.north);
+    \end{tikzpicture}%
+    }
+    \caption{One \method{} decoding cycle. Green boxes read or translate
+    target hidden states. Blue boxes are the full target model, the only
+    component that can accept a token. Step 6 loops back into step 2.}
+    \label{fig:pipeline}
+\end{figure}
+
+Four structural conditions must hold before the swap is even possible
+(Table~\ref{tab:compatible}). They say whether it can be done, not whether
+it is fast.
+
+\begin{table}[h!]
+\caption{Conditions a proposer and target pair must satisfy for \method{}
+to apply. Section~\ref{sec:cost} covers whether it is also faster.}
+\label{tab:compatible}
+\centering
+\small
+\begin{tabular}{p{0.26\linewidth}p{0.64\linewidth}}
+\toprule
+Condition & What this means in practice \\
+\midrule
+Same token meaning & Proposer and target use the same token IDs, including
+special tokens. Section~\ref{sec:transfer} measures what happens when they
+do not. \\
+Separate continuous input & The proposer takes a continuous context tensor
+as its own input. This is the tensor the map learns to produce. \\
+Target exposes hidden states & Ordinary verification already computes the
+target's hidden states, so they only need to be read out. \\
+Verification is independent & Target verification and cache updates never
+depend on the translated tensor, so the target stays the only component
+that can accept a token. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Method}
+\label{sec:method}
+
+\paragraph{The slot we are replacing is already one linear layer.}
+Both released proposers read their source model the same way. They
+concatenate five source hidden states into $z^S_t$, pass them through one
+linear fusion layer $F$ that the proposer ships with, and normalize the
+result before any proposer block sees it: the conditioning tensor is
+$\mathrm{norm}(F z^S_t)$. \method{} deletes $F$ and puts a map $R$ in its
+place, reading the target's own five hidden states $z^T_t$ instead, so the
+tensor becomes $\mathrm{norm}(R z^T_t)$. Nothing downstream of that
+normalization changes by a single weight.
+
+This is the reason a linear map is the right hypothesis class rather than a
+convenient one. We are not approximating the source model's computation. We
+are refitting the one linear layer the proposer already used to read a
+model, now pointed at a different model. Linear is the class the proposer's
+own authors chose for this exact slot, and staying inside it is the minimal
+edit that leaves the rest of the frozen proposer in the distribution it was
+trained on. An MLP at the same fitting budget does not beat it
+(Appendix~\ref{app:ablations}).
+
+\paragraph{What is fitted, exactly.} $R$ is a single weight matrix with no
+bias, applied after an RMSNorm over the concatenated input. At Qwen3-8B the
+target hidden size is 4{,}096 and five taps give an input width of
+20{,}480, so $R$ is $20{,}480 \times 2{,}560$, or 52.4 million parameters.
+At Qwen3-14B the hidden size is 5{,}120 and $R$ is $25{,}600 \times
+2{,}560$, or 65.5 million. The output width 2{,}560 is fixed by the frozen
+proposer and never varies. Taps are layers $[1,9,17,25,33]$ of 36 at 8B and
+$[1,10,19,28,37]$ of 40 at 14B, the same relative depths the proposer's own
+source taps sit at. Fitting is AdamW at learning rate $6\times10^{-4}$ for
+1{,}024 steps over 4{,}096 unlabeled prompts truncated to 192 tokens, one
+pass, four GPUs, 86 to 119 seconds wall clock. The proposer, the target and
+the source model are all frozen throughout, $R$ is the only thing that
+moves, and no answer labels are used at any point.
+
+\paragraph{Why the loss is normalized by the target's own energy.}
+Training minimizes
+
+\begin{equation}
+    \mathcal{L} = \frac{\lVert R z^T_t - c^S_t \rVert^2}
+                       {\lVert c^S_t \rVert^2 + \epsilon},
+    \label{eq:loss}
+\end{equation}
+
+per position, where $c^S_t = F z^S_t$ is what the original fusion layer
+would have produced. The denominator is not a convenience. The
+normalization that immediately follows this slot removes the overall
+magnitude of whatever we hand it, so the proposer can only ever see the
+direction of $R z^T_t$. An unnormalized squared error would spend the map's
+capacity on a scale the proposer discards, and would let the few positions
+with the largest activations dominate the fit. Dividing by
+$\lVert c^S_t \rVert^2$ makes every position count equally and makes the
+objective measure the only thing the proposer can distinguish. The same
+argument is why $R$ carries no bias term.
+
+At inference the source model is gone. Algorithm~\ref{alg:relay} gives the
+loop actually executed.
+
+\begin{algorithm}[t]
+\caption{\method{} decoding. Only line 8 can commit a token.}
+\label{alg:relay}
+\begin{algorithmic}[1]
+\State Run target on the prompt, keep its cache and hidden states
+\State $c \gets R(\text{five target hidden states})$
+\While{output is not finished}
+  \State $B \gets$ proposer generates a candidate block, conditioned on $c$
+  \State Run target once over $B$, keeping its cache
+  \State $P \gets$ token the target itself would emit at each position of $B$
+  \State $k \gets$ length of the longest starting run where $B$ agrees with $P$
+  \State Commit those $k$ tokens, then commit the target's own next token
+  \State Crop target cache to the committed length
+  \State $c \gets R(\text{target hidden states at the committed positions})$
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+The map only changes what the proposer sees. It never approves a token. A
+poor map therefore causes more cycles, never different text.
+
+\begin{proposition}
+Under greedy decoding and exact arithmetic, \method{} produces the same
+output as running the target model alone.
+\end{proposition}
+
+Every committed token is taken from the target's own greedy output at that
+position, given a prefix the target itself produced. Induction over
+committed positions gives the result. In practice BF16 kernels for a block
+of positions and for one position can differ slightly near ties. We
+therefore report exact text agreement as a measurement:
+\DFlashEightExact{} of MATH-500 completions for DFlash at 8B, and
+\EagleEightExact{} for EAGLE-3, with official accuracy unchanged in every
+case.
+
+\section{When is this worth doing?}
+\label{sec:cost}
+
+Removing the source model only helps if candidates stay good enough. Split
+total source-reuse time, normalized to one, into three parts,
+
+\begin{equation}
+    1 = p_C + p_S + p_O,
+    \label{eq:source-shares}
+\end{equation}
+
+where $p_C$ scales with the number of cycles, $p_S$ is the removable
+source-model share, and $p_O$ is everything else. Let $p_R$ be the map's own
+time share, and $a_S, a_R$ the tokens committed per cycle before and after.
+Since cycle count is roughly inversely proportional to tokens per cycle,
+
+\begin{equation}
+    \frac{L_R}{L_S} = \frac{a_S}{a_R}p_C + p_O + p_R,
+    \qquad\text{so \method{} is faster exactly when}\qquad
+    \frac{a_R}{a_S} > \frac{p_C}{1-p_O-p_R}.
+    \label{eq:break-even}
+\end{equation}
+
+The right side is the smallest fraction of the original accepted-token rate
+the map must keep, and every quantity in it is measurable on a short sample
+of real requests before committing to either configuration. This is the one
+place in the paper where the comparison is against source reuse rather than
+plain autoregressive decoding, because the question it answers is
+specifically whether to unload the source model, not how fast either option
+is: both sides of Equation~\ref{eq:break-even} are speculative decoding, so
+the plain-AR floor cancels.
+
+The rule also explains a size effect we measure rather than merely fitting
+it. A fixed 4B source model is a smaller share of a 14B target's total work
+than of an 8B target's, so $p_S$ shrinks as the target grows, the removable
+term is smaller, and the map has to preserve a higher fraction of the
+accepted-token rate to break even. That is exactly the ordering
+Table~\ref{tab:main} shows: relay over source reuse falls from 1.53x at 8B
+to 1.27x at 14B with DFlash, and from 1.28x to 1.10x with EAGLE-3, while
+the speedup over plain autoregressive decoding rises.
+
+\section{Setup}
+\label{sec:setup}
+
+The proposers are released DFlash and EAGLE-3 checkpoints trained against
+Qwen3-4B. Targets are Qwen3-8B and Qwen3-14B \citep{yang2025qwen3}. We fit
+one map per proposer and target pair on 4{,}096 math prompts, using no
+answer labels. Evaluation covers MATH-500 \citep{hendrycks2021math}, GSM8K
+\citep{cobbe2021gsm8k}, HumanEval \citep{chen2021humaneval}, MBPP
+\citep{austin2021mbpp} scored with EvalPlus \citep{liu2023evalplus}, and
+MT-Bench \citep{zheng2023mtbench}, which we time but do not score. All runs
+use greedy decoding, one request at a time, BF16, on four RTX 6000 Ada
+GPUs. Fitting prompts and evaluation prompts are disjoint, and
+Appendix~\ref{app:similarity} reports the overlap audit.
+
+We compare against three baselines, and define each precisely because the
+paper reports ratios against more than one of them.
+
+\textbf{Plain autoregressive decoding (native AR).} The target model
+alone, one token per forward pass, no proposer and no source model
+involved. This is the deployment a user reaches for absent a
+target-specific proposer or a source model worth keeping resident, and
+the comparison every reader can act on unconditionally. Every main-table
+and transfer speedup in this paper is measured against native AR in the
+same paired run as the other methods compared.
+
+\textbf{Optimized source reuse.} The alternative a user has today without
+\method{}: keep the source model the proposer was trained against
+resident alongside the target, running it on every newly committed token
+purely to reconstruct the tensor the proposer needs, truncated after the
+last layer the proposer reads (never re-run on a rejected candidate
+suffix). This isolates what \method{} specifically buys: the same frozen
+proposer and accepted-token behavior, with the source model deleted
+instead of kept resident. We report it as a secondary ratio alongside
+native AR, never as the primary claim.
+
+\textbf{Target-specific proposer.} A proposer trained or released
+specifically for the deployed target, where such a checkpoint exists
+publicly. This is the ceiling: what full retraining, on hundreds of
+thousands of examples, would buy over \method{}'s two-minute linear fit.
+
+\section{Does it work, and what does it cost?}
+\label{sec:results}
+
+Table~\ref{tab:main} gives the main MATH-500 result. Every method in a row,
+including plain autoregressive decoding, ran inside one benchmark process
+on the same 500 prompts, so each ratio is paired request by request rather
+than compared across executions.
+
+\begin{table}[h!]
+\caption{MATH-500, 500 prompts, greedy decoding. Every speedup is a paired
+bootstrap ratio of total request time against plain autoregressive
+decoding measured in the same run. \method{} is the frozen proposer driven
+by one linear map, with the source model unloaded. Accepted tokens per
+cycle are reported for source reuse (S) and \method{} (R).}
+\label{tab:main}
+\centering
+\small
+\input{generated/main_math_table.tex}
+\end{table}
+
+\method{} is faster than plain autoregressive decoding in all four pairs,
+and faster than optimized source reuse in all four, while running with the
+source model deleted rather than resident. Where a public target-specific
+proposer exists, \method{} retains \PairedDFlashEightRecovery\% of it for
+DFlash at 8B, \PairedEagleEightRecovery\% for EAGLE-3 at 8B, and
+\PairedEagleFourteenRecovery\% for EAGLE-3 at 14B, all against the same
+plain-autoregressive baseline. The margin over source reuse follows the
+removable share exactly as Section~\ref{sec:cost} predicts: DFlash at 8B
+removes \DFlashEightSourceShare\% of request time and gives the largest
+margin, EAGLE-3 at 14B removes \EagleFourteenSourceShare\% and gives the
+smallest. Figure~\ref{fig:throughput} places all four against every
+baseline.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/main_throughput.pdf}
+    \caption{MATH-500 output tokens per second. \method{} sits between
+    optimized source reuse and a proposer trained for that exact target,
+    and well above plain autoregressive decoding.}
+    \label{fig:throughput}
+\end{figure}
+
+\paragraph{What it costs compared to training a new proposer.}
+Fitting one map processes 4{,}096 examples once. DFlash's own paper reports
+training its drafter on about 800{,}000 examples for 6 epochs, which is
+4.8 million example-passes, roughly 1{,}172 times more. EAGLE-3 reports
+about 532{,}000 examples, and PARD \citep{an2026pard} reports 8 MI250X GPUs
+for 4 epochs over roughly one million examples. None of these three papers
+report GPU-hours for their own training, so we compare data processed,
+which they do report. Figure~\ref{fig:cost} puts that cost next to what the
+cheaper option gives up: \RecoveryLow{} to \RecoveryHigh{} percent of the
+throughput a proposer trained for that exact target reaches.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/adaptation_cost.pdf}
+    \caption{(a) Examples processed to support one new target model, log
+    scale. Counts are epochs times dataset size as reported by each paper.
+    (b) Throughput \method{} keeps relative to a proposer trained for that
+    exact target, where a public checkpoint exists for the comparison.}
+    \label{fig:cost}
+\end{figure}
+
+Table~\ref{tab:resources} gives the rest of the deployment cost. Fitting
+takes 86 to 119 seconds on four GPUs, the map is 52 to 66 million
+parameters, and deleting the source model saves 7.6 to 7.8 GiB of peak GPU
+memory, which is 20 to 31 percent.
+
+\begin{table}[h!]
+\caption{Deployment cost of one map. Fit time is wall clock on four GPUs
+for DFlash and EAGLE-3 respectively. Memory saving is what deleting the
+source model returns, measured in isolated processes.}
+\label{tab:resources}
+\centering
+\small
+\input{generated/resource_table.tex}
+\end{table}
+
+\paragraph{Beyond math.} The map is fitted once, on math prompts only, and
+we then hold it fixed across GSM8K, HumanEval, MBPP and MT-Bench, four
+tasks it never saw during fitting. It generalizes: with the source model
+deleted it keeps 61.5 to 85.4 percent of the accepted tokens per cycle
+source reuse achieves across all \BreadthCells{} task settings, and quality
+is unaffected: source reuse and
+\method{} agree on the official score for all 4{,}680 scored generation
+pairs across MATH, GSM8K, HumanEval and MBPP. Equation~\ref{eq:break-even}
+also earns its keep here, predicting the correct speed direction in
+\BreadthDirectionMatches{} of \BreadthCells{} settings before any speed is
+compared, with \BreadthAccountingError\% mean absolute error
+(Figure~\ref{fig:breadth}). Appendix~\ref{app:full-results} reports every
+task setting individually.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/breadth_and_margin.pdf}
+    \caption{Holding one math-fitted map fixed across four unseen tasks.
+    Left: paired throughput ratio against optimized source reuse per task,
+    the harder of the two baselines, solid border when the interval is
+    fully above one. This sweep was run without a plain-autoregressive arm,
+    so unlike every other result in this paper it is reported against
+    source reuse. Table~\ref{tab:main} is where the plain-AR comparison is
+    measured. Right: measured accepted token ratio minus the break-even
+    ratio of
+    Equation~\ref{eq:break-even}, so points right of zero are predicted
+    faster and are faster, which holds in every cell.}
+    \label{fig:breadth}
+\end{figure}
+
+Appendix~\ref{app:ablations} checks the fitting recipe itself: a
+closed-form solution of the same objective and a nonlinear map both
+underperform the plain linear map fitted by gradient descent, and fit
+quality is still improving at 8{,}192 examples.
+
+\section{How far can one frozen proposer be moved?}
+\label{sec:transfer}
+
+The results above change only the target's size inside one family. We now
+change the target in four harder ways and measure each against plain
+autoregressive decoding on 128 MATH-500 prompts, with the same paired
+bootstrap used for Table~\ref{tab:main}. Table~\ref{tab:transfer} and
+Figure~\ref{fig:transfer} report all four.
+
+\begin{table}[h!]
+\caption{Retargeting a frozen proposer under four changes to the target,
+128 MATH-500 prompts each. Speedups are paired against plain
+autoregressive decoding measured in the same run, exactly as in
+Table~\ref{tab:main}.}
+\label{tab:transfer}
+\centering
+\small
+\input{generated/transfer_table.tex}
+\end{table}
+
+\paragraph{An independently fine-tuned descendant needs no refitting.} We
+applied the map fitted for base Qwen3-8B, unchanged, to
+\texttt{nvidia/Nemotron-Orchestrator-8B}, a publicly released model
+fine-tuned from Qwen3-8B by a different group. It reaches
+\TransferDescendant{}x plain autoregressive decoding with no refitting of
+any kind, close to the \PairedDFlashEightAr{}x the same map reaches on the
+base model it was fitted for, and accepts 6.89 tokens per cycle against
+6.98 on the base. The reason it survives is that $R$ is fitted against a
+basis, not against a behaviour: it only has to send the target's tapped
+directions to the directions the proposer expects, and the normalization
+downstream of it discards everything except direction. Instruction
+fine-tuning changes where a model goes in that space far more than it
+rebuilds the space itself, so the map keeps applying. This matters in
+practice because deployed models are usually fine-tuned descendants of a
+released base rather than the base itself.
+
+\paragraph{An already-fitted decoder can serve a larger target through an
+adapter alone.} Two maps fitted independently, one for Qwen3-8B and one for
+Qwen3-14B, produce closely aligned outputs on the same text: cosine
+similarity 0.973, linear CKA 0.732, and 0.897 overlap between their top-32
+output directions. That alignment suggests the decoder half of a fitted map
+is reusable. Freezing the Qwen3-8B map entirely and training only a small
+adapter that feeds it Qwen3-14B's hidden states reaches
+\TransferAdapter{}x, so a deployment that already holds one fitted map can
+extend to a larger target in the same family without refitting the map
+itself.
+
+\paragraph{A different model family works, and the target can be smaller
+than the source.} We repeated the method inside the Llama family, with no
+Qwen3 model involved anywhere: a released DFlash proposer trained for
+Llama-3.1-8B, fitted onto the smaller Llama-3.2-3B, reaches
+\TransferCrossFamily{}x. Two things follow. The method is not specific to
+Qwen3, and it runs in both size directions, since our Qwen3 results fit a
+4B source onto larger 8B and 14B targets while this one fits an 8B source
+onto a smaller 3B target.
+
+\paragraph{Even a tokenizer boundary can be bridged.} When proposer and
+target use different vocabularies they cannot agree on what a token is, so
+the acceptance check has to move to text: we decode each proposed block,
+re-encode it with the target's tokenizer, and let the target verify and
+commit there. Fitting needs a matching change, because the two models no
+longer share a token sequence, so we align supervision by character span
+rather than token position, pairing each target position with the source
+position covering the same underlying text. Applied to a Qwen3-trained
+DFlash proposer retargeted onto Llama-3.1-8B, this reaches
+\TransferCrossTokenizer{}x with 3.21 accepted tokens per cycle.
+Appendix~\ref{app:cross-family} gives the procedure and the one caveat
+this setting carries, which is that text-granularity verification agrees
+with plain decoding on 25 percent of prompts rather than nearly all of
+them.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/transfer_speedups.pdf}
+    \caption{Every retargeting setting, measured against plain
+    autoregressive decoding with paired 95\% intervals. Hatched rows are the
+    same-family main results of Table~\ref{tab:main}, plain rows the four
+    harder target changes of Table~\ref{tab:transfer}. All sit well above
+    the dashed no-proposer line.}
+    \label{fig:transfer}
+\end{figure}
+
+\paragraph{What this says about the method.} One fitted map is not tied to
+the single target it was fitted for. It carries to a fine-tuned descendant
+of that target unchanged, to a larger target in the same family through an
+adapter over a frozen decoder, into an untrained model family, onto a
+target smaller than the proposer's own source, and across a tokenizer
+boundary. Every one of these remains substantially faster than plain
+autoregressive decoding, which is the comparison a deployment actually
+faces when no target-specific proposer exists.
+
+\section{Related work}
+\label{sec:related}
+
+DFlash and EAGLE-3 train proposers that read the target's hidden states
+\citep{chen2026dflash,li2025eagle3}. DFlare scales draft capacity
+\citep{zhang2026dflare} and RepSpec merges extra capacity away before
+inference \citep{huo2026repspec}. These improve generation for the model
+the proposer trained with. We study what happens afterwards, when the
+proposer is fixed and the target changes.
+
+A second line avoids the coupling by design. PARD serves a whole family of
+sizes with one drafter \citep{an2026pard,an2026pard2}, OmniDraft adapts a
+drafter online across families and vocabularies
+\citep{ramakrishnan2025omnidraft}, and SD$^2$ steers a pretrained drafter with injected features and then
+fine-tunes the drafter itself on top, since their own ablation shows a
+frozen drafter underperforms \citep{berdoz2026sd2}. Others adapt the draft
+model's weights directly: EDA's shared and private split \citep{lin2026eda},
+HyperDFlash's retraining \citep{lin2026hyperdflash}, and VSD's training for
+expected accepted length \citep{zou2026vsd}. A third line keeps the draft
+architecture fixed and trains it against the target's own feedback
+\citep{lei2026draftopd,qian2026onlinespec,zhang2026learningtodraft}. Every
+one of these methods changes the proposer's weights to serve a new target.
+\method{} is the only one that does not.
+
+Table~\ref{tab:related} lists the methods that publish both a headline
+speedup over plain autoregressive decoding and an adaptation cost, quoting
+each exactly as published next to the hardware and engine it was measured
+on. We do not treat the speedup column as comparable across rows, including
+ours: \citet{abramovich2026speedbench} report that engine and hardware
+change measured speedup substantially, and each row here was measured on a
+different combination of the two. The training-data column is the column
+that is comparable, because it is what each paper reports needing to
+support one new target and it does not depend on hardware.
+
+\begin{table}[h!]
+\caption{Methods that publish both a speedup over plain autoregressive
+decoding and an adaptation cost, quoted as published. \method{} is the only
+row that leaves the proposer's weights untouched, and the only one whose
+adaptation cost is a number of examples rather than a training run. Methods
+that change the proposer but publish no comparable cost are in the text.}
+\label{tab:related}
+\centering
+\scriptsize
+\begin{tabular}{p{0.16\linewidth}p{0.15\linewidth}p{0.30\linewidth}p{0.24\linewidth}}
+\toprule
+Method & Changes proposer? & Reported speedup over plain AR, on its own hardware and engine (not comparable across rows) & Training data for one new target \\
+\midrule
+DFlash & Trains from scratch & 4.86x (H200, Transformers) & 800K examples, 6 epochs \\
+EAGLE-3 & Trains from scratch & 4.40x (varies, vLLM/SGLang) & 532K examples \\
+PARD, PARD-2 & Yes & 3.67x (A100-40GB, vLLM) & About 1M examples \\
+SD$^2$ & Yes, steered & 1.20x average tokens/s (A100-80GB) & 5 tasks, 96 examples each \\
+\textbf{\method{} (this work)} & \textbf{No, frozen} & \textbf{\PairedDFlashEightAr{}x (RTX 6000 Ada, Transformers)} & \textbf{4,096 unlabeled examples} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The comparison we can make cleanly is adaptation cost against throughput
+kept, since we are the only row that reuses an existing proposer rather
+than training one: Figure~\ref{fig:cost} reports 89 to 91 percent kept at
+roughly three orders of magnitude less data. Closest in mechanism, though
+not in purpose, are methods that map states between models to speed up
+first-pass processing rather than the decoding loop: KVShot reuses the
+target's own cache for longer drafts \citep{liu2026kvshot}, and cross-model
+cache transfer learns a linear map onto another model's prefill cache
+\citep{heo2026crossmodelkv}.
+
+\section{Limitations and conclusion}
+\label{sec:limitations}
+
+We test greedy decoding, one request at a time, BF16, one fixed seed, and a
+Transformers runtime, so we measure neither seed variance nor
+concurrent-request behaviour and these are not production serving numbers
+\citep{abramovich2026speedbench}. Figure~\ref{fig:cost} compares examples
+processed rather than GPU-hours, which the papers involved do not publish.
+The cross-tokenizer setting
+verifies at text rather than token granularity, giving up exact agreement
+with plain decoding (Appendix~\ref{app:cross-family}), and fitting still
+needs the source model once, though generation never uses it again.
+
+A proposer that reads a model's internal states need not stay tied to it.
+The slot it reads through is one linear layer, and refitting that layer on
+4{,}096 unlabeled examples repoints it at a new target, deletes the source
+model, and keeps working across fine-tuned descendants, sizes, families and
+tokenizers. Retargeting a frozen proposer is a fitting problem over one
+linear interface, not a retraining problem.
+
+\label{maintextend}
+
+\subsection*{AI use statement}
+
+In this work, we used generative AI tools to help refine hypotheses, design
+experiments, implement and test code, check the runtime analysis, interpret
+logged results, summarize related literature, and draft and edit this
+paper. The authors checked every cited claim against its primary source,
+inspected the raw experimental artifacts, ran the automated test suite, and
+reviewed all AI-assisted text and code by hand, taking full responsibility
+for the paper's final content.
+
+\subsection*{Reproducibility statement}
+
+Appendix~\ref{app:protocol} gives every fitting, hardware, generation,
+metric, and uncertainty setting used. Appendices~\ref{app:full-results}
+through~\ref{app:cross-family} give the full result matrix, design checks,
+and the cross-family procedure. Our supplement contains exact model
+identifiers, configuration files, prompt manifests, raw timing records,
+scoring code, and a script that regenerates every number and figure.
+
+\bibliography{references}
+\bibliographystyle{iclr2027_conference}
+
+\appendix
+\raggedbottom
+
+\section{Complete method details and tensor shapes}
+\label{app:method}
+
+\subsection{Exactly what source reuse computes}
+
+Our optimized source-reuse baseline never runs the source model on a
+candidate suffix that ends up rejected. Starting from the source model's own
+committed cache, it passes each newly committed token through source-model
+layers 0 through 33, reads out the hidden states at layers
+$[1,9,17,25,33]$, and applies the proposer's own released fusion layer. This
+is the strongest baseline we know how to build for reusing a proposer with
+the source model still present, and it is what all speedups in
+Section~\ref{sec:results} are measured against.
+
+\subsection{Why the loss has no separate cosine term}
+
+Equation~\ref{eq:loss} already normalizes by the target tensor's own
+magnitude, so it penalizes direction error at fixed scale. Adding an
+explicit cosine term changed the 128-step relative loss by less than the
+run-to-run spread in our design checks, so we left it out.
+
+\section{Greedy correctness and finite precision}
+\label{app:correctness}
+
+The proposition in Section~\ref{sec:method} holds under exact arithmetic.
+In BF16 the target's logits for a block of positions and for a single
+position are computed by different kernels and can differ in the last bits,
+which changes the committed token only when two logits are nearly tied. We
+therefore measure text agreement rather than assume it. DFlash matches
+character for character on all 2{,}660 MATH, code and chat pairs. EAGLE-3
+differs on 49, every one of which is recorded in our audit, and official
+scores are unchanged in all cases.
+
+\section{Complete experimental protocol}
+\label{app:protocol}
+
+The learning rate $6\times10^{-4}$ of Section~\ref{sec:method} was selected
+on EAGLE-3 and then held fixed for every other fit in this paper, including
+all DFlash fits, rather than retuned per setting. Fitting uses weight decay
+0, gradient clipping 1.0, and one example per GPU per step across four
+GPUs. Generation uses greedy
+decoding, temperature 0, a 2{,}048 token cap, and thinking mode disabled.
+Speed intervals are paired bootstrap intervals over requests. Hardware is
+four RTX 6000 Ada GPUs, BF16 throughout, one request at a time.
+
+\section{Full workload results}
+\label{app:full-results}
+
+\begin{table}[H]
+\caption{Every task setting in the breadth sweep, 128 or more clustered
+requests each. Speedup is the paired bootstrap ratio against optimized
+source reuse, the baseline this sweep was run against, and Exact is the
+percentage of completions matching plain decoding character for character.}
+\centering
+\small
+\input{generated/breadth_table.tex}
+\end{table}
+
+\section{Acceptance and where the time goes}
+\label{app:acceptance}
+
+Figure~\ref{fig:survival} shows how often a proposed position at each depth
+inside a block is still accepted. Acceptance falls with depth for both
+source reuse and \method{}, and \method{}'s curve sits below it by a roughly
+constant factor rather than collapsing at a particular depth. This is why a
+single accepted-tokens-per-cycle ratio is enough for
+Equation~\ref{eq:break-even}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.72\linewidth]{figures/acceptance_survival.pdf}
+    \caption{Fraction of proposals still accepted at each position inside a
+    block.}
+    \label{fig:survival}
+\end{figure}
+
+Table~\ref{tab:acceptance} gives the exact accepted-tokens-per-cycle ratio
+behind Figure~\ref{fig:breadth}'s margin panel, and Figure~\ref{fig:timing}
+shows how source-reuse request time divides between components, whose
+source-trunk share is what \method{} removes.
+
+\begin{table}[H]
+\caption{Accepted tokens per cycle for every measured setting.}
+\label{tab:acceptance}
+\centering
+\small
+\input{generated/acceptance_table.tex}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/timing_breakdown.pdf}
+    \caption{How source-reuse request time divides between components. The
+    labelled source-trunk share is exactly the work \method{} removes.}
+    \label{fig:timing}
+\end{figure}
+
+\section{Design checks that decided the method}
+\label{app:ablations}
+
+Three controlled comparisons fixed the final design. Normalizing the map's
+input improved the 128-step relative loss from 0.413 to 0.266 for EAGLE-3
+and raised measured speed from 1.035 to 1.237 times, with no change in
+parameter count or inference cost. A block size of 16 was best for DFlash
+among 8, 16 and 32. The scale-relative loss in Equation~\ref{eq:loss} beat
+a plain squared error at matched steps.
+
+\subsection{Is a linear map fitted by gradient descent the right choice?}
+
+The main result fits a single linear map by gradient descent on 4{,}096
+unlabeled examples. We check three alternatives directly, all for DFlash on
+Qwen3-8B, all measured at 128 prompts against the same
+\texttt{optimized\_source\_reuse} baseline as Table~\ref{tab:main}, with
+paired bootstrap 95\% intervals, in Table~\ref{tab:ablation-fitting}.
+
+\begin{table}[H]
+\caption{Fitting-design ablations, 128 prompts, MATH-500. Speed is against
+optimized source reuse. Retention is accepted tokens per cycle relative to
+the same baseline.}
+\label{tab:ablation-fitting}
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Configuration & Fit examples & Speed & 95\% interval & Retention \\
+\midrule
+Closed-form, weighted ridge regression & 4{,}096 & 0.955x & [0.927, 0.982] & 52.3\% \\
+MLP relay, hidden width 512 & 4{,}096 & 0.872x & [0.841, 0.903] & 51.7\% \\
+Linear, gradient descent & 512 & 1.150x & [1.118, 1.181] & 68.1\% \\
+Linear, gradient descent & 1{,}024 & 1.372x & [1.346, 1.397] & 81.1\% \\
+Linear, gradient descent & 2{,}048 & 1.477x & [1.458, 1.496] & 87.1\% \\
+Linear, gradient descent & 8{,}192 & 1.573x & [1.558, 1.588] & 93.4\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A closed-form solution exists because the loss is linear least squares,
+provided the normal equations are weighted to match it: gradient descent
+minimizes Equation~\ref{eq:loss}, which weights each position's squared
+error by the inverse energy of its own target vector, so we weight each
+row by that same factor before accumulating the normal equations, an exact
+equivalence for a linear map. Solved this way, with no learning rate to
+tune, it keeps only 52.3 percent of accepted tokens per cycle against 91
+percent for gradient descent at the same data budget. It is also not
+clearly cheaper: collecting the same 4{,}096 examples' hidden states takes
+221.3 seconds and the linear solve itself 6.8 seconds, comparable to the
+86 to 119 seconds gradient descent needs in total, since collecting hidden
+states dominates either way. Adding
+a hidden layer (an MLP of width 512 in place of the single linear layer)
+performs worse still, 51.7 percent retention, the single worst
+configuration measured anywhere in this paper. Neither alternative
+improves on the plain linear map. Both are strictly worse uses of the same
+fitting data. Fit-data size itself has a real, monotonic effect with no
+measured ceiling in the range we test: retention rises from 68.1 percent
+at 512 examples to 93.4 percent at 8{,}192, with no sign of flattening. The paper's choice
+of 4{,}096 examples is therefore a practical operating point inside a
+still-improving regime, not a demonstrated ceiling on what more fitting
+data could give. Doubling the fitting data to 8{,}192 examples raises
+retention from the 91.1 percent the main 4{,}096-example map reaches on
+this pair to 93.4 percent, at roughly twice the fitting time, and every
+result reported elsewhere in this paper uses the 4{,}096-example map.
+
+\section{Prompt overlap and text differences}
+\label{app:similarity}
+
+Fitting prompts and evaluation prompts are disjoint by construction.
+Table~\ref{tab:similarity} reports the closest match between any fitting
+prompt and any evaluation prompt under a character-level similarity score.
+The most similar MATH pairs share competition-style templates with
+different numbers, which limits how strongly MATH alone supports a claim
+about unrelated tasks. Our code and chat measurements act as the separate
+check for that.
+
+\begin{table}[H]
+\caption{Closest fitting-to-evaluation prompt similarity per task.}
+\label{tab:similarity}
+\centering
+\small
+\input{generated/similarity_table.tex}
+\end{table}
+
+\section{Memory measurement}
+\label{app:memory}
+
+We run source reuse and \method{} in two separate processes with the same
+target, proposer, prompts and settings, record allocated and reserved CUDA
+memory before any timed request, then reset the peak counters and record
+peak allocation during timed requests. At 8B peak allocated memory falls
+from 25.56 to 17.76 GiB. At 14B it falls from 37.57 to 29.94 GiB, both shown
+in Figure~\ref{fig:memory}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.68\linewidth]{figures/memory_reduction.pdf}
+    \caption{Peak allocated GPU memory in isolated processes.}
+    \label{fig:memory}
+\end{figure}
+
+\section{Cross-family procedure and result}
+\label{app:cross-family}
+
+When proposer and target do not share a tokenizer, three separate mappings
+break. The proposer emits token IDs in its own vocabulary, it embeds the
+tokens it is growing through its own embedding table, and it conditions on
+the committed prefix. We handle all three by moving agreement to text,
+which needs no new learned parameters. Each cycle, we decode the proposed
+block with the source tokenizer, re-encode that text with the target
+tokenizer, let the target verify and commit in its own vocabulary, then
+decode what was committed and re-encode it back into the source vocabulary
+to continue proposing. Correctness carries over because the target still
+produces every committed token, now at text granularity rather than token
+granularity. Acceptance gets coarser, because a mismatch inside a token
+ends the rest of the block.
+
+Fitting needs a second change. The usual loss compares the source and
+target hidden states position by position, which assumes one shared token
+sequence. With two tokenizers there is no general position-by-position
+correspondence between sequences of different lengths.
+
+\paragraph{Aligning supervision by character span.} We recover real
+per-position supervision without assuming a shared token sequence by
+aligning on the underlying text instead of on token position. For each
+fitting example, we identify the character windows in the rendered prompt
+where the actual problem and solution content appears, excluding
+chat-template boilerplate that has no correspondent on the other side.
+For each target position, we find the source position whose character
+span covers the same underlying text and pair those two positions for the
+loss in Equation~\ref{eq:loss}, exactly as same-tokenizer fitting pairs
+positions by index. This needs no new learned parameters and applies only
+at fitting time. The inference-time procedure above is unchanged.
+
+Fitted this way and measured at 128 prompts under the same paired
+protocol as Table~\ref{tab:main}, the frozen Qwen3-trained proposer
+reaches 3.208 accepted tokens per cycle on Llama-3.1-8B and
+\TransferCrossTokenizer{}x plain autoregressive decoding, the number
+reported in Table~\ref{tab:transfer}. Fitting takes 94.5 seconds on four
+GPUs, inside the 86 to 119 second range Section~\ref{sec:method} reports
+for same-tokenizer fits. The committed text matches plain decoding on 25
+percent of prompts, the one caveat this setting carries.
+
+\paragraph{The exact-match gap, traced rather than left unexplained.} We
+traced a specific disagreement directly: on one held-out prompt, greedy
+autoregressive decoding and the cross-family relay agree for the first 34
+tokens and then diverge. At the divergence point the logit gap between the
+two candidate tokens is zero to reported precision, a genuine near-tie
+rather than a large disagreement. This is the same block-versus-single-position floating-point kernel signature Appendix~\ref{app:correctness}
+already documents for same-tokenizer verification, occurring far more
+often here because cross-family verification runs at text granularity, so
+a mismatch anywhere inside a proposed token's re-encoding can trigger a
+tie-break that a token-granularity check would not see in the same way.
+We do not claim every one of the 75 percent of disagreements traces to
+exactly this mechanism, only that the one we traced does, and that it is
+the same known phenomenon rather than a new, unexplained failure mode.
+
+\end{document}

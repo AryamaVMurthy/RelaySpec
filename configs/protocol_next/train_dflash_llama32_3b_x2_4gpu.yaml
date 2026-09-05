@@ -1,0 +1,33 @@
+protocol_version: 1
+run_name: llama32-3b-dflash-llama31-8b-relay-x2
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/train
+target:
+  id: unsloth/Llama-3.2-3B-Instruct
+  revision: 006f5dcd1393c3add266de40994ba96225e9689d
+proposer:
+  family: dflash
+  id: z-lab/LLaMA3.1-8B-Instruct-DFlash-UltraChat
+  revision: d3af30def9601abdd10810aba220d692f0e803f0
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+source_trunk:
+  model:
+    id: unsloth/Llama-3.1-8B-Instruct
+    revision: 4699cc75b550f9c6f3173fb80f4703b62d946aa5
+  layers: 32
+  tap_layers: [1, 8, 15, 22, 29]
+relay_training:
+  manifest_path: configs/train_math_4096.json
+  fit_examples: 4096
+  steps: 1024
+  max_length: 192
+  learning_rate: 0.0006
+  weight_decay: 0.0
+  gradient_clip: 1.0
+  target_layer_ids: [1, 7, 13, 19, 25]
+  relay_architecture: normalized_linear
+  feature_objective: relative_interface_mse
+  proposal_kl_weight: 0.0
