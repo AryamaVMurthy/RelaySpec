@@ -9,6 +9,8 @@ make submission-ready    # additionally require completed required tasks
 
 All tasks initially remain `planned`. E13 (forecast) and E15 (drift) are optional for the static paper. E17 must remove unsupported optional claims if those tasks are not completed. Required tasks represent the strong target version; changing that scope requires an explicit dated amendment to the ledger and prose plan, not quietly marking an unfinished task optional.
 
+**Reuse is the default.** A planned task means its evidence assessment/completion record is pending; it does not imply no experiments have run. The four main jobs are already completed. E00 inventories all existing artifacts, and E05 reuses valid results, rescores/recomputes where possible, and repeats only demonstrably affected measurements. The ledger's `reuse_policy` records this user instruction; it is a workflow requirement, not an automatic Slurm launch guard. No new job should be scheduled without its evidence-gap/repetition rationale. See the execution plan for the required per-run decisions.
+
 When work is actually completed, update its status and add the named completion record under `reports/submission-execution/`. Example record structure:
 
 ```json

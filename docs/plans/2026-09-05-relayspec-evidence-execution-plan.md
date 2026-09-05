@@ -18,10 +18,22 @@ Recorded main request-time ratios against plain target decoding are about 2.40�
 
 ## 2. Work order and result gates
 
+### Reuse existing valid work before scheduling anything new
+
+**User-directed amendment, 5 September 2026:** reuse all valid existing work. The task list describes evidence to establish, not a requirement to execute every experiment again. The four main benchmark jobs are already completed; their scientific checks remain distinct from their execution status.
+
+For every task, first inventory existing checkpoints, raw outputs, timings, scored outputs, configs, analyses, figures and tests. Record each artifact as **reuse unchanged**, **recompute/rescore from existing records**, **recover missing files**, **targeted additional measurement**, or **replace because invalid**, with a specific reason and affected claim. Keep valid unfavorable results under the same rule as favorable ones.
+
+Before any new GPU job, its run plan must identify the existing evidence considered, the precise missing question or defect, which methods/requests/checkpoints are affected, and why recovery or offline analysis cannot answer it. Run a small diagnostic first where appropriate. A repeated full suite needs evidence that the full suite is affected; manuscript edits, corrected parameter/data counts, new plot styling, repository cleanup or a new commit hash alone are not reasons to repeat GPU work.
+
+Reuse validity is specific to a claim. For example, a fit checkpoint can remain useful when a decoder is repaired; an old timing may remain descriptive of the historical implementation but cannot automatically represent the repaired one. Saved token outputs can be rescored without regenerating them. Existing paired timings must retain their pairing; combining separately measured arms is not a new paired experiment. Relevant execution conditions and changes must be checked, rather than treating either every new commit as invalidating old work or every matching model name as sufficient for reuse.
+
+Estimate remaining time only after subtracting reusable work. Keep already-spent time, genuinely missing experiments and conditional reruns separate. The four-GPU limit applies across all simultaneous jobs.
+
 ```mermaid
 flowchart TD
-  A[Archive raw evidence and freeze data history] --> B[Resolve decoder and interface correctness]
-  B --> C[Re-run matched main comparisons]
+  A[Inventory and recover existing evidence] --> B[Validate reusable evidence and diagnose defects]
+  B --> C[Reuse valid main comparisons and fill specific gaps]
   C --> D[Cheap adaptation baselines and full costs]
   C --> E[Controlled ablations and fitting seeds]
   C --> F[Domain and second-family evaluation]
@@ -81,9 +93,9 @@ For task accuracy, score the same outputs whose speed is reported. Report paired
 
 **Files:** `reports/final/MAIN_PAIRED_AR.json`, `reports/final/`, `scripts/merge_benchmark_runs.py`, `reports/submission-review-2026-09-05/`.
 
-Retrieve the rank-level inputs/outputs, configs, source snapshots and checkpoint identities behind jobs 27357, 27325, 27396 and 27397 and every transfer headline. Compare hashes against summaries. Produce a run-to-table ledger and a missing-artifact list. Summaries alone cannot satisfy a raw-record requirement. Keep earlier snapshots unchanged.
+Retrieve the rank-level inputs/outputs, configs, source snapshots and checkpoint identities behind completed jobs 27357, 27325, 27396 and 27397 and every transfer headline. Compare hashes against summaries. Produce a run-to-table ledger, a missing-artifact list and reuse decisions for every downstream task. Search existing local and authorized remote artifacts before classifying evidence as missing. Summaries alone cannot satisfy a raw-record requirement. Keep earlier snapshots unchanged.
 
-**Done when:** every retained headline has reconstructible provenance, or is explicitly quarantined pending a replacement run. Later E05 must replace quarantined core rows before submission.
+**Done when:** every retained headline has reconstructible provenance, or is explicitly quarantined with the specific missing validation/recovery step; every downstream task identifies reusable work. E05 recovers, repairs, or replaces only the affected evidence before using it in a submission claim.
 
 ### E01 — Establish decoder correctness before speed claims
 
@@ -125,11 +137,13 @@ Record exposure history and every change from the old protocol. Preserve histori
 
 **Done when:** fitting/calibration/development/final roles are unambiguous; counts and hashes are checked; decisions are frozen before dependent comparisons.
 
-### E05 — Re-establish the four main paired comparisons
+### E05 — Validate and reuse the four completed main comparisons; fill gaps
+
+Start from the four completed jobs, not four new launches. If recovered records and E01–E04 establish that a result supports the intended claim, retain it. If only scoring or aggregation is wrong, recompute it from existing outputs. If a code correction affects generation or timing, repeat only affected configurations and their necessary matched controls. Keep unaffected checkpoints and experiments. Any genuinely new final evaluation answers the data-independence question and is separately budgeted; it is not a rerun of completed MATH-500 work.
 
 **Starting configs:** selected DFlash and EAGLE-3 fits in `configs/protocol_active/`, their 8B/14B paired benchmarks, and `configs/breadth_ar/`. Copy amended configs into `configs/submission/runs/`; record the patch from each historical config.
 
-Use the existing Qwen3-4B source drafters on Qwen3-8B and 14B targets, with all compatible baseline arms. Native DFlash-14B is currently absent; availability must be verified rather than assumed. Retain MATH-500 for historical comparability, labeled according to exposure, and add the final set from E04. Save current outputs for scoring. Rotate method order per request, exclude warmups, synchronize timed GPU regions, and avoid competing jobs on a timed GPU.
+Use the existing Qwen3-4B source drafters on Qwen3-8B and 14B targets, with all compatible baseline arms. Native DFlash-14B is currently absent; availability must be verified rather than assumed. Retain valid MATH-500 evidence for historical comparability, labeled according to exposure, and add the final set from E04 where required for the final claim. Rescore existing outputs when possible. For necessary new measurements, rotate method order per request, exclude warmups, synchronize timed GPU regions, and avoid competing jobs on a timed GPU.
 
 **Done when:** the full main matrix has raw outputs, quality, lengths, agreement, times, accepted-prefix statistics and uncertainty; every denominator is explicit. A missing arm stays visibly unavailable.
 
@@ -269,14 +283,14 @@ Complexity earns a place by answering a question the simple method fails to answ
 
 ## 6. Calendar and compute allocation
 
-**Updated estimate after checking Turing job accounting:** see the [four-GPU time and compute budget](2026-09-05-relayspec-time-estimate.md). The user authorized at most four simultaneous Turing GPUs. The complete static plan is estimated at 140–280 researcher-hours and approximately 350–760 GPU-hours including reserve; the dates below are aggressive targets for a reduced scope, not a comfortable forecast for the entire expanded plan.
+**Estimate status after the reuse amendment:** see the [four-GPU time and compute budget](2026-09-05-relayspec-time-estimate.md). The user authorized at most four simultaneous Turing GPUs. The previous 140–280 researcher-hour and approximately 350–760 GPU-hour figures are conservative scope/contingency estimates, not an audited remaining-work total. E00 must subtract reusable evidence and separate new experiments from conditional reruns before those figures guide scheduling.
 
 Use at most the existing four-worker configuration as a planning reference; confirm available hardware before execution. This plan does not reserve resources or assume queued GPU time. Four workers can process independent requests; that is not four-way parallel execution of one request.
 
 | Window | Deliverables | If delayed |
 |---|---|---|
 | Sept 5–8 | E00–E04: raw evidence, decoder trace, equations, export and data contract | Continue correctness work; do not compensate by rushing benchmark expansion. |
-| Sept 8–12 | E05 main runs, E06 baseline pilots, E14 seeds | Cut optional extensions first. |
+| Sept 8–12 | E05 validate/reuse main evidence and fill gaps, E06 baseline pilots, E14 missing seeds | Cut optional extensions first. |
 | Sept 12–17 | Complete E06–E12 controlled evidence | Prioritize cheap baselines and existing negative cells before extra model sizes. |
 | Sept 17 | Register a genuine evidence-supported abstract, confirm author list | Do not promise an unfinished extension. |
 | Sept 18–21 | E16 pipeline, E17 rewrite, optional E13 only if ready | Freeze scientific scope and all run identities. |
@@ -302,7 +316,7 @@ Existing GPU entry points, to use **after** implementing E01–E04 and writing r
 
 ```bash
 # Set DFLASH_SOURCE or DEEPSPEC_SOURCE to the pinned checkout first.
-# Set RELAYSPEC_OUTPUT to a new run directory; never reuse a previous run.
+# For a justified new run, use a fresh RELAYSPEC_OUTPUT; never overwrite evidence.
 .venv/bin/python -m torch.distributed.run --standalone --nproc_per_node=4 \
   scripts/train_relay.py --config configs/submission/runs/CHOSEN_FIT.yaml
 .venv/bin/python -m torch.distributed.run --standalone --nproc_per_node=4 \

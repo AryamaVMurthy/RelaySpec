@@ -2,6 +2,8 @@
 
 Prepared 5 September 2026 after inspecting repository timings and live, read-only Slurm accounting on Turing. **Resource limit: four GPUs simultaneously**, as authorized by the user. No jobs were launched for this estimate.
 
+**Reuse amendment, 5 September:** all valid existing work must be reused. The four main jobs below are completed, and their 7 h 42 m runtime is already spent. The estimates retained below describe a conservative expanded scope with replacement contingencies; they are **not an audited list of remaining runs or a commitment to repeat completed experiments**. A remaining-work total is pending the artifact reuse inventory in E00. Documentation fixes, offline rescoring and figure regeneration do not by themselves require new generation. New launches must identify a specific evidence gap or affected defect as described in the [execution plan](2026-09-05-relayspec-evidence-execution-plan.md#2-work-order-and-result-gates).
+
 ## Recommendation
 
 - **Focused submission:** approximately **3–4 calendar weeks** for one lead researcher working with coding assistance, assuming six productive hours per day and six working days per week. An aggressive **14–20 calendar days** is possible with roughly eight focused hours daily, prompt GPU access, early correctness resolution and reduced optional scope.
@@ -54,7 +56,7 @@ The researcher ranges already include ordinary iteration. A fundamental algorith
 
 ### How the compute ranges were constructed
 
-- **Main evaluation, E05:** reserve 16–24 four-GPU hours for the historical four-pair suite plus a comparably sized genuinely new final evaluation and modest reruns. One historical-size suite alone takes approximately 7.7 hours. A larger final manifest changes this estimate proportionally only when its output lengths and method costs are comparable.
+- **Main evaluation, E05:** the earlier 16–24 four-GPU-hour allowance assumed replacement of the historical four-pair suite, a comparably sized new final evaluation and modest reruns. This is a contingency, not mandatory remaining work. Reuse of all valid historical main evidence removes the approximately 7.7-hour replacement from that allowance. If only some configurations are affected, charge only those reruns and needed matched controls. Additional independent evaluation remains a separate question. Do not subtract the same saved hours again from other tasks or assume reuse is validated before the audit.
 - **Seed stability, E14:** budget 3–6 hours for additional connector fits and candidate evaluation on representative pairs. Reuse identical fixed reference outputs only when prompt, model, software, precision and measurement contracts match; otherwise re-run controls. Do not select the best seed.
 - **Cheap baselines, E06:** budget two representative drafter families, three fitting budgets, development screening and final evaluations of the selected alternatives. Existing source/native controls can be reused only under an identical validated protocol. External integration effort is the greater uncertainty.
 - **Ablations, E07–E09:** screen on development subsets, then run frozen selected comparisons on final data. The estimate covers the stated small sweeps, not unrestricted hyperparameter search.
@@ -105,4 +107,4 @@ Keep at most four GPUs allocated across all RelaySpec jobs. A four-worker job us
 
 ## Next estimate update
 
-After the first corrected diagnostic pilot, replace the uncertain decoder budget with observed effort. After one main paired run and one cheap-baseline pilot, replace their runtime projections with actual Slurm elapsed time. Recompute the remaining matrix and calendar then. Until those checkpoints, quoting a precise completion date for every planned extension would be misleading.
+First complete the reuse inventory and subtract all already-valid work from each task. Then use the smallest necessary diagnostic and cheap-baseline pilot to update unresolved runtime estimates. A new main paired run is needed only when its existing evidence is invalid or insufficient for the intended claim. Recompute the remaining matrix and calendar from this inventory; until then, quoting a precise completion date for every planned extension would be misleading.

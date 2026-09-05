@@ -29,7 +29,7 @@
   "tasks": [
     {
       "id": "E00",
-      "title": "Recover headline raw artifacts",
+      "title": "Inventory reusable work and recover missing evidence",
       "status": "planned",
       "required": true,
       "depends_on": [],
@@ -113,7 +113,7 @@
     },
     {
       "id": "E05",
-      "title": "Re-establish main paired comparisons",
+      "title": "Validate and reuse completed main comparisons; fill justified gaps",
       "status": "planned",
       "required": true,
       "depends_on": [
@@ -129,7 +129,19 @@
         "scripts/benchmark_relay.py",
         "scripts/benchmark_eagle3.py"
       ],
-      "completion_record": "reports/submission-execution/E05.json"
+      "completion_record": "reports/submission-execution/E05.json",
+      "existing_execution": {
+        "status": "completed",
+        "job_ids": [
+          "27357",
+          "27325",
+          "27396",
+          "27397"
+        ],
+        "claim_validation": "pending",
+        "default_action": "recover_validate_reuse",
+        "automatic_rerun": false
+      }
     },
     {
       "id": "E06",
@@ -375,5 +387,24 @@
     "max_simultaneous_gpus": 4,
     "authorized_by": "User message: you can use 4 turing GPUs for this",
     "note": "Planning limit; does not launch jobs or enforce a Slurm account-wide limit."
+  },
+  "reuse_policy": {
+    "date": "2026-09-05",
+    "instruction": "Reuse all valid existing work before scheduling new experiments.",
+    "default": "inventory_and_validate_existing_artifacts",
+    "before_new_gpu_run": [
+      "List existing artifacts considered and their reuse decisions.",
+      "Identify the specific missing question or defect and affected configurations.",
+      "Explain why recovery, rescoring or offline recomputation is insufficient.",
+      "Limit reruns to affected measurements and required matched controls."
+    ],
+    "remaining_budget_status": "pending_reuse_inventory",
+    "completed_main_job_ids": [
+      "27357",
+      "27325",
+      "27396",
+      "27397"
+    ],
+    "note": "Completed execution does not automatically establish scientific validity; pending validation does not imply a rerun is needed."
   }
 }
