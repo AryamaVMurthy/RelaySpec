@@ -561,3 +561,44 @@ chooses matching AR/native/source references. It checks the template hash
 where the fit gate records one and the family's declared input normalization.
 The original DFlash30-map configuration and provenance reproduce byte for
 byte. EAGLE capacity decoding remains gated on all14 declared primary fits.
+
+
+## Confirmation quality-margin correction before generation
+
+The initial new confirmation protocol used a3-point quality margin, which
+was looser than the existing evidence plan's1-point tolerance. Corrected
+it to0.01 absolute accuracy and retained the original protocol hash in a
+pre-generation amendment. This supersedes the earlier3-point entry above.
+No selected-model record or confirmation/reserve generation exists yet.
+The fixed256-request test may be inconclusive, which must be reported.
+Do not loosen the criterion or add reserve requests after seeing results.
+The data manifests and their hashes are unchanged.
+
+## Small-data continuation and failed adaptation diagnosis
+
+Reconfirmed the user's pause on further large-data fitting. No32,768-example
+fit is running or queued. Preserve existing scaling results and feature caches.
+Continue at512/2048 distinct fitting examples and assess actual decoding gains.
+
+All16 EAGLE small-capacity fitting cells are now collected. The complete
+14-primary-map decoding configuration was generated only after verifying
+every fit gate, declared trial, cache hash and8192-update checkpoint.
+It uses16 development requests,256 output tokens and three family controls.
+The EAGLE path already passed its short correctness pilot27793.
+
+Adaptation pilot27810 failed after45seconds at the outer duplicate-seed
+merged-weight comparison. Each of its four individual fitting gates passed.
+The two rank32 workers have identical first-step loss4.539029240608215,
+then differ from step2 onward. This does not yet distinguish initialization,
+prepared inputs or backward numerical nondeterminism. The failed logs,
+fit gates and loss traces are preserved in the original report tree.
+No adaptation result was promoted or decoded.
+
+A diagnostic-only variant records exact prepared-input, teacher-label,
+initial-trainable, initial-logit and first-step gradient hashes. It repeats
+the first backward pass with identical weights and restored RNG, records
+within-worker gradient/logit agreement, then restores the original gradients
+and RNG before the original optimizer update. The equality gate remains
+unchanged. This gathers boundary evidence before choosing a fix, and its
+instrumented timing is not a scientific training-cost result. Nineteen
+existing adaptation, LoRA and mapper-campaign tests and targeted lint pass.

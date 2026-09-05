@@ -28,12 +28,23 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def tensors_sha(values):
+    """Device-independent exact diagnostic digest, including tensor metadata."""
+    digest = hashlib.sha256()
+    for name, value in values:
+        value = value.detach().cpu().contiguous()
+        digest.update(f"{name}:{value.dtype}:{tuple(value.shape)}:".encode())
+        digest.update(value.view(torch.uint8).numpy().tobytes())
+    return digest.hexdigest()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, required=True)
     args = parser.parse_args()
     config = yaml.safe_load(args.config.read_text())
     settings = config["adaptation_pilot"]
+    diagnostics = settings.get("diagnostics", False)
     rank = int(os.environ["LOCAL_RANK"])
     if int(os.environ["WORLD_SIZE"]) != 4 or torch.cuda.device_count() != 4:
         raise ValueError("pilot requires four independent GPU workers")
@@ -162,6 +173,29 @@ def main():
         mapper.requires_grad_(True)
         trainable = list(mapper.parameters())
     optimizer = torch.optim.AdamW(trainable, lr=2e-4, weight_decay=0.0)
+    diagnostic = {}
+    if diagnostics:
+        diagnostic = {
+            "prepared_records_sha256": tensors_sha(
+                (f"{i}/{j}", tensor)
+                for i, record in enumerate(records)
+                for j, tensor in enumerate(record)
+            ),
+            "labels_sha256": tensors_sha(
+                (str(i), record[-1]) for i, record in enumerate(records)
+            ),
+            "initial_trainable_sha256": tensors_sha(
+                (str(i), p) for i, p in enumerate(trainable)
+            ),
+            "initial_logits_sha256": tensors_sha([("logits", initial_logits)]),
+            "torch_version": torch.__version__,
+            "cuda_version": torch.version.cuda,
+            "deterministic_algorithms": torch.are_deterministic_algorithms_enabled(),
+            "cublas_workspace_config": os.environ.get("CUBLAS_WORKSPACE_CONFIG"),
+        }
+        (output / "diagnostics.json").write_text(
+            json.dumps(diagnostic, indent=2) + "\n"
+        )
     setup_seconds = time.perf_counter() - started
     history = []
     torch.cuda.synchronize()
@@ -169,10 +203,56 @@ def main():
     for step in range(16):
         optimizer.zero_grad(set_to_none=True)
         loss_value = 0.0
+        if diagnostics and step == 0:
+            initial_rng = torch.cuda.get_rng_state(device)
+            initial_cpu_rng = torch.get_rng_state()
+            microsteps = []
         for record in records[step * 4 : step * 4 + 4]:
-            loss = greedy_agreement_ce(logits(record), record[-1]) / 4
+            prediction = logits(record)
+            loss = greedy_agreement_ce(prediction, record[-1]) / 4
             loss.backward()
             loss_value += float(loss.detach())
+            if diagnostics and step == 0:
+                microsteps.append(
+                    {
+                        "logits_sha256": tensors_sha([("logits", prediction)]),
+                        "accumulated_gradient_sha256": tensors_sha(
+                            (str(i), p.grad) for i, p in enumerate(trainable)
+                        ),
+                    }
+                )
+        if diagnostics and step == 0:
+            original_gradients = [p.grad.detach().clone() for p in trainable]
+            post_rng = torch.cuda.get_rng_state(device)
+            post_cpu_rng = torch.get_rng_state()
+            optimizer.zero_grad(set_to_none=True)
+            torch.cuda.set_rng_state(initial_rng, device)
+            torch.set_rng_state(initial_cpu_rng)
+            repeat_logits = []
+            for record in records[:4]:
+                prediction = logits(record)
+                repeat_logits.append(tensors_sha([("logits", prediction)]))
+                (greedy_agreement_ce(prediction, record[-1]) / 4).backward()
+            diagnostic["first_step"] = {
+                "microsteps": microsteps,
+                "repeat_logits_bit_identical": repeat_logits
+                == [row["logits_sha256"] for row in microsteps],
+                "repeat_gradients_bit_identical": all(
+                    torch.equal(p.grad, original)
+                    for p, original in zip(trainable, original_gradients, strict=True)
+                ),
+                "repeat_gradient_max_abs_difference": max(
+                    (p.grad - original).abs().max().item()
+                    for p, original in zip(trainable, original_gradients, strict=True)
+                ),
+            }
+            for p, original in zip(trainable, original_gradients, strict=True):
+                p.grad = original
+            torch.cuda.set_rng_state(post_rng, device)
+            torch.set_rng_state(post_cpu_rng)
+            (output / "diagnostics.json").write_text(
+                json.dumps(diagnostic, indent=2) + "\n"
+            )
         if not all(
             p.grad is not None and torch.isfinite(p.grad).all() for p in trainable
         ):

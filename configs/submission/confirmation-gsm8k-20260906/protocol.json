@@ -9,8 +9,8 @@
   "reserve_requests": 256,
   "selection_rule": "Freeze one deployment candidate using fitting validation plus existing development decoding before any confirmation generation. Freeze its trained checkpoint hash, comparison checkpoint hashes, model revisions, generation configuration and scorer version in a separate model-selection record. Never tune on confirmation/reserve results.",
   "primary_quality_comparison": "Selected candidate minus matched native autoregressive target accuracy on the same requests.",
-  "quality_noninferiority_margin_absolute": 0.03,
-  "quality_pass_rule": "Lower endpoint of a paired 95% confidence interval for candidate minus AR accuracy must exceed -0.03. An inconclusive interval does not prove noninferiority.",
+  "quality_noninferiority_margin_absolute": 0.01,
+  "quality_pass_rule": "Lower endpoint of a paired 95% confidence interval for candidate minus AR accuracy must exceed -0.01. An inconclusive interval does not prove noninferiority.",
   "primary_speed_comparison": "Selected smaller-data/capacity candidate versus a separately frozen best development mapper, measured on the same requests and allocation.",
   "speed_retention_threshold": 0.95,
   "speed_pass_rule": "Lower endpoint of paired 95% interval for ratio of aggregate output tokens per decode second must exceed 0.95 to confirm operational speed retention. Also report total request latency and different output lengths.",
@@ -34,5 +34,12 @@
   "cap_handling": "Report cap-hit count/rate and score all requests under the fixed cap. Do not silently remove truncated or failed examples. Diagnose invalid result rows before reporting timing/quality.",
   "joint_claim": "Require both predeclared speed-retention and quality-noninferiority criteria. Secondary candidate/length/acceptance analyses are exploratory and do not redefine the primary test.",
   "reserve_policy": "Do not run reserve for tuning, selecting among candidates, or optional sample-size extension after inspecting primary confirmation. It remains available for a separately preregistered future replication.",
-  "scope": "The data gate covers scanned local evaluation history and lexical overlap, not global non-exposure, pretrained-model contamination or semantic/template independence. A successful test concerns the selected setting and sampled GSM8K workload, not a unique global optimum."
+  "scope": "The data gate covers scanned local evaluation history and lexical overlap, not global non-exposure, pretrained-model contamination or semantic/template independence. A successful test concerns the selected setting and sampled GSM8K workload, not a unique global optimum.",
+  "pre_generation_amendment": {
+    "previous_protocol_sha256": "d0e73bacd592d5c16168f86a2570df7c3959d0f94c1eef65f141c294f92ce0e1",
+    "change": "Restore the existing evidence-execution plan one-percentage-point quality tolerance; the initial confirmation file incorrectly used a looser three-point margin.",
+    "authority": "docs/plans/2026-09-05-relayspec-evidence-execution-plan.md, Metrics before computing them",
+    "timing": "Before model selection or any confirmation/reserve generation. Data and reserve hashes are unchanged.",
+    "consequence": "The fixed256-request primary test may remain inconclusive. Do not loosen the threshold or optionally add reserve data after observing results."
+  }
 }
