@@ -1,6 +1,8 @@
 """Replay SD-square's failed AR comparison and observe both sides of the first difference."""
 
 import argparse
+import copy
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -11,11 +13,95 @@ from pilot_sd_square import cached_ar, digest, tensor_digest
 from relayspec.sd_square_adapter import committed_tokens, load_sd_square
 
 
+def install_causal_probe(model, spec):
+    probe = {}
+
+    def equal_caches(first, second):
+        pairs = list(zip(first, second, strict=True))
+        return all(
+            torch.equal(a, b)
+            for left, right in pairs
+            for a, b in zip(left, right, strict=True)
+        )
+
+    def hook(module, args, kwargs):
+        cache = kwargs.get("past_key_values")
+        if (
+            probe
+            or cache is None
+            or cache.get_seq_length() != spec["physical_cache_prefix"]
+        ):
+            return
+        query = args[0] if args else kwargs["input_ids"]
+        offset = spec["query_offset"]
+        if query.shape[1] != 9 or not 0 <= offset < query.shape[1] - 1:
+            raise ValueError("causal probe query differs from failed verification call")
+        pristine = copy.deepcopy(cache)
+        baseline_cache, changed_cache = copy.deepcopy(cache), copy.deepcopy(cache)
+        if not equal_caches(cache, baseline_cache) or not equal_caches(
+            cache, changed_cache
+        ):
+            raise ValueError("causal probe cache copies differ before intervention")
+        if any(
+            a.data_ptr() == b.data_ptr()
+            for left, right in zip(cache, baseline_cache, strict=True)
+            for a, b in zip(left, right, strict=True)
+        ):
+            raise ValueError("causal probe cache copy shares original storage")
+        baseline_kwargs = dict(kwargs, past_key_values=baseline_cache)
+        baseline = module.forward(*args, **baseline_kwargs)
+        baseline_logits = model.v_base.lm_head(baseline["out"].last_hidden_state)
+        changed = query.clone()
+        changed[:, offset + 1 :] = (
+            changed[:, offset + 1 :] + 7919
+        ) % model.v_base.config.vocab_size
+        changed_kwargs = dict(kwargs, past_key_values=changed_cache)
+        changed_args = (changed, *args[1:]) if args else args
+        if not args:
+            changed_kwargs["input_ids"] = changed
+        intervention = module.forward(*changed_args, **changed_kwargs)
+        changed_logits = model.v_base.lm_head(intervention["out"].last_hidden_state)
+        if not equal_caches(cache, pristine):
+            raise ValueError("causal intervention changed the original cache")
+        if not torch.equal(
+            baseline_logits[:, : offset + 1], changed_logits[:, : offset + 1]
+        ):
+            raise ValueError("future query tokens changed earlier verifier logits")
+        probe.update(
+            status="pass",
+            physical_cache_prefix=cache.get_seq_length(),
+            query_offset=offset,
+            original_query_ids=query[0].tolist(),
+            changed_query_ids=changed[0].tolist(),
+            cache_copies_exact_and_independent=True,
+            original_cache_unchanged=True,
+            prefix_logits_bit_identical=True,
+            baseline_logits_float32_sha256=hashlib.sha256(
+                baseline_logits[0].float().cpu().contiguous().numpy().tobytes()
+            ).hexdigest(),
+        )
+
+    handle = model.v_base.get_decoder().register_forward_pre_hook(
+        hook, with_kwargs=True
+    )
+    return probe, handle
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=Path, required=True)
     args = parser.parse_args()
     spec = json.loads(args.config.read_text())
+    if "causal_probe" in spec:
+        prior_numerical = (
+            Path(os.environ["SD_SQUARE_NUMERICAL_OUTPUT"])
+            / "sd-square-numerical-gate.json"
+        )
+        if (
+            digest(prior_numerical)
+            != spec["causal_probe"]["source_numerical_gate_sha256"]
+        ):
+            raise ValueError("causal probe numerical prerequisite changed")
     pilot_path = Path(spec["pilot_config"])
     pilot = json.loads(pilot_path.read_text())
     config_path = Path(pilot["setup_config"])
@@ -81,12 +167,30 @@ def main():
     ar_trace = []
     model._relayspec_trace = []
     model._relayspec_detailed_trace = True
+    probe, handle = (
+        install_causal_probe(model, spec["causal_probe"])
+        if "causal_probe" in spec
+        else ({}, None)
+    )
     with torch.no_grad(), torch.autocast("cuda", dtype=torch.bfloat16):
         ar = cached_ar(model.v_base, ids, 64, model.eot_id, ar_trace)
         model.generate(ids, attention_mask=torch.ones_like(ids), max_new_tokens=64)
         public_ar, _ = model._generate_vanilla(
             ids, attention_mask=torch.ones_like(ids), max_new_tokens=16
         )
+    if handle is not None:
+        handle.remove()
+        if probe.get("status") != "pass":
+            raise ValueError("declared causal intervention did not execute")
+        actual = next(
+            b
+            for b in model._relayspec_trace
+            if b["physical_cache_prefix"] == probe["physical_cache_prefix"]
+        )
+        if actual["logits_float32_sha256"] != probe["baseline_logits_float32_sha256"]:
+            raise ValueError(
+                "copied-cache baseline differs from actual verifier logits"
+            )
     tokens, raw = committed_tokens(model._relayspec_trace, 64, model.eot_id)
     if attention == "sdpa" and (tokens != row["output_ids"] or ar != row["ar_ids"]):
         raise ValueError("original SD-square numerical difference did not reproduce")
@@ -139,6 +243,8 @@ def main():
         == ar[:16],
         "scope": spec["scope"],
     }
+    if handle is not None:
+        result["causal_probe"] = probe
     (Path(os.environ["RELAYSPEC_OUTPUT"]) / f"numerical-rank{rank}.json").write_text(
         json.dumps(result, indent=2) + "\n"
     )

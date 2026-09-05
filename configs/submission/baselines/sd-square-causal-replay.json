@@ -1,0 +1,23 @@
+{
+  "pilot_config": "configs/submission/baselines/sd-square-pilot.json",
+  "pilot_config_sha256": "b945a75889420a2eb376a34368fae419d4eabe0c47618b180df520869083e7af",
+  "source_job": 27869,
+  "source_rank": 2,
+  "source_gate_sha256": "2bfa2db4b594624110c6f5cb869372aa398be68a56f545401f27b5e25f9ad4d5",
+  "source_decoding_sha256": "bbad357d279c534d023a0bcde947e2db3c6853530eb969b81d9a736fff63470c",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/sd-square-fits/27869/rank2/steering-state.pt",
+  "checkpoint_sha256": "e1ce24f3bfa193f25f35b4282cd30e5c1ec34fa287cdf46a219f6af04e77dfd3",
+  "target_attention_by_rank": [
+    "sdpa",
+    "sdpa",
+    "eager",
+    "eager"
+  ],
+  "first_observed_difference": 49,
+  "scope": "Controlled causal-mask diagnostic at the first observed SD-square/AR disagreement. Duplicate SDPA/eager workers, exact independent copies of the same incoming KV cache, original query versus perturbed future query tokens. No new fitting. Original exact-AR failure is preserved.",
+  "causal_probe": {
+    "source_numerical_gate_sha256": "d87ea7e6ef988256af1dcce24f5e94641051176e313abe3c6d62355f3b35e499",
+    "physical_cache_prefix": 129,
+    "query_offset": 2
+  }
+}

@@ -38,5 +38,5 @@ nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used --format
 monitor=$!
 trap 'kill "$monitor" 2>/dev/null || true' EXIT
 timeout --signal=TERM --kill-after=10s 540s "$RELAYSPEC_PYTHON" -m torch.distributed.run \
-  --standalone --nproc_per_node=4 scripts/pilot_sd_square_numerical.py --config configs/submission/baselines/sd-square-numerical-replay.json
+  --standalone --nproc_per_node=4 scripts/pilot_sd_square_numerical.py --config "${SD_SQUARE_NUMERICAL_CONFIG:-configs/submission/baselines/sd-square-numerical-replay.json}"
 "$RELAYSPEC_PYTHON" scripts/summarize_sd_square_numerical.py

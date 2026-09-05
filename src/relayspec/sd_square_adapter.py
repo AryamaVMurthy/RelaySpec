@@ -106,6 +106,9 @@ def capture_sd_square_step(
     if getattr(model, "_relayspec_detailed_trace", False):
         values, indices = logits[0].float().topk(5, dim=-1)
         model._relayspec_trace[-1].update(
+            logits_float32_sha256=hashlib.sha256(
+                logits[0].float().cpu().contiguous().numpy().tobytes()
+            ).hexdigest(),
             output_start=sum(len(r["tokens"]) for r in model._relayspec_trace[:-1]),
             top_ids=indices.cpu().tolist(),
             top_scores=values.cpu().tolist(),

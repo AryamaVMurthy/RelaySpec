@@ -21,6 +21,11 @@ def main():
             k: v for k, v in rows[b].items() if k != "rank"
         }:
             raise ValueError("SD-square numerical duplicate differed")
+    causal = {}
+    if any("causal_probe" in r for r in rows):
+        if not all(r.get("causal_probe", {}).get("status") == "pass" for r in rows):
+            raise ValueError("causal intervention is incomplete")
+        causal = {rows[r]["target_attention"]: rows[r]["causal_probe"] for r in (0, 2)}
     (output / "sd-square-numerical-gate.json").write_text(
         json.dumps(
             {
@@ -37,6 +42,7 @@ def main():
                     for r in (0, 2)
                 },
                 "original_ar_identity_gate": "failed_preserved",
+                "causal_probes": causal,
                 "scope": "Numerical diagnosis only. Same effective token prefixes and duplicate observations "
                 "do not restore exact-AR equivalence or establish full-answer quality. No new fitting.",
             },
