@@ -977,3 +977,24 @@ pilot before full budget trajectories are launched.
 
 The broader required baseline, transfer, final-quality, autoresearch and
 paper-reproduction work remains active. No large-data run was resumed.
+
+## Timed budget pilot and full trajectory execution
+
+Quarter-budget pilot 27861, source 1c8a72f, passed in 2m33s. Per-update
+timing traces establish first-crossing stopping. Feature regression ran
+2026 updates, connector CE 106, and LoRA seeds1729/1730 ran95/94.
+Warm budget overshoots are 0.0092, 0.0826, 0.1514 and 0.0054s, all
+within the final optimizer update. Initial mapper training is included
+in the CE/LoRA warm budget. The pilot also passed actual decoding and
+the zero-LoRA identity control. Setup, export and cache construction are
+not silently included in the warm budget and remain separate charges.
+
+Full one-times and four-times fits are jobs27864 and27865, using the same
+immutable pilot code. Each has a 540-second process limit and a ten-minute
+Slurm limit. They are sequential afterok dependencies, preserving four
+GPUs total. The common budget decoding builder requires all three gates,
+checks each fit identity and each checkpoint file, and fixes all twelve
+endpoints plus initial/dense references and three inherited controls
+before generation. Its 16-request256-token development scope is explicit.
+Formal budget results are not complete until the full fits and common
+decoding have been collected and audited. Large-data fitting stays paused.
