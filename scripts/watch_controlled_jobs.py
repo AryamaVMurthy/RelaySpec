@@ -89,6 +89,7 @@ def main():
                         "pard_pilot",
                         "pard_cache_replay",
                         "timed_budget_fit",
+                        "sd_square_pilot",
                     }
                     if fitting_only:
                         gate_file = {
@@ -100,6 +101,7 @@ def main():
                             "pard_pilot": "pard-pilot-gate.json",
                             "pard_cache_replay": "cache-replay-gate.json",
                             "timed_budget_fit": "timed-budget-gate.json",
+                            "sd_square_pilot": "sd-square-pilot-gate.json",
                         }[job["kind"]]
                         gate = json.loads((destination / gate_file).read_text())
                         if gate["status"] != "pass":

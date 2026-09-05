@@ -35,7 +35,7 @@ def tensor_digest(named):
 
 
 @torch.no_grad()
-def cached_ar(model, ids, cap, eos):
+def cached_ar(model, ids, cap, eos, trace=None):
     from transformers import DynamicCache
 
     cache, current, result = DynamicCache(), ids, []
@@ -44,6 +44,16 @@ def cached_ar(model, ids, cap, eos):
             input_ids=current, past_key_values=cache, use_cache=True, return_dict=True
         )
         current = out.logits[:, -1:].argmax(-1)
+        if trace is not None:
+            values, indices = out.logits[0, -1].float().topk(5)
+            trace.append(
+                {
+                    "output_start": len(result),
+                    "argmax_id": int(current.item()),
+                    "top_ids": indices.cpu().tolist(),
+                    "top_scores": values.cpu().tolist(),
+                }
+            )
         result.append(int(current.item()))
         if result[-1] == eos:
             break
@@ -205,7 +215,7 @@ def main():
             history.append(
                 {
                     "step": step,
-                    "loss": float(loss),
+                    "loss": float(loss.detach()),
                     "gradient_norm": float(norm),
                     "seconds": time.perf_counter() - tick,
                     "record": entries[step - 1]["file"],

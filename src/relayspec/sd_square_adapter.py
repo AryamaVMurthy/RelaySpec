@@ -37,7 +37,7 @@ def load_sd_square(source, config, model_paths):
     step.body.insert(
         positions[0],
         ast.parse(
-            "_relayspec_capture(self, input_ids, curr_pos, NA, next_token, v_logits, has_ended)"
+            "_relayspec_capture(self, input_ids, curr_pos, NA, next_token, v_logits, has_ended, attention_mask, position_ids)"
         ).body[0],
     )
     ast.fix_missing_locations(tree)
@@ -48,28 +48,7 @@ def load_sd_square(source, config, model_paths):
     exec(compile(tree, module.__file__, "exec"), module.__dict__)
     module.PRETTY_PRINT = False
 
-    def capture(model, ids, curr, accepted, next_token, logits, ended):
-        if ids.shape[0] != 1:
-            raise ValueError("acceptance observer currently requires batch one")
-        if bool(ended[0]):
-            return
-        count = int(accepted[0])
-        proposed = ids[0, curr + 1 : curr + count + 1].tolist()
-        committed = proposed + [int(next_token[0, 0])]
-        target = logits[0, : count + 1].argmax(-1).tolist()
-        if model.greedy_sample and committed != target:
-            raise ValueError(
-                "SD-square committed a token differing from its greedy verifier"
-            )
-        model._relayspec_trace.append(
-            {
-                "accepted_draft_tokens": count,
-                "tokens": committed,
-                "verifier_argmax": target,
-            }
-        )
-
-    module._relayspec_capture = capture
+    module._relayspec_capture = capture_sd_square_step
     # Only model/tokenizer resolution changes. Public architectures, dtypes,
     # training loss, guidance, cache layout and rejection sampling are retained.
     import torch
@@ -100,6 +79,41 @@ def load_sd_square(source, config, model_paths):
     module.load_model = pinned_model
     module.AutoTokenizer = PinnedTokenizer
     return module
+
+
+def capture_sd_square_step(
+    model, ids, curr, accepted, next_token, logits, ended, mask, positions
+):
+    if ids.shape[0] != 1:
+        raise ValueError("acceptance observer currently requires batch one")
+    if bool(ended[0]):
+        return
+    count = int(accepted[0])
+    proposed = ids[0, curr + 1 : curr + count + 1].tolist()
+    committed = proposed + [int(next_token[0, 0])]
+    target = logits[0, : count + 1].argmax(-1).tolist()
+    if model.greedy_sample and committed != target:
+        raise ValueError(
+            "SD-square committed a token differing from its greedy verifier"
+        )
+    model._relayspec_trace.append(
+        {
+            "accepted_draft_tokens": count,
+            "tokens": committed,
+            "verifier_argmax": target,
+        }
+    )
+    if getattr(model, "_relayspec_detailed_trace", False):
+        values, indices = logits[0].float().topk(5, dim=-1)
+        model._relayspec_trace[-1].update(
+            output_start=sum(len(r["tokens"]) for r in model._relayspec_trace[:-1]),
+            top_ids=indices.cpu().tolist(),
+            top_scores=values.cpu().tolist(),
+            physical_cache_prefix=curr,
+            valid_cached_prefix_ids=ids[0, :curr][mask[0, :curr].bool()].cpu().tolist(),
+            query_ids=ids[0, curr : curr + model.NG + 1].cpu().tolist(),
+            query_positions=positions[0, curr : curr + model.NG + 1].cpu().tolist(),
+        )
 
 
 def committed_tokens(trace, cap, eos):
