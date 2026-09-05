@@ -96,6 +96,44 @@ def load_cached_record(root, entry):
     return payload["x"], payload["y"]
 
 
+class MappedFeatureReader:
+    """Verify once, retain read-only tensor views, and reject later file changes.
+
+    Feature files are immutable experiment inputs. Keeping their verified views
+    avoids reparsing and rehashing the same records on every fitting epoch.
+    Unlike a RAM preload, mmap lets the OS reclaim physical pages as needed.
+    """
+
+    def __init__(self, root):
+        self.root = Path(root)
+        self.records = {}
+
+    @staticmethod
+    def identity(path):
+        stat = path.stat()
+        return stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns
+
+    def __call__(self, entry):
+        path = self.root / entry["file"]
+        identity = self.identity(path)
+        cached = self.records.get(entry["file"])
+        if cached is not None:
+            original, expected_hash, tensors = cached
+            if identity != original or entry["sha256"] != expected_hash:
+                raise ValueError("verified mapped feature file changed")
+            return tensors
+        if identity[2] != entry["bytes"]:
+            raise ValueError("mapped feature file size mismatch")
+        if hashlib.sha256(path.read_bytes()).hexdigest() != entry["sha256"]:
+            raise ValueError("mapped feature hash mismatch")
+        payload = torch.load(path, mmap=True, weights_only=True, map_location="cpu")
+        if self.identity(path) != identity:
+            raise ValueError("mapped feature file changed during verification")
+        tensors = payload["x"], payload["y"]
+        self.records[entry["file"]] = identity, entry["sha256"], tensors
+        return tensors
+
+
 def pad_feature_batch(examples, device):
     if not examples:
         raise ValueError("feature batch must be nonempty")

@@ -12,6 +12,7 @@ from pathlib import Path
 import torch
 
 from relayspec.feature_cache import (
+    MappedFeatureReader,
     load_cached_record,
     pad_feature_batch,
     record_weighted_loss,
@@ -84,23 +85,35 @@ def main():
     objective = trial.get("feature_objective", "relative_interface_mse")
     cosine_weight = trial.get("historical_cosine_weight")
     setup_started = time.perf_counter()
+    backend = trial.get("cache_backend", "buffer")
+    if backend not in {"buffer", "mmap"}:
+        raise ValueError("unknown feature-cache backend")
+    reader = MappedFeatureReader(root) if backend == "mmap" else None
+
+    def read_entry(entry):
+        return reader(entry) if reader is not None else load_cached_record(root, entry)
+
     # Small fitting sets fit comfortably in host memory. Larger sets stream
     # through the shared OS page cache instead of duplicating hundreds of GB.
-    preloaded = (
-        {e["index"]: load_cached_record(root, e) for e in entries} if n <= 2048 else {}
-    )
+    preloaded = {e["index"]: read_entry(e) for e in entries} if n <= 2048 else {}
+    device_cache = bool(trial.get("device_cache", False))
+    if device_cache:
+        free, _ = torch.cuda.mem_get_info(device)
+        if sum(e["bytes"] for e in entries) > 0.7 * free:
+            raise ValueError("declared GPU feature cache exceeds its memory budget")
+        preloaded = {
+            e["index"]: tuple(t.to(device) for t in read_entry(e)) for e in entries
+        }
 
     def get_example(entry):
-        return (
-            preloaded[entry["index"]] if preloaded else load_cached_record(root, entry)
-        )
+        return preloaded[entry["index"]] if preloaded else read_entry(entry)
 
     validation_count = int(trial.get("validation_records", 32))
     validation_entries = [e for e in index["entries"] if e["split"] == "validation"]
     if validation_count < 1 or validation_count > len(validation_entries):
         raise ValueError("cache cannot supply the declared validation count")
     validation_entries = validation_entries[:validation_count]
-    validation = [load_cached_record(root, e) for e in validation_entries]
+    validation = [read_entry(e) for e in validation_entries]
     diagnostic_train = [
         get_example(e)
         for e in entries[: int(trial.get("diagnostic_train_records", 32))]
@@ -326,6 +339,8 @@ def main():
                 "validation_seconds": validation_seconds,
                 "input_io_seconds": io_seconds,
                 "setup_seconds": setup_seconds,
+                "cache_backend": backend,
+                "device_cache": device_cache,
                 "peak_gpu_bytes": torch.cuda.max_memory_allocated(device),
                 "feature_cache_index_sha256": hashlib.sha256(
                     index_path.read_bytes()

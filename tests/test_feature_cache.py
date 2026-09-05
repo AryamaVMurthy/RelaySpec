@@ -4,6 +4,7 @@ import pytest
 import torch
 
 from relayspec.feature_cache import (
+    MappedFeatureReader,
     finalize_cache,
     load_cached_record,
     pad_feature_batch,
@@ -38,6 +39,33 @@ def test_cached_roundtrip_coverage_and_corruption_detection(tmp_path):
     assert (
         json.loads((tmp_path / "cache-index.json").read_text())["counts"]["train"] == 8
     )
+
+
+def test_mapped_reader_preserves_tensors_and_rejects_changed_inputs(tmp_path):
+    def extract(row):
+        return (
+            torch.arange(12, dtype=torch.bfloat16).reshape(1, 4, 3),
+            torch.ones(1, 4, 2),
+            torch.arange(4)[None],
+        )
+
+    entries = write_cache_shard(
+        tmp_path, {"train": [{"i": 0}]}, rank=0, world_size=1, extract=extract
+    )
+    entry = entries[0]
+    reader = MappedFeatureReader(tmp_path)
+    baseline = load_cached_record(tmp_path, entry)
+    first = reader(entry)
+    second = reader(entry)
+    assert first is second
+    assert all(torch.equal(a, b) for a, b in zip(first, baseline, strict=True))
+    with pytest.raises(ValueError, match="changed"):
+        reader({**entry, "sha256": "0" * 64})
+    (tmp_path / entry["file"]).touch()
+    with pytest.raises(ValueError, match="changed"):
+        reader(entry)
+    with pytest.raises(ValueError, match="hash"):
+        MappedFeatureReader(tmp_path)({**entry, "sha256": "0" * 64})
 
 
 @pytest.mark.parametrize("objective", ["relative_interface_mse", "raw_mse"])
