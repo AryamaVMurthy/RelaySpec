@@ -19,12 +19,10 @@ OFFICIAL_HASHES = {
 }
 REQUIRED_SECTIONS = (
     "Introduction",
-    "Deployment setting and related work",
+    "Related work",
+    "Preliminaries",
     "Method",
-    "Throughput and acceptance",
-    "Experimental setup",
-    "Results",
-    "Ablations",
+    "Experiments",
     "Conclusion",
 )
 
@@ -340,9 +338,11 @@ def audit_manuscript(root: Path, *, write_report: bool = True) -> dict[str, Any]
     status_hits = [
         phrase for phrase in STATUS_PHRASES if phrase.lower() in pdf_text.lower()
     ]
-    clean_header_ok = not status_hits
-    clean_header_ok = clean_header_ok and source.index("\\maketitle") < source.index(
-        "\\lhead{}"
+    clean_header_ok = (
+        "Under review as a conference paper at ICLR 2027" in pdf_text
+        and "Published as a conference paper at ICLR 2027" not in pdf_text
+        and "\\lhead" not in source
+        and "\\fancyhead" not in source
     )
     engineering_detail_hits = [
         pattern
@@ -360,13 +360,15 @@ def audit_manuscript(root: Path, *, write_report: bool = True) -> dict[str, Any]
     statements_ok = all(
         heading in source
         for heading in (
-            "\\subsection*{AI use statement}",
-            "\\subsection*{Reproducibility statement}",
+            "\\section*{AI use statement}",
+            "\\section*{Reproducibility statement}",
+            "\\section*{Ethics statement}",
+            "\\section*{Appendix}",
         )
     )
     document_order_ok = (
         source.index("\\label{maintextend}")
-        < source.index("\\subsection*{AI use statement}")
+        < source.index("\\section*{AI use statement}")
         < source.index("\\bibliography{references}")
         < source.index("\\appendix")
     )
@@ -415,7 +417,7 @@ def audit_manuscript(root: Path, *, write_report: bool = True) -> dict[str, Any]
         _check(
             "clean anonymous status header",
             clean_header_ok,
-            "the official anonymous layout is retained without a review or publication-status sentence",
+            "the official anonymous review header is present without author overrides",
         ),
         _check(
             "reader-facing scientific detail",
@@ -434,7 +436,9 @@ def audit_manuscript(root: Path, *, write_report: bool = True) -> dict[str, Any]
         ),
         _check(
             "citation resolution",
-            not missing_citations and "undefined citations" not in log.lower(),
+            not missing_citations
+            and len(set(citation_keys)) >= 42
+            and "undefined citations" not in log.lower(),
             f"{len(set(citation_keys))} unique citation keys resolve",
         ),
         _check("generated result assets", generated_pass, generated_evidence),

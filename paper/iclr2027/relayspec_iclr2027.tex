@@ -9,27 +9,23 @@
 \author{Anonymous Authors}
 \begin{document}
 \maketitle
-\lhead{}
 
 \begin{abstract}
-Feature-conditioned speculative drafters are trained to consume the hidden
-states of a particular language model. Deploying the drafter with a new
-target therefore requires a compatible feature input. We introduce
-\method{}, which fits a linear map from the new target's hidden states to
-the input expected by an existing frozen drafter. This removes the original
-source transformer from the deployed conditioning path. Using 4,096
-problem-and-solution records, we retarget Qwen3-4B DFlash and EAGLE-3
-drafters to Qwen3-8B and Qwen3-14B. On MATH-500, end-to-end throughput is
-2.35--5.11 times that of plain autoregressive decoding. RelaySpec retains
-90.3\% of native DFlash-8B throughput and 89.1--90.2\% of native EAGLE-3
-throughput in paired comparisons. Math accuracy differs from the AR
-baseline by $-0.2$ to $+0.8$ percentage points. Data-budget, interface and
-block-size studies connect fitting choices to accepted progress and speed.
-Separate EAGLE-3 measurements show a 7.63--7.80 GiB reduction in peak
-allocated memory relative to source reuse. These results support a
-specific deployment option: reuse a trained drafter with a small new
-feature-fitting stage while retaining most of a target-specific drafter's
-measured throughput.
+A speculative drafter trained on one language model expects that model's
+features. Reusing it with a new target therefore requires a compatible
+input. RelaySpec learns a linear map from the new target's hidden states
+to the context consumed by the frozen drafter. The source model supplies
+fitting features, then leaves the deployed conditioning path. We fit the
+map on 4,096 problem-and-solution records and retarget Qwen3-4B DFlash and
+EAGLE-3 drafters to Qwen3-8B and Qwen3-14B. On MATH-500, measured
+end-to-end throughput is 2.35--5.11 times plain autoregressive decoding.
+The relay retains 89.1--90.3\% of native target-specific drafter throughput
+in paired comparisons. Math accuracy differs from AR by $-0.2$ to $+0.8$
+percentage points. Fitting-budget, normalization and block-size studies
+relate accepted progress to throughput. Separate EAGLE-3 measurements
+show 7.63--7.80 GiB lower peak allocated memory than source reuse.
+These results establish the measured cost and performance of fitting a
+new interface while retaining an already trained drafter.
 \end{abstract}
 
 \section{Introduction}
@@ -84,16 +80,20 @@ relating fitting budget, normalization and draft length to throughput,
 accepted progress and memory. The demonstrated setting is low-cost
 adaptation of an available drafter, with a new map for each target.
 
-\section{Deployment setting and related work}
+\section{Related work}
 \label{sec:related}
 
-\paragraph{The deployment choice.}
-A target-specific drafter is a natural performance reference. Source reuse
-is an immediate compatibility reference. RelaySpec provides a third
-choice: preserve the learned drafting model and replace the features that
-condition it. Its benefit is a small additional fitting stage after the
-source drafter has already been trained. This is useful when deploying a
-new target size while retaining an existing drafting implementation.
+\paragraph{Feature-conditioned drafting.}
+EAGLE predicts future features while conditioning on shifted tokens
+\citep{li2024eagle}. EAGLE-3 combines multiple feature layers with
+simulated drafting steps \citep{li2025eagle3}. DFlash instead predicts a
+block in parallel \citep{chen2026dflash}, while Medusa uses several
+prediction heads \citep{cai2024medusa}. GRIFFIN addresses token alignment
+between training and decoding \citep{hu2025griffin}. RepSpec expands
+linear structure during training and merges it for inference
+\citep{huo2026repspec}. VSD and Draft-OPD train toward accepted proposals
+\citep{zou2026vsd,lei2026draftopd}. These methods improve drafting itself.
+RelaySpec learns the input to a drafter whose weights remain fixed.
 
 \begin{table}[t]
 \caption{Closest approaches and the operation each learns. This is a method
@@ -115,33 +115,87 @@ RelaySpec & Map new-target features into a frozen drafter's input & Replace sour
 \end{tabular}
 \end{table}
 
-\paragraph{Relation to drafter training.}
-Medusa learns multiple prediction heads \citep{cai2024medusa}.
-EAGLE-3 trains on multi-layer features and simulated drafting steps.
-DFlash predicts a block in parallel. RepSpec changes training-time
-structure, while VSD and Draft-OPD change the training signal toward
-accepted proposals \citep{zou2026vsd,lei2026draftopd}. RelaySpec operates
-at the input of a released drafter, after this drafting capability has
-been learned. Table~\ref{tab:related} makes that distinction explicit.
+\paragraph{Reusing trained models.}
+PARD adapts a model for parallel drafting and supports reuse across
+ targets \citep{an2026pard}. SD$^2$ steers pretrained drafters with target
+information, including frozen variants \citep{berdoz2026sd2}.
+OmniDraft combines cross-vocabulary and online adaptation
+\citep{ramakrishnan2025omnidraft}. Verification across different
+vocabularies is also studied directly \citep{timor2025heterogeneous}.
+RelaySpec addresses a shared-vocabulary setting: replacing the original
+source transformer's conditioning features with mapped target features.
 
-\paragraph{Relation to reuse and execution.}
-PARD supports reuse across targets. SD$^2$ also studies frozen pretrained
-drafters, so freezing alone is not our distinction. Our operation replaces
-the source transformer required by a feature-conditioned drafter.
-OmniDraft adds cross-vocabulary and online adaptation
-\citep{ramakrishnan2025omnidraft}. Heterogeneous-vocabulary methods address
-verification across tokenizers \citep{timor2025heterogeneous}.
-Our central comparisons use Qwen3 models with a shared vocabulary.
-Scheduling methods such as speculative speculative decoding overlap
-proposal and verification work \citep{kumar2026ssd}. They address execution
-rather than the feature compatibility studied here.
+Small trainable modules and low-rank weight updates are established ways
+to adapt frozen models \citep{houlsby2019adapters,hu2022lora}.
+Learning connections between frozen networks is studied in model
+stitching \citep{bansal2021stitching}. Our map supplies a frozen drafter's
+input rather than modifying its internal weights. We measure decoding
+behavior and runtime, since a useful connection alone does not establish
+that two networks encode the same information \citep{smith2025stitching}.
 
-Learning maps between frozen networks is established in model stitching
-\citep{bansal2021stitching}. We assess the map by downstream drafting and
-runtime, since a successful connection alone does not identify what
-information two networks share \citep{smith2025stitching}. We report
-hardware and absolute throughput because speculative speed depends on
-both workload and runtime \citep{abramovich2026speedbench}.
+\paragraph{Proposal structure and execution.}
+EAGLE-2 and OPT-Tree adapt draft trees to improve accepted length
+\citep{li2024eagle2,wang2025opttree}. SpecInfer organizes tree-based
+proposal verification \citep{miao2024specinfer}. Distributed speculative
+inference and speculative speculative decoding overlap work across
+model instances or execution stages \citep{timor2025dsi,kumar2026ssd}.
+These choices affect cycle cost and can be studied separately from the
+feature map. Our comparisons hold the released decoder and proposal
+structure fixed within each drafter family.
+
+\paragraph{Drafting within the target.}
+Draft \& Verify skips target layers during drafting
+\citep{zhang2024draftverify}. LayerSkip trains early exits and shares
+computation with verification \citep{elhoushi2024layerskip}.
+Lookahead decoding generates and checks candidates without an auxiliary
+drafter \citep{fu2024lookahead}. RelaySpec serves a different deployment
+choice: retaining an available external drafter when changing the target.
+
+\section{Preliminaries}
+\label{sec:preliminaries}
+\subsection{Drafting and target verification}
+An autoregressive model generates one token at a time. Blockwise and
+speculative methods propose several tokens, then check them in a target
+pass \citep{stern2018blockwise,xia2023specdec,leviathan2023speculative}.
+In greedy decoding, the verifier commits the longest matching prefix
+and a target-selected next token. RelaySpec preserves this decoder and
+changes the features supplied to its drafter.
+
+\subsection{Throughput and accepted progress}
+\label{sec:cost}
+
+Our primary metric is end-to-end output throughput: total generated tokens
+divided by total request time, including prompt processing. Let $T_A$,
+$T_R$ and $T_N$ denote this throughput for plain AR, RelaySpec and the
+native target-specific drafter. We report
+\begin{equation}
+\text{AR speedup}=T_R/T_A,\qquad
+\text{native throughput retained}=100\,T_R/T_N\ \%.
+\label{eq:metrics}
+\end{equation}
+A retention value of 90\% means the reused drafter produces 90\% as many
+tokens per second as the target's own drafter. It is not the fraction of
+speedup above AR. We also report the ratio of summed AR request time to
+summed relay request time. This differs from a throughput ratio when
+output lengths differ.
+
+Acceptance explains how speed is obtained. We report the pooled number
+of tokens advanced per proposal-verification cycle, including the
+implementation's target-supplied progress. This is distinct from the
+fraction of proposed draft tokens accepted. Appendix~\ref{app:acceptance}
+gives the position-wise curves and precise counting convention.
+
+Let $c_R$ be the average relay cycle time and $a_R$ its average progress.
+Its decode time per output token is approximately $c_R/a_R$.
+If $c_A$ is AR time per token, then the decode-only approximation is
+\begin{equation}
+\text{AR-relative decode speed}\ \approx\ \frac{a_R c_A}{c_R}.
+\label{eq:cycle}
+\end{equation}
+Removing source conditioning reduces cycle cost. Imperfect feature
+matching may reduce progress. The map is useful when the saved computation
+outweighs the extra cycles. We measure end-to-end speed directly and use
+this approximation to interpret the component measurements.
 
 \section{Method}
 \label{sec:method}
@@ -166,7 +220,7 @@ generation, target features from committed positions feed the next draft.}
 
 The correct input depends on the released drafter. DFlash consumes a
 normalized projection. Let $N_{\rm in}$ denote fixed root-mean-square
-normalization of joined target features, which rescales a vector by the
+normalization of joined target features \citep{zhang2019rmsnorm}, which rescales a vector by the
 square root of its mean squared coordinate. Let $N_{\rm out}$ be the
 released drafter's frozen output normalization. EAGLE-3 consumes the raw
 projection. The teacher context $c_t$ and mapped context $\widehat c_t$ are
@@ -227,43 +281,8 @@ can change those choices. We therefore measure task accuracy and token
 agreement separately from throughput. The map itself never supplies the
 scores used for target verification.
 
-\section{Throughput and acceptance}
-\label{sec:cost}
-
-Our primary metric is end-to-end output throughput: total generated tokens
-divided by total request time, including prompt processing. Let $T_A$,
-$T_R$ and $T_N$ denote this throughput for plain AR, RelaySpec and the
-native target-specific drafter. We report
-\begin{equation}
-\text{AR speedup}=T_R/T_A,\qquad
-\text{native throughput retained}=100\,T_R/T_N\ \%.
-\label{eq:metrics}
-\end{equation}
-A retention value of 90\% means the reused drafter produces 90\% as many
-tokens per second as the target's own drafter. It is not the fraction of
-speedup above AR. We also report the ratio of summed AR request time to
-summed relay request time. This differs from a throughput ratio when
-output lengths differ.
-
-Acceptance explains how speed is obtained. We report the pooled number
-of tokens advanced per proposal-verification cycle, including the
-implementation's target-supplied progress. This is distinct from the
-fraction of proposed draft tokens accepted. Appendix~\ref{app:acceptance}
-gives the position-wise curves and precise counting convention.
-
-Let $c_R$ be the average relay cycle time and $a_R$ its average progress.
-Its decode time per output token is approximately $c_R/a_R$.
-If $c_A$ is AR time per token, then the decode-only approximation is
-\begin{equation}
-\text{AR-relative decode speed}\ \approx\ \frac{a_R c_A}{c_R}.
-\label{eq:cycle}
-\end{equation}
-Removing source conditioning reduces cycle cost. Imperfect feature
-matching may reduce progress. The map is useful when the saved computation
-outweighs the extra cycles. We measure end-to-end speed directly and use
-this approximation to interpret the component measurements.
-
-\section{Experimental setup}
+\section{Experiments}
+\subsection{Experimental setup}
 \label{sec:setup}
 
 \paragraph{Models and runtime.}
@@ -275,6 +294,10 @@ drafters within the same implementation and proposal setting. The main
 AR comparisons use four NVIDIA L40S GPUs, with one sequential request
 per worker. Historical block-size and isolated-memory studies use RTX
 6000 Ada GPUs. We compare methods within runs on the same hardware.
+Serving systems such as vLLM and SGLang also optimize cache use and
+request execution \citep{kwon2023pagedattention,zheng2024sglang}.
+Our timing isolates the stated per-request decoder rather than a
+concurrent serving workload.
 
 \begin{table}[t]
 \caption{Evaluation protocol. Main fitting choices remain fixed across
@@ -297,6 +320,8 @@ Uncertainty & 10,000 paired resamples, whole conversations for two-turn chat \\
 \end{table}
 
 \paragraph{Workloads and data use.}
+We evaluate math, code and conversation workloads because speculative
+speed varies across tasks \citep{xia2024specbench,abramovich2026speedbench}.
 MATH-500 supplies 500 questions \citep{lightman2023verify}. The breadth suite contains 128 GSM8K
 questions, 164 HumanEval tasks, 378 MBPP tasks and 80 two-turn MT-Bench
 conversations \citep{hendrycks2021math,cobbe2021gsm8k,chen2021humaneval,austin2021mbpp,zheng2023mtbench}.
@@ -315,7 +340,6 @@ first answer. Its bootstrap unit is the conversation. Other confidence
 intervals resample matched requests and condition on the fitted checkpoint.
 Model loading and external task scoring sit outside the request timer.
 
-\section{Results}
 \label{sec:results}
 
 \subsection{Acceleration over plain autoregressive decoding}
@@ -472,10 +496,10 @@ Source token embeddings and vocabulary projections required by a drafter
 remain part of deployment. The claim concerns the removed source
 transformer, not every tensor inherited from the source.
 
-\section{Ablations}
+\subsection{Ablation studies}
 \label{sec:ablations}
 
-\subsection{Fitting data and continued optimization}
+\subsubsection{Fitting data and continued optimization}
 
 The completed DFlash-8B budget sweep uses 512, 1,024 and 2,048 distinct
 records for one pass, followed by a configuration with two passes over
@@ -502,7 +526,7 @@ an already used manifest, so its gain reflects additional optimization
 as well as the larger distinct set. Table~\ref{tab:fit-ablation} reports
 all configurations and their actual budgets.
 
-\subsection{Draft length and interface choices}
+\subsubsection{Draft length and interface choices}
 
 The block-size experiment directly compares AR, native DFlash and the
 relay at lengths 8, 16 and 32 on 64 fixed requests. Block 16 gives the
@@ -546,19 +570,31 @@ Qwen3 comparisons achieve 2.35--5.11 times AR throughput and retain
 89.1--90.3\% of native target-specific drafter throughput using 4,096
 additional fitting records. Data-budget and interface studies explain
 how accepted progress improves, while source removal reduces cycle cost
-and memory. The results describe fixed checkpoints under greedy,
-single-request execution, with task quality and numerical agreement
-reported alongside speed.
+and memory. Task quality and numerical agreement are reported alongside speed.
+
+\paragraph{Scope.}
+The evidence concerns fixed Qwen3 checkpoints, shared vocabularies and
+greedy single-request decoding. Confidence intervals condition on the
+fitted map. The fitting-budget sweep varies data and optimization
+jointly. These conditions define the comparisons supported by the
+reported measurements.
 
 \label{maintextend}
-\subsection*{AI use statement}
+\section*{AI use statement}
 Generative AI assisted with implementation, code review, literature search,
 analysis and manuscript editing. Numerical tables and plots are generated
 from recorded artifacts with checked method, request and scorer identity.
 Scientific interpretation and submission decisions remain the authors'
 responsibility.
 
-\subsection*{Reproducibility statement}
+\section*{Ethics statement}
+This study evaluates inference methods using existing model checkpoints
+and benchmark datasets. It reports task quality alongside speed and
+retains the target's verification role. Faster generation retains the
+underlying models' potential biases and misuse risks. Use of the models
+and data remains subject to their respective licenses and terms.
+
+\section*{Reproducibility statement}
 The appendix specifies model identifiers, feature layers, fitting settings,
 measurement boundaries, complete workload results and data checks.
 The accompanying implementation includes configurations, request records,
@@ -569,6 +605,12 @@ scorer provenance and scripts that regenerate the reported assets.
 \clearpage
 \appendix
 \raggedbottom
+\section*{Appendix}
+The appendix gives implementation details (Appendix~\ref{app:protocol}),
+complete workload results (Appendix~\ref{app:breadth}), fitting studies
+(Appendix~\ref{app:design}), acceptance measurements
+(Appendix~\ref{app:acceptance}), data checks (Appendix~\ref{app:data})
+and fitting-time and memory measurements (Appendix~\ref{app:cost}).
 
 \section{Implementation and measurement details}
 \label{app:protocol}
@@ -787,6 +829,7 @@ These shared templates qualify the interpretation of math generalization.
 The fixed-map code and conversation evaluations give additional task
 coverage without changing the fitted map.
 
+\clearpage
 \section{Fitting time and isolated memory}
 \label{app:cost}
 

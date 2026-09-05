@@ -29,3 +29,10 @@ record covers the current PDF in color and grayscale. Rebuilding can change its
 hash, requiring inspection and an updated record before the audit passes.
 LaTeX intermediate files are ignored by Git and rebuilt locally. Official
 style files retain their original notices.
+
+The regenerated draft uses the unmodified official ICLR 2027 review style and
+bibliography style. It has nine main-text pages and eighteen pages in total.
+Its 42 cited sources comprise 36 peer-reviewed papers, five preprints and one
+software reference. The five preprints are Qwen3, GSM8K, HumanEval, MBPP and
+Draft-OPD. See the [citation and structure revision](../../docs/research/2026-09-05-iclr-format-and-citations.md)
+and [per-source status audit](../../reports/CITATION_STATUS_2026-09-05.json).
