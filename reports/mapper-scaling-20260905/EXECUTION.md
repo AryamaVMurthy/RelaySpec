@@ -681,3 +681,19 @@ requests above two cores. The setup launcher now requests two CPU cores
 and sets OMP_NUM_THREADS=2. This avoids extra GPU allocation during the
 running four-GPU quality evaluation. Record actual scheduler resources
 for the replacement before allowing it to run.
+
+Replacement CPU setup27823, source358ffd2, passed in49seconds. Its request
+was held until scontrol verified no GPU resource, then released. It installed
+the isolated overlay, downloaded the public checkpoint and verified its blob
+hash. PARD GPU pilot27824 is queued after successful setup and afterany27811.
+Pending EAGLE decoding27812 now follows afterany27824, so compatibility errors
+surface before the later seed fits without preventing independent EAGLE work.
+The pending dependency chain was explicitly verified. No running allocation
+was interrupted. This supersedes the previous allocation order for27812.
+
+Added a quality-results audit that requires all1536 scored rows for the
+128-question development run, exact saved mapper hashes, paired methods,
+and scoring/raw provenance before producing an evidence registry. It exposes
+2048-token cap-length outputs separately and does not assume they all lack
+EOS. The full evaluation remains running at this declaration, so the new
+audit has only been linted and is not yet executed on final scored outputs.
