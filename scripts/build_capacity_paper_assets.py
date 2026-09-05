@@ -23,7 +23,7 @@ def main():
     base = Path("reports/mapper-scaling-20260905")
     matrix_path = Path("configs/submission/scaling/matrix-focused-v1/matrix.json")
     fit_path, continued_path = (
-        base / "focused-results.json",
+        base / "primary-capacity-results.json",
         base / "continued-small-data-results.json",
     )
     matrix, fits, continued = [

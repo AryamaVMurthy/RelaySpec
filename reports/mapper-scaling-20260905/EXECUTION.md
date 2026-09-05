@@ -355,3 +355,47 @@ The factor1024 N512 point reaches96.4% of the highest mapper point with23.59M
 parameters; this is a descriptive development boundary, not a confirmed optimum.
 Paired candidate intervals and raw hashes are in capacity-decoding-results.json.
 Regularization27761 completed in2m28s and27762 is running normally.
+
+
+## Second-family pilot passed and current continuation
+
+EAGLE-3 pilot27777 passed in2m07s after the explicit dependency-path repair.
+It verified64 training/16 validation cache records, four16-update fits, BF16
+batch gradients and eight-request duplicate-map EAGLE decoding (identical
+outputs, progress, call counts and checkpoint hashes). Raw outputs and scoring
+are collected. The successful gate is eagle3-cache-pilot-v2/verified-gate.json.
+Job27783 will extract only2048 training/1024 validation records under a10minute
+ceiling, using source36104a0 and the exact pilot training-config hash. It follows
+regularization27778/27779/27780, which continue the already-validated DFlash path.
+The independent branch waits for an allocation to end without requiring a
+scientifically unrelated family pilot to succeed.
+
+Eight regularization cells have completed (40/76 focused cells total). For
+factor512 at N2048, L2 coefficients1e-7/1e-6/1e-5/1e-4 give validation
+0.26970/0.27392/0.28619/0.31197 versus0.26853 with no penalty. AdamW values
+1e-4/1e-3/1e-2 give0.268525/0.268539/0.268701, essentially unchanged at this
+seed and budget. Do not generalize these initial linear results to MLPs.
+The remaining regularization batches05--10 are not submitted yet.
+
+Paper capacity assets now read the frozen primary-capacity-results.json so
+live regularization updates to focused-results.json do not invalidate a figure
+whose primary data are unchanged. The paper audit passes every technical/source
+check and remains incomplete only for the final full color/grayscale PDF review.
+
+Independent evaluation work: all existing GSM8K evaluation manifests contain
+128 already-evaluated questions. A scan of collected benchmark-rank files
+found128 unique GSM8K IDs. The complete pinned test Arrow file is already
+cached at /home/aryamavmurthy/.cache/huggingface/datasets/openai___gsm8k/main/0.0.0/740312add88f781978c0658806c59bc2815b9866/gsm8k-test.arrow.
+The next confirmation manifest should use fresh questions from that source,
+exclude recorded evaluation prompts plus fitting/validation exact and near
+matches, and freeze the selection before observing new model outputs. This
+inventory alone is not an untouched-evaluation or semantic-independence gate.
+Do not reuse the old MATH confirmatory filename as evidence of current non-exposure.
+
+Next work: collect27783, generalize run_cached_batch's capacity pilot campaign
+config (currently DFlash-only) and its Slurm family import paths, then pilot
+selected EAGLE capacity extremes on the new small cache before full replication.
+Continue the regularization matrix, selected learning-rate/seed checks, full
+answer-quality evaluations, other pending paper baselines, and bounded
+hypothesis-driven research after fixed baselines. Large-data expansion remains
+paused. Neither the focused matrix nor the overall paper is complete.
