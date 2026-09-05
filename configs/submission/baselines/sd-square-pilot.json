@@ -1,0 +1,21 @@
+{
+  "setup_config": "configs/submission/baselines/sd-square-compatibility.json",
+  "setup_config_sha256": "4f882be369fc364b60b33b0b0ac75fc4d6f973c5be7ada71c62217e22d78519a",
+  "seed": 1729,
+  "feature_cache_index_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+  "manifest_path": "configs/eval_manifest.json",
+  "updates": 4,
+  "batch_size": 1,
+  "learning_rate": 1e-05,
+  "learning_rate_end": 1e-06,
+  "warmup_steps": 1,
+  "gradient_clip": 0.5,
+  "max_new_tokens": 64,
+  "worker_objectives": [
+    "tvd",
+    "tvd",
+    "kl",
+    "kl"
+  ],
+  "scope": "Four-GPU compatibility pilot only. Four distinct records visited from the declared512-example pool per fit. Duplicate seeds per objective, frozen-weight invariants, zero-guidance identity, optimizer/checkpoint reload and observed greedy-verifier acceptance. Not a completed512-example or matched-compute baseline."
+}
