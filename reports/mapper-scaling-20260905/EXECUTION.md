@@ -308,3 +308,50 @@ its duplicate gate checks outputs, accepted progress and call counts. New
 feature extraction defaults to2048 examples and10minutes and requires the
 corresponding configuration's pilot. 34 targeted CPU tests and lint pass;
 EAGLE-3 GPU pilot remains required before full replication.
+
+
+## Primary grid complete, AdamW gate and EAGLE launcher repair
+
+All30 primary capacity cells are completed and collected (plus two additional
+N512 dense seeds,32/76 focused-matrix cells total). Width2048 batch27745 took
+2m51s; width4096 batch27746 took4m18s. Dense has lower validation error than
+all alternatives at8192updates. At N512, increasing MLP width2048->4096 reduces
+training error0.15857->0.12779 but worsens validation0.24384->0.25007; at N2048
+both improve, including validation0.19819->0.19362. These single-seed validation
+results motivate regularization and optimization checks, not a universal claim.
+
+AdamW resource/decoding pilot27747 passed in1m39s. Gate and raw artifacts are
+collected. EAGLE cache pilot27748 failed in16s before training: its launcher
+set DEEPSPEC_PYTHON_OVERLAY but omitted that directory from PYTHONPATH, causing
+an unrelated Gemma4 import from DeepSpec to fail in the default Transformers
+installation. Existing working EAGLE jobs include the pinned overlay. The
+three new family launchers now select their import paths from the actual YAML
+proposer family and reject a missing overlay. No dependency/version downgrade
+or silent model change was made. Failed logs/config are retained in the original
+repo under eagle3-cache-pilot/failed-27748. The bounded EAGLE pilot must rerun.
+
+Unstarted DFlash decoding27756 was cancelled by its failed EAGLE dependency.
+Its independent replacement27760 uses the identical config and already-gated
+DFlash source, followed by regularization batches27761/27762. The33-method,
+16-request256-token capacity campaign loads all30 fitted maps and shares
+AR/native/source references. Its gated builder refuses incomplete primary
+checkpoints; no main-quality conclusion is implied by this development test.
+
+New source-checked capacity and epoch figures/table are integrated into the
+appendix. The21-page draft compiles without overfull boxes or unresolved
+references; pages17--19 were rendered and inspected. Full PDF color/grayscale
+review is still pending the final manuscript. The asset auditor now checks
+both historical and new capacity builders against their recorded raw evidence.
+
+
+## All-primary decoding completed
+
+Job27760 passed in6m40s with528 rows (30 candidates plus3 controls on16 requests).
+Native target reached189.08tok/s, dense N512/2048 reached184.10/185.62tok/s,
+factor1024 N512/2048 reached180.15/182.95tok/s, factor4096 N2048 reached186.86tok/s,
+and MLP1024/4096 N2048 reached177.61/180.18tok/s. These are256-token diagnostics.
+All capped scores were2/16, so full-answer evaluation remains necessary.
+The factor1024 N512 point reaches96.4% of the highest mapper point with23.59M
+parameters; this is a descriptive development boundary, not a confirmed optimum.
+Paired candidate intervals and raw hashes are in capacity-decoding-results.json.
+Regularization27761 completed in2m28s and27762 is running normally.

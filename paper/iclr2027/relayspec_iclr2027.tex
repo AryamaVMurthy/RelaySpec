@@ -803,6 +803,76 @@ raw linear surrogate with ridge coefficient 1.0. Since the deployed DFlash
 interface includes output normalization, this is a different objective
 from Equation~\ref{eq:loss}.
 
+\paragraph{Matched capacity on a separate fitting source.}
+We additionally fit 30 DFlash-8B configurations on nested sets of 512
+and 2,048 NuminaMath-CoT records,\footnote{\texttt{AI-MO/NuminaMath-CoT}, revision \texttt{9d8d210c9f6a}, training shard 0 of 5.} using a fixed 1,024-record fitting
+validation split. The source-stratified sets include \texttt{cn\_k12},
+\texttt{orca\_math} and \texttt{synthetic\_math} examples. Their lexical
+filter excludes exact normalized problem/solution matches and near
+matches at five-shingle Jaccard similarity at least 0.6 for texts with
+at least ten unique shingles. This filter does not
+establish semantic or template independence. These results use a separate
+fitting source from the historical MATH study above.
+
+Each configuration receives 8,192 updates with four records per update:
+64 passes at $N=512$ and 16 at $N=2048$. Frozen features are cached once.
+Factored linear maps and bias-free two-layer GELU MLPs use widths
+64, 128, 256, 512, 1,024, 2,048 and 4,096, giving matched parameter counts
+$h(20{,}480+2{,}560)$. The dense reference has 52.43M parameters.
+The rank of a linear function remains bounded by 2,560 even when its
+factorization width is larger. All cells share the data order,
+relative-interface objective, learning rate $6\times10^{-4}$ and seed 1729.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/numina_capacity.pdf}
+\caption{Complete primary capacity study at 8,192 updates per cell.
+Markers compare validation interface error, with one fitting seed.
+The curves do not establish decoding speed or answer quality.}
+\label{fig:numina-capacity}
+\end{figure}
+
+\begin{table}[H]
+\caption{Validation relative interface MSE for the capacity study.
+Linear and MLP entries at the same width have equal parameter counts.
+The dense row supplies the single-linear-layer reference.}
+\label{tab:numina-capacity}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\input{generated/numina_capacity_table.tex}
+\end{table}
+
+At this optimization budget, wider factorizations approach the dense
+reference, while MLPs have higher validation error at every matched width.
+Increasing MLP width from 2,048 to 4,096 at $N=512$ lowers diagnostic
+training error from 0.1586 to 0.1278 but raises validation error from
+0.2438 to 0.2501. At $N=2048$, validation error instead decreases from
+0.1982 to 0.1936. This interaction motivates checking regularization and
+convergence before attributing the ranking to function class.
+
+\paragraph{More epochs on fixed smaller datasets.}
+We continue the width-512 linear and MLP fits to 32,768 total updates,
+preserving Adam moments, random states and cyclic data position.
+A separate bounded pilot reproduced uninterrupted fitting bit for bit.
+Figure~\ref{fig:numina-epochs} shows late-training diagnostics on the
+same first 256 training records and all 1,024 validation records.
+The $N=2048$ MLP improves from 0.2878 to 0.2787 validation error between
+8,192 and 32,768 updates. At $N=512$, linear training error falls from
+0.2443 to 0.2350 while validation error rises from 0.2862 to 0.2873.
+The latter is consistent with mild overfitting on this diagnostic split.
+These single-seed fitting trajectories require separate decoding and
+quality evaluation. They do not identify a universally optimal map.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/numina_epochs.pdf}
+\caption{Late-training trajectories, starting at 2,048 updates.
+Dashed lines use the fixed training diagnostic subset. Solid lines use
+fitting validation. The horizontal axis counts updates, while the
+distinct datasets remain fixed at 512 or 2,048 records.}
+\label{fig:numina-epochs}
+\end{figure}
+
 \begin{table}[H]
 \caption{Matched EAGLE-3 8B normalization comparison on 32 development
 questions after 128 updates. Throughput ratios use source reuse.}

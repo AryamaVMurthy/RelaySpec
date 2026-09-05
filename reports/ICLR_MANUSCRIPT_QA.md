@@ -4,7 +4,7 @@ Generated 2026-09-05 from the compiled anonymous manuscript and final result art
 
 - Overall: **FAIL**
 - Main-text boundary: page 9 of the allowed 9
-- Complete PDF: 20 pages including references and appendix
+- Complete PDF: 21 pages including references and appendix
 - Resolved citation keys: 42
 
 | Check | Status | Evidence |
@@ -18,13 +18,13 @@ Generated 2026-09-05 from the compiled anonymous manuscript and final result art
 | citation resolution | PASS | 42 unique citation keys resolve |
 | generated result assets | PASS | all generated tables, macros, and figures match validated JSON/raw artifacts |
 | prompt separation audits | PASS | exact-overlap and unique-token similarity artifacts reproduce from the fixed manifests |
-| language constraints | PASS | no semicolon, em dash, banned phrase, or placeholder appears in manuscript source |
+| language constraints | FAIL | no semicolon, em dash, banned phrase, or placeholder appears in manuscript source |
 | paragraph overlap | PASS | no exact or at least 0.90 Jaccard duplicate among paragraphs of 35 or more words |
 | fit and evaluation exact-overlap audit | PASS | 0 normalized exact matches across 4,096 fit and 1,250 evaluation records |
 | compiled LaTeX log | PASS | no undefined citation, undefined reference, or overfull box |
-| PDF parse and page format | PASS | 20 pages, US Letter, unencrypted, and identity scan clean |
-| embedded fonts and PDF parser | PASS | 27 font records are embedded and Ghostscript parses every page |
-| recorded visual review | FAIL | manual color and grayscale review covers all 20 rendered pages |
+| PDF parse and page format | PASS | 21 pages, US Letter, unencrypted, and identity scan clean |
+| embedded fonts and PDF parser | PASS | 30 font records are embedded and Ghostscript parses every page |
+| recorded visual review | FAIL | manual color and grayscale review covers all 21 rendered pages |
 
 ## Scientific review remains separate
 

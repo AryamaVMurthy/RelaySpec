@@ -191,8 +191,13 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
                 return False, f"missing generated asset {relative}"
             if actual.read_bytes() != (expected / relative).read_bytes():
                 return False, f"stale generated asset {relative}"
-    registry = paper / "generated/scaling_evidence_registry.json"
-    if registry.exists():
+    for registry_name, builder_name in [
+        ("scaling_evidence_registry.json", "build_scaling_paper_assets.py"),
+        ("capacity_evidence_registry.json", "build_capacity_paper_assets.py"),
+    ]:
+        registry = paper / "generated" / registry_name
+        if not registry.exists():
+            continue
         raw_root = json.loads(registry.read_text())["raw_root"]
         with tempfile.TemporaryDirectory(
             prefix="relayspec-scaling-audit-"
@@ -201,7 +206,7 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
             result = subprocess.run(
                 [
                     sys.executable,
-                    str(root / "scripts/build_scaling_paper_assets.py"),
+                    str(root / "scripts" / builder_name),
                     "--raw-root",
                     raw_root,
                     "--output",
@@ -214,7 +219,7 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
             if result.returncode:
                 return (
                     False,
-                    "controlled scaling/code-quality source validation failed: "
+                    "generated evidence source validation failed: "
                     + result.stderr[-1000:],
                 )
             for path in expected.rglob("*"):
@@ -224,7 +229,7 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
                         not (paper / relative).exists()
                         or (paper / relative).read_bytes() != path.read_bytes()
                     ):
-                        return False, f"stale controlled scaling asset {relative}"
+                        return False, f"stale evidence asset {relative}"
     return (
         True,
         "all generated tables, macros, and figures match validated JSON/raw artifacts",

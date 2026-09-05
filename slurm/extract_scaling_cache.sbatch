@@ -21,7 +21,15 @@ export TRANSFORMERS_CACHE="$HF_HOME/hub"
 export DFLASH_SOURCE="$HOME/factorspec/vendor/dflash"
 export DEEPSPEC_SOURCE="$HOME/relayspec/vendor/deepspec"
 export DEEPSPEC_PYTHON_OVERLAY="$RELAYSPEC_CACHE_DIR/deepspec-python-overlay-node07"
-export PYTHONPATH="$PWD/src:$DFLASH_SOURCE"
+family="$("$RELAYSPEC_PYTHON" -c 'import sys,yaml; print(yaml.safe_load(open(sys.argv[1]))["proposer"]["family"])' "${CACHE_TRAINING_CONFIG:-configs/protocol_active/train_dflash_qwen3_8b_relative_4gpu.yaml}")"
+case "$family" in
+  dflash) export PYTHONPATH="$PWD/src:$DFLASH_SOURCE" ;;
+  eagle3)
+    test -d "$DEEPSPEC_PYTHON_OVERLAY/transformers"
+    export PYTHONPATH="$PWD/src:$DEEPSPEC_PYTHON_OVERLAY:$DEEPSPEC_SOURCE"
+    ;;
+  *) echo "Unsupported proposer family: $family" >&2; exit 2 ;;
+esac
 export TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=4
 export RELAYSPEC_OUTPUT="$PWD/outputs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}"
 export RELAYSPEC_FEATURE_CACHE="$RELAYSPEC_CACHE_DIR/relayspec/feature-caches/${RELAYSPEC_CACHE_TAG:?explicit cache tag required}-${SLURM_JOB_ID}"
