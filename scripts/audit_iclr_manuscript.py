@@ -9,6 +9,7 @@ import importlib.util
 import json
 import re
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -190,7 +191,44 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
                 return False, f"missing generated asset {relative}"
             if actual.read_bytes() != (expected / relative).read_bytes():
                 return False, f"stale generated asset {relative}"
-    return True, "all generated tables, macros, and figures match final JSON artifacts"
+    registry = paper / "generated/scaling_evidence_registry.json"
+    if registry.exists():
+        raw_root = json.loads(registry.read_text())["raw_root"]
+        with tempfile.TemporaryDirectory(
+            prefix="relayspec-scaling-audit-"
+        ) as directory:
+            expected = Path(directory)
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(root / "scripts/build_scaling_paper_assets.py"),
+                    "--raw-root",
+                    raw_root,
+                    "--output",
+                    str(expected),
+                ],
+                cwd=root,
+                text=True,
+                capture_output=True,
+            )
+            if result.returncode:
+                return (
+                    False,
+                    "controlled scaling/code-quality source validation failed: "
+                    + result.stderr[-1000:],
+                )
+            for path in expected.rglob("*"):
+                if path.is_file():
+                    relative = path.relative_to(expected)
+                    if (
+                        not (paper / relative).exists()
+                        or (paper / relative).read_bytes() != path.read_bytes()
+                    ):
+                        return False, f"stale controlled scaling asset {relative}"
+    return (
+        True,
+        "all generated tables, macros, and figures match validated JSON/raw artifacts",
+    )
 
 
 def _load_script(path: Path, module_name: str) -> Any:

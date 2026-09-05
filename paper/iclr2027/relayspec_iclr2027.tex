@@ -713,8 +713,75 @@ For the current AR-paired DFlash GSM8K runs, the scorer gives 120/128
 correct for all arms at 8B and 121/128 at 14B. Code scores above refer
 specifically to the historical outputs, preserving scorer/run identity.
 
+\paragraph{AR-paired EAGLE-3 code quality.}
+We additionally score the saved programs from the EAGLE-3 AR-paired
+breadth runs with official EvalPlus base and expanded tests.
+Table~\ref{tab:eagle-code-ar} compares one program per task against AR
+from the same run. At 8B, RelaySpec passes four fewer MBPP tasks under
+both suites. At 14B, it passes two more. HumanEval expanded-test totals
+match AR at both target sizes, although individual task outcomes differ.
+RelaySpec and source reuse have identical per-task outcomes in all eight
+cells. The paired intervals cover zero. This does not establish equality
+or noninferiority. These retrospective comparisons use one fitted map
+per setting and do not include fitting-seed uncertainty. Conversation
+quality remains unmeasured.
+
+\begin{table}[H]
+\caption{EAGLE-3 AR-paired code quality. Counts are passed tasks. The intervals resample paired tasks. Expanded tests reuse the same programs
+and do not add independent samples.}
+\label{tab:eagle-code-ar}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\input{generated/eagle3_paired_code_quality.tex}
+\end{table}
+
 \section{Fitting and interface studies}
 \label{app:design}
+
+\paragraph{Distinct records at fixed fitting work.}
+A separate controlled DFlash-8B study holds fitting at 1,024 updates
+and four records per update while varying distinct records from 64
+to 4,096. Smaller sets repeat in the same ordered schedule.
+Table~\ref{tab:controlled-data} reports end-to-end throughput on the
+same 128 development-exposed MATH questions. Of the measured settings,
+512 is the smallest within 5\% of the best observed mapper throughput.
+The 256-record setting retains 91.4\% of that observed best. This is a
+descriptive, single-seed boundary, not a minimum across settings or a
+confirmed optimum. The 512--4,096 settings form an unresolved plateau. Selecting
+the reference from the same evaluations does not provide independent
+confirmation. Every relay scores 105/128, versus AR's 104/128.
+
+\begin{table}[H]
+\caption{Distinct-data study at 4,096 presentations for every row.
+Native retention uses each run's paired native-drafter control.
+Best retention uses the observed best relay across these settings.
+All results condition on one fitting seed.}
+\label{tab:controlled-data}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\input{generated/controlled_data_table.tex}
+\end{table}
+
+\paragraph{Continuous optimization.}
+We also save checkpoints from one uninterrupted 4,096-record fit at
+128, 256, 512, 1,024 and 2,048 updates. They have seen respectively
+512, 1,024, 2,048, 4,096 and 4,096 distinct records. The final point
+therefore measures a second pass, not 8,192 distinct examples.
+End-to-end AR-relative throughput increases from 3.65 to 5.03 across
+this trajectory. All five checkpoints score 105/128. Unlike the earlier
+separately fitted budget configurations, these checkpoints share one
+optimization trajectory. Figure~\ref{fig:controlled-fitting} separates
+this experiment from the fixed-work data study.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/controlled_fitting.pdf}
+\caption{Controlled data and optimization studies on 128 fixed
+development requests. Error bars are paired 95\% request-bootstrap
+intervals within each run. They exclude fitting-seed variation and
+selection uncertainty. Connecting lines do not imply unmeasured results.}
+\label{fig:controlled-fitting}
+\end{figure}
 
 \begin{table}[H]
 \caption{Completed DFlash-8B fitting studies on the same 128-question

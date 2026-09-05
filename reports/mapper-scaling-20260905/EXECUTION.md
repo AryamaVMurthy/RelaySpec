@@ -5,6 +5,22 @@ Code lives in branch `research/scaling-autoresearch-20260905` at
 `/home/aryamavmurthy/work/RelaySpec-scaling`. Historical result collection lives
 in `/home/aryamavmurthy/work/RelaySpec/reports/`.
 
+## Latest state, 23:50 IST
+
+- Full frozen-feature cache27723 completed in12m22s:32,768 train records,
+  1,024 validation records and292,810,789,056bytes. Cache SHA-256 is
+  a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5.
+- Epoch/continuation capacity pilot27725 passed in2m17s. It exercised widths
+  64 and4096 for both linear and MLP models, streaming the full cache, fixed
+  1024-record validation, BF16 equivalence and saved-optimizer round trips.
+  Pilot27724 was cancelled while still pending and consumed no GPU time.
+- Full MLP512 data trajectories are running as27726 (primary-04), one per GPU
+  at N128/2048/512/8192. Matching linear512 trajectories27727 follow. Both
+  use immutable source13ab419 and matrix-v2, preserving explicit epoch
+  checkpoints and both budget panels. Job ledger:matrix-wave1/jobs.json.
+- Cached/full/scoring collectors run detached on the workstation. Revalidate
+  their PIDs and Slurm before relying on these observations.
+
 ## Verified work
 
 - Commits `86b1557`, `194ba65`, `308d32d`: factorized linear maps, matched-width
@@ -121,7 +137,7 @@ status has been established.
   integrity and BF16 gradient-equivalence gates, and exact duplicate-mapper
   decoding/acceptance isolation. It is plumbing evidence, not a capacity result.
 - Full data256 job 27677 completed in 22m41s; fitting took 97.93s. It achieved
-  4.542x AR. The complete single-seed historical curve's smallest tested set
+  4.542x AR for decode-only timing (4.512x for end-to-end request timing). The complete single-seed historical curve's smallest tested set
   within 5% of the best measured throughput remains 512. Independent confirmation
   is outstanding. All seven data sizes are collected and scored.
 - Dense directional 27711 completed in 3m18s (97.04s fitting); factor512 27712
@@ -132,3 +148,26 @@ status has been established.
 - Full cache extraction is now a separate gated stage. Pilot estimates about
   300 GB for 33,792 records; scratch has about 14 TB free. Extraction cost and
   model-loading wall time are logged separately and charged to the study.
+
+## Epoch-aware fitting and paper update
+
+All five 1024-update directional jobs27711-27715 completed in2m58s-3m18s
+and were collected. Their source-hashed aggregate is directional-summary.json.
+Dense/factor512/MLP512 end-to-end speedups are4.610/2.867/2.526x AR on16
+development requests capped at256tokens. L2=1e-6 did not improve the fixed
+validation objective. These are early-budget single-seed outcomes, not a
+verdict on MLP capacity or generalization.
+
+User steering added explicit epoch1/2/3/4 and later power-of-two checkpoints
+within the two fixed budget regimes (matrix-v2). Optimizer and RNG state
+are preserved at each trajectory endpoint for further fitting when justified.
+Convergence/learning-rate checks remain required before interpreting poor MLP
+results. Source13ab419 includes these changes.
+
+The manuscript appendix now includes the completed seven-point historical data
+curve, five-point continuous curve, and8 AR-paired code-quality comparisons.
+New tables/figure are generated with raw-source hash checks. The draft compiled
+to20pages with main text ending onpage9 and42 resolved citations. Changed
+pages16-17 were rendered and inspected. The full color/grayscale visual-review
+record is stale and remains pending the final paper build. New Numina capacity
+results, seeds, family/task transfer and autoresearch are still outstanding.

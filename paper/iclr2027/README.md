@@ -36,3 +36,15 @@ Its 42 cited sources comprise 36 peer-reviewed papers, five preprints and one
 software reference. The five preprints are Qwen3, GSM8K, HumanEval, MBPP and
 Draft-OPD. See the [citation and structure revision](../../docs/research/2026-09-05-iclr-format-and-citations.md)
 and [per-source status audit](../../reports/CITATION_STATUS_2026-09-05.json).
+
+The scaling branch adds completed fixed-work data and continuous-fitting curves
+and AR-paired EAGLE-3 code quality to the appendix. Regenerate these assets with
+`make paper-scaling-assets SCALING_RAW_ROOT=/path/to/collected/repository`.
+The builder verifies original benchmark/scorer file hashes. The additional
+registry records the raw root, and the manuscript auditor regenerates these
+assets too. New capacity, regularization and multi-epoch studies remain in
+progress and are not represented as completed results in the paper.
+
+The updated draft has20pages and retains the9-page main-text boundary. New
+appendix pages were inspected, but the complete color/grayscale review record
+must be renewed after the final experimental update.

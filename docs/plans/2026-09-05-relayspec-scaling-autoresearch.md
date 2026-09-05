@@ -211,7 +211,21 @@ caches only with model/tap/tokenizer/data hashes and measured storage budgets.
 
 ## Current completion status
 
-Plan written; ongoing jobs revalidated through Slurm. Existing controlled data
-and continuous fitting infrastructure is usable. Factorized linear maps,
-explicit L2, validation trajectories, larger manifests, adaptive trial ledger,
-family replication, and final paper promotion require implementation or runs.
+Historical pending jobs, seven fixed-work data sizes, continuous checkpoints,
+zero-training controls and AR-paired code scoring have completed and been
+collected. Factorized/MLP fitting, explicit L2, corrected normalization in
+validation, expanded disjoint data, hashed frozen-feature caches, and four
+independent cached GPU workers are implemented. The full32,768/1,024 feature
+cache passed its gate. The width64/4096 pilot passed in2m17s.
+
+The matrix-v2 declaration preserves all required cells and both budget panels,
+adds explicit epoch checkpoints, and saves final optimizer/RNG state for longer
+training. Full MLP512 and matching linear512 trajectories are starting as
+jobs27726/27727. The remaining matrix, regularization, convergence/learning-rate
+checks, seeds, family/task/data-composition replication, cheap-adaptation
+baseline, untouched evaluation and bounded autoresearch remain required.
+
+Completed historical data and code-quality evidence is now in the manuscript
+appendix with regenerated, source-validated tables/figures. The draft compiles
+with nine main pages. Full scientific completion and the final PDF review are
+still pending. This status does not establish an optimal mapper or dataset size.
