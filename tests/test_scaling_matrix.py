@@ -40,6 +40,10 @@ def test_budget_panels_do_not_inflate_distinct_data():
         assert passes["presentations"] == 4 * n
         assert min(n, 4 * fixed["checkpoint_step"]) == n
         assert max(fixed["checkpoint_step"], passes["checkpoint_step"]) == t["steps"]
+        assert n // 4 in t["checkpoint_steps"]
+        assert n // 2 in t["checkpoint_steps"]
+        assert 3 * n // 4 in t["checkpoint_steps"]
+        assert n in t["checkpoint_steps"]
 
 
 def test_batching_preserves_every_unique_cell_and_regularization_arm():

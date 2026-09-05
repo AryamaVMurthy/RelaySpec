@@ -112,3 +112,29 @@ The first all-repo software check yielded239passes plus3 manuscript failures
 due to absent compiled .aux artifacts; the separately invoked evidence tests
 added3passes. Thus242 software/evidence tests pass, while the3 compiled-paper
 audit tests remain pending a manuscript build. No submission readiness is claimed.
+
+## Epoch and optimization amendment (user steering, 23:38 IST)
+
+The user explicitly requested more epochs and more data for MLP/regularized
+models before judging them. `matrix-v2` preserves all v1 cells and budgets and
+adds checkpoints after epochs1/2/3/4 and later powers of two within each budget.
+At N32768 this includes four full epochs; at N512 the fixed-exposure endpoint
+uses64epochs. Per-update logs/checkpoints record epochs separately from distinct
+records. The final optimizer, mapper and RNG state are preserved for exact
+continuation, so improving endpoints can be extended without refitting.
+
+Assess convergence before interpreting nonlinear capacity: if validation keeps
+improving at the endpoint, extend matched linear/MLP trajectories to8epochs and
+then16 as needed, retaining their original endpoints. If train and validation
+remain poor or optimization is unstable, use matched learning-rate checks
+(1e-4,3e-4,6e-4,1e-3), first under the10minute pilot/directional ceiling,
+then full trajectories for useful directions. A falling training loss with
+rising validation loss motivates the declared regularization/data comparison.
+Neither an early low-throughput result nor expressive capacity alone establishes
+generalization or a disadvantage of MLPs. These convergence checks support the
+fixed study; hypothesis-driven autoresearch still follows the fixed baselines.
+
+The capacity pilot is replaced before it runs so the epoch logging and optimizer
+round-trip checks are exercised within its10minute limit. No full fits have
+been submitted against the v1 matrix. The original declaration remains for
+provenance.

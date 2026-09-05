@@ -1,0 +1,143 @@
+{
+  "trials": [
+    {
+      "name": "mlp2048-n32768-s1729",
+      "study": "core",
+      "architecture": "mlp",
+      "seed": 1729,
+      "steps": 32768,
+      "distinct_examples": 32768,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        2048,
+        8192,
+        16384,
+        24576,
+        32768
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 32768,
+          "presentations": 131072
+        }
+      },
+      "width": 2048
+    },
+    {
+      "name": "dense-n32768-s1729",
+      "study": "core",
+      "architecture": "dense",
+      "seed": 1729,
+      "steps": 32768,
+      "distinct_examples": 32768,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        2048,
+        8192,
+        16384,
+        24576,
+        32768
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 32768,
+          "presentations": 131072
+        }
+      }
+    },
+    {
+      "name": "factorized4096-n32768-s1729",
+      "study": "extended_capacity",
+      "architecture": "factorized",
+      "seed": 1729,
+      "steps": 32768,
+      "distinct_examples": 32768,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        2048,
+        8192,
+        16384,
+        24576,
+        32768
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 32768,
+          "presentations": 131072
+        }
+      },
+      "width": 4096
+    },
+    {
+      "name": "mlp4096-n32768-s1729",
+      "study": "extended_capacity",
+      "architecture": "mlp",
+      "seed": 1729,
+      "steps": 32768,
+      "distinct_examples": 32768,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        2048,
+        8192,
+        16384,
+        24576,
+        32768
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 32768,
+          "presentations": 131072
+        }
+      },
+      "width": 4096
+    }
+  ]
+}

@@ -71,6 +71,27 @@ def main():
             trial["distinct_examples"], trial["steps"] * 4
         ):
             raise ValueError("fitting result miscounts distinct data")
+        continuation = folder / "continuation.pt"
+        if (
+            hashlib.sha256(continuation.read_bytes()).hexdigest()
+            != complete["continuation_sha256"]
+        ):
+            raise ValueError("continuation state hash mismatch")
+        resume = torch.load(continuation, weights_only=True, map_location="cpu")
+        if (
+            resume["completed_trial"] != trial
+            or resume["steps"] != trial["steps"]
+            or not resume["optimizer"]["state"]
+        ):
+            raise ValueError("continuation did not preserve the fitted optimizer")
+        if any(
+            not torch.isfinite(t).all()
+            for state in resume["optimizer"]["state"].values()
+            for t in state.values()
+            if isinstance(t, torch.Tensor)
+        ):
+            raise ValueError("nonfinite continuation optimizer state")
+        del resume
         for step in trial["checkpoint_steps"]:
             path = folder / f"step-{step:06d}.pt"
             state = torch.load(path, weights_only=True, map_location="cpu")

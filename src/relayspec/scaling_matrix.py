@@ -6,6 +6,9 @@ import math
 def trial(architecture, width, n, *, seed=1729, l2=0.0, decay=0.0, study="core"):
     """A checkpoint can serve two budget panels when the trajectory is identical."""
     steps = max(8192, n)
+    epoch_steps = {
+        int(n * epoch / 4) for epoch in [1, 2, 3, 4, 8, 16, 32, 64, 128, 256]
+    }
     name = f"{architecture}{width or ''}-n{n}-s{seed}"
     if l2:
         name += f"-l2-{l2:g}"
@@ -21,7 +24,9 @@ def trial(architecture, width, n, *, seed=1729, l2=0.0, decay=0.0, study="core")
         "learning_rate": 6e-4,
         "l2_weight": l2,
         "weight_decay": decay,
-        "checkpoint_steps": sorted({128, 512, 2048, 8192, n}),
+        "checkpoint_steps": sorted(
+            {128, 512, 2048, 8192, n} | {s for s in epoch_steps if s <= steps}
+        ),
         "validation_records": 1024,
         "diagnostic_train_records": min(256, n),
         "feature_objective": "relative_interface_mse",

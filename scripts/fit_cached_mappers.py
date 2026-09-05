@@ -247,6 +247,7 @@ def main():
                         "tokens_seen": tokens_seen,
                         "record_presentations": step * 4,
                         "distinct_records_seen": min(n, step * 4),
+                        "epochs": step * 4 / n,
                     }
                 )
                 + "\n"
@@ -270,6 +271,7 @@ def main():
                         "distinct_records": n,
                         "distinct_records_seen": min(n, step * 4),
                         "record_presentations": step * 4,
+                        "epochs": step * 4 / n,
                     },
                     "feature_cache_index_sha256": hashlib.sha256(
                         index_path.read_bytes()
@@ -291,6 +293,24 @@ def main():
                     ),
                     flush=True,
                 )
+    # Preserve the optimizer as well as the map so a still-improving endpoint
+    # can be extended without restarting or silently resetting Adam moments.
+    continuation = output / "continuation.pt"
+    torch.save(
+        {
+            "relay": relay.state_dict(),
+            "optimizer": optimizer.state_dict(),
+            "completed_trial": trial,
+            "steps": steps,
+            "tokens_seen": tokens_seen,
+            "torch_rng_state": torch.get_rng_state(),
+            "cuda_rng_state": torch.cuda.get_rng_state(device),
+            "feature_cache_index_sha256": hashlib.sha256(
+                index_path.read_bytes()
+            ).hexdigest(),
+        },
+        continuation,
+    )
     (output / "fit-complete.json").write_text(
         json.dumps(
             {
@@ -300,6 +320,7 @@ def main():
                 "steps": steps,
                 "tokens_seen": tokens_seen,
                 "record_presentations": steps * 4,
+                "epochs": steps * 4 / n,
                 "distinct_records_seen": min(n, steps * 4),
                 "loop_seconds": time.perf_counter() - started,
                 "validation_seconds": validation_seconds,
@@ -310,6 +331,9 @@ def main():
                     index_path.read_bytes()
                 ).hexdigest(),
                 "cache_extraction_metadata": metadata,
+                "continuation_sha256": hashlib.sha256(
+                    continuation.read_bytes()
+                ).hexdigest(),
             },
             indent=2,
         )
