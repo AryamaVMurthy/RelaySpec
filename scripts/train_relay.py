@@ -30,6 +30,10 @@ from relayspec.losses import (
 )
 from relayspec.proposers import project_source_interface
 from relayspec.relay import TargetFeatureRelay, extract_hidden_taps
+from relayspec.training_controls import (
+    save_training_checkpoint,
+    training_data_accounting,
+)
 from relayspec.vocab_bridge import (
     align_positions,
     canonicalize_offsets,
@@ -376,8 +380,12 @@ def main() -> None:
     records = json.loads(Path(training["manifest_path"]).read_text(encoding="utf-8"))[
         "records"
     ]
-    local_rows = records[rank::world_size]
     steps = int(training["steps"])
+    accounting = training_data_accounting(records, training, world_size)
+    local_rows = records[rank::world_size]
+    checkpoint_steps = set(int(x) for x in training.get("checkpoint_steps", []))
+    if any(x <= 0 or x > steps for x in checkpoint_steps):
+        raise ValueError("checkpoint steps must lie within the training run")
     expected_fit_examples = int(training.get("fit_examples", 0))
     if expected_fit_examples and expected_fit_examples != steps * world_size:
         raise ValueError(
@@ -439,6 +447,51 @@ def main() -> None:
     output_dir = Path(os.environ["RELAYSPEC_OUTPUT"])
     output_dir.mkdir(parents=True, exist_ok=True)
     metrics_path = output_dir / f"relay-train-rank{rank}.jsonl"
+    checkpoint_dir = (
+        Path(os.environ["RELAYSPEC_CACHE_DIR"])
+        / "relayspec"
+        / "checkpoints"
+        / config.run_name
+    )
+    checkpoint_seconds = 0.0
+
+    def checkpoint_payload(saved_step: int) -> dict:
+        return {
+            "relay": distributed.module.state_dict(),
+            "target_layer_ids": target_layer_ids,
+            "source_layer_ids": tuple(int(value) for value in draft.target_layer_ids),
+            "steps": saved_step,
+            "seed": config.seed,
+            "data_accounting": {
+                **accounting,
+                "record_presentations": saved_step * world_size,
+                "distinct_records_seen": min(
+                    saved_step * world_size, accounting["distinct_records"]
+                ),
+            },
+            "feature_objective": feature_objective,
+            "weight_decay": float(training["weight_decay"]),
+            "gradient_clip": training.get("gradient_clip"),
+            "initialized_from": (
+                training.get("delta_base_checkpoint_path")
+                if delta_rank is not None
+                else training.get("adapter_base_checkpoint_path")
+                if freeze_base_relay
+                else initial_checkpoint
+            ),
+            "proposer_family": proposer_family,
+            "relay_architecture": relay_architecture,
+            "adapter_input_width": adapter_input_width,
+            "delta_rank": delta_rank,
+            "delta_nonlinear": delta_nonlinear,
+            "mlp_hidden_width": mlp_hidden_width,
+            "supervision": supervision,
+            "verifier_objective": (
+                verifier_objective if supervision == "target_verifier" else None
+            ),
+            "regression_anchor_weight": regression_anchor_weight,
+        }
+
     started = time.perf_counter()
     with metrics_path.open("x", encoding="utf-8") as metrics:
         iterator = islice(cycle(local_rows), steps)
@@ -741,6 +794,19 @@ def main() -> None:
                     float(gradient_clip),
                 )
             optimizer.step()
+            if step in checkpoint_steps:
+                torch.cuda.synchronize()
+                save_started = time.perf_counter()
+                dist.barrier()
+                if rank == 0:
+                    save_training_checkpoint(
+                        checkpoint_dir / f"step-{step:06d}.pt",
+                        checkpoint_payload(step),
+                        optimizer,
+                        time.perf_counter() - started - checkpoint_seconds,
+                    )
+                dist.barrier()
+                checkpoint_seconds += time.perf_counter() - save_started
             hard_accepted_length_mean = None
             agreement_mass_mean = None
             if hard_diag is not None:
@@ -799,49 +865,21 @@ def main() -> None:
 
     dist.barrier()
     if rank == 0:
-        checkpoint_dir = (
-            Path(os.environ["RELAYSPEC_CACHE_DIR"])
-            / "relayspec"
-            / "checkpoints"
-            / config.run_name
-        )
         checkpoint_dir.mkdir(parents=True, exist_ok=True)
         checkpoint_path = checkpoint_dir / "relay.pt"
-        torch.save(
-            {
-                "relay": distributed.module.state_dict(),
-                "target_layer_ids": target_layer_ids,
-                "source_layer_ids": tuple(
-                    int(value) for value in draft.target_layer_ids
-                ),
-                "steps": steps,
-                "feature_objective": feature_objective,
-                "weight_decay": float(training["weight_decay"]),
-                "gradient_clip": training.get("gradient_clip"),
-                "initialized_from": (
-                    training.get("delta_base_checkpoint_path")
-                    if delta_rank is not None
-                    else training.get("adapter_base_checkpoint_path")
-                    if freeze_base_relay
-                    else initial_checkpoint
-                ),
-                "proposer_family": proposer_family,
-                "relay_architecture": relay_architecture,
-                "adapter_input_width": adapter_input_width,
-                "delta_rank": delta_rank,
-                "delta_nonlinear": delta_nonlinear,
-                "mlp_hidden_width": mlp_hidden_width,
-                "supervision": supervision,
-                "verifier_objective": (
-                    verifier_objective if supervision == "target_verifier" else None
-                ),
-                "regression_anchor_weight": regression_anchor_weight,
-            },
-            checkpoint_path,
-        )
+        torch.save(checkpoint_payload(steps), checkpoint_path)
         summary = {
             "status": "complete",
             "checkpoint": str(checkpoint_path),
+            "intermediate_checkpoints": [
+                str(checkpoint_dir / f"step-{x:06d}.pt")
+                for x in sorted(checkpoint_steps)
+            ],
+            "data_accounting": accounting,
+            "checkpoint_seconds": checkpoint_seconds,
+            "training_seconds_excluding_checkpoint_io": time.perf_counter()
+            - started
+            - checkpoint_seconds,
             "steps": steps,
             "elapsed_seconds": time.perf_counter() - started,
             "peak_memory_bytes": torch.cuda.max_memory_allocated(local_rank),

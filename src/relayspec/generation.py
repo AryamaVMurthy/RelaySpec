@@ -176,6 +176,7 @@ def matched_full_target_dflash_generate(
 
     start = num_input_tokens
     acceptance_lengths: list[int] = []
+    proposal_lengths: list[int] = []
     target_calls = 0
     draft_calls = 0
     torch.cuda.synchronize()
@@ -222,6 +223,7 @@ def matched_full_target_dflash_generate(
             )
         start += accepted
         acceptance_lengths.append(accepted)
+        proposal_lengths.append(int(block_ids.shape[1]) - 1)
 
         if stop_token_ids is not None:
             generated = output_ids[:, num_input_tokens : start + 1]
@@ -249,6 +251,8 @@ def matched_full_target_dflash_generate(
         time_to_first_token=time_to_first_token,
         time_per_output_token=decode_seconds / max(num_output_tokens, 1),
         acceptance_lengths=acceptance_lengths or [1],
+        proposal_lengths=proposal_lengths,
+        accepted_draft_lengths=[x - 1 for x in acceptance_lengths],
         target_calls=target_calls,
         draft_calls=draft_calls,
         source_executed_tokens=source_context_provider.executed_tokens,
@@ -358,6 +362,7 @@ def relay_dflash_generate(
 
     start = num_input_tokens
     acceptance_lengths: list[int] = []
+    proposal_lengths: list[int] = []
     target_calls = 0
     draft_calls = 0
     torch.cuda.synchronize()
@@ -395,6 +400,7 @@ def relay_dflash_generate(
         target_cache.crop(start + accepted)
         start += accepted
         acceptance_lengths.append(accepted)
+        proposal_lengths.append(int(block_ids.shape[1]) - 1)
         with _profile_region(profile_recorder, "relay"):
             relay_features = extract_hidden_taps(
                 target_verification.hidden_states,
@@ -428,6 +434,8 @@ def relay_dflash_generate(
         time_to_first_token=time_to_first_token,
         time_per_output_token=decode_seconds / max(num_output_tokens, 1),
         acceptance_lengths=acceptance_lengths or [1],
+        proposal_lengths=proposal_lengths,
+        accepted_draft_lengths=[x - 1 for x in acceptance_lengths],
         target_calls=target_calls,
         draft_calls=draft_calls,
     )
