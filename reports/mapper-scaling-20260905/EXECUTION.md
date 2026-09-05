@@ -697,3 +697,30 @@ and scoring/raw provenance before producing an evidence registry. It exposes
 2048-token cap-length outputs separately and does not assume they all lack
 EOS. The full evaluation remains running at this declaration, so the new
 audit has only been linted and is not yet executed on final scored outputs.
+
+## EAGLE fitting evidence and matched early-stopping declaration
+
+The source-verified16-cell EAGLE registry now regenerates a seven-row
+capacity table and two-panel validation-trajectory figure in the manuscript.
+The table pairs8192-update endpoints with minimum saved validation values
+and selected updates for N512/2048. DenseN512 improves from its final
+0.247869 to its1024-update minimum0.216664. This reverses its comparison
+with the width2048 linear mapper's minimum0.228768, demonstrating why
+endpoint-only architecture rankings need convergence controls. All matched
+MLP minima exceed linear minima in this particular grid. The text limits
+these observations to fitting validation and the measured seeds.
+
+The PDF is23pages with nine main-text pages. The source/raw asset audit,
+citations, fonts, anonymity, language and LaTeX layout checks pass. Newpage21
+was visually inspected in color and its table/curves are legible. Full
+color/grayscale review of all23pages remains unrecorded and the audit
+correctly reports that gate as failing. This is not submission completion.
+
+The family capacity builder can now select checkpoints from the complete
+saved feature-validation trajectory before decoding and retain each distinct
+8192-update endpoint in the same campaign. The new EAGLE configuration has
+20 checkpoints:14 selected primary maps and six distinct endpoint controls,
+plus three inherited references. This makes early-versus-final comparisons
+within the same paired16-request256-token run. The original endpoint
+configuration and provenance still reproduce byte for byte with defaults.
+No fitting or training-data expansion is part of this campaign.

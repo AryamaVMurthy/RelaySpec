@@ -19,12 +19,18 @@ def main():
         default=Path("configs/submission/scaling/matrix-focused-v1/matrix.json"),
     )
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--include-endpoints", action="store_true")
+    parser.add_argument(
+        "--checkpoint-selection", choices=("endpoint", "validation"), default="endpoint"
+    )
     parser.add_argument(
         "--template",
         type=Path,
         default=Path("configs/submission/scaling/campaign-pilot.yaml"),
     )
     args = parser.parse_args()
+    if args.include_endpoints and args.checkpoint_selection != "validation":
+        raise ValueError("paired endpoints require validation-selected checkpoints")
     primary = json.loads(args.matrix.read_text())["primary_cells"]
     gates = {}
     for p in (args.raw_root / "reports/mapper-scaling-20260905").glob(
@@ -44,6 +50,8 @@ def main():
         config["proposer"]["family"], config["benchmark"]["methods"]
     )
     config["run_name"] = "small-data-complete-capacity-decoding"
+    if args.checkpoint_selection == "validation":
+        config["run_name"] = "small-data-validation-selected-capacity-decoding"
     config["generation"]["max_new_tokens"] = 256
     config["benchmark"]["max_prompts"] = 16
     variants, provenance = {}, {}
@@ -63,13 +71,31 @@ def main():
         cache_hash = cache_hash or g["feature_cache_index_sha256"]
         if cache_hash != g["feature_cache_index_sha256"]:
             raise ValueError("primary fits have different frozen features")
+        step, validation_path = 8192, None
+        if args.checkpoint_selection == "validation":
+            validation_path = p.parent / "fitting" / t["name"] / "validation.jsonl"
+            points = [
+                json.loads(line) for line in validation_path.read_text().splitlines()
+            ]
+            if {point["step"] for point in points} != {0, *t["checkpoint_steps"]}:
+                raise ValueError(
+                    "validation selection requires every declared checkpoint"
+                )
+            step = min(
+                points,
+                key=lambda point: (
+                    point["groups"]["validation"]["objective"],
+                    point["step"],
+                ),
+            )["step"]
         paths = [
             (k, sha)
             for k, sha in g["checkpoint_sha256"].items()
-            if Path(k).parent.name == t["name"] and Path(k).name == "step-008192.pt"
+            if Path(k).parent.name == t["name"]
+            and Path(k).name == f"step-{step:06d}.pt"
         ]
         if len(paths) != 1:
-            raise ValueError("missing or ambiguous fixed-exposure checkpoint")
+            raise ValueError("missing or ambiguous selected checkpoint")
         complete = json.loads(
             (p.parent / "fitting" / t["name"] / "fit-complete.json").read_text()
         )
@@ -95,6 +121,29 @@ def main():
             "checkpoint_sha256": paths[0][1],
             "fit_gate_sha256": hashlib.sha256(p.read_bytes()).hexdigest(),
         }
+        if validation_path:
+            provenance[alias].update(
+                selected_step=step,
+                selection="minimum_feature_validation_before_decoding",
+                validation_sha256=hashlib.sha256(
+                    validation_path.read_bytes()
+                ).hexdigest(),
+            )
+        if args.include_endpoints and step != 8192:
+            endpoints = [
+                (k, sha)
+                for k, sha in g["checkpoint_sha256"].items()
+                if Path(k).parent.name == t["name"] and Path(k).name == "step-008192.pt"
+            ]
+            if len(endpoints) != 1:
+                raise ValueError("missing matched endpoint for early stopping")
+            variants[alias + "_endpoint"] = endpoints[0][0]
+            provenance[alias + "_endpoint"] = {
+                **provenance[alias],
+                "selected_step": 8192,
+                "selection": "fixed_exposure_endpoint",
+                "checkpoint_sha256": endpoints[0][1],
+            }
     config["relay_probe"]["variants"] = variants
     config["benchmark"]["methods"] = [*references, *variants]
     args.output.write_text(yaml.safe_dump(config, sort_keys=False))
@@ -106,13 +155,17 @@ def main():
                 "config_sha256": hashlib.sha256(args.output.read_bytes()).hexdigest(),
                 "feature_cache_index_sha256": cache_hash,
                 "variants": provenance,
-                "scope": f"{len(primary)} predeclared primary endpoints at8192updates, N512/2048. Paired16-request256-token development decoding; neither full-answer quality nor isolated deployment memory.",
+                "scope": (
+                    f"{len(primary)} predeclared primary endpoints at8192updates, N512/2048. Paired16-request256-token development decoding; neither full-answer quality nor isolated deployment memory."
+                    if args.checkpoint_selection == "endpoint"
+                    else f"{len(primary)} primary mappers at their minimum saved feature-validation checkpoint, N512/2048. Selection precedes decoding. {len(variants)} total checkpoints including any requested distinct fixed-exposure endpoints. Paired16-request256-token development decoding; neither full-answer quality nor isolated deployment memory."
+                ),
             },
             indent=2,
         )
         + "\n"
     )
-    print(f"Declared {len(variants)} primary mappers with shared references")
+    print(f"Declared {len(variants)} mapper checkpoints with shared references")
 
 
 if __name__ == "__main__":

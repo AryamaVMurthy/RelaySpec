@@ -932,6 +932,50 @@ with directional agreement. Direct candidate-to-candidate throughput
 ratios are 1.0085 [1.0005, 1.0174] at 8B and 1.0114 [1.0046, 1.0177] at
 14B. These are modest gains with one fewer mixing coefficient.
 
+\clearpage
+\subsection{EAGLE-3 fitting replication}
+
+We repeat the fixed smaller-data fitting study with the EAGLE-3 source
+drafter and the 8B target. The grid contains dense, factored linear and
+GELU MLP connectors, with widths 128, 512 and 2048 for the latter two.
+Each primary fit uses 8,192 updates at $N\in\{512,2048\}$ and the same
+1,024 fitting-validation records. Two additional seeds repeat the dense
+$N=2048$ setting. This experiment uses the EAGLE input convention without
+the DFlash input normalization. Error values are interpreted within each
+drafter family's conditioning interface.
+
+\begin{table}[H]
+\caption{EAGLE-3 fitting validation. End denotes the 8,192-update endpoint.
+Best denotes the minimum saved fitting-validation error, with its update
+count. These are development selections for seed 1729, not decoding results.
+M weights counts millions of trainable mapper parameters.}
+\label{tab:eagle-small-capacity}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/eagle_small_capacity_table.tex}
+\end{table}
+
+The dense $N=512$ mapper reaches 0.21666 at 1,024 updates, then rises to
+0.24787 at the final update. Its endpoint is worse than the width-2048
+linear mapper, but its best saved validation value is better than that
+linear mapper's 0.22877. At $N=2048$, the dense and width-2048 linear
+minima are 0.21061 and 0.21132. Thus endpoint rankings alone can reflect
+different convergence trajectories. At every matched width in this grid,
+the MLP's best saved validation error exceeds the linear mapper's minimum.
+The three dense $N=2048$ endpoints range from 0.212034 to 0.212043.
+This narrow seed spread concerns one fitting setting. It does not establish
+seed stability for the other architectures or for decoding performance.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/eagle_small_epochs.pdf}
+\caption{EAGLE-3 fitting-validation trajectories at fixed distinct-data
+counts. Additional updates can worsen validation, most visibly for the
+dense mapper at $N=512$. The horizontal axis counts updates rather than
+new examples. Actual decoding requires a separate checkpoint comparison.}
+\label{fig:eagle-small-epochs}
+\end{figure}
+
 \section{Acceptance and numerical agreement}
 \label{app:acceptance}
 
