@@ -41,13 +41,15 @@ Ghostscript (`gs`). Ubuntu packages include `texlive-latex-extra`,
 
 Tests marked `manuscript` inspect a compiled paper, including auxiliary files
 and an explicit visual-review record. They are separated from CPU CI because
-they need external tools and manual review. They remain in `make test-all` and
+they need external tools and a recorded visual review. They remain in `make test-all` and
 the optional **Manuscript audit** GitHub workflow.
 
-At cleanup time, two manuscript tests fail because the visual-review record
-belongs to an older PDF. This gate is retained. Recompiling can change the PDF
-hash, so a previous visual approval must not be copied automatically. The
-broader scientific issues remain in the submission review.
+The current manuscript has a page-by-page color and grayscale review recorded
+against its exact PDF hash in `reports/ICLR_VISUAL_REVIEW.json`. Recompiling can
+change that hash, so a previous visual review must not be copied automatically.
+Inspect the rendered pages and update the record before running the final audit.
+The artifact audit is separate from the scientific completion requirements in
+the submission review and research execution plan.
 
 Archived document builders in `scripts/archive/` are retained for provenance;
 they are outside the supported build and active lint/format target.

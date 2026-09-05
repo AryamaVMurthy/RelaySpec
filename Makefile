@@ -42,7 +42,6 @@ submission-ready:
 
 paper-assets:
 	$(PYTHON) scripts/build_iclr_paper_assets.py --output $(PAPER_DIR)
-	$(PYTHON) scripts/build_transfer_figures.py --output-dir $(PAPER_DIR)/figures
 
 paper:
 	cd $(PAPER_DIR) && pdflatex -interaction=nonstopmode -halt-on-error $(PAPER_NAME).tex

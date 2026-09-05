@@ -1215,27 +1215,9 @@ def _draw_acceptance_survival(data: dict[str, Any], path: Path) -> None:
 
 
 def build_all(root: Path, output: Path) -> dict[str, Any]:
-    data = load_paper_data(root)
-    generated = output / "generated"
-    figures = output / "figures"
-    generated.mkdir(parents=True, exist_ok=True)
-    figures.mkdir(parents=True, exist_ok=True)
+    from relayspec.paper_evidence import build_current_assets
 
-    _write_macros(data, generated / "results_macros.tex")
-    _write_main_table(data, generated / "main_math_table.tex")
-    _write_transfer_table(data, generated / "transfer_table.tex")
-    _write_acceptance_table(data, generated / "acceptance_table.tex")
-    _write_breadth_table(data, generated / "breadth_table.tex")
-    _write_resource_table(data, generated / "resource_table.tex")
-    _write_forecast_table(data, generated / "forecast_table.tex")
-    _write_similarity_table(data, generated / "similarity_table.tex")
-    _draw_system_overview(figures / "system_overview.pdf")
-    _draw_main_throughput(data, figures / "main_throughput.pdf")
-    _draw_mechanism(data, figures / "mechanism.pdf")
-    _draw_breadth_and_margin(data, figures / "breadth_and_margin.pdf")
-    _draw_acceptance_survival(data, figures / "acceptance_survival.pdf")
-    _draw_memory(data, figures / "memory_reduction.pdf")
-    return data
+    return build_current_assets(root, output, load_paper_data(root))
 
 
 def main() -> None:

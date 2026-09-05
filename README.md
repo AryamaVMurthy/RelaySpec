@@ -33,11 +33,13 @@ software tests does not establish that these research issues are resolved.
 - [Manuscript source](paper/iclr2027/relayspec_iclr2027.tex) and [draft PDF](paper/iclr2027/relayspec_iclr2027.pdf)
 - [Evidence guide](reports/README.md)
 
-The latest paired summaries report approximately 2.40–5.14× aggregate
-request-time improvements over plain target decoding and 1.10–1.53× over
-optimized source reuse on the main MATH-500 configurations. These are recorded
-summaries, **not independently reproduced results or a resolved claim of
-identical target outputs**. Read the review before using these numbers.
+The current manuscript reports the recorded source-reuse comparisons: **1.08–1.48×
+MATH-500 throughput**, equal recorded task scores within each paired comparison,
+and **7.63–7.80 GiB** lower peak memory in separate EAGLE-3 measurements.
+Its asset pipeline checks all four main and sixteen breadth cells against saved
+request records. The [rewrite and evidence-selection record](docs/plans/2026-09-05-relayspec-current-evidence-rewrite.md)
+explains the current claim scope and which exploratory results require further
+validation. These checks do not establish equivalence to plain target decoding.
 
 ## Install and test
 

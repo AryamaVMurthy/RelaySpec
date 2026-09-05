@@ -19,15 +19,15 @@ OFFICIAL_HASHES = {
 }
 REQUIRED_SECTIONS = (
     "Introduction",
-    "What one decoding cycle does",
+    "Drafting with target verification",
     "Method",
-    "When is this worth doing?",
-    "Setup",
-    "Does it work, and what does it cost?",
-    "How far can one frozen proposer be moved?",
+    "Why removing the source can save time",
+    "Experimental setup",
+    "Results",
     "Related work",
-    "Limitations and conclusion",
+    "Scope and conclusion",
 )
+
 BANNED_PHRASES = (
     "first-error localization",
     "transfer dynamics",
@@ -347,7 +347,9 @@ def audit_manuscript(root: Path, *, write_report: bool = True) -> dict[str, Any]
     engineering_detail_hits = [
         pattern
         for pattern in ENGINEERING_DETAIL_PATTERNS
-        if re.search(pattern, source, flags=re.IGNORECASE)
+        if re.search(
+            pattern, source.split("\\label{maintextend}")[0], flags=re.IGNORECASE
+        )
     ]
 
     required_missing = [
@@ -418,7 +420,7 @@ def audit_manuscript(root: Path, *, write_report: bool = True) -> dict[str, Any]
         _check(
             "reader-facing scientific detail",
             not engineering_detail_hits,
-            "the manuscript omits hashes, numeric seeds, internal test counts, and runtime provenance records",
+            "main prose omits internal engineering records, while appendix retains reproducibility settings",
         ),
         _check(
             "nine-page main-text limit",
@@ -489,7 +491,7 @@ def audit_manuscript(root: Path, *, write_report: bool = True) -> dict[str, Any]
         lines = [
             "# RelaySpec ICLR 2027 manuscript QA",
             "",
-            "Generated 2026-08-28 from the compiled anonymous manuscript and final result artifacts.",
+            "Generated 2026-09-05 from the compiled anonymous manuscript and final result artifacts.",
             "",
             f"- Overall: **{'PASS' if result['all_passed'] else 'FAIL'}**",
             f"- Main-text boundary: page {main_page} of the allowed 9",

@@ -1,970 +1,825 @@
 \documentclass{article}
 \usepackage{iclr2027_conference,times}
-
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{booktabs}
-\usepackage{float}
-\usepackage{graphicx}
-\usepackage{microtype}
-\usepackage{xcolor}
-\usepackage{hyperref}
-\usepackage{url}
-\usepackage{tikz}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-\usetikzlibrary{shapes.geometric,arrows.meta,positioning,fit,calc}
+\usepackage{amsmath,amssymb,booktabs,graphicx,microtype,xcolor}
+\usepackage{hyperref,url}
+\usepackage{algorithm,algpseudocode}
 \hypersetup{hidelinks}
-
-\input{generated/results_macros.tex}
-
-\definecolor{relaygreen}{RGB}{206,227,186}
-\definecolor{relayblue}{RGB}{201,218,238}
-\definecolor{relayorange}{RGB}{255,224,153}
-\definecolor{relaygray}{RGB}{224,224,224}
-\definecolor{relaydark}{RGB}{80,80,80}
-
-\newtheorem{proposition}{Proposition}
 \newcommand{\method}{RelaySpec}
-
-\title{RelaySpec: Reusing a Frozen Speculative Proposer\\on a New Target Model with One Linear Map}
-
+\title{RelaySpec: Retargeting Frozen Drafters\\for Speculative Decoding}
 \author{Anonymous Authors}
-
-% \iclrfinalcopy
-
 \begin{document}
-
 \maketitle
 \lhead{}
 
 \begin{abstract}
-Speculative decoding accelerates generation by letting a small proposer
-guess several tokens ahead and letting the target model verify all of them
-in one pass. The strongest proposers, such as DFlash and EAGLE-3, condition
-on hidden states read out of the exact model they were trained with, which
-we call the source model. That coupling is the problem: serving a different
-target model with the same proposer normally means training a new proposer,
-which DFlash reports as 800{,}000 examples over 6 epochs, or keeping the
-source model resident forever purely to rebuild the proposer's input. We
-show that a single linear map removes the coupling. The map is fitted on
-4{,}096 unlabeled examples in under two minutes, reads five hidden states
-the new target already computes while verifying, and emits the tensor the
-frozen proposer expects, after which the source model can be deleted
-entirely. On MATH-500, against plain autoregressive decoding measured in
-the same paired run, \method{} reaches \PairedDFlashEightAr{}x and
-\PairedDFlashFourteenAr{}x with DFlash on Qwen3-8B and Qwen3-14B, and
-\PairedEagleEightAr{}x and \PairedEagleFourteenAr{}x with EAGLE-3, while
-retaining \RecoveryLow{} to \RecoveryHigh{} percent of the throughput a
-proposer trained for that exact target reaches and cutting peak GPU memory
-by 20 to 31 percent. The same frozen proposer moves further than its own
-training pair: onto an independently fine-tuned descendant with no
-refitting (\TransferDescendant{}x), onto a larger target through an adapter
-(\TransferAdapter{}x), into a different family and onto a target smaller
-than its own source (\TransferCrossFamily{}x), and across a tokenizer
-boundary (\TransferCrossTokenizer{}x). Every speedup
-we report is measured against plain autoregressive decoding, paired
-request by request, with bootstrap confidence intervals.
+A speculative drafter proposes several tokens that a larger target model
+checks together. Feature-conditioned drafters also use hidden states from
+the model they were trained with. Reusing such a drafter with a different
+target can therefore require running its original source transformer to
+supply those states. We introduce \method{}, which learns to supply the
+drafter's input from hidden states already computed by the new target.
+The drafter remains frozen. A bias-free linear map replaces the source
+transformer in the conditioning path, with normalization matched to the
+released drafter's interface. We evaluate this change with DFlash and
+EAGLE-3 drafters trained for Qwen3-4B and retargeted to Qwen3-8B and
+Qwen3-14B. On MATH-500, throughput increases by 1.08--1.48 times relative
+to optimized source reuse, with equal task accuracy in each paired
+comparison. The maps use 4,096 math problem-and-solution records and
+52--66 million trainable weights. Separate EAGLE-3 measurements reduce
+peak allocated memory by 7.63--7.80 GiB. Across math, code and conversation
+workloads, component timings explain how the source computation saved and
+the tokens advanced per cycle jointly determine the gain. These results
+establish a practical use of learned feature maps for reusing frozen
+drafters across target model sizes.
 \end{abstract}
 
 \section{Introduction}
 \label{sec:introduction}
 
-A speculative decoder pairs a small proposer with a large target model. The
-proposer guesses several tokens, the target checks them all in one forward
-pass, and every token the target disagrees with is thrown away. Output text
-is unchanged, so the only question is speed.
+Speculative decoding lets a small model propose several tokens before a
+larger model checks them in one pass \citep{leviathan2023speculative}.
+We call the small model the \emph{drafter} and the larger model the
+\emph{target}. A good draft allows the target to commit several tokens
+per checking pass. The resulting speed depends on both the quality of
+those guesses and the time spent producing them.
 
-The strongest proposers today do not read tokens alone. DFlash
-\citep{chen2026dflash} and EAGLE-3 \citep{li2025eagle3} also read internal
-hidden states from the model they were trained against. This makes them
-accurate, and it also ties them to that one model. Serving a different
-target model with the same proposer means either training a new proposer,
-or running the old source model on every decoding step purely to rebuild
-the proposer's input, even though that source model never approves a single
-token.
+DFlash and EAGLE-3 condition their guesses on internal vectors computed by
+a language model \citep{chen2026dflash,li2025eagle3}. These vectors, called
+hidden states, contain the information the model has computed about a
+text prefix. A released drafter expects states from the particular model
+used during its training. We call that model its \emph{source}. When a
+new target replaces the source, the source can still provide the drafter's
+features while the new target checks its proposals. This reuses the
+released drafter but adds source-model computation to generation.
 
-Training a new proposer is expensive. DFlash trains its drafter on about
-800{,}000 examples for 6 epochs, and EAGLE-3 uses roughly 532{,}000
-examples. Neither reports GPU-hours, but both are separate training runs
-per target model.
-
-We ask whether the tensor the proposer needs can simply be rebuilt from the
-new target, and answer yes for a useful range of cases. \method{} fits one
-linear map that reads five hidden states the target model already produces
-during ordinary verification, and outputs the tensor the frozen proposer
-expects. Fitting uses 4{,}096 unlabeled examples and takes 86 to 119
-seconds on four GPUs. Nothing inside the proposer changes. After fitting,
-the source model can be deleted. Figure~\ref{fig:overview} shows the
-change.
+We study a concrete deployment setting. An existing feature-conditioned
+drafter is held fixed, and a different target model is available. Can the
+target's own states supply the input the drafter needs? \method{} learns
+a matrix that maps selected target states into that input. The source and
+target provide paired feature vectors during fitting. At generation time,
+the map reads states from target verification and the source transformer
+is removed from the conditioning path. Figure~\ref{fig:overview} shows
+the two implementations compared in this paper.
 
 \begin{figure}[t]
-    \centering
-    \includegraphics[width=0.94\linewidth]{figures/system_overview.pdf}
-    \caption{Left: reusing a proposer today. The source model runs every
-    step just to rebuild the proposer's input. Right: \method{}. One linear
-    map rebuilds the same input from hidden states the target already
-    computed, and the source model is gone. The target model verifies every
-    token in both cases.}
-    \label{fig:overview}
+\centering
+\includegraphics[width=\linewidth]{figures/system_overview.pdf}
+\caption{Replacing the computation that supplies a frozen drafter's input.
+Source reuse runs the original source transformer on the committed text.
+\method{} instead maps features from the new target into the same drafter
+interface. Both paths use the new target to check proposals. Source token
+embeddings and vocabulary projections used by the drafter remain fixed.}
+\label{fig:overview}
 \end{figure}
 
-We make four contributions.
+The useful question is whether this substitution reduces total generation
+time. A map can produce less effective guesses than the original source
+features and still improve throughput if each cycle becomes sufficiently
+cheaper. We therefore measure throughput, task scores, tokens advanced per
+cycle and isolated memory. Feature-fitting error helps choose an interface,
+while generation measurements determine whether that choice is useful.
 
-\textbf{A two-minute replacement for retraining a proposer.} One linear
-map, fitted on 4{,}096 unlabeled examples, delivers
-\PairedDFlashEightAr{}x to \PairedDFlashFourteenAr{}x over plain
-autoregressive decoding with DFlash and \PairedEagleEightAr{}x to
-\PairedEagleFourteenAr{}x with EAGLE-3, retaining \RecoveryLow{} to
-\RecoveryHigh{} percent of what a proposer trained for that exact target
-reaches, at roughly three orders of magnitude less adaptation data
-(Section~\ref{sec:results}).
+This paper makes three contributions. First, it specifies how to replace
+the conditioning path of two released drafter implementations while
+preserving their different normalization requirements. Second, it provides
+paired measurements of source reuse and \method{} for two Qwen3 target
+sizes, with complete math, code and conversation results. Third, it
+relates the observed gains to source-model cost and accepted progress,
+and measures the memory reduction in separate deployment processes.
 
-\textbf{A rule that says in advance when it will pay off.} A short
-equation over measured timing and accepted tokens per cycle predicts
-whether removing the source model helps or hurts. It gets the direction
-right in all 16 additional task settings we test (Section~\ref{sec:cost}).
+The comparison isolates the effect of replacing the source conditioning
+path. It holds the inherited drafter, target, decoding settings and request
+set fixed. This is a useful complement to training target-independent
+drafters \citep{an2026pard} or steering pretrained drafters with target
+features \citep{berdoz2026sd2}. The method's distinction is the replacement
+of a released feature-conditioned drafter's source transformer with a
+fitted map, while retaining the drafter's weights.
 
-\textbf{One frozen proposer, four kinds of target change.} The same map
-transfers onto an independently fine-tuned descendant of the target with
-no refitting, onto a larger target through an adapter over a frozen
-decoder, into a different model family and onto a smaller target than the
-proposer's own source, and across a tokenizer boundary. All four remain
-well above plain autoregressive decoding (Section~\ref{sec:transfer}).
-
-\textbf{Design evidence that a plain linear map is the right hypothesis.}
-Against a closed-form solution of the same objective and a nonlinear map
-at the same fitting budget, the linear map fitted by gradient descent wins
-clearly, and fit quality is still improving at 8{,}192 examples
-(Appendix~\ref{app:ablations}).
-
-\section{What one decoding cycle does}
+\section{Drafting with target verification}
 \label{sec:setting}
 
-At each cycle the proposer produces a block of candidate tokens. The target
-model runs once over that block and produces, at every position, the token
-it would have generated itself. We keep the longest starting run where the
-candidates match the target's own choices, then append the target's next
-token. Everything after the first disagreement is discarded. Because every
-committed token is a token the target itself produced, output text does not
-depend on proposal quality. Proposal quality only changes how many cycles
-are needed.
+We first describe the greedy decoding procedure used in the experiments.
+Greedy decoding selects the token with the largest target score at each
+position. The drafter proposes a sequence of candidate tokens. The target
+then evaluates those candidates with a causal mask, so each position sees
+only the preceding text. The decoder keeps the longest candidate prefix
+that agrees with the target and appends the next token selected by the
+target. It discards the remaining candidate suffix.
 
-A feature-conditioned proposer needs one extra input: a continuous context
-tensor built from the source model's hidden states. \method{} produces that
-tensor from the target instead. Figure~\ref{fig:pipeline} shows the loop.
+For example, suppose the drafter proposes \texttt{the red car} and the
+target's choices agree through \texttt{the red} but then select
+\texttt{bus}. The decoder commits \texttt{the red bus}. The drafter saved
+checking rounds for the accepted prefix. It did not decide the correction.
+This example treats each displayed word as one token for clarity.
 
-\begin{figure}[t]
-    \centering
-    \resizebox{0.92\linewidth}{!}{%
-    \begin{tikzpicture}[
-        every node/.style={font=\small},
-        box/.style={draw=relaydark, rounded corners=2pt, fill=#1,
-            text width=3.55cm, minimum height=1.05cm, align=center,
-            inner sep=4pt},
-        arrow/.style={-{Latex[length=2mm]}, thick, relaydark}
-    ]
-        \node[box=relayblue] (prefill) {1. Run the target on the prompt and
-        keep its cache};
-        \node[box=relaygreen, right=0.9cm of prefill] (taps) {2. Read five
-        target hidden states, apply the linear map};
-        \node[box=relayorange, right=0.9cm of taps] (proposer) {3. Frozen
-        proposer generates candidate tokens};
-        \node[box=relayblue, below=0.9cm of proposer] (verify) {4. Target
-        model verifies every candidate position};
-        \node[box=relaygray, left=0.9cm of verify] (commit) {5. Commit
-        agreeing prefix plus correction token, crop cache};
-        \node[box=relaygreen, left=0.9cm of commit] (next) {6. Translate new
-        hidden states for the next cycle};
+The target also stores intermediate attention states for the committed
+prefix. This stored state is its \emph{cache}. After verification, the
+decoder crops the cache to the committed length and keeps the corresponding
+hidden states for the next draft. \method{} changes the vectors supplied
+to the drafter. The target's token-selection rule and cache bookkeeping
+remain part of the shared decoding implementation.
 
-        \draw[arrow] (prefill) -- (taps);
-        \draw[arrow] (taps) -- (proposer);
-        \draw[arrow] (proposer) -- (verify);
-        \draw[arrow] (verify) -- (commit);
-        \draw[arrow] (commit) -- (next);
-        \coordinate (loopside) at ($(next.west)+(-0.7,0)$);
-        \draw[arrow] (next.west) -- (loopside)
-            |- ($(taps.north)+(0,0.6)$) -- (taps.north);
-    \end{tikzpicture}%
-    }
-    \caption{One \method{} decoding cycle. Green boxes read or translate
-    target hidden states. Blue boxes are the full target model, the only
-    component that can accept a token. Step 6 loops back into step 2.}
-    \label{fig:pipeline}
-\end{figure}
-
-Four structural conditions must hold before the swap is even possible
-(Table~\ref{tab:compatible}). They say whether it can be done, not whether
-it is fast.
-
-\begin{table}[h!]
-\caption{Conditions a proposer and target pair must satisfy for \method{}
-to apply. Section~\ref{sec:cost} covers whether it is also faster.}
-\label{tab:compatible}
-\centering
-\small
-\begin{tabular}{p{0.26\linewidth}p{0.64\linewidth}}
-\toprule
-Condition & What this means in practice \\
-\midrule
-Same token meaning & Proposer and target use the same token IDs, including
-special tokens. Section~\ref{sec:transfer} measures what happens when they
-do not. \\
-Separate continuous input & The proposer takes a continuous context tensor
-as its own input. This is the tensor the map learns to produce. \\
-Target exposes hidden states & Ordinary verification already computes the
-target's hidden states, so they only need to be read out. \\
-Verification is independent & Target verification and cache updates never
-depend on the translated tensor, so the target stays the only component
-that can accept a token. \\
-\bottomrule
-\end{tabular}
-\end{table}
+The standard greedy argument depends on a precise condition. Evaluating a
+candidate block must give the same target choice at each accepted position
+as evaluating that identical prefix one token at a time. With matching
+positions, masks, stopping rules and cache state, induction over committed
+tokens gives the same greedy sequence \citep{leviathan2023speculative}.
+This argument describes the verifier contract. Our empirical quality
+comparisons measure \method{} against source reuse in the same verifier
+implementation, using task scores and token-sequence agreement separately.
 
 \section{Method}
 \label{sec:method}
 
-\paragraph{The slot we are replacing is already one linear layer.}
-Both released proposers read their source model the same way. They
-concatenate five source hidden states into $z^S_t$, pass them through one
-linear fusion layer $F$ that the proposer ships with, and normalize the
-result before any proposer block sees it: the conditioning tensor is
-$\mathrm{norm}(F z^S_t)$. \method{} deletes $F$ and puts a map $R$ in its
-place, reading the target's own five hidden states $z^T_t$ instead, so the
-tensor becomes $\mathrm{norm}(R z^T_t)$. Nothing downstream of that
-normalization changes by a single weight.
+\subsection{Read target features at the drafter's input}
 
-This is the reason a linear map is the right hypothesis class rather than a
-convenient one. We are not approximating the source model's computation. We
-are refitting the one linear layer the proposer already used to read a
-model, now pointed at a different model. Linear is the class the proposer's
-own authors chose for this exact slot, and staying inside it is the minimal
-edit that leaves the rest of the frozen proposer in the distribution it was
-trained on. An MLP at the same fitting budget does not beat it
-(Appendix~\ref{app:ablations}).
+We collect five hidden states at each text position and join them into one
+vector. Let $h_t$ denote this vector from the new target at position $t$.
+Let $s_t$ denote the corresponding vector from the source, and let $F$ be
+the frozen projection supplied with the released drafter. The projection
+converts source states into the smaller context vector consumed by the
+drafter. We train a matrix $W$ to produce that context from $h_t$.
 
-\paragraph{What is fitted, exactly.} $R$ is a single weight matrix with no
-bias, applied after an RMSNorm over the concatenated input. At Qwen3-8B the
-target hidden size is 4{,}096 and five taps give an input width of
-20{,}480, so $R$ is $20{,}480 \times 2{,}560$, or 52.4 million parameters.
-At Qwen3-14B the hidden size is 5{,}120 and $R$ is $25{,}600 \times
-2{,}560$, or 65.5 million. The output width 2{,}560 is fixed by the frozen
-proposer and never varies. Taps are layers $[1,9,17,25,33]$ of 36 at 8B and
-$[1,10,19,28,37]$ of 40 at 14B, the same relative depths the proposer's own
-source taps sit at. Fitting is AdamW at learning rate $6\times10^{-4}$ for
-1{,}024 steps over 4{,}096 unlabeled prompts truncated to 192 tokens, one
-pass, four GPUs, 86 to 119 seconds wall clock. The proposer, the target and
-the source model are all frozen throughout, $R$ is the only thing that
-moves, and no answer labels are used at any point.
-
-\paragraph{Why the loss is normalized by the target's own energy.}
-Training minimizes
-
+The two drafter implementations consume different versions of this vector.
+For DFlash, let $N_{\mathrm{in}}$ be the fixed root-mean-square
+normalization of the joined target vector. It rescales that vector using
+the square root of its mean squared coordinate. Let $N_{\mathrm{out}}$
+be the released drafter's frozen output normalization. The teacher vector
+$c_t$ and predicted vector $\widehat c_t$ are
 \begin{equation}
-    \mathcal{L} = \frac{\lVert R z^T_t - c^S_t \rVert^2}
-                       {\lVert c^S_t \rVert^2 + \epsilon},
-    \label{eq:loss}
+\begin{aligned}
+\text{DFlash:}\qquad
+c_t &= N_{\mathrm{out}}(F s_t), &
+\widehat c_t &= N_{\mathrm{out}}(W N_{\mathrm{in}}(h_t)),\\
+\text{EAGLE-3:}\qquad
+c_t &= F s_t, &
+\widehat c_t &= W h_t.
+\end{aligned}
+\label{eq:interfaces}
 \end{equation}
+For EAGLE-3, $F s_t$ denotes the raw output of the released feature
+projection. Its scale is part of the consumed input. The selected relay
+therefore preserves target-feature scale. These choices follow the actual
+input used by each pinned implementation.
 
-per position, where $c^S_t = F z^S_t$ is what the original fusion layer
-would have produced. The denominator is not a convenience. The
-normalization that immediately follows this slot removes the overall
-magnitude of whatever we hand it, so the proposer can only ever see the
-direction of $R z^T_t$. An unnormalized squared error would spend the map's
-capacity on a scale the proposer discards, and would let the few positions
-with the largest activations dominate the fit. Dividing by
-$\lVert c^S_t \rVert^2$ makes every position count equally and makes the
-objective measure the only thing the proposer can distinguish. The same
-argument is why $R$ carries no bias term.
+Only $W$ is trained. It has no bias and no additional hidden layer. This
+keeps the added computation to one matrix multiplication and the fixed
+normalization where applicable. A linear map is a compact way to test
+whether the target already provides enough information for this input.
+Its suitability is an empirical question, answered here by matched
+interface checks and generation results.
 
-At inference the source model is gone. Algorithm~\ref{alg:relay} gives the
-loop actually executed.
+\subsection{Fit against source-derived context vectors}
+
+We run the frozen source and target on the same fitting text. For each
+position, we minimize the squared difference between the predicted vector
+and the source-derived teacher vector. We divide this difference by the
+teacher vector's squared length so that large-magnitude teachers do not
+automatically dominate the objective.
+
+For a fitting record with $n$ token positions, the loss is
+\begin{equation}
+\mathcal L(W)=\frac{1}{n}\sum_{t=1}^{n}
+\frac{\lVert\widehat c_t-c_t\rVert_2^2}
+     {\max(\lVert c_t\rVert_2^2,\epsilon)}.
+\label{eq:loss}
+\end{equation}
+Here $\lVert v\rVert_2^2$ is the sum of the squared coordinates of vector
+$v$. The constant $\epsilon$ is the smallest positive normal value in
+32-bit floating-point arithmetic. It protects division when the teacher
+is zero. We average positions within each record and then average the
+record losses across workers. Equation~\ref{eq:interfaces} determines
+which predicted and teacher vectors enter the loss.
+
+This objective measures relative numerical error. It can penalize both
+scale and direction errors for the raw EAGLE-3 interface. For DFlash, both
+vectors pass through the released output normalization before comparison.
+That normalization also means the DFlash objective is not ordinary linear
+least squares in $W$. The experiments use gradient-based fitting for both
+families.
+
+The fitting set contains 4,096 math problem-and-solution records. We render
+the problem and solution as conversation text and truncate the resulting
+input to 192 tokens. The optimization target is the source's internal
+context vector, rather than an answer-correctness label. Solution text is
+nevertheless part of the fitting input. The source, target and drafter are
+all frozen during this procedure.
+
+\subsection{Use the map during generation}
+
+Algorithm~\ref{alg:relay} describes the shared draft-and-check procedure.
+The map reads only hidden states from committed positions. Target
+verification does not read the mapped vectors. In the DFlash path, the
+frozen token embedding and output vocabulary projection used by the drafter
+are retained. Removing the source transformer refers specifically to the
+transformer layers that previously produced its context.
 
 \begin{algorithm}[t]
-\caption{\method{} decoding. Only line 8 can commit a token.}
+\caption{Generation with a frozen drafter and a learned feature map}
 \label{alg:relay}
 \begin{algorithmic}[1]
-\State Run target on the prompt, keep its cache and hidden states
-\State $c \gets R(\text{five target hidden states})$
-\While{output is not finished}
-  \State $B \gets$ proposer generates a candidate block, conditioned on $c$
-  \State Run target once over $B$, keeping its cache
-  \State $P \gets$ token the target itself would emit at each position of $B$
-  \State $k \gets$ length of the longest starting run where $B$ agrees with $P$
-  \State Commit those $k$ tokens, then commit the target's own next token
-  \State Crop target cache to the committed length
-  \State $c \gets R(\text{target hidden states at the committed positions})$
+\State Run the target on the prompt and retain its cache and selected states
+\State Form drafter context using the appropriate map in Equation~\ref{eq:interfaces}
+\While{the stopping condition has not been reached}
+  \State Generate candidate tokens with the frozen drafter
+  \State Evaluate the candidates with the target and its causal mask
+  \State Keep the longest prefix agreeing with the target's greedy choices
+  \State Append the target-selected correction or next token, within the output cap
+  \State Crop the cache and retained states to the committed positions
+  \State Map the retained target states into context for the next draft
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
 
-The map only changes what the proposer sees. It never approves a token. A
-poor map therefore causes more cycles, never different text.
-
-\begin{proposition}
-Under greedy decoding and exact arithmetic, \method{} produces the same
-output as running the target model alone.
-\end{proposition}
-
-Every committed token is taken from the target's own greedy output at that
-position, given a prefix the target itself produced. Induction over
-committed positions gives the result. In practice BF16 kernels for a block
-of positions and for one position can differ slightly near ties. We
-therefore report exact text agreement as a measurement:
-\DFlashEightExact{} of MATH-500 completions for DFlash at 8B, and
-\EagleEightExact{} for EAGLE-3, with official accuracy unchanged in every
-case.
-
-\section{When is this worth doing?}
+\section{Why removing the source can save time}
 \label{sec:cost}
 
-Removing the source model only helps if candidates stay good enough. Split
-total source-reuse time, normalized to one, into three parts,
+Replacing source features has two effects. It removes source-transformer
+work, and it changes the number of tokens advanced by each drafting cycle.
+We use the recorded component times to explain their combined effect.
+A cycle is one proposal followed by one target verification.
 
+Take the total source-reuse request time as one unit. Let $p_S$ be the
+fraction spent running the source transformer. Let $p_C$ be the fraction
+spent drafting and verifying candidate blocks. Let $p_O$ cover prompt
+processing and other work. These fractions satisfy $p_S+p_C+p_O=1$.
+Let $a_S$ and $a_R$ be the recorded mean tokens advanced per cycle for
+source reuse and \method{}. Let $p_R$ be the relay's total mapping time,
+expressed in the same source-reuse time units.
+
+For similar output lengths and approximately constant work per cycle,
+reducing progress per cycle increases the number of cycles by about
+$a_S/a_R$. If $L_S$ and $L_R$ denote total request time for source reuse
+and \method{}, respectively, this gives
 \begin{equation}
-    1 = p_C + p_S + p_O,
-    \label{eq:source-shares}
+\frac{L_R}{L_S}\,\approx\,
+\frac{a_S}{a_R}\,p_C+p_O+p_R.
+\label{eq:cost}
 \end{equation}
-
-where $p_C$ scales with the number of cycles, $p_S$ is the removable
-source-model share, and $p_O$ is everything else. Let $p_R$ be the map's own
-time share, and $a_S, a_R$ the tokens committed per cycle before and after.
-Since cycle count is roughly inversely proportional to tokens per cycle,
-
+This equation separates the work removed from the extra cycles induced by
+the mapped features. Within these assumptions, \method{} is faster when
 \begin{equation}
-    \frac{L_R}{L_S} = \frac{a_S}{a_R}p_C + p_O + p_R,
-    \qquad\text{so \method{} is faster exactly when}\qquad
-    \frac{a_R}{a_S} > \frac{p_C}{1-p_O-p_R}.
-    \label{eq:break-even}
+\frac{a_R}{a_S}>\frac{p_C}{1-p_O-p_R},
+\qquad\text{provided }1-p_O-p_R>0.
+\label{eq:threshold}
 \end{equation}
+The left side is the fraction of original progress retained. The right
+side is the minimum fraction needed to offset the remaining work.
 
-The right side is the smallest fraction of the original accepted-token rate
-the map must keep, and every quantity in it is measurable on a short sample
-of real requests before committing to either configuration. This is the one
-place in the paper where the comparison is against source reuse rather than
-plain autoregressive decoding, because the question it answers is
-specifically whether to unload the source model, not how fast either option
-is: both sides of Equation~\ref{eq:break-even} are speculative decoding, so
-the plain-AR floor cancels.
+For intuition, suppose source processing consumes 30\% of time,
+cycle-dependent work 65\%, and other work 5\%. If the map costs 1\% and
+retains 80\% of progress, Equation~\ref{eq:cost} gives a relative time of
+$0.65/0.80+0.05+0.01=0.8725$. This illustrative case saves about 13\% of
+request time despite advancing fewer tokens per cycle. The calculation
+explains why accepted-token counts alone do not determine throughput.
 
-The rule also explains a size effect we measure rather than merely fitting
-it. A fixed 4B source model is a smaller share of a 14B target's total work
-than of an 8B target's, so $p_S$ shrinks as the target grows, the removable
-term is smaller, and the map has to preserve a higher fraction of the
-accepted-token rate to break even. That is exactly the ordering
-Table~\ref{tab:main} shows: relay over source reuse falls from 1.53x at 8B
-to 1.27x at 14B with DFlash, and from 1.28x to 1.10x with EAGLE-3, while
-the speedup over plain autoregressive decoding rises.
+Our analysis inserts timings and progress measured in the same completed
+runs. It is an accounting explanation of the observed operating range.
+It also makes the assumptions visible. Input processing, changing output
+lengths and different per-cycle costs can affect the approximation.
 
-\section{Setup}
+\section{Experimental setup}
 \label{sec:setup}
 
-The proposers are released DFlash and EAGLE-3 checkpoints trained against
-Qwen3-4B. Targets are Qwen3-8B and Qwen3-14B \citep{yang2025qwen3}. We fit
-one map per proposer and target pair on 4{,}096 math prompts, using no
-answer labels. Evaluation covers MATH-500 \citep{hendrycks2021math}, GSM8K
-\citep{cobbe2021gsm8k}, HumanEval \citep{chen2021humaneval}, MBPP
-\citep{austin2021mbpp} scored with EvalPlus \citep{liu2023evalplus}, and
-MT-Bench \citep{zheng2023mtbench}, which we time but do not score. All runs
-use greedy decoding, one request at a time, BF16, on four RTX 6000 Ada
-GPUs. Fitting prompts and evaluation prompts are disjoint, and
-Appendix~\ref{app:similarity} reports the overlap audit.
+\paragraph{Models and implementations.}
+We use the released \texttt{z-lab/Qwen3-4B-DFlash-b16} drafter and
+\texttt{deepseek-ai/eagle3\_qwen3\_4b\_ttt7}, an EAGLE-3 implementation
+from DeepSpec \citep{chen2026dflash,li2025eagle3,deepspec2026software}.
+Both use Qwen3-4B as their source. Targets are Qwen3-8B and Qwen3-14B
+\citep{yang2025qwen3}. DFlash proposes blocks of length 16. The EAGLE-3
+implementation uses a draft length of 7. The comparison holds each
+implementation's proposal procedure fixed across conditioning methods.
 
-We compare against three baselines, and define each precisely because the
-paper reports ratios against more than one of them.
+\paragraph{Source-reuse comparison.}
+The reference runs the source transformer only through its last required
+feature layer. It updates source features on the committed prefix and
+avoids executing the source on rejected suffixes. \method{} uses the same
+frozen drafter and target, replacing this source path with the map. Each
+pair is measured on the same requests in the same execution, with method
+order rotated and warm-up requests excluded. This isolates the cost and
+behavior of changing the conditioning path.
 
-\textbf{Plain autoregressive decoding (native AR).} The target model
-alone, one token per forward pass, no proposer and no source model
-involved. This is the deployment a user reaches for absent a
-target-specific proposer or a source model worth keeping resident, and
-the comparison every reader can act on unconditionally. Every main-table
-and transfer speedup in this paper is measured against native AR in the
-same paired run as the other methods compared.
+\paragraph{Fitting and hardware.}
+We use AdamW with learning rate $6\times10^{-4}$, zero weight decay,
+gradient clipping at 1.0 and 1,024 updates. Four workers each process one
+record per update, giving one presentation of each of the 4,096 records.
+Generation uses BF16 arithmetic, greedy choices, a 2,048-token output cap
+and disabled thinking mode. The reported experiments use four RTX 6000 Ada
+GPUs, each handling one request at a time. Timings describe the instrumented
+PyTorch/Transformers runtime. Appendix~\ref{app:protocol} specifies the
+feature layers, model widths and runtime versions.
 
-\textbf{Optimized source reuse.} The alternative a user has today without
-\method{}: keep the source model the proposer was trained against
-resident alongside the target, running it on every newly committed token
-purely to reconstruct the tensor the proposer needs, truncated after the
-last layer the proposer reads (never re-run on a rejected candidate
-suffix). This isolates what \method{} specifically buys: the same frozen
-proposer and accepted-token behavior, with the source model deleted
-instead of kept resident. We report it as a secondary ratio alongside
-native AR, never as the primary claim.
+\paragraph{Workloads and selection.}
+We evaluate MATH-500, GSM8K, HumanEval, MBPP and MT-Bench
+\citep{hendrycks2021math,cobbe2021gsm8k,chen2021humaneval,austin2021mbpp,zheng2023mtbench}.
+The main table contains all 500 MATH-500 questions. We also report the
+468-question complement of the 32 questions used for development choices.
+This complement is computed from the same saved runs. The fitting and
+evaluation problem texts have zero normalized exact matches. MATH includes
+closely related problem templates, quantified in Appendix~\ref{app:data}.
+The fixed-map code and conversation evaluations provide a separate view
+of behavior across tasks.
 
-\textbf{Target-specific proposer.} A proposer trained or released
-specifically for the deployed target, where such a checkpoint exists
-publicly. This is the ceiling: what full retraining, on hundreds of
-thousands of examples, would buy over \method{}'s two-minute linear fit.
+\paragraph{Measurements.}
+Throughput is total generated tokens divided by total measured request
+time, including prompt processing. The reported ratio divides \method{}
+throughput by source-reuse throughput. We report 95\% intervals from
+10,000 paired bootstrap resamples. Each resample draws whole matched
+requests, preserving their two method measurements. MT-Bench resamples
+whole two-turn conversations. Thus its 160 turns form 80 independent
+resampling units. These intervals describe request variation for the
+fixed fitted checkpoints.
 
-\section{Does it work, and what does it cost?}
+We score math answers with the recorded Qwen math scorer and code with
+EvalPlus base and expanded test suites \citep{liu2023evalplus}.
+A code score is the percentage of tasks whose single generated program
+passes the corresponding tests. MT-Bench contributes two-turn timing and
+token-agreement measurements. We report token-sequence agreement separately
+from task accuracy, because two different sequences can have the same
+answer or pass the same tests.
+
+\section{Results}
 \label{sec:results}
 
-Table~\ref{tab:main} gives the main MATH-500 result. Every method in a row,
-including plain autoregressive decoding, ran inside one benchmark process
-on the same 500 prompts, so each ratio is paired request by request rather
-than compared across executions.
+\subsection{Paired math throughput and task accuracy}
 
-\begin{table}[h!]
-\caption{MATH-500, 500 prompts, greedy decoding. Every speedup is a paired
-bootstrap ratio of total request time against plain autoregressive
-decoding measured in the same run. \method{} is the frozen proposer driven
-by one linear map, with the source model unloaded. Accepted tokens per
-cycle are reported for source reuse (S) and \method{} (R).}
+Table~\ref{tab:main} measures the effect of replacing source conditioning.
+On Qwen3-8B, DFlash throughput rises from 148.33 to 219.99 tokens per second.
+EAGLE-3 rises from 82.83 to 103.37 tokens per second. At Qwen3-14B, the
+corresponding changes are 110.45 to 137.60 and 64.97 to 70.27 tokens per
+second. Each of the four paired intervals lies above one.
+
+\begin{table}[t]
+\caption{MATH-500 with 500 paired requests per row. Source denotes optimized
+source reuse and Relay denotes \method{}. The ratio compares their output
+tokens per second. Scores are answer accuracy percentages for source (S)
+and relay (R), computed from these runs.}
 \label{tab:main}
-\centering
-\small
+\centering\small\setlength{\tabcolsep}{4pt}
 \input{generated/main_math_table.tex}
 \end{table}
 
-\method{} is faster than plain autoregressive decoding in all four pairs,
-and faster than optimized source reuse in all four, while running with the
-source model deleted rather than resident. Where a public target-specific
-proposer exists, \method{} retains \PairedDFlashEightRecovery\% of it for
-DFlash at 8B, \PairedEagleEightRecovery\% for EAGLE-3 at 8B, and
-\PairedEagleFourteenRecovery\% for EAGLE-3 at 14B, all against the same
-plain-autoregressive baseline. The margin over source reuse follows the
-removable share exactly as Section~\ref{sec:cost} predicts: DFlash at 8B
-removes \DFlashEightSourceShare\% of request time and gives the largest
-margin, EAGLE-3 at 14B removes \EagleFourteenSourceShare\% and gives the
-smallest. Figure~\ref{fig:throughput} places all four against every
-baseline.
-
 \begin{figure}[t]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/main_throughput.pdf}
-    \caption{MATH-500 output tokens per second. \method{} sits between
-    optimized source reuse and a proposer trained for that exact target,
-    and well above plain autoregressive decoding.}
-    \label{fig:throughput}
-\end{figure}
-
-\paragraph{What it costs compared to training a new proposer.}
-Fitting one map processes 4{,}096 examples once. DFlash's own paper reports
-training its drafter on about 800{,}000 examples for 6 epochs, which is
-4.8 million example-passes, roughly 1{,}172 times more. EAGLE-3 reports
-about 532{,}000 examples, and PARD \citep{an2026pard} reports 8 MI250X GPUs
-for 4 epochs over roughly one million examples. None of these three papers
-report GPU-hours for their own training, so we compare data processed,
-which they do report. Figure~\ref{fig:cost} puts that cost next to what the
-cheaper option gives up: \RecoveryLow{} to \RecoveryHigh{} percent of the
-throughput a proposer trained for that exact target reaches.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.98\linewidth]{figures/adaptation_cost.pdf}
-    \caption{(a) Examples processed to support one new target model, log
-    scale. Counts are epochs times dataset size as reported by each paper.
-    (b) Throughput \method{} keeps relative to a proposer trained for that
-    exact target, where a public checkpoint exists for the comparison.}
-    \label{fig:cost}
-\end{figure}
-
-Table~\ref{tab:resources} gives the rest of the deployment cost. Fitting
-takes 86 to 119 seconds on four GPUs, the map is 52 to 66 million
-parameters, and deleting the source model saves 7.6 to 7.8 GiB of peak GPU
-memory, which is 20 to 31 percent.
-
-\begin{table}[h!]
-\caption{Deployment cost of one map. Fit time is wall clock on four GPUs
-for DFlash and EAGLE-3 respectively. Memory saving is what deleting the
-source model returns, measured in isolated processes.}
-\label{tab:resources}
 \centering
-\small
+\includegraphics[width=\linewidth]{figures/main_throughput.pdf}
+\caption{The same recorded MATH-500 results as Table~\ref{tab:main}.
+Absolute throughput gives the runtime scale. Paired intervals quantify
+the relative change when the source conditioning path is replaced.}
+\label{fig:throughput}
+\end{figure}
+
+Task accuracy is equal between source reuse and \method{} in each row.
+The recorded token sequences match on 500 of 500 DFlash requests at each
+target size and on 496 and 498 EAGLE-3 requests at 8B and 14B. The EAGLE-3
+sequence differences preserve the recorded task outcomes. Mean output
+lengths and agreement counts are given in Appendix~\ref{app:quality}.
+These measurements support the comparison between the two conditioning
+paths under the shared verifier.
+
+The 468-question complement gives throughput ratios of 1.482 and 1.245
+for DFlash, and 1.250 and 1.081 for EAGLE-3, at 8B and 14B respectively.
+The ordering remains the same after removing the development questions.
+Appendix~\ref{app:quality} reports these intervals and scores separately
+from the full benchmark.
+
+\subsection{What changes inside a generation cycle?}
+
+Figure~\ref{fig:mechanism} separates source-reuse time into source
+processing, target processing, drafting and other work. It also compares
+the recorded progress per cycle. \method{} advances fewer tokens per
+cycle while spending less time on conditioning. The observed throughput
+gain is the net effect of both changes.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/mechanism.pdf}
+\caption{Left: component shares of source-reuse request time on MATH-500.
+Right: mean recorded tokens advanced per cycle, pooled over cycles.
+The map removes source-transformer work but also changes draft acceptance.
+Together these measurements explain the throughput changes.}
+\label{fig:mechanism}
+\end{figure}
+
+The gain is larger at 8B than at 14B for both drafter families. The same
+4B source is a smaller share of the larger target's request time, so
+removing it provides less room to absorb additional verification cycles.
+This is consistent with the cost explanation in Equation~\ref{eq:cost}.
+The runtime benefit comes from the work saved per generated token, rather
+than from improving the drafter's acceptance over source conditioning.
+
+\subsection{One fitted map across tasks}
+
+We keep each math-fitted map fixed on GSM8K, HumanEval, MBPP and MT-Bench.
+Figure~\ref{fig:breadth} shows all 16 drafter, target and task combinations.
+At 8B, both drafter families improve throughput on all four tasks.
+At 14B, GSM8K and DFlash MT-Bench retain clear gains. The 14B coding
+ratios range from 0.889 to 0.954, and the EAGLE-3 MT-Bench interval includes
+one. The complete matrix identifies the workloads where source removal
+outweighs the extra cycles, rather than treating acceptance as a speed
+measure.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.97\linewidth]{figures/breadth_and_margin.pdf}
+\caption{All four workloads with the fitted maps held fixed. A ratio above
+one favors \method{} and a ratio below one favors source reuse.
+Markers distinguish the four model/drafter settings in both color and
+print. Intervals resample requests, with MT-Bench clustered by conversation.}
+\label{fig:breadth}
+\end{figure}
+
+The relay retains 61.5--85.4\% of source-reuse progress per cycle across
+these cells. The source transformer consumes 26.8--40.0\% of reference
+request time, while mapping costs 0.38--0.72\% in the same units.
+Substituting each run's measured components and progress into
+Equation~\ref{eq:cost} reconstructs the observed direction in all 16
+cells, with 0.34\% mean absolute relative error. This close agreement
+summarizes the recorded cost balance within these measurements.
+
+Table~\ref{tab:quality} reports the scored workloads. Source reuse and
+\method{} have the same recorded task outcomes across the 4,680 paired
+math and code examples, counting each problem once per model/drafter pair.
+Base and expanded code tests are two scoring views of the same generated
+program. The throughput results therefore measure different execution
+costs for equal observed task outcomes in these comparisons.
+
+\begin{table}[t]
+\caption{Task scores in percent. Each entry is shared by source reuse and
+\method{} for that model/drafter pair. HumanEval+ and MBPP+ use the expanded
+EvalPlus tests on the same single generated program. MATH-500 scores are
+in Table~\ref{tab:main}.}
+\label{tab:quality}
+\centering\small\setlength{\tabcolsep}{4pt}
+\input{generated/quality_table.tex}
+\end{table}
+
+\subsection{Fitting cost and deployed memory}
+
+Each 8B map has 52.43 million trainable weights and each 14B map has 65.54
+million. Table~\ref{tab:fit} reports the recorded fitting loop duration.
+These timings begin with models loaded and cover feature extraction and
+optimization within that loop. They measure this stage of adaptation,
+separately from model loading, checkpoint writing and deployment setup.
+The inherited drafter's original training is also a separate cost.
+
+\begin{table}[t]
+\caption{Map size and recorded fitting-loop time on four GPUs. Every row
+uses 4,096 distinct fitting records and 1,024 updates. The timed boundary
+covers the training loop with models already loaded.}
+\label{tab:fit}
+\centering\small
 \input{generated/resource_table.tex}
 \end{table}
 
-\paragraph{Beyond math.} The map is fitted once, on math prompts only, and
-we then hold it fixed across GSM8K, HumanEval, MBPP and MT-Bench, four
-tasks it never saw during fitting. It generalizes: with the source model
-deleted it keeps 61.5 to 85.4 percent of the accepted tokens per cycle
-source reuse achieves across all \BreadthCells{} task settings, and quality
-is unaffected: source reuse and
-\method{} agree on the official score for all 4{,}680 scored generation
-pairs across MATH, GSM8K, HumanEval and MBPP. Equation~\ref{eq:break-even}
-also earns its keep here, predicting the correct speed direction in
-\BreadthDirectionMatches{} of \BreadthCells{} settings before any speed is
-compared, with \BreadthAccountingError\% mean absolute error
-(Figure~\ref{fig:breadth}). Appendix~\ref{app:full-results} reports every
-task setting individually.
+To measure memory after source removal, we run source reuse and \method{}
+in separate processes with identical EAGLE-3 targets, prompts and settings.
+Peak allocated memory falls from 25.56 to 17.76 GiB at 8B and from 37.56 to
+29.94 GiB at 14B. A GiB is $2^{30}$ bytes of memory. These reductions are
+30.5\% and 20.3\%, respectively. Figure~\ref{fig:memory} shows these
+isolated measurements. Mixed-method timing processes are used for paired
+speed comparisons, while these separate processes measure deployment
+memory.
 
 \begin{figure}[t]
-    \centering
-    \includegraphics[width=0.95\linewidth]{figures/breadth_and_margin.pdf}
-    \caption{Holding one math-fitted map fixed across four unseen tasks.
-    Left: paired throughput ratio against optimized source reuse per task,
-    the harder of the two baselines, solid border when the interval is
-    fully above one. This sweep was run without a plain-autoregressive arm,
-    so unlike every other result in this paper it is reported against
-    source reuse. Table~\ref{tab:main} is where the plain-AR comparison is
-    measured. Right: measured accepted token ratio minus the break-even
-    ratio of
-    Equation~\ref{eq:break-even}, so points right of zero are predicted
-    faster and are faster, which holds in every cell.}
-    \label{fig:breadth}
-\end{figure}
-
-Appendix~\ref{app:ablations} checks the fitting recipe itself: a
-closed-form solution of the same objective and a nonlinear map both
-underperform the plain linear map fitted by gradient descent, and fit
-quality is still improving at 8{,}192 examples.
-
-\section{How far can one frozen proposer be moved?}
-\label{sec:transfer}
-
-The results above change only the target's size inside one family. We now
-change the target in four harder ways and measure each against plain
-autoregressive decoding on 128 MATH-500 prompts, with the same paired
-bootstrap used for Table~\ref{tab:main}. Table~\ref{tab:transfer} and
-Figure~\ref{fig:transfer} report all four.
-
-\begin{table}[h!]
-\caption{Retargeting a frozen proposer under four changes to the target,
-128 MATH-500 prompts each. Speedups are paired against plain
-autoregressive decoding measured in the same run, exactly as in
-Table~\ref{tab:main}.}
-\label{tab:transfer}
 \centering
-\small
-\input{generated/transfer_table.tex}
-\end{table}
-
-\paragraph{An independently fine-tuned descendant needs no refitting.} We
-applied the map fitted for base Qwen3-8B, unchanged, to
-\texttt{nvidia/Nemotron-Orchestrator-8B}, a publicly released model
-fine-tuned from Qwen3-8B by a different group. It reaches
-\TransferDescendant{}x plain autoregressive decoding with no refitting of
-any kind, close to the \PairedDFlashEightAr{}x the same map reaches on the
-base model it was fitted for, and accepts 6.89 tokens per cycle against
-6.98 on the base. The reason it survives is that $R$ is fitted against a
-basis, not against a behaviour: it only has to send the target's tapped
-directions to the directions the proposer expects, and the normalization
-downstream of it discards everything except direction. Instruction
-fine-tuning changes where a model goes in that space far more than it
-rebuilds the space itself, so the map keeps applying. This matters in
-practice because deployed models are usually fine-tuned descendants of a
-released base rather than the base itself.
-
-\paragraph{An already-fitted decoder can serve a larger target through an
-adapter alone.} Two maps fitted independently, one for Qwen3-8B and one for
-Qwen3-14B, produce closely aligned outputs on the same text: cosine
-similarity 0.973, linear CKA 0.732, and 0.897 overlap between their top-32
-output directions. That alignment suggests the decoder half of a fitted map
-is reusable. Freezing the Qwen3-8B map entirely and training only a small
-adapter that feeds it Qwen3-14B's hidden states reaches
-\TransferAdapter{}x, so a deployment that already holds one fitted map can
-extend to a larger target in the same family without refitting the map
-itself.
-
-\paragraph{A different model family works, and the target can be smaller
-than the source.} We repeated the method inside the Llama family, with no
-Qwen3 model involved anywhere: a released DFlash proposer trained for
-Llama-3.1-8B, fitted onto the smaller Llama-3.2-3B, reaches
-\TransferCrossFamily{}x. Two things follow. The method is not specific to
-Qwen3, and it runs in both size directions, since our Qwen3 results fit a
-4B source onto larger 8B and 14B targets while this one fits an 8B source
-onto a smaller 3B target.
-
-\paragraph{Even a tokenizer boundary can be bridged.} When proposer and
-target use different vocabularies they cannot agree on what a token is, so
-the acceptance check has to move to text: we decode each proposed block,
-re-encode it with the target's tokenizer, and let the target verify and
-commit there. Fitting needs a matching change, because the two models no
-longer share a token sequence, so we align supervision by character span
-rather than token position, pairing each target position with the source
-position covering the same underlying text. Applied to a Qwen3-trained
-DFlash proposer retargeted onto Llama-3.1-8B, this reaches
-\TransferCrossTokenizer{}x with 3.21 accepted tokens per cycle.
-Appendix~\ref{app:cross-family} gives the procedure and the one caveat
-this setting carries, which is that text-granularity verification agrees
-with plain decoding on 25 percent of prompts rather than nearly all of
-them.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=0.98\linewidth]{figures/transfer_speedups.pdf}
-    \caption{Every retargeting setting, measured against plain
-    autoregressive decoding with paired 95\% intervals. Hatched rows are the
-    same-family main results of Table~\ref{tab:main}, plain rows the four
-    harder target changes of Table~\ref{tab:transfer}. All sit well above
-    the dashed no-proposer line.}
-    \label{fig:transfer}
+\includegraphics[width=0.83\linewidth]{figures/memory_reduction.pdf}
+\caption{Peak allocated GPU memory from separate EAGLE-3 processes with
+8 paired prompts per target. The same target and drafter are used in each
+comparison. Source removal saves 7.80 GiB at 8B and 7.63 GiB at 14B.}
+\label{fig:memory}
 \end{figure}
 
-\paragraph{What this says about the method.} One fitted map is not tied to
-the single target it was fitted for. It carries to a fine-tuned descendant
-of that target unchanged, to a larger target in the same family through an
-adapter over a frozen decoder, into an untrained model family, onto a
-target smaller than the proposer's own source, and across a tokenizer
-boundary. Every one of these remains substantially faster than plain
-autoregressive decoding, which is the comparison a deployment actually
-faces when no target-specific proposer exists.
+\subsection{Match the map to the consumed interface}
+
+A controlled EAGLE-3 development comparison changes only whether target
+features are normalized before mapping. Preserving their scale reduces
+relative fitting error from 0.413 to 0.266 after 128 updates. On the same
+32 development prompts, the throughput ratio over source reuse rises from
+1.035 to 1.237. The parameter count and fitting budget are held fixed.
+This supports preserving scale at the raw EAGLE-3 input.
+
+For DFlash, we compare relative feature error with a squared-error plus
+cosine-distance objective at the same fitting budget. Direct paired
+comparisons between the fitted candidates favor relative error by factors
+of 1.009 at 8B and 1.011 at 14B. This is a small measured improvement and
+removes the additional cosine coefficient from the selected recipe.
+Appendix~\ref{app:design} gives the development results and their intervals.
 
 \section{Related work}
 \label{sec:related}
 
-DFlash and EAGLE-3 train proposers that read the target's hidden states
-\citep{chen2026dflash,li2025eagle3}. DFlare scales draft capacity
-\citep{zhang2026dflare} and RepSpec merges extra capacity away before
-inference \citep{huo2026repspec}. These improve generation for the model
-the proposer trained with. We study what happens afterwards, when the
-proposer is fixed and the target changes.
+\paragraph{Training drafters and reducing drafting work.}
+Speculative decoding separates candidate generation from target
+verification \citep{leviathan2023speculative}. Medusa adds multiple
+prediction heads \citep{cai2024medusa}. EAGLE-3 trains a drafter using
+multi-layer features and a training procedure that exposes it to its own
+predictions \citep{li2025eagle3}. DFlash generates blocks through a diffusion
+drafter \citep{chen2026dflash}. RepSpec expands linear components during
+training and merges them for inference \citep{huo2026repspec}.
+\method{} acts after drafter training. It learns to provide a released
+feature-conditioned drafter with context from a new target.
 
-A second line avoids the coupling by design. PARD serves a whole family of
-sizes with one drafter \citep{an2026pard,an2026pard2}, OmniDraft adapts a
-drafter online across families and vocabularies
-\citep{ramakrishnan2025omnidraft}, and SD$^2$ steers a pretrained drafter with injected features and then
-fine-tunes the drafter itself on top, since their own ablation shows a
-frozen drafter underperforms \citep{berdoz2026sd2}. Others adapt the draft
-model's weights directly: EDA's shared and private split \citep{lin2026eda},
-HyperDFlash's retraining \citep{lin2026hyperdflash}, and VSD's training for
-expected accepted length \citep{zou2026vsd}. A third line keeps the draft
-architecture fixed and trains it against the target's own feedback
-\citep{lei2026draftopd,qian2026onlinespec,zhang2026learningtodraft}. Every
-one of these methods changes the proposer's weights to serve a new target.
-\method{} is the only one that does not.
+\paragraph{Reusing drafters across targets.}
+PARD trains a parallel drafter that can serve multiple targets without
+separate target-specific adaptation \citep{an2026pard}. SD$^2$ injects
+target information into pretrained drafters and studies both frozen and
+fine-tuned drafter variants \citep{berdoz2026sd2}. OmniDraft combines
+cross-vocabulary drafting with online adaptation
+\citep{ramakrishnan2025omnidraft}. Algorithms for heterogeneous vocabularies
+also establish how proposals can be checked across tokenizer boundaries
+\citep{timor2025heterogeneous}. These methods address related reuse
+settings. Our experiments isolate a different operation: removing the
+source transformer from a released feature-conditioned drafter's input
+path while fitting only a map for a fixed target.
 
-Table~\ref{tab:related} lists the methods that publish both a headline
-speedup over plain autoregressive decoding and an adaptation cost, quoting
-each exactly as published next to the hardware and engine it was measured
-on. We do not treat the speedup column as comparable across rows, including
-ours: \citet{abramovich2026speedbench} report that engine and hardware
-change measured speedup substantially, and each row here was measured on a
-different combination of the two. The training-data column is the column
-that is comparable, because it is what each paper reports needing to
-support one new target and it does not depend on hardware.
+\paragraph{Connecting frozen models.}
+Learning a connector between frozen networks is established in model
+stitching \citep{bansal2021stitching}. \method{} applies that idea to the
+context consumed inside a speculative decoding loop. We evaluate the
+connection through generated-token progress, runtime and task outcomes.
+This interpretation is specific to the measured behavior. Successful
+connections alone do not establish that two models encode the same
+information \citep{smith2025stitching}.
 
-\begin{table}[h!]
-\caption{Methods that publish both a speedup over plain autoregressive
-decoding and an adaptation cost, quoted as published. \method{} is the only
-row that leaves the proposer's weights untouched, and the only one whose
-adaptation cost is a number of examples rather than a training run. Methods
-that change the proposer but publish no comparable cost are in the text.}
-\label{tab:related}
-\centering
-\scriptsize
-\begin{tabular}{p{0.16\linewidth}p{0.15\linewidth}p{0.30\linewidth}p{0.24\linewidth}}
-\toprule
-Method & Changes proposer? & Reported speedup over plain AR, on its own hardware and engine (not comparable across rows) & Training data for one new target \\
-\midrule
-DFlash & Trains from scratch & 4.86x (H200, Transformers) & 800K examples, 6 epochs \\
-EAGLE-3 & Trains from scratch & 4.40x (varies, vLLM/SGLang) & 532K examples \\
-PARD, PARD-2 & Yes & 3.67x (A100-40GB, vLLM) & About 1M examples \\
-SD$^2$ & Yes, steered & 1.20x average tokens/s (A100-80GB) & 5 tasks, 96 examples each \\
-\textbf{\method{} (this work)} & \textbf{No, frozen} & \textbf{\PairedDFlashEightAr{}x (RTX 6000 Ada, Transformers)} & \textbf{4,096 unlabeled examples} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\paragraph{Measuring inference improvements.}
+The time spent drafting, verifying and managing requests depends on the
+runtime and hardware. SPEED-Bench studies this variation across speculative
+decoding implementations \citep{abramovich2026speedbench}. We therefore
+use matched executions for source reuse and \method{}, report absolute
+throughput alongside ratios, and measure source-removal memory separately.
+Published results from other runtimes provide context for the deployment
+problem rather than a common numerical ranking.
 
-The comparison we can make cleanly is adaptation cost against throughput
-kept, since we are the only row that reuses an existing proposer rather
-than training one: Figure~\ref{fig:cost} reports 89 to 91 percent kept at
-roughly three orders of magnitude less data. Closest in mechanism, though
-not in purpose, are methods that map states between models to speed up
-first-pass processing rather than the decoding loop: KVShot reuses the
-target's own cache for longer drafts \citep{liu2026kvshot}, and cross-model
-cache transfer learns a linear map onto another model's prefill cache
-\citep{heo2026crossmodelkv}.
+\section{Scope and conclusion}
+\label{sec:scope}
 
-\section{Limitations and conclusion}
-\label{sec:limitations}
+The empirical claim concerns retargeting two fixed Qwen3-4B drafters to
+8B and 14B targets under greedy, single-request BF16 execution. The
+reported task-quality comparison is against source reuse in the same
+verifier implementation. Request bootstrap intervals condition on the
+selected fitted checkpoint. Fitting data come from math, and the full
+workload matrix shows how the result varies across tasks. This scope
+makes the measured advantage and its operating conditions explicit.
 
-We test greedy decoding, one request at a time, BF16, one fixed seed, and a
-Transformers runtime, so we measure neither seed variance nor
-concurrent-request behaviour and these are not production serving numbers
-\citep{abramovich2026speedbench}. Figure~\ref{fig:cost} compares examples
-processed rather than GPU-hours, which the papers involved do not publish.
-The cross-tokenizer setting
-verifies at text rather than token granularity, giving up exact agreement
-with plain decoding (Appendix~\ref{app:cross-family}), and fitting still
-needs the source model once, though generation never uses it again.
-
-A proposer that reads a model's internal states need not stay tied to it.
-The slot it reads through is one linear layer, and refitting that layer on
-4{,}096 unlabeled examples repoints it at a new target, deletes the source
-model, and keeps working across fine-tuned descendants, sizes, families and
-tokenizers. Retargeting a frozen proposer is a fitting problem over one
-linear interface, not a retraining problem.
+\method{} shows that target states can supply the context used by a frozen
+feature-conditioned drafter. A learned map replaces source-transformer
+execution while retaining the drafter's weights. Paired measurements
+show the resulting throughput change, task outcomes and memory reduction.
+The governing balance is concrete: the source computation saved must
+outweigh the extra drafting cycles caused by imperfect context matching.
+Matching the consumed interface provides a simple way to make this
+substitution useful.
 
 \label{maintextend}
-
 \subsection*{AI use statement}
-
-In this work, we used generative AI tools to help refine hypotheses, design
-experiments, implement and test code, check the runtime analysis, interpret
-logged results, summarize related literature, and draft and edit this
-paper. The authors checked every cited claim against its primary source,
-inspected the raw experimental artifacts, ran the automated test suite, and
-reviewed all AI-assisted text and code by hand, taking full responsibility
-for the paper's final content.
+Generative AI tools assisted with hypothesis development, implementation,
+code review, literature search, analysis scripts, and manuscript drafting
+and editing. Numerical tables and figures in this version are generated
+from recorded experimental artifacts. The accompanying checks compare
+saved outputs, request counts, task scores and timings with their source
+records. Scientific interpretation and submission decisions remain the
+authors' responsibility.
 
 \subsection*{Reproducibility statement}
-
-Appendix~\ref{app:protocol} gives every fitting, hardware, generation,
-metric, and uncertainty setting used. Appendices~\ref{app:full-results}
-through~\ref{app:cross-family} give the full result matrix, design checks,
-and the cross-family procedure. Our supplement contains exact model
-identifiers, configuration files, prompt manifests, raw timing records,
-scoring code, and a script that regenerates every number and figure.
+Appendix~\ref{app:protocol} gives the fitting and generation settings.
+Appendices~\ref{app:quality} and \ref{app:breadth} give complete task results.
+Appendices~\ref{app:design} and \ref{app:data} describe development choices
+and data checks. The accompanying implementation contains the model
+identifiers, configurations, saved outputs and scripts used to rebuild
+the tables and figures. The generated evidence registry links reported
+workload cells to their underlying request records.
 
 \bibliography{references}
 \bibliographystyle{iclr2027_conference}
-
+\clearpage
 \appendix
 \raggedbottom
 
-\section{Complete method details and tensor shapes}
-\label{app:method}
-
-\subsection{Exactly what source reuse computes}
-
-Our optimized source-reuse baseline never runs the source model on a
-candidate suffix that ends up rejected. Starting from the source model's own
-committed cache, it passes each newly committed token through source-model
-layers 0 through 33, reads out the hidden states at layers
-$[1,9,17,25,33]$, and applies the proposer's own released fusion layer. This
-is the strongest baseline we know how to build for reusing a proposer with
-the source model still present, and it is what all speedups in
-Section~\ref{sec:results} are measured against.
-
-\subsection{Why the loss has no separate cosine term}
-
-Equation~\ref{eq:loss} already normalizes by the target tensor's own
-magnitude, so it penalizes direction error at fixed scale. Adding an
-explicit cosine term changed the 128-step relative loss by less than the
-run-to-run spread in our design checks, so we left it out.
-
-\section{Greedy correctness and finite precision}
-\label{app:correctness}
-
-The proposition in Section~\ref{sec:method} holds under exact arithmetic.
-In BF16 the target's logits for a block of positions and for a single
-position are computed by different kernels and can differ in the last bits,
-which changes the committed token only when two logits are nearly tied. We
-therefore measure text agreement rather than assume it. DFlash matches
-character for character on all 2{,}660 MATH, code and chat pairs. EAGLE-3
-differs on 49, every one of which is recorded in our audit, and official
-scores are unchanged in all cases.
-
-\section{Complete experimental protocol}
+\section{Implementation and measurement details}
 \label{app:protocol}
 
-The learning rate $6\times10^{-4}$ of Section~\ref{sec:method} was selected
-on EAGLE-3 and then held fixed for every other fit in this paper, including
-all DFlash fits, rather than retuned per setting. Fitting uses weight decay
-0, gradient clipping 1.0, and one example per GPU per step across four
-GPUs. Generation uses greedy
-decoding, temperature 0, a 2{,}048 token cap, and thinking mode disabled.
-Speed intervals are paired bootstrap intervals over requests. Hardware is
-four RTX 6000 Ada GPUs, BF16 throughout, one request at a time.
+\paragraph{Feature layers and matrix dimensions.}
+Layer indices count transformer blocks from zero. We take the output
+states of blocks $[1,9,17,25,33]$ from the source and from Qwen3-8B.
+For Qwen3-14B we use $[1,10,19,28,37]$. Qwen3-8B has a hidden width of
+4,096, so joining five states gives 20,480 coordinates. Qwen3-14B has a
+hidden width of 5,120 and gives 25,600 coordinates. The drafter interface
+has width 2,560. Thus $W$ has shape $2,560\times20,480$ at 8B and
+$2,560\times25,600$ at 14B. Multiplying the two dimensions gives
+52,428,800 and 65,536,000 weights. The DFlash input normalization has no
+trainable gain or bias. The drafter's output normalization is frozen.
 
-\section{Full workload results}
-\label{app:full-results}
+\paragraph{Teacher construction and optimization.}
+The source processes the same rendered fitting text as the target.
+DFlash supervision is the released fusion output after the drafter's
+normalization. EAGLE-3 supervision is the released raw feature projection.
+We compute the loss in 32-bit arithmetic and use BF16 model computation.
+Fitting uses random seed 1729. The four workers average gradients after each record, giving four record
+losses per update. The AdamW learning rate is $0.0006$, weight decay is
+zero, and the gradient norm is clipped at 1.0. Fitting uses 1,024 updates
+and a maximum rendered length of 192 tokens. Every main result uses the
+selected map for that drafter and target pair.
 
-\begin{table}[H]
-\caption{Every task setting in the breadth sweep, 128 or more clustered
-requests each. Speedup is the paired bootstrap ratio against optimized
-source reuse, the baseline this sweep was run against, and Exact is the
-percentage of completions matching plain decoding character for character.}
-\centering
-\small
+\paragraph{Source reuse.}
+The optimized source provider retains a cache for the committed sequence
+and executes only the newly committed tokens through the required source
+layers. It omits source layers beyond block 33. The relay provider instead
+reads the target outputs retained from verification. Both providers hand
+context to the same downstream drafter. Rejected target-cache suffixes
+are cropped before the next iteration. The DFlash path retains the frozen
+source embedding and vocabulary projection used for token drafting.
+
+\paragraph{Runtime.}
+Each worker serves a request sequentially on one RTX 6000 Ada GPU.
+The four GPUs distribute requests rather than splitting one request
+across devices. The recorded runtime uses Python 3.12.13, PyTorch 2.9.1 with CUDA 12.8,
+and Transformers 5.3.0 for DFlash or 5.10.2 for EAGLE-3. The configuration
+uses dense scaled dot-product attention in PyTorch/Transformers. Requests are synchronized before and after timing.
+Timed work includes target prompt processing, drafting, verification and
+conditioning updates. Model loading and task scoring occur outside this
+request timer. One warm-up per method precedes the timed requests, and
+method order rotates across requests. Each recorded request has one
+measurement per method.
+
+\paragraph{Stopping and conversation history.}
+Generation stops at the model's end token or at the 2,048-token cap.
+Capped requests remain in the timing and scoring aggregates. Each MT-Bench
+method uses its own first-turn answer as context for its second turn.
+The complete two-turn EAGLE-3 runs supply the reported conversation cells.
+The two turns of one conversation form one bootstrap unit.
+
+\paragraph{How throughput is aggregated.}
+For each method, add the generated-token counts over all measured requests
+and divide by their summed request times. Dividing the relay value by the
+source-reuse value gives the reported ratio. This definition accounts for
+the small observed output-length differences. It is not the mean of
+per-request ratios. Each paired bootstrap resample recomputes this same
+aggregate from resampled whole requests or conversations. The 95\%
+interval is the central range of 10,000 such resamples, using bootstrap
+seed 1729.
+
+\section{Math scores, agreement and development complement}
+\label{app:quality}
+
+Table~\ref{tab:agreement} separates exact token-sequence agreement from
+task accuracy. Agreement compares the recorded hashes of generated token
+IDs. The scorer compares the extracted answer with the dataset reference.
+Both checks refer to source reuse and the relay within a paired run.
+
+\begin{table}[h]
+\caption{MATH-500 token agreement and mean output length. S denotes source
+reuse and R denotes \method{}. All 500 requests contribute to each row.}
+\label{tab:agreement}
+\centering\small
+\input{generated/agreement_table.tex}
+\end{table}
+
+The 32 development questions influenced interface and objective choices.
+Table~\ref{tab:complement} therefore also reports the other 468 questions,
+using the saved outputs of the full run. It is a subset analysis of these
+experiments, with its exposure history preserved. The full table and
+complement answer different reporting questions and are shown separately.
+
+\begin{table}[h]
+\caption{The 468-question MATH-500 complement after removing development
+questions. Ratios compare relay and source-reuse throughput. Each score
+is shared by the two methods and is expressed as a percentage.}
+\label{tab:complement}
+\centering\small
+\input{generated/complement_table.tex}
+\end{table}
+
+\section{Complete fixed-map workload results}
+\label{app:breadth}
+
+Table~\ref{tab:breadth} includes every cell in the four-task evaluation.
+The map for a given target and drafter stays fixed across these tasks.
+GSM8K has 128 requests, HumanEval has 164, and MBPP has 378. MT-Bench has
+160 turns from 80 conversations. Code scoring uses one generated program
+per task with both the base and expanded EvalPlus tests. Table~\ref{tab:quality}
+reports both scoring views.
+
+\begin{table}[h]
+\caption{Complete source-reuse and relay throughput matrix. All intervals
+use paired resampling. MT-Bench resamples 80 conversations, each with two
+turns. Values below one identify settings where source reuse is faster.}
+\label{tab:breadth}
+\centering\small\setlength{\tabcolsep}{3pt}
 \input{generated/breadth_table.tex}
 \end{table}
 
-\section{Acceptance and where the time goes}
-\label{app:acceptance}
+The pooled math-and-code count is four model/drafter pairs times
+$500+128+164+378=1,170$ problems, giving 4,680 paired outcomes.
+Conversation turns are outside this scored total. Expanded code tests
+reuse the same generated programs and do not add independent examples.
+Equal observed outcomes describe these records and the stated scorers.
 
-Figure~\ref{fig:survival} shows how often a proposed position at each depth
-inside a block is still accepted. Acceptance falls with depth for both
-source reuse and \method{}, and \method{}'s curve sits below it by a roughly
-constant factor rather than collapsing at a particular depth. This is why a
-single accepted-tokens-per-cycle ratio is enough for
-Equation~\ref{eq:break-even}.
+\section{Development comparisons}
+\label{app:design}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.72\linewidth]{figures/acceptance_survival.pdf}
-    \caption{Fraction of proposals still accepted at each position inside a
-    block.}
-    \label{fig:survival}
-\end{figure}
+\paragraph{Preserving EAGLE-3 input scale.}
+We fit two maps with the same source, target, parameter count, optimizer
+and 128-update budget. One normalizes the joined target features before
+the linear map. The other uses the raw features. We then evaluate both
+on the same 32 development questions. Table~\ref{tab:scale} reports the
+recorded result. Raw features retain magnitude information that the
+released EAGLE-3 interface can consume.
 
-Table~\ref{tab:acceptance} gives the exact accepted-tokens-per-cycle ratio
-behind Figure~\ref{fig:breadth}'s margin panel, and Figure~\ref{fig:timing}
-shows how source-reuse request time divides between components, whose
-source-trunk share is what \method{} removes.
-
-\begin{table}[H]
-\caption{Accepted tokens per cycle for every measured setting.}
-\label{tab:acceptance}
-\centering
-\small
-\input{generated/acceptance_table.tex}
+\begin{table}[h]
+\caption{Matched EAGLE-3 development comparison on Qwen3-8B. Relative error
+uses Equation~\ref{eq:loss}. Progress retained compares recorded tokens
+advanced per cycle with source reuse.}
+\label{tab:scale}
+\centering\small
+\input{generated/scale_table.tex}
 \end{table}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{figures/timing_breakdown.pdf}
-    \caption{How source-reuse request time divides between components. The
-    labelled source-trunk share is exactly the work \method{} removes.}
-    \label{fig:timing}
-\end{figure}
+\paragraph{DFlash fitting objective.}
+We compare the selected relative-error objective against mean squared
+error plus $0.1$ times cosine distance. Cosine distance measures how
+strongly two vectors differ in direction. Both candidates use 4,096 records,
+1,024 updates, the same normalization and the same optimizer settings.
+Table~\ref{tab:objective} reports their separate source-reuse comparisons.
+Directly comparing the two fitted candidates gives ratios of 1.0085
+[1.0005, 1.0174] at 8B and 1.0114 [1.0046, 1.0177] at 14B.
 
-\section{Design checks that decided the method}
-\label{app:ablations}
-
-Three controlled comparisons fixed the final design. Normalizing the map's
-input improved the 128-step relative loss from 0.413 to 0.266 for EAGLE-3
-and raised measured speed from 1.035 to 1.237 times, with no change in
-parameter count or inference cost. A block size of 16 was best for DFlash
-among 8, 16 and 32. The scale-relative loss in Equation~\ref{eq:loss} beat
-a plain squared error at matched steps.
-
-\subsection{Is a linear map fitted by gradient descent the right choice?}
-
-The main result fits a single linear map by gradient descent on 4{,}096
-unlabeled examples. We check three alternatives directly, all for DFlash on
-Qwen3-8B, all measured at 128 prompts against the same
-\texttt{optimized\_source\_reuse} baseline as Table~\ref{tab:main}, with
-paired bootstrap 95\% intervals, in Table~\ref{tab:ablation-fitting}.
-
-\begin{table}[H]
-\caption{Fitting-design ablations, 128 prompts, MATH-500. Speed is against
-optimized source reuse. Retention is accepted tokens per cycle relative to
-the same baseline.}
-\label{tab:ablation-fitting}
-\centering
-\small
-\begin{tabular}{lrrrr}
-\toprule
-Configuration & Fit examples & Speed & 95\% interval & Retention \\
-\midrule
-Closed-form, weighted ridge regression & 4{,}096 & 0.955x & [0.927, 0.982] & 52.3\% \\
-MLP relay, hidden width 512 & 4{,}096 & 0.872x & [0.841, 0.903] & 51.7\% \\
-Linear, gradient descent & 512 & 1.150x & [1.118, 1.181] & 68.1\% \\
-Linear, gradient descent & 1{,}024 & 1.372x & [1.346, 1.397] & 81.1\% \\
-Linear, gradient descent & 2{,}048 & 1.477x & [1.458, 1.496] & 87.1\% \\
-Linear, gradient descent & 8{,}192 & 1.573x & [1.558, 1.588] & 93.4\% \\
-\bottomrule
-\end{tabular}
+\begin{table}[h]
+\caption{DFlash objective selection on 32 development questions. Each
+throughput ratio is relative to that candidate's paired source-reuse arm.
+The direct candidate comparison is reported in the text.}
+\label{tab:objective}
+\centering\small
+\input{generated/objective_table.tex}
 \end{table}
 
-A closed-form solution exists because the loss is linear least squares,
-provided the normal equations are weighted to match it: gradient descent
-minimizes Equation~\ref{eq:loss}, which weights each position's squared
-error by the inverse energy of its own target vector, so we weight each
-row by that same factor before accumulating the normal equations, an exact
-equivalence for a linear map. Solved this way, with no learning rate to
-tune, it keeps only 52.3 percent of accepted tokens per cycle against 91
-percent for gradient descent at the same data budget. It is also not
-clearly cheaper: collecting the same 4{,}096 examples' hidden states takes
-221.3 seconds and the linear solve itself 6.8 seconds, comparable to the
-86 to 119 seconds gradient descent needs in total, since collecting hidden
-states dominates either way. Adding
-a hidden layer (an MLP of width 512 in place of the single linear layer)
-performs worse still, 51.7 percent retention, the single worst
-configuration measured anywhere in this paper. Neither alternative
-improves on the plain linear map. Both are strictly worse uses of the same
-fitting data. Fit-data size itself has a real, monotonic effect with no
-measured ceiling in the range we test: retention rises from 68.1 percent
-at 512 examples to 93.4 percent at 8{,}192, with no sign of flattening. The paper's choice
-of 4{,}096 examples is therefore a practical operating point inside a
-still-improving regime, not a demonstrated ceiling on what more fitting
-data could give. Doubling the fitting data to 8{,}192 examples raises
-retention from the 91.1 percent the main 4{,}096-example map reaches on
-this pair to 93.4 percent, at roughly twice the fitting time, and every
-result reported elsewhere in this paper uses the 4{,}096-example map.
+\paragraph{Progress within a cycle.}
+Figure~\ref{fig:survival} plots the fraction of recorded cycles that reach
+each position. Summing these fractions gives the pooled mean progress
+per cycle. It weights cycles equally, whereas averaging a mean for each
+request gives requests equal weight. Our cost analysis uses the pooled
+cycle quantity consistently. The recorded lengths include the
+implementation's target-supplied progress as well as accepted draft
+positions. They are not probabilities that arbitrary drafter tokens are
+correct independently of their prefix.
 
-\section{Prompt overlap and text differences}
-\label{app:similarity}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\linewidth]{figures/acceptance_survival.pdf}
+\caption{Fraction of recorded cycles reaching each position on MATH-500
+for the two 8B settings. Solid lines denote source reuse and dashed lines
+denote \method{}.}
+\label{fig:survival}
+\end{figure}
 
-Fitting prompts and evaluation prompts are disjoint by construction.
-Table~\ref{tab:similarity} reports the closest match between any fitting
-prompt and any evaluation prompt under a character-level similarity score.
-The most similar MATH pairs share competition-style templates with
-different numbers, which limits how strongly MATH alone supports a claim
-about unrelated tasks. Our code and chat measurements act as the separate
-check for that.
+\section{Data checks and fitting text}
+\label{app:data}
 
-\begin{table}[H]
-\caption{Closest fitting-to-evaluation prompt similarity per task.}
+The fitting manifest contains 4,096 distinct problem-and-solution records.
+The loader renders both fields and applies the 192-token cap afterward.
+One fitting pass therefore means 4,096 record presentations, with text
+length determined by the rendered cap. Repeating that manifest changes
+the number of presentations rather than the number of distinct records.
+
+We compare normalized problem text between fitting and evaluation
+manifests. The exact-match audit finds zero matches among the 4,096 fitting
+records and 1,250 evaluation records. MT-Bench contributes 80 conversation
+records to this manifest count. A separate similarity check splits each
+text into unique normalized tokens and computes the size of their
+intersection divided by the size of their union. This is token-set Jaccard
+overlap. It measures shared text tokens, rather than character alignment or
+mathematical equivalence.
+
+Table~\ref{tab:similarity} reports the maximum fitting overlap for each
+evaluation task and the number of evaluation records above three
+thresholds. In MATH-500, 47 problems exceed 0.80 and four exceed 0.95.
+These similarities qualify the interpretation of the math fitting and
+evaluation relationship. The code and conversation measurements use the
+same fitted maps and provide additional task coverage.
+
+\begin{table}[h]
+\caption{Fitting-to-evaluation token-set overlap. Each evaluation record
+is compared with its closest fitting record. The final three columns
+count evaluation records at or above the stated overlap threshold.}
 \label{tab:similarity}
-\centering
-\small
+\centering\small
 \input{generated/similarity_table.tex}
 \end{table}
 
-\section{Memory measurement}
+\section{Interpreting memory and fitting time}
 \label{app:memory}
 
-We run source reuse and \method{} in two separate processes with the same
-target, proposer, prompts and settings, record allocated and reserved CUDA
-memory before any timed request, then reset the peak counters and record
-peak allocation during timed requests. At 8B peak allocated memory falls
-from 25.56 to 17.76 GiB. At 14B it falls from 37.57 to 29.94 GiB, both shown
-in Figure~\ref{fig:memory}.
+For each isolated memory comparison, source reuse and \method{} start in
+separate processes with the same target, drafter, prompts and generation
+settings. We reset GPU peak counters before the measured requests and
+report peak allocated memory. These values count active tensor allocations.
+Reserved allocator memory is a distinct measurement. The two EAGLE-3
+target settings each use eight paired prompts.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.68\linewidth]{figures/memory_reduction.pdf}
-    \caption{Peak allocated GPU memory in isolated processes.}
-    \label{fig:memory}
-\end{figure}
-
-\section{Cross-family procedure and result}
-\label{app:cross-family}
-
-When proposer and target do not share a tokenizer, three separate mappings
-break. The proposer emits token IDs in its own vocabulary, it embeds the
-tokens it is growing through its own embedding table, and it conditions on
-the committed prefix. We handle all three by moving agreement to text,
-which needs no new learned parameters. Each cycle, we decode the proposed
-block with the source tokenizer, re-encode that text with the target
-tokenizer, let the target verify and commit in its own vocabulary, then
-decode what was committed and re-encode it back into the source vocabulary
-to continue proposing. Correctness carries over because the target still
-produces every committed token, now at text granularity rather than token
-granularity. Acceptance gets coarser, because a mismatch inside a token
-ends the rest of the block.
-
-Fitting needs a second change. The usual loss compares the source and
-target hidden states position by position, which assumes one shared token
-sequence. With two tokenizers there is no general position-by-position
-correspondence between sequences of different lengths.
-
-\paragraph{Aligning supervision by character span.} We recover real
-per-position supervision without assuming a shared token sequence by
-aligning on the underlying text instead of on token position. For each
-fitting example, we identify the character windows in the rendered prompt
-where the actual problem and solution content appears, excluding
-chat-template boilerplate that has no correspondent on the other side.
-For each target position, we find the source position whose character
-span covers the same underlying text and pair those two positions for the
-loss in Equation~\ref{eq:loss}, exactly as same-tokenizer fitting pairs
-positions by index. This needs no new learned parameters and applies only
-at fitting time. The inference-time procedure above is unchanged.
-
-Fitted this way and measured at 128 prompts under the same paired
-protocol as Table~\ref{tab:main}, the frozen Qwen3-trained proposer
-reaches 3.208 accepted tokens per cycle on Llama-3.1-8B and
-\TransferCrossTokenizer{}x plain autoregressive decoding, the number
-reported in Table~\ref{tab:transfer}. Fitting takes 94.5 seconds on four
-GPUs, inside the 86 to 119 second range Section~\ref{sec:method} reports
-for same-tokenizer fits. The committed text matches plain decoding on 25
-percent of prompts, the one caveat this setting carries.
-
-\paragraph{The exact-match gap, traced rather than left unexplained.} We
-traced a specific disagreement directly: on one held-out prompt, greedy
-autoregressive decoding and the cross-family relay agree for the first 34
-tokens and then diverge. At the divergence point the logit gap between the
-two candidate tokens is zero to reported precision, a genuine near-tie
-rather than a large disagreement. This is the same block-versus-single-position floating-point kernel signature Appendix~\ref{app:correctness}
-already documents for same-tokenizer verification, occurring far more
-often here because cross-family verification runs at text granularity, so
-a mismatch anywhere inside a proposed token's re-encoding can trigger a
-tie-break that a token-granularity check would not see in the same way.
-We do not claim every one of the 75 percent of disagreements traces to
-exactly this mechanism, only that the one we traced does, and that it is
-the same known phenomenon rather than a new, unexplained failure mode.
+The fitting-loop timer covers source and target feature computation and
+matrix optimization with the models already loaded. Its boundary is the
+same across the reported fitting summaries. A complete setup also includes
+loading weights, writing the fitted map and initializing generation.
+Separating these operations makes the recorded loop time interpretable
+without equating it with a complete deployment time.
 
 \end{document}

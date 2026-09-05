@@ -516,3 +516,13 @@ evaluation. Preprints are explicitly distinguished from peer-reviewed work.
   EAGLE numbers are therefore compared only with the matched DeepSpec source
   and native-target chain paths, never numerically equated to published tree
   results.
+
+## Sources rechecked for the 5 September manuscript rewrite
+
+- `bansal2021stitching`: Bansal, Nakkiran and Barak, *Revisiting Model Stitching to Compare Neural Representations*, NeurIPS 2021. Peer reviewed. https://papers.nips.cc/paper/2021/hash/01ded4259d101feb739b06c399e9cd9c-Abstract.html . Used to credit learned connections between frozen networks.
+- `smith2025stitching`: Smith, Mannering and Marcu, *Functional Alignment Can Mislead: Examining Model Stitching*, ICML 2025, PMLR 267:55972–55998. Peer reviewed. https://proceedings.mlr.press/v267/smith25a.html . Used to distinguish useful behavioral connections from evidence of shared information.
+- PARD full paper: https://arxiv.org/html/2504.18583v4 . Confirms target-independent reuse and the separation of drafter adaptation from inference measurements. ICLR 2026 status and public reviews are recorded in the dedicated review study.
+- DFlash full paper: https://arxiv.org/html/2602.06036v2 . Used for the drafting-cost/progress explanation and experimental presentation, not as a numerically comparable external baseline.
+- EAGLE-3 proceedings: https://proceedings.neurips.cc/paper_files/paper/2025/hash/c7b5a35ea98b62512a869c19ea7b03cb-Abstract-Conference.html . Confirms title, authors and NeurIPS 2025 publication.
+- SD² proceedings: https://ojs.aaai.org/index.php/AAAI/article/view/40255 . Confirms AAAI 2026 bibliographic metadata. Frozen and fine-tuned variants are distinguished using the earlier primary-paper audit.
+- ICLR 2027 author guidelines: https://iclr.cc/Conferences/2027/AuthorGuidelines . Checked main-text limit, anonymous style, placement of appendices, required AI statement and recommended reproducibility statement. Review-note fetches this turn were blocked by the public site's browser check/HTTP 403. The existing 42-review study is reused and explicitly identified as such.
