@@ -283,7 +283,7 @@ Complexity earns a place by answering a question the simple method fails to answ
 
 ## 6. Calendar and compute allocation
 
-**Estimate status after the reuse amendment:** see the [four-GPU time and compute budget](2026-09-05-relayspec-time-estimate.md). The user authorized at most four simultaneous Turing GPUs. The previous 140–280 researcher-hour and approximately 350–760 GPU-hour figures are conservative scope/contingency estimates, not an audited remaining-work total. E00 must subtract reusable evidence and separate new experiments from conditional reruns before those figures guide scheduling.
+**Updated remaining-work estimate after crediting existing artifacts:** see the [four-GPU time and compute budget](2026-09-05-relayspec-time-estimate.md): 100–195 active hours, 29.25–57.25 four-GPU hours for new work, plus a separate 12–20 four-GPU-hour reserve. This is 165–309 GPU-hours including reserve. Plan for 3–5 calendar weeks, with an upper six-week case; the 14–20-day deadline route requires favorable conditions. The four completed main runs are excluded from base compute. E00 still validates claim-specific reuse; artifact existence is not scientific certification. These figures supersede the earlier conservative scope estimate.
 
 Use at most the existing four-worker configuration as a planning reference; confirm available hardware before execution. This plan does not reserve resources or assume queued GPU time. Four workers can process independent requests; that is not four-way parallel execution of one request.
 
@@ -298,7 +298,7 @@ Use at most the existing four-worker configuration as a planning reference; conf
 
 The official [call](https://iclr.cc/Conferences/2027/CallForPapers) sets abstracts on September 18 and papers on September 25, 2026, 23:59 AoE; these correspond to September 19 and 26 at 17:29 IST. The [author guide](https://iclr.cc/Conferences/2027/AuthorGuidelines) requires at most nine main-text pages, anonymous submission and an AI-use statement. Authors cannot be added after abstract registration. Recheck the current author quota, reciprocal-review and AI-use instructions before submission.
 
-**Budget method:** time one representative pilot for each run type; multiply by planned records, methods and seeds, adding measured loading/feature costs. Keep one-quarter of the available allocation uncommitted for failures and reruns. This reserve is a planning choice, not a measured requirement. Do not extrapolate all experiment costs from the 86–119 second warm fitting loop.
+**Budget method:** time one representative pilot for each run type; multiply by planned records, methods and seeds, adding measured loading/feature costs. Keep the separately itemized 12–20 four-GPU-hour reserve uncommitted for justified failures and reruns; do not add another percentage reserve or the historical main-suite duration on top. This reserve is a planning choice, not a measured requirement. Do not extrapolate all experiment costs from the 86–119 second warm fitting loop.
 
 ## 7. Commands and what is available now
 
