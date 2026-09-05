@@ -19,6 +19,10 @@ def main():
     output = Path(os.environ["RELAYSPEC_OUTPUT"])
     output.mkdir(parents=True, exist_ok=True)
     shutil.copy2(args.config, output / "config.yaml")
+    config = yaml.safe_load(args.config.read_text())
+    family = config["proposer"]["family"]
+    if family not in {"dflash", "eagle3"}:
+        raise ValueError("mapper campaign requires a supported proposer family")
     subprocess.run(
         [
             python,
@@ -26,7 +30,9 @@ def main():
             "torch.distributed.run",
             "--standalone",
             "--nproc_per_node=4",
-            "scripts/benchmark_relay.py",
+            "scripts/benchmark_relay.py"
+            if family == "dflash"
+            else "scripts/benchmark_eagle3.py",
             "--config",
             str(args.config),
         ],
@@ -56,15 +62,15 @@ def main():
         ]
         if not maps[0] or maps[0].keys() != maps[1].keys():
             raise ValueError("duplicate mapper methods lack the same requests")
+        checked_fields = ["output_hash", "output_tokens", "mapper_checkpoint_sha256"]
+        checked_fields += (
+            ["accepted_draft_lengths", "proposal_lengths"]
+            if family == "dflash"
+            else ["acceptance_lengths", "target_calls", "draft_calls"]
+        )
         for key, first in maps[0].items():
             second = maps[1][key]
-            for field in [
-                "output_hash",
-                "output_tokens",
-                "accepted_draft_lengths",
-                "proposal_lengths",
-                "mapper_checkpoint_sha256",
-            ]:
+            for field in checked_fields:
                 if first[field] != second[field]:
                     raise ValueError(
                         f"duplicate-map state isolation failed: {key} {field}"
@@ -73,6 +79,7 @@ def main():
             "methods": args.equal_methods,
             "requests": len(maps[0]),
             "status": "pass",
+            "checked_fields": checked_fields,
         }
     config = yaml.safe_load(args.config.read_text())
     (output / "campaign-gate.json").write_text(

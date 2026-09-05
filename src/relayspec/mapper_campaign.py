@@ -12,10 +12,15 @@ RESERVED_METHODS = {
     "relay_p_cross_family",
     "direct_slice",
     "frozen_fc_slice",
+    "relay_eagle3",
+    "source_reuse_eagle3",
+    "native_target_eagle3",
 }
 
 
-def campaign_model_methods(methods, variants):
+def campaign_model_methods(methods, variants, *, relay_method="relay_p"):
+    if relay_method not in {"relay_p", "relay_eagle3"}:
+        raise ValueError("unsupported campaign relay family")
     if len(set(methods)) != len(methods):
         raise ValueError("campaign method names must be unique")
     for name, path in variants.items():
@@ -25,7 +30,7 @@ def campaign_model_methods(methods, variants):
             )
         if name not in methods:
             raise ValueError("every configured mapper must occur in the method list")
-    return tuple(dict.fromkeys("relay_p" if n in variants else n for n in methods))
+    return tuple(dict.fromkeys(relay_method if n in variants else n for n in methods))
 
 
 def restore_mapper(checkpoint, *, target_hidden_size, draft_hidden_size, eps):

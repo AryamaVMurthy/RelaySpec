@@ -35,4 +35,11 @@ tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm SO
 nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used --format=csv -l 10 > "$RELAYSPEC_OUTPUT/gpu.csv" &
 monitor=$!
 trap 'kill "$monitor" 2>/dev/null || true' EXIT
-timeout --signal=TERM --kill-after=10s 540s "$RELAYSPEC_PYTHON" scripts/run_cached_fit_pilot.py
+pilot_args=()
+if [[ -n "${CACHE_TRAINING_CONFIG:-}" ]]; then
+  pilot_args+=(--training-config "$CACHE_TRAINING_CONFIG")
+fi
+if [[ -n "${CACHE_CAMPAIGN_CONFIG:-}" ]]; then
+  pilot_args+=(--campaign-config "$CACHE_CAMPAIGN_CONFIG")
+fi
+timeout --signal=TERM --kill-after=10s 540s "$RELAYSPEC_PYTHON" scripts/run_cached_fit_pilot.py "${pilot_args[@]}"

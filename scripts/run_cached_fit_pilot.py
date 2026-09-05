@@ -1,5 +1,6 @@
 """Bounded end-to-end cache, four independent fits and shared-reference decoding."""
 
+import argparse
 import hashlib
 import json
 import os
@@ -16,6 +17,20 @@ def run(command, env):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--training-config",
+        type=Path,
+        default=Path(
+            "configs/protocol_active/train_dflash_qwen3_8b_relative_4gpu.yaml"
+        ),
+    )
+    parser.add_argument(
+        "--campaign-config",
+        type=Path,
+        default=Path("configs/submission/scaling/campaign-pilot.yaml"),
+    )
+    args = parser.parse_args()
     python = os.environ["RELAYSPEC_PYTHON"]
     artifacts = Path(os.environ["RELAYSPEC_OUTPUT"])
     cache_root = Path(os.environ["RELAYSPEC_FEATURE_CACHE"])
@@ -28,11 +43,7 @@ def main():
         "--standalone",
         "--nproc_per_node=4",
     ]
-    train = yaml.safe_load(
-        Path(
-            "configs/protocol_active/train_dflash_qwen3_8b_relative_4gpu.yaml"
-        ).read_text()
-    )
+    train = yaml.safe_load(args.training_config.read_text())
     data_root = (
         Path(os.environ["RELAYSPEC_CACHE_DIR"]) / "relayspec/scaling-data/numina-v1"
     )
@@ -102,9 +113,12 @@ def main():
         ):
             raise ValueError("cached mapper checkpoint failed validation")
         del checkpoint
-    campaign = yaml.safe_load(
-        Path("configs/submission/scaling/campaign-pilot.yaml").read_text()
-    )
+    campaign = yaml.safe_load(args.campaign_config.read_text())
+    if (
+        campaign["proposer"] != train["proposer"]
+        or campaign["target"] != train["target"]
+    ):
+        raise ValueError("cache pilot training and decoding must use the same models")
     campaign["relay_probe"]["variants"] = {
         "relay_dense_a": str(fits / "dense/step-000016.pt"),
         "relay_factor512": str(fits / "factor512/step-000016.pt"),
@@ -139,6 +153,13 @@ def main():
             {
                 "status": "pass",
                 "feature_cache": str(cache_root),
+                "feature_cache_index_sha256": hashlib.sha256(
+                    (cache_root / "cache-index.json").read_bytes()
+                ).hexdigest(),
+                "training_config_sha256": hashlib.sha256(
+                    args.training_config.read_bytes()
+                ).hexdigest(),
+                "models": {"target": train["target"], "proposer": train["proposer"]},
                 "fitted_maps": [t["name"] for t in trials],
                 "evaluation": str(benchmark_dir),
                 "scope": "Cache integrity, BF16 gradient equivalence within declared tolerances, independent four-GPU fitting, finite checkpoints, paired decoding and duplicate-map isolation. No full-answer quality or scaling claim.",

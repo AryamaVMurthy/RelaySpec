@@ -15,11 +15,22 @@ import yaml
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--pilot-gate", type=Path, required=True)
-    parser.add_argument("--train-records", type=int, default=32768)
+    parser.add_argument("--train-records", type=int, default=2048)
     parser.add_argument("--validation-records", type=int, default=1024)
+    parser.add_argument("--training-config", type=Path)
     args = parser.parse_args()
-    if json.loads(args.pilot_gate.read_text())["status"] != "pass":
+    pilot = json.loads(args.pilot_gate.read_text())
+    if pilot["status"] != "pass":
         raise ValueError("full extraction requires the successful end-to-end pilot")
+    training_config = args.training_config or Path(
+        "configs/protocol_active/train_dflash_qwen3_8b_relative_4gpu.yaml"
+    )
+    if (
+        args.training_config
+        and pilot.get("training_config_sha256")
+        != hashlib.sha256(training_config.read_bytes()).hexdigest()
+    ):
+        raise ValueError("extraction pilot did not test this training configuration")
     output = Path(os.environ["RELAYSPEC_OUTPUT"])
     cache = Path(os.environ["RELAYSPEC_FEATURE_CACHE"])
     if cache.exists():
@@ -36,17 +47,27 @@ def main():
             raise ValueError(f"manifest hash mismatch: {name}")
         if count < 4 or count > len(json.loads(payload)["records"]):
             raise ValueError(f"invalid requested cache record count: {name}")
-    # DFlash 8B raw taps plus teacher: <=192*23040*2 bytes per record,
-    # with additional headroom for metadata, serialization and output norm.
-    required = (args.train_records + args.validation_records) * 12_000_000
+    config = yaml.safe_load(training_config.read_text())
+    pilot_index_path = Path(pilot["feature_cache"]) / "cache-index.json"
+    pilot_index = json.loads(pilot_index_path.read_text())
+    if (
+        pilot.get("feature_cache_index_sha256")
+        and hashlib.sha256(pilot_index_path.read_bytes()).hexdigest()
+        != pilot["feature_cache_index_sha256"]
+    ):
+        raise ValueError("pilot feature-cache index changed")
+    entry = pilot_index["entries"][0]
+    # Conservative float32 allowance, even though current frozen models use BF16.
+    per_record = (
+        config["relay_training"]["max_length"]
+        * (entry["input_width"] + entry["output_width"])
+        * 4
+        + 65536
+    )
+    required = (args.train_records + args.validation_records) * per_record
     free = shutil.disk_usage(cache.parent).free
     if free < required:
         raise ValueError(f"cache needs {required} free bytes, found {free}")
-    config = yaml.safe_load(
-        Path(
-            "configs/protocol_active/train_dflash_qwen3_8b_relative_4gpu.yaml"
-        ).read_text()
-    )
     config["relay_training"].update(
         manifest_path=str(data / "train-32768.json"),
         validation_manifest_path=str(data / "validation.json"),

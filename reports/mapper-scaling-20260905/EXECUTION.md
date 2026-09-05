@@ -287,3 +287,24 @@ Widths256 and1024 follow as27743/27744. All use source d34d85f and four GPUs
 sequentially; collector346496 handles this immutable wave. Widths2048/4096,
 regularization, remaining confirmation and full decoding are still pending.
 No new large-data scaling jobs have been submitted or resumed.
+
+
+## Longer-training results and second-family preparation
+
+Job27742 completed in4m24s. The N2048 MLP validation objective improved
+0.28776 ->0.28261 ->0.27867 at8192/16384/32768 updates; matching linear512
+improved0.26853 ->0.26577 ->0.26407. At N512 the MLP improved0.30818 ->0.30668
+->0.30595, while linear512 validation worsened0.28617 ->0.28623 ->0.28733
+as training loss fell0.24431 ->0.23943 ->0.23500. This is limited single-seed
+fitting evidence consistent with mild overfitting in the smaller linear arm,
+not a quality/speed claim. Parent endpoints match resumed diagnostics exactly.
+Source-hashed trajectories are in continued-small-data-results.json.
+
+Widths256/1024/2048/4096 are jobs27743/27744/27745/27746. Larger-data expansion
+is still paused. Shared-reference EAGLE-3 mapper campaigns and configurable
+family cache pilots are implemented for the required family checks. EAGLE-3
+candidates use fresh per-request context providers and expose checkpoint hashes;
+its duplicate gate checks outputs, accepted progress and call counts. New
+feature extraction defaults to2048 examples and10minutes and requires the
+corresponding configuration's pilot. 34 targeted CPU tests and lint pass;
+EAGLE-3 GPU pilot remains required before full replication.

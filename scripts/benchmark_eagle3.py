@@ -30,6 +30,7 @@ from relayspec.benchmarking import (
 )
 from relayspec.eagle3 import eagle3_generate, import_official_eagle3
 from relayspec.generation import native_autoregressive_generate
+from relayspec.mapper_campaign import campaign_model_methods, restore_mapper
 from relayspec.profiling import CudaRegionRecorder
 from relayspec.proposers import RelayContextProvider, SourceContextProvider
 from relayspec.relay import TargetFeatureRelay
@@ -121,16 +122,20 @@ def main() -> None:
     probe = payload.pop("relay_probe", {})
     config = namespace(payload)
     methods = tuple(str(value) for value in config.benchmark.methods)
+    variants = probe.get("variants", {})
+    model_methods = campaign_model_methods(
+        methods, variants, relay_method="relay_eagle3"
+    )
     supported_methods = {
         "native_ar",
         "source_reuse_eagle3",
         "native_target_eagle3",
         "relay_eagle3",
     }
-    unknown = sorted(set(methods) - supported_methods)
+    unknown = sorted(set(model_methods) - supported_methods)
     if unknown:
         raise ValueError(f"unsupported EAGLE-3 methods: {unknown}")
-    load_plan = eagle3_load_plan(methods)
+    load_plan = eagle3_load_plan(model_methods)
 
     rank = int(os.environ["RANK"])
     local_rank = int(os.environ["LOCAL_RANK"])
@@ -231,7 +236,7 @@ def main() -> None:
 
     relay = None
     relay_layer_ids: tuple[int, ...] = ()
-    if load_plan["load_relay"]:
+    if "relay_eagle3" in methods:
         if source_draft is None:
             raise RuntimeError("relay EAGLE-3 requires the source proposer")
         checkpoint_path = os.environ.get(
@@ -255,6 +260,35 @@ def main() -> None:
         )
         relay.load_state_dict(checkpoint["relay"], strict=True)
         relay = relay.to(device=device, dtype=torch.bfloat16).eval()
+
+    variant_mappers = {}
+    variant_provenance = {}
+    for name, checkpoint_path in variants.items():
+        if source_draft is None:
+            raise ValueError("EAGLE-3 mapper campaign requires its source proposer")
+        path = Path(checkpoint_path)
+        checkpoint = torch.load(path, map_location="cpu", weights_only=True)
+        if checkpoint.get("proposer_family") != "eagle3":
+            raise ValueError("EAGLE-3 campaign checkpoint has the wrong family")
+        mapper, taps = restore_mapper(
+            checkpoint,
+            target_hidden_size=target.config.hidden_size,
+            draft_hidden_size=source_draft.config.hidden_size,
+            eps=target.config.rms_norm_eps,
+        )
+        if taps[-1] >= target.config.num_hidden_layers:
+            raise ValueError("mapper taps lie outside the target")
+        variant_mappers[name] = (
+            mapper.to(device=device, dtype=torch.bfloat16).eval(),
+            taps,
+        )
+        variant_provenance[name] = {
+            "checkpoint_path": str(path),
+            "checkpoint_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "parameters": sum(p.numel() for p in mapper.parameters()),
+            "target_layer_ids": list(taps),
+        }
+        del checkpoint
 
     tokenizer = AutoTokenizer.from_pretrained(
         config.target.id,
@@ -345,6 +379,31 @@ def main() -> None:
         "native_target_eagle3": native_target,
         "relay_eagle3": relayed,
     }
+
+    def variant_generator(mapper, taps):
+        def generate(**kwargs):
+            recorder = kwargs.pop("profile_recorder", None)
+            provider = RelayContextProvider(
+                relay=mapper,
+                target_layer_ids=taps,
+                profile_recorder=recorder,
+            )
+            return eagle3_generate(
+                api=api,
+                target_model=target,
+                draft_model=source_draft,
+                context_provider=provider,
+                temperature=float(config.generation.temperature),
+                stop_token_ids=stop_token_ids,
+                max_proposal_tokens=int(config.benchmark.draft_length),
+                profile_recorder=recorder,
+                **kwargs,
+            )
+
+        return generate
+
+    for name, (mapper, taps) in variant_mappers.items():
+        available[name] = variant_generator(mapper, taps)
     manifest = json.loads(
         Path(config.benchmark.manifest_path).read_text(encoding="utf-8")
     )
@@ -377,6 +436,17 @@ def main() -> None:
     repetitions = int(probe.get("repetitions", 1))
     output_dir = Path(os.environ["RELAYSPEC_OUTPUT"])
     output_dir.mkdir(parents=True, exist_ok=True)
+    if variants and rank == 0:
+        (output_dir / "mapper-campaign.json").write_text(
+            json.dumps(
+                {
+                    "variants": variant_provenance,
+                    "scope": "Paired EAGLE-3 candidate decoding with shared frozen models, fresh request providers and rotated method order. Resident memory includes all candidates; it is not isolated deployment memory.",
+                },
+                indent=2,
+            )
+            + "\n"
+        )
     rank_path = output_dir / f"benchmark-rank{rank}.jsonl"
     rows: list[dict[str, Any]] = []
     with rank_path.open("x", encoding="utf-8") as stream:
@@ -414,6 +484,10 @@ def main() -> None:
                             int(config.generation.max_new_tokens),
                             tokenizer,
                         )
+                        if method in variant_provenance:
+                            row["mapper_checkpoint_sha256"] = variant_provenance[
+                                method
+                            ]["checkpoint_sha256"]
                         histories[method] = [
                             *messages,
                             {"role": "assistant", "content": row["completion"]},

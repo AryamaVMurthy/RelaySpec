@@ -14,6 +14,11 @@ def test_campaign_shares_model_load_plan_without_losing_candidate_names():
         "relay_p",
     )
     assert names[-1] == "relay_large"
+    assert campaign_model_methods(
+        ("native_ar", "relay_small", "relay_large"),
+        variants,
+        relay_method="relay_eagle3",
+    ) == ("native_ar", "relay_eagle3")
 
 
 @pytest.mark.parametrize(
@@ -23,6 +28,7 @@ def test_campaign_shares_model_load_plan_without_losing_candidate_names():
         (["relay_a", "relay_a"], {"relay_a": "x.pt"}),
         (["native_ar"], {"relay_a": "x.pt"}),
         (["other"], {"other": "x.pt"}),
+        (["relay_eagle3"], {"relay_eagle3": "x.pt"}),
     ],
 )
 def test_campaign_rejects_ambiguous_registration(names, variants):
