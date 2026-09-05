@@ -296,7 +296,19 @@ def build_ar_assets(root: Path, output: Path) -> dict[str, Any]:
                     ecolor="black",
                     capsize=2,
                 )
-                ax.text(v + 0.1, i + offset, f"{v:.2f}x", va="center", fontsize=8)
+                label_start = max(
+                    hi,
+                    *(m["throughput_ratio"] for m in x["methods"].values()),
+                )
+                ax.annotate(
+                    f"{v:.2f}x",
+                    xy=(label_start, i + offset),
+                    xytext=(8, 0),
+                    textcoords="offset points",
+                    ha="left",
+                    va="center",
+                    fontsize=8,
+                )
     ax.set_yticks(y, [f"{x['family']} / {x['target']}" for x in main])
     ax.invert_yaxis()
     ax.axvline(1, color=".5", lw=0.8, ls="--")
