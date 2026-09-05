@@ -235,6 +235,19 @@ def main():
     learning_rate = worker_trial["learning_rate"]
     if not math.isfinite(learning_rate) or learning_rate <= 0:
         raise ValueError("worker learning rate must be finite and positive")
+    if "seed" in worker_trial:
+        torch.manual_seed(worker_trial["seed"])
+        torch.cuda.manual_seed_all(worker_trial["seed"])
+    time_budget = worker_trial.get("warm_time_budget_seconds")
+    if time_budget is not None and (
+        not math.isfinite(time_budget)
+        or not 0 < time_budget < 480
+        or "resume_from" in worker_trial
+        or diagnostics
+    ):
+        raise ValueError(
+            "timed adaptation requires a bounded fresh trajectory without diagnostic backward repeats"
+        )
     if lora_rank:
         trainable = inject_lora(
             draft,
@@ -303,7 +316,10 @@ def main():
     history = []
     torch.cuda.synchronize()
     loop_started = time.perf_counter()
+    update_seconds = 0.0
+    previous_update_seconds = 0.0
     for step in range(start_step, updates):
+        update_started = time.perf_counter()
         optimizer.zero_grad(set_to_none=True)
         loss_value = 0.0
         if diagnostics and step == 0:
@@ -366,14 +382,24 @@ def main():
         if not any(torch.count_nonzero(p.grad) for p in trainable):
             raise ValueError("all adaptation gradients are zero")
         optimizer.step()
+        if time_budget is not None:
+            torch.cuda.synchronize(device)
+        previous_update_seconds = update_seconds
+        update_seconds += time.perf_counter() - update_started
         history.append(
             {
                 "step": step + 1,
                 "loss": loss_value,
                 "loop_elapsed_seconds": time.perf_counter() - loop_started,
                 "presentations": (step + 1) * batch_size,
+                "training_update_seconds": update_seconds,
             }
         )
+        if time_budget is not None and update_seconds >= time_budget:
+            updates = step + 1
+            break
+    if time_budget is not None and update_seconds < time_budget:
+        raise ValueError("adaptation reached the update cap before its time budget")
     torch.cuda.synchronize()
     loop_seconds = time.perf_counter() - loop_started
     if frozen_base_digest(draft) != base_digest:
@@ -488,6 +514,9 @@ def main():
                 "model_load_seconds": model_load_seconds,
                 "teacher_and_feature_preparation_seconds": preparation_seconds,
                 "loop_seconds": loop_seconds,
+                "training_update_seconds": update_seconds,
+                "previous_update_seconds": previous_update_seconds,
+                "warm_time_budget_seconds": time_budget,
                 "total_seconds": time.perf_counter() - started,
                 "feature_cache_index_sha256": sha(index_path),
                 "initial_mapper_sha256": settings["initial_mapper_sha256"],

@@ -88,6 +88,7 @@ def main():
                         "external_setup",
                         "pard_pilot",
                         "pard_cache_replay",
+                        "timed_budget_fit",
                     }
                     if fitting_only:
                         gate_file = {
@@ -98,6 +99,7 @@ def main():
                             "external_setup": "setup-gate.json",
                             "pard_pilot": "pard-pilot-gate.json",
                             "pard_cache_replay": "cache-replay-gate.json",
+                            "timed_budget_fit": "timed-budget-gate.json",
                         }[job["kind"]]
                         gate = json.loads((destination / gate_file).read_text())
                         if gate["status"] != "pass":
@@ -111,6 +113,7 @@ def main():
                         "adaptation_pilot",
                         "adaptation_screen",
                         "adaptation_continuation",
+                        "timed_budget_pilot",
                     }:
                         gate_file = {
                             "cache_pilot": "pilot-gate.json",
@@ -118,6 +121,7 @@ def main():
                             "adaptation_pilot": "adaptation-pilot-gate.json",
                             "adaptation_screen": "adaptation-screen-gate.json",
                             "adaptation_continuation": "adaptation-continuation-gate.json",
+                            "timed_budget_pilot": "timed-budget-gate.json",
                         }[job["kind"]]
                         gate = json.loads((destination / gate_file).read_text())
                         if gate["status"] != "pass":

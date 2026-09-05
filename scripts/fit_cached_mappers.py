@@ -29,6 +29,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--trials", type=Path, required=True)
     parser.add_argument("--equivalence-pilot", action="store_true")
+    parser.add_argument("--single-trial", action="store_true")
     args = parser.parse_args()
     rank = int(os.environ["LOCAL_RANK"])
     if int(os.environ["WORLD_SIZE"]) != 4 or torch.cuda.device_count() != 4:
@@ -36,7 +37,9 @@ def main():
     torch.cuda.set_device(rank)
     device = torch.device(f"cuda:{rank}")
     trials = json.loads(args.trials.read_text())["trials"]
-    if len(trials) != 4:
+    if args.single_trial and (rank != 0 or len(trials) != 1):
+        raise ValueError("single-trial dispatch is reserved for rank zero")
+    if not args.single_trial and len(trials) != 4:
         raise ValueError("one four-GPU fitting batch must declare exactly four trials")
     trial = trials[rank]
     seed = int(trial["seed"])
@@ -51,6 +54,14 @@ def main():
     entries = [e for e in index["entries"] if e["split"] == "train"]
     n = int(trial["distinct_examples"])
     steps = int(trial["steps"])
+    time_budget = trial.get("warm_time_budget_seconds")
+    if time_budget is not None and (
+        not math.isfinite(time_budget)
+        or not 0 < time_budget < 480
+        or trial.get("resume_from")
+        or args.equivalence_pilot
+    ):
+        raise ValueError("timed feature fitting requires a bounded fresh trajectory")
     if n < 4 or n % 4 or n > len(entries) or steps <= 0:
         raise ValueError("trial data/update budget is invalid")
     entries = entries[:n]
@@ -249,6 +260,8 @@ def main():
     io_seconds = 0.0
     training_update_seconds = 0.0
     checkpoint_export_seconds = 0.0
+    previous_update_seconds = 0.0
+    budget_history = []
     with (output / "training.jsonl").open("x") as log:
         for step in range(start_step + 1, steps + 1):
             update_started = time.perf_counter()
@@ -292,8 +305,18 @@ def main():
                 )
                 + "\n"
             )
+            if time_budget is not None:
+                torch.cuda.synchronize(device)
+            previous_update_seconds = training_update_seconds
             training_update_seconds += time.perf_counter() - update_started
-            if step in saves:
+            if time_budget is not None:
+                budget_history.append(
+                    {"step": step, "training_update_seconds": training_update_seconds}
+                )
+            budget_done = (
+                time_budget is not None and training_update_seconds >= time_budget
+            )
+            if step in saves or budget_done:
                 validation_started = time.perf_counter()
                 diagnostics(step)
                 validation_seconds += time.perf_counter() - validation_started
@@ -336,6 +359,13 @@ def main():
                     ),
                     flush=True,
                 )
+            if budget_done:
+                steps = step
+                break
+    if time_budget is not None and training_update_seconds < time_budget:
+        raise ValueError(
+            "feature fitting reached the update cap before its time budget"
+        )
     # Preserve the optimizer as well as the map so a still-improving endpoint
     # can be extended without restarting or silently resetting Adam moments.
     continuation = output / "continuation.pt"
@@ -344,7 +374,14 @@ def main():
         {
             "relay": relay.state_dict(),
             "optimizer": optimizer.state_dict(),
-            "completed_trial": trial,
+            "completed_trial": trial
+            if time_budget is None
+            else {
+                **trial,
+                "steps": steps,
+                "checkpoint_steps": [steps],
+                "budget_panels": {},
+            },
             "steps": steps,
             "tokens_seen": tokens_seen,
             "torch_rng_state": torch.get_rng_state(),
@@ -356,6 +393,10 @@ def main():
         continuation,
     )
     checkpoint_export_seconds += time.perf_counter() - export_started
+    if time_budget is not None:
+        (output / "budget-timing.jsonl").write_text(
+            "".join(json.dumps(row) + "\n" for row in budget_history)
+        )
     (output / "fit-complete.json").write_text(
         json.dumps(
             {
@@ -371,6 +412,8 @@ def main():
                 "distinct_records_seen": min(n, steps * 4),
                 "loop_seconds": time.perf_counter() - started,
                 "training_update_seconds": training_update_seconds,
+                "previous_update_seconds": previous_update_seconds,
+                "warm_time_budget_seconds": time_budget,
                 "initial_validation_seconds": initial_validation_seconds,
                 "checkpoint_export_seconds": checkpoint_export_seconds,
                 "worker_total_seconds": time.perf_counter() - worker_started,
