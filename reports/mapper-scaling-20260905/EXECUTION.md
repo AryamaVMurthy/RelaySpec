@@ -764,3 +764,28 @@ available rows are preserved under pard-pilot-wave/failed-27824. A first-
 divergence numerical trace is required before deciding whether this is a
 kernel-shape difference or an algorithm/integration error. No PARD full
 benchmark is promoted. Independent EAGLE decoding27812 started as intended.
+
+Deterministic adaptation pilot27830, source73eef21, passed end to end in
+1m52s. Prepared records, labels, initialization and initial logits retain
+the same hashes as failed27811. Repeated backward gradients are now bit
+identical with maximum difference0.0. Duplicate fitted weights, zero-update
+decoding identity and duplicate adapted-drafter decoding all passed. The
+unchanged-data/forward evidence supports the diagnosed nondeterministic
+backward cause and the explicit deterministic-execution fix. This establishes
+the bounded fitting/reload/decoding path, not matched-budget superiority.
+
+EAGLE endpoint decoding27812 completed in5m05s and was collected. The
+16-request256-token points are93.95tokens/s for factor2048/N512,
+93.45 for denseN2048,92.55 for denseN512 and94.08 for the native target
+drafter. These close point rankings require paired uncertainty and the
+queued early-stop comparison. They do not establish full-answer quality.
+
+Implemented a PARD first-divergence diagnostic that records the five leading
+target scores, argmax IDs, input/cache positions and proposal-prefix context.
+It also records the per-token AR target scores. The public algorithm remains
+unchanged, as checked by the AST-preservation test in both trace modes.
+Diagnostic latency includes trace overhead and is explicitly invalid for
+performance comparison. Workers now write explicit failed gates and let the
+parent fail after all peers finish, preserving all four requests instead
+of losing unfinished peers to torchrun's fail-fast handling. Four PARD
+unit tests and targeted lint pass. Equality requirements are unchanged.

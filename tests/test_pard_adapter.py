@@ -18,12 +18,13 @@ def test_trim_retains_eos_and_excludes_overshoot():
         trim_pard_tokens([1], max_new_tokens=0, eos_token_id=9)
 
 
-def test_instrumentation_preserves_every_upstream_statement():
+@pytest.mark.parametrize("trace_targets", [False, True])
+def test_instrumentation_preserves_every_upstream_statement(trace_targets):
     path = Path("vendor/pard/pard/pard_infer.py")
     if not path.exists():
         pytest.skip("optional pinned PARD source is not installed")
     source = path.read_bytes()
-    tree = instrument_source(source)
+    tree = instrument_source(source, trace_targets=trace_targets)
     original = ast.parse(source)
     cls = next(
         n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == "PardInfer"
@@ -48,6 +49,15 @@ def test_instrumentation_preserves_every_upstream_statement():
     )
     assert "self._record_request" in ast.unparse(loop.body[boundary - 1])
     del loop.body[boundary - 3 : boundary]
+    if trace_targets:
+        inner = next(n for n in loop.body if isinstance(n, ast.While))
+        inserted = [
+            i
+            for i, n in enumerate(inner.body)
+            if "self._record_target_trace(" in ast.unparse(n)
+        ]
+        assert len(inserted) == 1
+        del inner.body[inserted[0]]
     assert ast.dump(tree, include_attributes=False) == ast.dump(
         original, include_attributes=False
     )

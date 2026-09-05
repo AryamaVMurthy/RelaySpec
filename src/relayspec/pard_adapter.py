@@ -8,7 +8,7 @@ PARD_COMMIT = "6f279bf3f1680e0b5d71c562ca5b91bdeef4c038"
 PARD_SOURCE_SHA256 = "9c4ae104e90ccb6a0a3948d011ab5e892cb7733894f812b74ab63270907c5340"
 
 
-def instrument_source(source):
+def instrument_source(source, *, trace_targets=False):
     """Add request timing and raw-token capture to the exact reviewed source.
 
     All upstream statements remain in their original order. Timings include
@@ -51,12 +51,30 @@ def instrument_source(source):
     loop.body[:0] = ast.parse(
         "torch.cuda.synchronize()\n_relayspec_request_started = time.perf_counter()\n"
     ).body
+    if trace_targets:
+        while_loop = next(n for n in loop.body if isinstance(n, ast.While))
+        boundaries = [
+            i
+            for i, n in enumerate(while_loop.body)
+            if isinstance(n, ast.Assign)
+            and any(
+                isinstance(t, ast.Name) and t.id == "keep_token_ids" for t in n.targets
+            )
+            and isinstance(n.value, ast.List)
+        ]
+        if len(boundaries) != 1:
+            raise ValueError("PARD verification boundary is ambiguous")
+        index = boundaries[0]
+        while_loop.body[index:index] = ast.parse(
+            "self._record_target_trace(all_token, input_token_lenght, target_input, "
+            "target_output.logits[:, -draft_tmp_new_token.shape[1] - 1:])\n"
+        ).body
     return ast.fix_missing_locations(tree)
 
 
-def load_instrumented_pard(source_path):
+def load_instrumented_pard(source_path, *, trace_targets=False):
     source = source_path.read_bytes()
-    tree = instrument_source(source)
+    tree = instrument_source(source, trace_targets=trace_targets)
     module = types.ModuleType("relayspec_external_pard")
     module.__file__ = str(source_path)
     exec(compile(tree, str(source_path), "exec"), module.__dict__)
@@ -75,9 +93,24 @@ def load_instrumented_pard(source_path):
                 raise ValueError("PARD static cache would truncate this request")
             self._input_ids = input_ids
             self.captured_request = None
+            self._target_trace = []
 
         def get_input(self, prompt, tokenizer, prompt_type):
             return prompt, self._input_ids
+
+        def _record_target_trace(self, all_token, input_length, target_input, logits):
+            values, indices = logits.float().topk(5, dim=-1)
+            self._target_trace.append(
+                {
+                    "output_start": all_token.shape[1] - input_length,
+                    "prefix_ids": all_token[0].cpu().tolist(),
+                    "incoming_ids": target_input["input_ids"][0].cpu().tolist(),
+                    "cache_position": target_input["cache_position"].cpu().tolist(),
+                    "argmax_ids": logits.argmax(-1)[0].cpu().tolist(),
+                    "top_ids": indices[0].cpu().tolist(),
+                    "top_scores": values[0].cpu().tolist(),
+                }
+            )
 
         def _record_request(self, all_token, input_length, seconds, profile):
             if self.captured_request is not None:
@@ -90,6 +123,7 @@ def load_instrumented_pard(source_path):
                 "accepted_lengths": list(profile["accept_length"]),
                 "draft_calls": len(profile["draft"]),
                 "target_calls": len(profile["accept_length"]),
+                "target_trace": self._target_trace,
             }
 
     return CapturedPard

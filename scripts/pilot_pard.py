@@ -21,7 +21,7 @@ from relayspec.pard_adapter import (
 
 
 @torch.no_grad()
-def eager_ar(model, cache, ids, cap, eos):
+def eager_ar(model, cache, ids, cap, eos, trace=None):
     torch.cuda.synchronize()
     started = time.perf_counter()
     cache.reset()
@@ -45,6 +45,16 @@ def eager_ar(model, cache, ids, cap, eos):
         position += current.shape[1]
         current = output.logits[:, -1:].argmax(-1)
         outputs.append(current)
+        if trace is not None:
+            values, indices = output.logits[:, -1].float().topk(5, dim=-1)
+            trace.append(
+                {
+                    "output_start": len(outputs) - 1,
+                    "argmax_id": int(current.item()),
+                    "top_ids": indices[0].cpu().tolist(),
+                    "top_scores": values[0].cpu().tolist(),
+                }
+            )
         if int(current.item()) == eos:
             break
     torch.cuda.synchronize()
@@ -81,7 +91,8 @@ def main():
     torch.cuda.set_device(rank)
     output = Path(os.environ["RELAYSPEC_OUTPUT"])
     source = Path(os.environ["PARD_SOURCE"]) / "pard/pard_infer.py"
-    pard_class = load_instrumented_pard(source)
+    diagnostic_mode = os.environ.get("PARD_TRACE_TARGETS", "0") == "1"
+    pard_class = load_instrumented_pard(source, trace_targets=diagnostic_mode)
     paths = {
         key: snapshot_download(
             repo_id=config[key]["id"],
@@ -156,12 +167,17 @@ def main():
     for name in names:
         torch.cuda.reset_peak_memory_stats()
         if name == "eager_ar":
-            tokens, seconds = eager_ar(infer.model, infer.target_cache, ids, 128, eos)
+            ar_trace = [] if diagnostic_mode else None
+            tokens, seconds = eager_ar(
+                infer.model, infer.target_cache, ids, 128, eos, trace=ar_trace
+            )
             details = {
                 "target_calls": len(tokens),
                 "draft_calls": 0,
                 "raw_output_tokens": len(tokens),
             }
+            if diagnostic_mode:
+                details["target_trace"] = ar_trace
         else:
             infer.set_input_ids(ids)
             infer.generate(
@@ -182,6 +198,8 @@ def main():
             }
             details["raw_output_tokens"] = len(raw)
             details["raw_token_ids"] = raw
+            if diagnostic_mode:
+                details["target_trace"] = captured["target_trace"]
         rows[name] = {
             "method": name,
             "rank": rank,
@@ -199,13 +217,15 @@ def main():
     path.write_text(
         json.dumps({"rows": rows, "setup_seconds": setup_seconds}, indent=2) + "\n"
     )
-    # Fail without hiding raw output when deterministic correctness differs.
+    # Write a failed worker gate and let the parent fail after every worker saves
+    # its evidence, rather than having torchrun kill unfinished peer requests.
+    failure = None
     if not (
         rows["eager_ar"]["token_ids"]
         == rows["pard"]["token_ids"]
         == rows["pard_duplicate"]["token_ids"]
     ):
-        raise ValueError("PARD pilot differs from matched eager AR or its duplicate")
+        failure = "PARD pilot differs from matched eager AR or its duplicate"
     if any(
         rows["pard"][field] != rows["pard_duplicate"][field]
         for field in (
@@ -215,13 +235,16 @@ def main():
             "draft_calls",
         )
     ):
-        raise ValueError("duplicate PARD proposal trajectory differs")
+        failure = "duplicate PARD proposal trajectory differs"
     (output / f"pard-gate-rank{rank}.json").write_text(
         json.dumps(
             {
-                "status": "pass",
+                "status": "fail" if failure else "pass",
+                "failure": failure,
+                "diagnostic_mode": diagnostic_mode,
+                "timing_valid_for_comparison": not diagnostic_mode,
                 "rank": rank,
-                "exact_ar_and_duplicate_outputs": True,
+                "exact_ar_and_duplicate_outputs": failure is None,
                 "rows_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                 "config_sha256": hashlib.sha256(args.config.read_bytes()).hexdigest(),
                 "upstream_source_sha256": PARD_SOURCE_SHA256,
