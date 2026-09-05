@@ -18,6 +18,28 @@ def main():
     config = json.loads(config_path.read_text())
     config_sha = hashlib.sha256(config_path.read_bytes()).hexdigest()
     inputs[str(config_path)] = config_sha
+    setup_config_path = Path(config["setup_config"])
+    setup_path = args.run / "setup-gate.json"
+    setup = json.loads(setup_path.read_text())
+    setup_config = json.loads(setup_config_path.read_text())
+    ledger_path = Path("reports/mapper-scaling-20260905/sd-square-pilot/jobs.json")
+    source_path = args.run / "source-commit.txt"
+    if (
+        hashlib.sha256(setup_config_path.read_bytes()).hexdigest()
+        != config["setup_config_sha256"]
+        or setup["status"] != "pass"
+        or setup["config_sha256"] != config["setup_config_sha256"]
+        or setup["source_sha256"] != setup_config["source_sha256"]
+        or any(
+            setup["versions"][name] != version
+            for name, version in setup_config["runtime"].items()
+        )
+        or source_path.read_text().strip()
+        != json.loads(ledger_path.read_text())["source_commit"]
+    ):
+        raise ValueError("SD-square source or environment provenance differs")
+    for path in (setup_config_path, setup_path, ledger_path, source_path):
+        inputs[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
     for rank in range(4):
         documents = {}
         for name in ("pilot", "training", "decoding"):
@@ -30,6 +52,7 @@ def main():
             or fit.get("error")
             or fit["rank"] != rank
             or fit["config_sha256"] != config_sha
+            or fit["setup_gate_sha256"] != inputs[str(setup_path)]
             or fit["training"] != training
             or [r["step"] for r in training] != list(range(1, config["updates"] + 1))
             or fit["distinct_records_seen"] != len({r["record"] for r in training})

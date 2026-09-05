@@ -1,0 +1,159 @@
+{
+  "status": "complete_numerical_diagnostic",
+  "input_sha256": {
+    "configs/submission/baselines/sd-square-causal-replay.json": "27446205f0c2789b5bcc78f69f9346a0a5a8ecf02b469360e5d516dfe56ed519",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/sd-square-pilot/run-27869/decoding-rank2.json": "bbad357d279c534d023a0bcde947e2db3c6853530eb969b81d9a736fff63470c",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/sd-square-pilot/run-27869/pilot-rank2.json": "2bfa2db4b594624110c6f5cb869372aa398be68a56f545401f27b5e25f9ad4d5",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/sd-square-causal/run-27877/sd-square-numerical-gate.json": "2a701f7c79cd24a3a0b487043a71e581794e2b7918376ed8cb93bf443471e5cc",
+    "reports/mapper-scaling-20260905/sd-square-causal/jobs.json": "2d91d8ed7ba2d74ce1a97b79890047690e7fed51ea38a37ace00b39d1ecb813c",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/sd-square-causal/run-27877/source-commit.txt": "4b0bc5a93009442f71bd0ecd465c28276c7510a9187b0ba8bb7c57438b805cb2",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/sd-square-causal/run-27877/numerical-rank0.json": "e59833a04cc29dd69adf9c18cd0b0e2b7b3910108b2cb25b3f92a922887a2876",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/sd-square-causal/run-27877/numerical-rank1.json": "bb8b7857d6b862ef822a241443c1b39853bc8c86e4c852769a26baafe76a1875",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/sd-square-causal/run-27877/numerical-rank2.json": "9c6de9c9bef7b70bb39c9f90069463aa4d5b0401d2b2d74a49f148e2db4f4edc",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/sd-square-causal/run-27877/numerical-rank3.json": "a0fba2ebd439cddaa715312c3fc9e8ef31cc35f324908aca9a6a296c9146e9e6"
+  },
+  "first_differences": {
+    "sdpa": {
+      "index": 49,
+      "ar_token": 59,
+      "sd_token": 87,
+      "ar_top_ids": [
+        59,
+        87,
+        47,
+        69,
+        2075
+      ],
+      "ar_top_scores": [
+        36.25,
+        36.0,
+        33.0,
+        28.375,
+        28.125
+      ],
+      "sd_top_ids": [
+        87,
+        59,
+        47,
+        69,
+        2075
+      ],
+      "sd_top_scores": [
+        36.25,
+        36.0,
+        33.0,
+        28.375,
+        28.0
+      ],
+      "same_effective_token_prefix": true,
+      "prefix_length": 98,
+      "physical_cache_prefix": 129
+    },
+    "eager": {
+      "index": 49,
+      "ar_token": 87,
+      "sd_token": 59,
+      "ar_top_ids": [
+        87,
+        59,
+        47,
+        69,
+        2075
+      ],
+      "ar_top_scores": [
+        36.25,
+        36.0,
+        33.0,
+        28.5,
+        28.25
+      ],
+      "sd_top_ids": [
+        59,
+        87,
+        47,
+        69,
+        2075
+      ],
+      "sd_top_scores": [
+        36.0,
+        36.0,
+        32.75,
+        28.25,
+        28.125
+      ],
+      "same_effective_token_prefix": true,
+      "prefix_length": 98,
+      "physical_cache_prefix": 129
+    }
+  },
+  "public_ar_matches_correct_cached_ar": {
+    "sdpa": false,
+    "eager": false
+  },
+  "original_ar_identity_gate": "failed_preserved",
+  "causal_probes": {
+    "sdpa": {
+      "status": "pass",
+      "physical_cache_prefix": 129,
+      "query_offset": 2,
+      "original_query_ids": [
+        1447,
+        14085,
+        198,
+        87,
+        61,
+        21,
+        481,
+        220,
+        18
+      ],
+      "changed_query_ids": [
+        1447,
+        14085,
+        198,
+        8006,
+        7980,
+        7940,
+        8400,
+        8139,
+        7937
+      ],
+      "cache_copies_exact_and_independent": true,
+      "original_cache_unchanged": true,
+      "prefix_logits_bit_identical": true,
+      "baseline_logits_float32_sha256": "2326f01abfdb2e622ff9a5c2529d2f529163a376962b5dfe8f36e0177305398c"
+    },
+    "eager": {
+      "status": "pass",
+      "physical_cache_prefix": 129,
+      "query_offset": 2,
+      "original_query_ids": [
+        1447,
+        14085,
+        198,
+        87,
+        61,
+        21,
+        481,
+        220,
+        18
+      ],
+      "changed_query_ids": [
+        1447,
+        14085,
+        198,
+        8006,
+        7980,
+        7940,
+        8400,
+        8139,
+        7937
+      ],
+      "cache_copies_exact_and_independent": true,
+      "original_cache_unchanged": true,
+      "prefix_logits_bit_identical": true,
+      "baseline_logits_float32_sha256": "49739d99b7076176a6962ae9bddee1231d79bb9c5f8a84b8b3c1e7d79af6b9ac"
+    }
+  },
+  "scope": "Two exact replicas per attention backend. Same effective token prefix and logical position at the first differing choice. Public AR helper mismatch is observed separately. This does not isolate cache history, query shape, or an exact CUDA kernel. Changing future query tokens preserves earlier verifier logits with exact copied caches. Task-quality comparison remains outstanding. No new fitting."
+}

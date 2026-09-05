@@ -25,6 +25,14 @@ def main():
     args = parser.parse_args()
     config_path = args.config
     config = json.loads(config_path.read_text())
+    study = "sd-square-causal" if "causal_probe" in config else "sd-square-numerical"
+    ledger_path = Path("reports/mapper-scaling-20260905") / study / "jobs.json"
+    source_path = args.run / "source-commit.txt"
+    if (
+        source_path.read_text().strip()
+        != json.loads(ledger_path.read_text())["source_commit"]
+    ):
+        raise ValueError("SD-square replay source provenance differs")
     prior_row_path = args.prior / "decoding-rank2.json"
     prior_gate_path = args.prior / "pilot-rank2.json"
     if (
@@ -51,7 +59,14 @@ def main():
         raise ValueError("numerical diagnosis completion is missing")
     inputs = {
         str(p): digest(p)
-        for p in (config_path, prior_row_path, prior_gate_path, gate_path)
+        for p in (
+            config_path,
+            prior_row_path,
+            prior_gate_path,
+            gate_path,
+            ledger_path,
+            source_path,
+        )
     }
     rows = []
     for rank in range(4):

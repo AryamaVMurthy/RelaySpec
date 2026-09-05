@@ -1038,3 +1038,43 @@ without clipping or overlap. The rerun technical manuscript audit passes
 all checks except the still-pending all-page color/grayscale review.
 The PDF has27pages, with main text ending onpage9. The final Turing
 queue check is empty. No new large-data work was submitted.
+
+## SD-square frozen-steering compatibility and numerical diagnosis
+
+CPU setup27867 passed in1m20s with2CPUs and no GPU. The pinned source
+imports under Python3.12 and Transformers4.52.4. The base Qwen3-0.6B
+checkpoint is verified, without using the released fully tuned steering
+checkpoint as a frozen baseline.
+
+Four-GPU pilot27869 finished in1m17s. Its training/reload invariants pass:
+402,665,472 steering parameters, exact duplicate TVD/KL weights and loss
+traces, zero-guidance identity, unchanged frozen drafter hashes and
+parameter versions/storage, and optimizer/trainable checkpoint reload.
+Four updates take1.24--1.35s and visit only4records of the512-example
+pool. This is not a complete512-example fit. Exact AR identity FAILED
+on the second prompt at output49 in both replicas. That failure remains.
+
+Numerical replay27871 passed in1m01s. Both backends verify the same
+98-token effective prefix at the first divergence. SDPA gives opposite
+36.25/36.0 orderings for tokens59/87 in AR versus speculative decoding.
+Eager reverses the choices again. The public AR helper differs from
+correct cached AR on the measured first16tokens, so it is not our AR
+reference. Neither observation establishes task quality or an exact
+kernel-level cause.
+
+Causal replay27877 passed in1m00s. Exact independent incoming KV copies,
+unchanged original cache, and replay/actual logit hashes are checked.
+Changing all six future query tokens preserves the full logits for the
+first three positions bit-for-bit under SDPA and eager. This excludes
+future-query leakage in the tested call, without restoring exact AR
+identity. No new fitting occurs in either replay.
+
+Four CPU observer tests cover EOS before the public mask erases a finished
+block, wrong verifier-token rejection, ended sequences and masked physical
+cache positions. Ruff and source/config/environment-bound result audits
+pass. All four jobs and their failures remain recorded. The prospective
+external-verification-protocol and external-baseline-completion plan
+require complete512-example training pilots, task-quality comparisons,
+and preservation of both SD-square and PARD's old failed AR gates.
+The rest of the original paper/transfer/autoresearch scope remains active.
+Large-data scaling stays paused.

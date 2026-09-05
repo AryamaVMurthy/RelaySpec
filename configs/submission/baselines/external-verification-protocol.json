@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "status": "declared_requires_prospective_baseline_pilot",
+  "input_sha256": {
+    "reports/external-baselines-20260906/sd-square-pilot.json": "e462ad89f94e278c3129cb67581dc579c306feb9c31a882326370559b4bbaa4a",
+    "reports/external-baselines-20260906/sd-square-causal-diagnosis.json": "f8c389173f1164b3f00b23f897c20b7dc6cc62d1c1f4c1fd19641509b16e9329",
+    "reports/external-baselines-20260906/pard-cache-query-diagnosis.json": "1501d0ac19188e03ef135e5565517a1e0b2a848ea94d77573585e07f947f1948",
+    "configs/submission/baselines/sd-square-compatibility.json": "4f882be369fc364b60b33b0b0ac75fc4d6f973c5be7ada71c62217e22d78519a",
+    "configs/submission/baselines/pard-pilot.yaml": "765b37011e10bdf5772e4058e80877305c626e0f5520e8a78c3bf643c2f7e79a",
+    "configs/eval_manifest.json": "ddba7687f3d680390e68b021b227ce8dbbf9ef681542abe354ea0f59e0c50e35"
+  },
+  "original_exact_ar_gates": {
+    "sd_square_job27869": "failed_preserved",
+    "pard_job27831": "failed_preserved"
+  },
+  "required_checks": [
+    "pinned_source_model_tokenizer_and_runtime",
+    "frozen_weights_and_trainable_parameter_identity",
+    "exact_duplicate_fit_and_reload_on_new_training_path",
+    "every_committed_token_equals_own_greedy_verifier",
+    "correct_counted_tokens_including_eos_and_cap_with_full_request_time",
+    "causal_query_intervention_on_known_divergence",
+    "same_pretokenized_prompts_for_candidate_and_runtime_local_ar",
+    "report_exact_ar_agreement_without_relabeling_prior_failures",
+    "separate_task_quality_comparison_before_accuracy_or_losslessness_claims"
+  ],
+  "development": {
+    "manifest_path": "configs/eval_manifest.json",
+    "benchmark": "math500",
+    "seed": 1729,
+    "short_requests": 16,
+    "short_token_cap": 256,
+    "quality_pilot_requests": 8,
+    "quality_token_cap": 2048,
+    "quality_requests": 128
+  },
+  "fitting": {
+    "allowed_pool_examples": [
+      512,
+      2048
+    ],
+    "large_data_scaling": "paused",
+    "sd_square_first_complete_pool_pilot": {
+      "pool_examples": 512,
+      "batch_size": 4,
+      "updates": 128,
+      "learning_rate": 1e-05,
+      "learning_rate_end": 1e-06,
+      "warmup_steps": 8,
+      "objectives": [
+        "tvd",
+        "tvd",
+        "kl",
+        "kl"
+      ],
+      "seed": 1729,
+      "replicas": "two exact replicas per objective"
+    },
+    "sd_square_followup_rates": [
+      4e-06,
+      2e-05
+    ],
+    "rate_selection": "highest development throughput point, with all tested settings and search cost retained"
+  },
+  "quality": {
+    "final_absolute_noninferiority_margin": 0.01,
+    "final_confirmation_protocol": "configs/submission/confirmation-gsm8k-20260906",
+    "development_is_not_confirmation": true,
+    "inconclusive_is_not_pass": true
+  },
+  "resources": {
+    "max_gpus_total": 4,
+    "pilot_process_timeout_seconds": 540,
+    "pilot_slurm_limit_seconds": 600
+  },
+  "scope": "Prospective system-baseline protocol following diagnosed numerical differences. This declaration does not change either prior failed exact-AR gate. Acceptance is checked strictly against each actual verifier; task-quality claims require separate evidence. Runtime-local AR controls are required because external public runtimes differ. Do not turn cross-runtime throughput into an isolated algorithm ranking. This is not completion evidence."
+}
