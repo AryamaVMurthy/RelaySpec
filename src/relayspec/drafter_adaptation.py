@@ -8,6 +8,58 @@ from torch import nn
 from relayspec.lora import LoRALinear
 
 
+def restore_adaptation_state(
+    model,
+    optimizer,
+    state,
+    *,
+    parent_config_sha256,
+    mapper_sha256,
+    feature_cache_sha256,
+    ordered_record_files,
+    lora_rank,
+):
+    """Restore exact trainable values and Adam state after provenance validation."""
+    if (
+        state.get("format") != "relayspec-adaptation-training-state-v1"
+        or state.get("config_sha256") != parent_config_sha256
+        or state.get("initial_mapper_sha256") != mapper_sha256
+        or state.get("feature_cache_index_sha256") != feature_cache_sha256
+        or state.get("ordered_record_files") != ordered_record_files
+        or state.get("lora_rank") != lora_rank
+        or not isinstance(state.get("updates"), int)
+        or state["updates"] <= 0
+    ):
+        raise ValueError("adaptation continuation provenance differs")
+    parameters = {name: p for name, p in model.named_parameters() if p.requires_grad}
+    values = state.get("trainable", {})
+    if parameters.keys() != values.keys() or not parameters:
+        raise ValueError("adaptation continuation trainable names differ")
+    for name, parameter in parameters.items():
+        value = values[name]
+        if (
+            value.shape != parameter.shape
+            or value.dtype != parameter.dtype
+            or not torch.isfinite(value).all()
+        ):
+            raise ValueError("adaptation continuation tensor is incompatible")
+    saved_groups = state["optimizer"]["param_groups"]
+    current_groups = optimizer.state_dict()["param_groups"]
+    if len(saved_groups) != len(current_groups):
+        raise ValueError("adaptation continuation optimizer groups differ")
+    for saved, current in zip(saved_groups, current_groups, strict=True):
+        if {k: v for k, v in saved.items() if k != "params"} != {
+            k: v for k, v in current.items() if k != "params"
+        } or len(saved["params"]) != len(current["params"]):
+            raise ValueError("adaptation continuation optimizer settings differ")
+    optimizer.load_state_dict(state["optimizer"])
+    with torch.no_grad():
+        for name, parameter in parameters.items():
+            parameter.copy_(values[name].to(parameter.device))
+    torch.set_rng_state(state["cpu_rng"])
+    return state["updates"]
+
+
 def frozen_base_digest(model):
     """Hash canonical inherited parameters, excluding only explicit LoRA deltas."""
     digest = hashlib.sha256()

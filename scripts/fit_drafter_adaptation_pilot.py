@@ -18,6 +18,7 @@ from relayspec.drafter_adaptation import (
     apply_merged_lora,
     export_merged_lora,
     frozen_base_digest,
+    restore_adaptation_state,
 )
 from relayspec.generation import _conditioned_dflash_forward
 from relayspec.lora import inject_lora, merge_lora_into_base
@@ -255,6 +256,26 @@ def main():
         mapper.requires_grad_(True)
         trainable = list(mapper.parameters())
     optimizer = torch.optim.AdamW(trainable, lr=learning_rate, weight_decay=0.0)
+    start_step = 0
+    if "resume_from" in worker_trial:
+        resume_path = Path(worker_trial["resume_from"])
+        if sha(resume_path) != worker_trial["resume_sha256"]:
+            raise ValueError("adaptation continuation checkpoint hash changed")
+        state = torch.load(resume_path, map_location="cpu", weights_only=True)
+        start_step = restore_adaptation_state(
+            draft if lora_rank else mapper,
+            optimizer,
+            state,
+            parent_config_sha256=worker_trial["resume_config_sha256"],
+            mapper_sha256=settings["initial_mapper_sha256"],
+            feature_cache_sha256=sha(index_path),
+            ordered_record_files=[entry["file"] for entry in entries],
+            lora_rank=lora_rank,
+        )
+        if start_step >= updates:
+            raise ValueError("adaptation continuation requires additional updates")
+        torch.cuda.set_rng_state(state["cuda_rng"], device)
+        del state
     diagnostic = {}
     if diagnostics:
         diagnostic = {
@@ -282,7 +303,7 @@ def main():
     history = []
     torch.cuda.synchronize()
     loop_started = time.perf_counter()
-    for step in range(updates):
+    for step in range(start_step, updates):
         optimizer.zero_grad(set_to_none=True)
         loss_value = 0.0
         if diagnostics and step == 0:
@@ -452,6 +473,9 @@ def main():
                     output / ("adaptation.pt" if lora_rank else "mapper.pt")
                 ),
                 "updates": updates,
+                "start_step": start_step,
+                "updates_this_job": updates - start_step,
+                "resume_sha256": worker_trial.get("resume_sha256"),
                 "distinct_examples": min(count, updates * batch_size),
                 "prepared_distinct_examples": count,
                 "presentations": updates * batch_size,
