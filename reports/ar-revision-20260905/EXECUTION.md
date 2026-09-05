@@ -84,3 +84,12 @@ precision and call-shape replay is still needed to test the cause and coverage.
 
 The updated plan is `docs/plans/2026-09-05-relayspec-next-24-hours.md`.
 Running jobs and proposed experiments are not manuscript results.
+
+## Controlled scaling launch update
+
+EAGLE-3 8B breadth job 27545 completed in 1 h 32 min 59 s with all 2,490
+planned rows. The 14B breadth job 27546 is now running. Controlled fitting pilot
+27578 passed in 1 min 37 s. Fixed-update data jobs 27580–27582 and continuous
+fitting job 27583 are queued in a serial chain behind breadth. The exact
+protocol, GPU budget, pilot checks, initial breadth findings and collection
+commands are in [the controlled scaling execution record](../controlled-scaling-20260905/EXECUTION.md).

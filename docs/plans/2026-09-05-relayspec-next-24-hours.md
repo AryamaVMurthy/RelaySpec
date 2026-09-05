@@ -107,3 +107,12 @@ Current execution: 27545 is the EAGLE-3 8B breadth run. 27546 follows it for 14B
 The detailed execution record documents completed pilots and their actual gate
 outcomes. Check `squeue` before allocating anything else. The four-GPU cap applies
 to the sum of all concurrent jobs, not separately to each experiment.
+
+## Execution update after the ICLR format revision
+
+The controlled fitting trainer, intermediate checkpoints and paired evaluation
+runner are implemented. Pilot 27578 passed in 97 seconds. Jobs 27580–27583
+execute the fixed-update data sweep and continuous trajectory after the running
+14B breadth job. The 4,096-record data cell reuses the continuous run's
+1,024-update checkpoint and evaluation. See
+[the live execution record](../../reports/controlled-scaling-20260905/EXECUTION.md).
