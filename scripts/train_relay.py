@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import time
@@ -20,6 +21,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from relayspec.benchmarking import resolve_revision
 from relayspec.dflash import import_official_dflash
 from relayspec.eagle3 import import_official_eagle3
+from relayspec.feature_cache import finalize_cache, write_cache_shard
 from relayspec.fitting_validation import interface_diagnostics, validate_fit_split
 from relayspec.generation import _conditioned_dflash_forward
 from relayspec.losses import (
@@ -221,6 +223,123 @@ def main() -> None:
     target_layer_ids = tuple(int(value) for value in training["target_layer_ids"])
     if len(target_layer_ids) != len(draft.target_layer_ids):
         raise ValueError("target relay tap count must match the trained proposer")
+    cache_settings = training.get("feature_cache")
+    if cache_settings:
+        if (
+            cross_family
+            or training.get("supervision", "source_interface") != "source_interface"
+            or training.get("proposal_kl_weight", 0)
+        ):
+            raise ValueError(
+                "feature caching currently supports pure same-tokenizer interface fitting"
+            )
+        root = Path(os.environ["RELAYSPEC_FEATURE_CACHE"])
+        root.mkdir(parents=True, exist_ok=True)
+        fit_path = Path(training["manifest_path"])
+        val_path = Path(training["validation_manifest_path"])
+        fit_rows = json.loads(fit_path.read_text())["records"]
+        val_rows = json.loads(val_path.read_text())["records"]
+        fit_rows = fit_rows[: int(cache_settings["train_records"])]
+        val_rows = val_rows[: int(cache_settings["validation_records"])]
+        if len(fit_rows) != int(cache_settings["train_records"]) or len(
+            val_rows
+        ) != int(cache_settings["validation_records"]):
+            raise ValueError("feature cache budget exceeds available records")
+        split = validate_fit_split(fit_rows, val_rows)
+        groups = {"train": fit_rows, "validation": val_rows}
+        cache_started = time.perf_counter()
+
+        @torch.no_grad()
+        def extract_cache_row(row):
+            ids = encode_example(tokenizer, row, int(training["max_length"]), device)
+            source_output = source(
+                ids, use_cache=False, output_hidden_states=True, logits_to_keep=1
+            )
+            teacher = project_source_interface(
+                draft,
+                extract_hidden_taps(
+                    source_output.hidden_states,
+                    tuple(int(i) for i in draft.target_layer_ids),
+                ),
+                family=proposer_family,
+            )
+            del source_output
+            target_output = target(
+                ids, use_cache=False, output_hidden_states=True, logits_to_keep=1
+            )
+            features = extract_hidden_taps(
+                target_output.hidden_states, target_layer_ids
+            )
+            del target_output
+            return features, teacher, ids
+
+        write_cache_shard(
+            root, groups, rank=rank, world_size=world_size, extract=extract_cache_row
+        )
+        dist.barrier()
+        if rank == 0:
+            output_norm = None
+            if proposer_family == "dflash":
+                norm = draft.hidden_norm
+                if type(norm).__name__ != "Qwen3RMSNorm":
+                    raise ValueError(
+                        "cache consumer needs an explicit implementation for this output norm"
+                    )
+                output_norm = {
+                    "kind": "Qwen3RMSNorm",
+                    "eps": norm.variance_epsilon,
+                    "weight": norm.weight.detach().cpu(),
+                }
+            torch.save(output_norm, root / "output-norm.pt")
+            metadata = {
+                "config": payload,
+                "relay_training": training,
+                "config_sha256": hashlib.sha256(args.config.read_bytes()).hexdigest(),
+                "manifest_sha256": {
+                    str(p): hashlib.sha256(p.read_bytes()).hexdigest()
+                    for p in [fit_path, val_path]
+                },
+                "target_layer_ids": target_layer_ids,
+                "target_hidden_size": target.config.hidden_size,
+                "draft_hidden_size": draft.config.hidden_size,
+                "rms_norm_eps": target.config.rms_norm_eps,
+                "family": proposer_family,
+                "split": split,
+                "output_norm_sha256": hashlib.sha256(
+                    (root / "output-norm.pt").read_bytes()
+                ).hexdigest(),
+                "torch_version": str(torch.__version__),
+                "elapsed_seconds": time.perf_counter() - cache_started,
+                "normalization": "Raw target taps; teacher includes the released proposer interface. DFlash predictions must use output-norm.pt; EAGLE-3 predictions use identity.",
+            }
+            result = finalize_cache(
+                root,
+                counts={k: len(v) for k, v in groups.items()},
+                world_size=world_size,
+                metadata=metadata,
+            )
+            output_dir = Path(os.environ["RELAYSPEC_OUTPUT"])
+            output_dir.mkdir(parents=True, exist_ok=True)
+            (output_dir / "feature-cache-gate.json").write_text(
+                json.dumps(
+                    {
+                        "status": "pass",
+                        "cache_root": str(root),
+                        "counts": result["counts"],
+                        "total_bytes": result["total_bytes"],
+                        "total_tokens": result["total_tokens"],
+                        "cache_index_sha256": hashlib.sha256(
+                            (root / "cache-index.json").read_bytes()
+                        ).hexdigest(),
+                        "metadata": metadata,
+                    },
+                    indent=2,
+                )
+                + "\n"
+            )
+        dist.barrier()
+        dist.destroy_process_group()
+        return
     relay_architecture = str(training.get("relay_architecture", "normalized_linear"))
     if relay_architecture not in {"normalized_linear", "scale_preserving_linear"}:
         raise ValueError(f"unsupported relay architecture: {relay_architecture}")

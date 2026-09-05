@@ -37,6 +37,7 @@ from relayspec.generation import (
     native_autoregressive_generate,
     relay_dflash_generate,
 )
+from relayspec.mapper_campaign import campaign_model_methods, restore_mapper
 from relayspec.profiling import CudaRegionRecorder
 from relayspec.relay import TargetFeatureRelay
 from relayspec.source import SourceTapProvider
@@ -130,8 +131,10 @@ def main() -> None:
     source_config = config.source_trunk
     method_names = tuple(str(value) for value in config.benchmark.methods)
     unload_source_trunk = bool(getattr(config.benchmark, "unload_source_trunk", False))
+    variants = probe.get("variants", {})
+    model_methods = campaign_model_methods(method_names, variants)
     load_plan = model_load_plan(
-        method_names,
+        model_methods,
         unload_source_trunk=unload_source_trunk,
     )
     rank = int(os.environ["RANK"])
@@ -278,6 +281,35 @@ def main() -> None:
         )
         relay.load_state_dict(checkpoint["relay"], strict=True)
         relay = relay.to(device=device, dtype=torch.bfloat16).eval()
+    variant_mappers = {}
+    variant_provenance = {}
+    for name, checkpoint_path in variants.items():
+        checkpoint_path = Path(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
+        if checkpoint.get("proposer_family", "dflash") != "dflash":
+            raise ValueError(
+                "DFlash campaign received a different drafter family's mapper"
+            )
+        mapper, taps = restore_mapper(
+            checkpoint,
+            target_hidden_size=target.config.hidden_size,
+            draft_hidden_size=draft.config.hidden_size,
+            eps=target.config.rms_norm_eps,
+        )
+        if taps[-1] >= target.config.num_hidden_layers:
+            raise ValueError("mapper taps lie outside the target")
+        mapper = mapper.to(device=device, dtype=torch.bfloat16).eval()
+        variant_mappers[name] = (mapper, taps)
+        variant_provenance[name] = {
+            "checkpoint": str(checkpoint_path),
+            "sha256": hashlib.sha256(checkpoint_path.read_bytes()).hexdigest(),
+            "parameters": sum(p.numel() for p in mapper.parameters()),
+            "resident_parameter_bytes": sum(
+                p.numel() * p.element_size() for p in mapper.parameters()
+            ),
+            "target_layer_ids": taps,
+        }
+        del checkpoint
     unfitted = {}
     for name in {"direct_slice", "frozen_fc_slice"} & set(method_names):
         unfitted[name] = (
@@ -443,6 +475,26 @@ def main() -> None:
         "relay_p": relayed,
         "relay_p_cross_family": relayed_cross_family,
     }
+
+    def variant_generator(mapper, taps):
+        def generate(**kwargs):
+            if source_embedding is None or source_lm_head is None:
+                raise RuntimeError("mapper campaign requires source embedding/head")
+            return relay_dflash_generate(
+                draft,
+                relay=mapper,
+                relay_target_layer_ids=taps,
+                native_target=target,
+                source_embedding=source_embedding,
+                source_lm_head=source_lm_head,
+                **common,
+                **kwargs,
+            )
+
+        return generate
+
+    for name, (mapper, taps) in variant_mappers.items():
+        available_methods[name] = variant_generator(mapper, taps)
     unknown = sorted(set(method_names) - set(available_methods))
     if unknown:
         raise ValueError(f"unsupported benchmark methods: {unknown}")
@@ -472,6 +524,18 @@ def main() -> None:
         raise ValueError("relay probe repetitions must be positive")
     output_dir = Path(os.environ["RELAYSPEC_OUTPUT"])
     output_dir.mkdir(parents=True, exist_ok=True)
+    if variants and rank == 0:
+        (output_dir / "mapper-campaign.json").write_text(
+            json.dumps(
+                {
+                    "variants": variant_provenance,
+                    "methods": method_names,
+                    "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment.",
+                },
+                indent=2,
+            )
+            + "\n"
+        )
     rank_path = output_dir / f"benchmark-rank{rank}.jsonl"
     rows: list[dict[str, Any]] = []
     with rank_path.open("x", encoding="utf-8") as stream:
@@ -509,6 +573,10 @@ def main() -> None:
                             config.generation.max_new_tokens,
                             tokenizer,
                         )
+                        if name in variant_provenance:
+                            row["mapper_checkpoint_sha256"] = variant_provenance[name][
+                                "sha256"
+                            ]
                         histories[name] = [
                             *messages,
                             {"role": "assistant", "content": row["completion"]},
