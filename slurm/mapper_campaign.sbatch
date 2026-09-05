@@ -35,4 +35,8 @@ tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm SO
 nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used --format=csv -l 10 > "$RELAYSPEC_OUTPUT/gpu.csv" &
 monitor=$!
 trap 'kill "$monitor" 2>/dev/null || true' EXIT
-timeout --signal=TERM --kill-after=10s 540s "$RELAYSPEC_PYTHON" scripts/run_mapper_campaign.py --config "$CAMPAIGN_CONFIG" --equal-methods relay_dense_a relay_dense_b
+equality_args=()
+if [[ "${CAMPAIGN_CHECK_DUPLICATE:-1}" == 1 ]]; then
+  equality_args=(--equal-methods relay_dense_a relay_dense_b)
+fi
+timeout --signal=TERM --kill-after=10s "${CAMPAIGN_TIMEOUT:-540}s" "$RELAYSPEC_PYTHON" scripts/run_mapper_campaign.py --config "$CAMPAIGN_CONFIG" "${equality_args[@]}"

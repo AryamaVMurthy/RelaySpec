@@ -5,6 +5,7 @@ from relayspec.scaling_matrix import (
     primary_matrix,
     regularization_matrix,
     trial,
+    validate_cache_access_gate,
     validate_trial,
 )
 
@@ -62,3 +63,25 @@ def test_batching_preserves_every_unique_cell_and_regularization_arm():
     invalid["steps"] = 1024
     with pytest.raises(ValueError, match="checkpoint"):
         validate_trial(invalid)
+
+
+def test_optimized_access_rejects_missing_wrong_cache_or_inexact_gate():
+    t = trial("dense", None, 512)
+    validate_cache_access_gate([t], None, "cache-a")
+    t.update(cache_backend="mmap", device_cache=True)
+    with pytest.raises(ValueError, match="successful pilot"):
+        validate_cache_access_gate([t], None, "cache-a")
+    gate = {"status": "pass", "feature_cache_index_sha256": "cache-b"}
+    with pytest.raises(ValueError, match="different feature cache"):
+        validate_cache_access_gate([t], gate, "cache-a")
+    gate["feature_cache_index_sha256"] = "cache-a"
+    with pytest.raises(ValueError, match="exact fitted-state"):
+        validate_cache_access_gate([t], gate, "cache-a")
+    gate["pairs"] = [
+        {"candidate": name, "weights_optimizer_and_loss_trajectory_bit_identical": True}
+        for name in ["stream-mmap", "dense-device"]
+    ]
+    validate_cache_access_gate([t], gate, "cache-a")
+    gate["pairs"][1]["weights_optimizer_and_loss_trajectory_bit_identical"] = False
+    with pytest.raises(ValueError, match="exact fitted-state"):
+        validate_cache_access_gate([t], gate, "cache-a")

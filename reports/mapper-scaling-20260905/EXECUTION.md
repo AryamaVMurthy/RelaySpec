@@ -223,3 +223,26 @@ Cache-access pilot27730 is an implementation speed/equivalence check using
 4096 records for mapped I/O and512 for GPU residency, not a new32k data
 scaling experiment. Keep its10minute ceiling; its results may accelerate
 the remaining smaller-data fits.
+
+
+## Focused execution after the large-data pause
+
+The exact smaller-data declaration is `configs/submission/scaling/matrix-focused-v1/matrix.json`.
+It contains30 capacity settings at N512/2048 (dense and linear/MLP widths
+64/128/256/512/1024/2048/4096), reuses four completed width512 fits from27726/27727,
+and declares42 separate nonzero L2/AdamW arms plus four dense seed confirmations.
+Thus72 new fits remain in18 four-GPU batches. Submit in measured stages, not a
+blind queue. No new8192/32768 data cells are in this declaration.
+
+Cache-access pilot27730 completed in2m05s and passed bit-identical weights,
+optimizer states and all logged losses. Mapped streaming improved loop time
+106.73s to68.87s (1.55x); GPU residency improved19.73s to13.41s (1.47x).
+New optimized fits require the same-cache exact-equivalence gate and capacity
+gate. New batch scripts default to540seconds/10minutes, including fitting,
+validation and checkpoint verification. Full raw pilot outputs are collected.
+
+The next decoding check uses eight completed factorized/MLP512 checkpoints,
+N128/512/2048/8192, with shared AR/native/source controls on16 MATH requests
+capped at256tokens. This analyzes existing data and does not resume large-data
+fitting. It remains a development throughput/acceptance diagnostic, not a
+full-answer quality result. CPU validation:16 targeted tests and lint passed.

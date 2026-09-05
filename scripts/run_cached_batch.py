@@ -12,7 +12,7 @@ from pathlib import Path
 import torch
 import yaml
 
-from relayspec.scaling_matrix import validate_trial
+from relayspec.scaling_matrix import validate_cache_access_gate, validate_trial
 
 
 def main():
@@ -20,6 +20,7 @@ def main():
     parser.add_argument("--trials", type=Path, required=True)
     parser.add_argument("--mode", choices=["pilot", "fit"], required=True)
     parser.add_argument("--pilot-gate", type=Path, required=True)
+    parser.add_argument("--cache-access-gate", type=Path)
     args = parser.parse_args()
     output = Path(os.environ["RELAYSPEC_OUTPUT"])
     cache = Path(os.environ["RELAYSPEC_FEATURE_CACHE"])
@@ -30,6 +31,12 @@ def main():
     if args.mode == "fit" and pilot.get("feature_cache_index_sha256") != index_hash:
         raise ValueError("full fits require the capacity pilot on this exact cache")
     trials = json.loads(args.trials.read_text())["trials"]
+    access_gate = (
+        json.loads(args.cache_access_gate.read_text())
+        if args.cache_access_gate
+        else None
+    )
+    validate_cache_access_gate(trials, access_gate, index_hash)
     if len(trials) != 4 or len({t["name"] for t in trials}) != 4:
         raise ValueError("batch requires four unique candidate trials")
     for trial in trials:
@@ -148,6 +155,11 @@ def main():
                 "pilot_gate_sha256": hashlib.sha256(
                     args.pilot_gate.read_bytes()
                 ).hexdigest(),
+                "cache_access_gate_sha256": (
+                    hashlib.sha256(args.cache_access_gate.read_bytes()).hexdigest()
+                    if args.cache_access_gate
+                    else None
+                ),
                 "checkpoint_sha256": checkpoint_hashes,
                 "fit_wall_seconds": fit_wall,
                 "total_wall_seconds": time.perf_counter() - started,

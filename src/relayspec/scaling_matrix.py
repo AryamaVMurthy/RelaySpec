@@ -94,6 +94,30 @@ def validate_trial(t):
             raise ValueError("budget panel miscounts presented records")
 
 
+def validate_cache_access_gate(trials, gate, cache_hash):
+    """Promote optimized access only after exact fitted-state equivalence."""
+    optimized = any(
+        t.get("cache_backend", "buffer") != "buffer" or t.get("device_cache", False)
+        for t in trials
+    )
+    if not optimized:
+        return
+    if not gate or gate.get("status") != "pass":
+        raise ValueError("optimized cache access requires a successful pilot")
+    if gate.get("feature_cache_index_sha256") != cache_hash:
+        raise ValueError("cache access pilot used a different feature cache")
+    pairs = {p["candidate"]: p for p in gate.get("pairs", [])}
+    required = {"stream-mmap"}
+    if any(t.get("device_cache", False) for t in trials):
+        required.add("dense-device")
+    if any(
+        pairs.get(name, {}).get("weights_optimizer_and_loss_trajectory_bit_identical")
+        is not True
+        for name in required
+    ):
+        raise ValueError("cache access pilot lacks exact fitted-state equivalence")
+
+
 def four_gpu_batches(cells):
     """Group comparable fit costs; never duplicate a cell merely to fill a GPU."""
     if len(cells) % 4 or len({t["name"] for t in cells}) != len(cells):

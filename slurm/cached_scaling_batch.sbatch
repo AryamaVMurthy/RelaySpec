@@ -29,7 +29,11 @@ export RELAYSPEC_FIT_OUTPUT="$RELAYSPEC_CACHE_DIR/relayspec/cached-fits/${SLURM_
 mode="${RELAYSPEC_BATCH_MODE:-pilot}"
 seconds=540
 if [[ "$mode" == fit ]]; then
-  seconds=4400
+  seconds="${RELAYSPEC_FIT_TIMEOUT:-540}"
+fi
+access_args=()
+if [[ -n "${RELAYSPEC_CACHE_ACCESS_GATE:-}" ]]; then
+  access_args=(--cache-access-gate "$RELAYSPEC_CACHE_ACCESS_GATE")
 fi
 mkdir -p "$RELAYSPEC_OUTPUT"
 cp SOURCE_COMMIT "$RELAYSPEC_OUTPUT/source-commit.txt"
@@ -39,4 +43,4 @@ nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used --format
 monitor=$!
 trap 'kill "$monitor" 2>/dev/null || true' EXIT
 timeout --signal=TERM --kill-after=10s "$seconds" "$RELAYSPEC_PYTHON" scripts/run_cached_batch.py \
-  --mode "$mode" --trials "$RELAYSPEC_TRIALS" --pilot-gate "$RELAYSPEC_PILOT_GATE"
+  --mode "$mode" --trials "$RELAYSPEC_TRIALS" --pilot-gate "$RELAYSPEC_PILOT_GATE" "${access_args[@]}"

@@ -80,13 +80,17 @@ def main():
                         check=True,
                         timeout=180,
                     )
-                    fitting_only = job["kind"] in {"feature_cache", "cached_fit"}
+                    fitting_only = job["kind"] in {
+                        "feature_cache",
+                        "cached_fit",
+                        "cache_access",
+                    }
                     if fitting_only:
-                        gate_file = (
-                            "extraction-complete.json"
-                            if job["kind"] == "feature_cache"
-                            else "batch-gate.json"
-                        )
+                        gate_file = {
+                            "feature_cache": "extraction-complete.json",
+                            "cached_fit": "batch-gate.json",
+                            "cache_access": "cache-access-gate.json",
+                        }[job["kind"]]
                         gate = json.loads((destination / gate_file).read_text())
                         if gate["status"] != "pass":
                             raise ValueError(
