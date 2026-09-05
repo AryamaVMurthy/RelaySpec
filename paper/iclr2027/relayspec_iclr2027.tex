@@ -1064,6 +1064,72 @@ not uncapped answer quality. Longer width-512 fitting gives modest
 throughput increases while remaining below the wider or dense connectors.
 This comparison does not treat additional updates as additional data.
 
+\clearpage
+\subsection{Matched warm-training budgets on 512 examples}
+
+We compare feature regression, connector cross-entropy (CE) and rank-32
+drafter LoRA on the same 512-example pool. CE updates the connector while
+LoRA holds the initial connector fixed. Both use target-greedy teacher
+labels on the last 15 proposal positions. An equal three-rate development
+screen selects learning rate $2\times10^{-5}$ for each adaptation family.
+Feature regression uses its declared rate $6\times10^{-4}$.
+The two LoRA seeds vary the update initialization and share the same
+initial mapper. They do not measure variation across initial mapper fits.
+
+We measure 91.413 seconds of optimizer-update time for the 8,192-update
+feature baseline and declare budgets of 0.25, 1 and 4 times that cost.
+CE and LoRA begin with a 128-update mapper, whose measured 1.546 seconds
+of training counts toward each budget. Each worker stops after the first
+completed update reaching its remaining budget. Recorded overshoot is at
+most one update, ranging from 0.002 to 0.201 seconds across the twelve fits.
+The three four-GPU fitting jobs finish in 2m33s, 2m35s and 7m12s.
+
+\begin{table}[H]
+\caption{Measured training costs and subsequent decoding in one common
+development campaign. Worker time includes model/cache setup, validation
+and export where performed, plus the measured initial mapper worker cost
+for CE and LoRA. It excludes Python startup and shared cache construction.
+Ratios compare against feature regression at the same warm budget.}
+\label{tab:timed-budget}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/timed_budget_table.tex}
+\end{table}
+
+\begin{table}[H]
+\caption{References measured within the same budget-decoding campaign.
+The initial mapper has 128 feature-regression updates. The 8,192-update
+reference is an existing saved checkpoint.}
+\label{tab:timed-controls}
+\centering\footnotesize
+\input{generated/timed_budget_controls_table.tex}
+\end{table}
+
+Feature regression reaches 145.05, 144.80 and 144.55 tokens/s at the
+three budgets. Relative to the quarter-budget fit, the 1-times and
+4-times fits retain 99.83\% [97.18, 102.53]\% and 99.66\%
+[97.35, 102.11]\%, respectively. These intervals do not establish a
+benefit from longer fitting. Connector CE retains 73.2--76.6\% of
+same-budget feature throughput, and the two LoRA seeds retain
+79.4--82.7\%. This result concerns the declared teacher-forced objective,
+initialization, rank and development-selected learning rates. It does not
+establish that other adaptation objectives or full drafter training fail.
+
+Warm training is a marginal cost with cached features available. The
+historical full-cache extraction took 712.58 seconds and produced
+292.8 GB. We reuse its first 512 training records and report the original
+construction cost separately. Dividing that cost by the record count
+would not measure a fresh 512-example extraction. The timed fits do not
+add training examples or repeat large-data scaling.
+
+All seventeen methods decode the same sixteen exposed development
+questions with a 256-token cap. Tables~\ref{tab:timed-budget}
+and~\ref{tab:timed-controls} report descriptive paired request bootstrap
+intervals. They do not provide full-answer quality, untouched confirmation
+or corrections for selecting among multiple comparisons. Absolute
+throughput is interpreted within this common campaign and its deterministic
+training/runtime configuration.
+
 \section{Acceptance and numerical agreement}
 \label{app:acceptance}
 

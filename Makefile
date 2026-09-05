@@ -62,6 +62,9 @@ paper-small-quality-assets:
 paper-checkpoint-assets:
 	$(PYTHON) scripts/build_checkpoint_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
 
+paper-timed-budget-assets:
+	$(PYTHON) scripts/build_timed_budget_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
+
 paper:
 	cd $(PAPER_DIR) && pdflatex -interaction=nonstopmode -halt-on-error $(PAPER_NAME).tex
 	cd $(PAPER_DIR) && bibtex $(PAPER_NAME)

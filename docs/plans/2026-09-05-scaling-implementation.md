@@ -181,3 +181,24 @@ N128/512/2048/8192, with shared AR/native/source controls on16 MATH requests
 capped at256tokens. This analyzes existing data and does not resume large-data
 fitting. It remains a development throughput/acceptance diagnostic, not a
 full-answer quality result. CPU validation:16 targeted tests and lint passed.
+
+## Current small-data budget comparison
+
+The focused capacity, regularization, convergence and selected-seed matrices
+have completed. Their audited registries and decoding comparisons supersede
+the earlier pending counts above. Large-data scaling remains paused.
+
+Measured-time jobs 27861, 27864 and 27865 completed in 2m33s, 2m35s and 7m12s.
+Each uses four GPUs and only 512 distinct fitting examples. Their four arms
+are feature MSE, connector CE and rank32 drafter LoRA with two update seeds.
+Warm training budgets are 22.853, 91.413 and 365.651 seconds. Per-update
+traces pass first-crossing checks, with initialization charged to CE/LoRA
+and setup/export/cache costs reported separately. Extra updates are repeated
+presentations of the same small pool, not additional distinct examples.
+
+Common paired decoding job 27866 follows all three successful fitting gates.
+It fixes twelve timed endpoints, two mapper references and three inherited
+controls on sixteen exposed development requests with a 256-token cap.
+Audit checkpoint identities and all raw results before updating the paper.
+This evidence does not complete the external baselines, transfer checks,
+final-quality confirmation or the subsequent bounded autoresearch phase.

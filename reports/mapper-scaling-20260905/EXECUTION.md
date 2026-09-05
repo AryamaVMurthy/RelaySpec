@@ -998,3 +998,43 @@ endpoints plus initial/dense references and three inherited controls
 before generation. Its 16-request256-token development scope is explicit.
 Formal budget results are not complete until the full fits and common
 decoding have been collected and audited. Large-data fitting stays paused.
+
+## Completed matched warm-training evidence
+
+Jobs27864 and27865 completed in2m35s and7m12s. Their first-crossing
+timing audits pass, as does the quarter-budget pilot27861. All twelve
+fits use the same512-example pool. Common decoding27866 completed in
+4m06s with272 rows, seventeen methods and sixteen paired requests.
+The entire user Slurm queue was empty after its completion.
+
+Feature regression reaches145.05/144.80/144.55tok/s at0.25/1/4 times
+warm budget. Relative to the quarter-budget fit, one-times retention is
+.9983[.9718,1.0253], four-times .9966[.9735,1.0211]. Neither interval
+establishes benefit from longer training. Connector CE retains.732--.766
+of same-budget feature throughput. Rank32 LoRA retains.794--.827.
+These are descriptive development comparisons under the declared
+teacher-forced objective, initialization, selected learning rate and
+runtime. They do not establish a general failure of drafter adaptation.
+
+New audit_timed_budget_decoding.py regenerates the pre-decoding campaign
+from all three audited fit gates and checks raw checkpoint identities.
+The new paper builder reproduces the registry and emits all twelve
+budget rows plus all five reference rows. The manuscript records warm
+training separately from setup and the historical712.58second cache
+construction. Its current main text remains9pages.
+
+Validation: four relevant CPU evidence tests passed. A modified
+first-crossing trace is rejected. A modified decoded mapper SHA is
+rejected even after updating the raw-file checksum. Ruff passes.
+The first compiled technical audit passed every check except the
+pre-existing final all-page color/grayscale review requirement. New
+page24 was visually checked, then table text enlarged for readability.
+Final full visual review remains pending after the remaining science.
+External baselines, transfer, final-quality confirmation and bounded
+autoresearch remain active. Further large-data scaling stays paused.
+
+The final enlarged table and adjacent pages24--25 were visually inspected
+without clipping or overlap. The rerun technical manuscript audit passes
+all checks except the still-pending all-page color/grayscale review.
+The PDF has27pages, with main text ending onpage9. The final Turing
+queue check is empty. No new large-data work was submitted.
