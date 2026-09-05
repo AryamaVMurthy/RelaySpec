@@ -95,9 +95,11 @@ def main():
             preloaded[entry["index"]] if preloaded else load_cached_record(root, entry)
         )
 
-    validation_entries = [e for e in index["entries"] if e["split"] == "validation"][
-        : int(trial.get("validation_records", 32))
-    ]
+    validation_count = int(trial.get("validation_records", 32))
+    validation_entries = [e for e in index["entries"] if e["split"] == "validation"]
+    if validation_count < 1 or validation_count > len(validation_entries):
+        raise ValueError("cache cannot supply the declared validation count")
+    validation_entries = validation_entries[:validation_count]
     validation = [load_cached_record(root, e) for e in validation_entries]
     diagnostic_train = [
         get_example(e)
@@ -168,6 +170,7 @@ def main():
             ref_grad,
             batch_grad,
             prediction,
+            predicted,
             x,
             y,
             mask,

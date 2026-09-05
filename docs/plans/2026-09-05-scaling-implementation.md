@@ -85,3 +85,30 @@ decoding data and semantic/template independence remain unresolved.
 
 Execution details, invalidated diagnostics, exact jobs and next steps are in
 `reports/mapper-scaling-20260905/EXECUTION.md`.
+
+## Full cached matrix execution
+
+`configs/submission/scaling/matrix-v1/matrix.json` freezes 51 primary settings,
+42 nonzero regularization settings, and 3 useful seed-confirmation cells to
+fill four-GPU batches without dummy duplicate work. The zero-penalty arms
+are the matching primary cells. Each trajectory saves both 8192 updates
+(fixed 32768 presentations) and N updates (four passes), with shared checkpoints
+when the two budgets coincide. Training diagnostics use min(N,256) records,
+validation uses the fixed 1024-record split; early training-pool diagnostics can
+include records not yet visited. The larger-data panel uses Numina rather than
+the historical MATH fitting source, and must remain separately labeled.
+
+The resource pilot tests widths64 and4096 in both families at16updates on the
+full streaming cache and then performs shared paired decoding. It has a10minute
+Slurm ceiling and540second process bound. Full batches are gated by this exact
+cache's successful resource pilot and have up to75minutes for the largest
+32768-update trajectories. Fit-only jobs do not include repeated AR generation.
+Batch grouping uses declared approximate fitting costs; actual stage timings
+and all four GPU traces are retained. Full batches are submitted in stages,
+with correctness, elapsed time and memory reviewed before further promotion.
+
+Full-cache job27723 follows the directional trial chain and uses source727d370.
+The first all-repo software check yielded239passes plus3 manuscript failures
+due to absent compiled .aux artifacts; the separately invoked evidence tests
+added3passes. Thus242 software/evidence tests pass, while the3 compiled-paper
+audit tests remain pending a manuscript build. No submission readiness is claimed.

@@ -80,8 +80,26 @@ def main():
                         check=True,
                         timeout=180,
                     )
-                    if job["kind"] == "cache_pilot":
-                        gate = json.loads((destination / "pilot-gate.json").read_text())
+                    fitting_only = job["kind"] in {"feature_cache", "cached_fit"}
+                    if fitting_only:
+                        gate_file = (
+                            "extraction-complete.json"
+                            if job["kind"] == "feature_cache"
+                            else "batch-gate.json"
+                        )
+                        gate = json.loads((destination / gate_file).read_text())
+                        if gate["status"] != "pass":
+                            raise ValueError(
+                                "fitting/cache completion gate did not pass"
+                            )
+                        evaluations = []
+                    elif job["kind"] in {"cache_pilot", "capacity_pilot"}:
+                        gate_file = (
+                            "pilot-gate.json"
+                            if job["kind"] == "cache_pilot"
+                            else "batch-gate.json"
+                        )
+                        gate = json.loads((destination / gate_file).read_text())
                         if gate["status"] != "pass":
                             raise ValueError("cached fitting pilot gate did not pass")
                         evaluations = [destination / "evaluation"]
@@ -91,7 +109,7 @@ def main():
                             if job["kind"] == "scaling"
                             else [destination]
                         )
-                    if not evaluations:
+                    if not evaluations and not fitting_only:
                         raise ValueError("completed job has no evaluations")
                     for evaluation in evaluations:
                         subprocess.run(
