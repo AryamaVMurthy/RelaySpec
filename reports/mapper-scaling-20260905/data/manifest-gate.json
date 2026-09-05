@@ -1,0 +1,114 @@
+{
+  "status": "pass",
+  "files": {
+    "validation.json": {
+      "sha256": "dbf0ae502016859540fdf42c31bc1dd69d51cd0fd47b9ef9d681ea63a684dcbe",
+      "records": 1024,
+      "source_counts": {
+        "cn_k12": 482,
+        "synthetic_math": 274,
+        "orca_math": 268
+      }
+    },
+    "train-128.json": {
+      "sha256": "29eec99c7e8bfcaeb8e0597199c7b5a67fa787d8ec63897a84002a87bb6486fb",
+      "records": 128,
+      "source_counts": {
+        "cn_k12": 61,
+        "orca_math": 34,
+        "synthetic_math": 33
+      }
+    },
+    "train-512.json": {
+      "sha256": "23a638a3aca778367602bf14f91edbaa2d93b08c3e4e4e74fb2c4e62126d0f31",
+      "records": 512,
+      "source_counts": {
+        "cn_k12": 242,
+        "orca_math": 134,
+        "synthetic_math": 136
+      }
+    },
+    "train-2048.json": {
+      "sha256": "0af33b767faa1652dda114fc94f58bceb5bc4bf08e5feaf507b944831bf17d66",
+      "records": 2048,
+      "source_counts": {
+        "cn_k12": 959,
+        "orca_math": 532,
+        "synthetic_math": 557
+      }
+    },
+    "train-8192.json": {
+      "sha256": "ef7ac75005b4b5675517ef27dceac7cbb22515ed6e74d4ba1cde377f0db521e8",
+      "records": 8192,
+      "source_counts": {
+        "cn_k12": 3848,
+        "orca_math": 2134,
+        "synthetic_math": 2210
+      }
+    },
+    "train-16384.json": {
+      "sha256": "434db68c97e749777373c1c3c4cf1d4da8f94827fba34f48d9c4a8478d83f02a",
+      "records": 16384,
+      "source_counts": {
+        "cn_k12": 7701,
+        "orca_math": 4278,
+        "synthetic_math": 4405
+      }
+    },
+    "train-32768.json": {
+      "sha256": "6e3e358415d8a5903b9d005cb6d23334cc5b49aaa1cd45c399cb0daded677d81",
+      "records": 32768,
+      "source_counts": {
+        "cn_k12": 15439,
+        "orca_math": 8578,
+        "synthetic_math": 8751
+      }
+    },
+    "train-diagnostic.json": {
+      "sha256": "89078be345a38f01893540b624975c62bb5389aeb3ad40dee15e8ccf922929e9",
+      "records": 256,
+      "source_counts": {
+        "cn_k12": 121,
+        "orca_math": 66,
+        "synthetic_math": 69
+      }
+    }
+  },
+  "provenance": {
+    "source": {
+      "id": "AI-MO/NuminaMath-CoT",
+      "revision": "9d8d210c9f6a36c8f3cd84045668c9b7800ef517",
+      "split": "train",
+      "shard": "data/train-00000-of-00005.parquet",
+      "allowed_sources": [
+        "cn_k12",
+        "orca_math",
+        "synthetic_math"
+      ]
+    },
+    "reference_math": {
+      "id": "DigitalLearningGmbH/MATH-lighteval",
+      "revision": "0530c78699ea5e8eb5530600900e1f328b48acad",
+      "split": "test"
+    },
+    "seed": 1729,
+    "eligible_source_records_before_audit": 119604,
+    "reference_records": 9656,
+    "exclusions": {
+      "near": 527,
+      "duplicate_problem": 252,
+      "exact": 17
+    },
+    "lexical_filter": "Exact normalized problem/solution; 5-shingle Jaccard >= 0.6 for texts with >= 10 unique shingles. Validation also excluded from training. Does not guarantee semantic/template independence.",
+    "scope": "Separate expanded-data study; do not pool with historical MATH-only fitting curves. Nested source-stratified prefixes. Fitting-validation is not confirmatory decoding evaluation.",
+    "input_sha256": {
+      "data/scaling/numina/data/train-00000-of-00005.parquet": "25c0fa2ca96dd8078470ad1bbc439d0d211fd8b7d22e04abf7f61e9be9bf9ec3",
+      "data/scaling/math-reference/data/test-00000-of-00001.parquet": "7dca8d6e41af88ecf82f2b5f36eb5530e083aaaa86ee325f62bd5c31535178c6",
+      "configs/eval_manifest.json": "ddba7687f3d680390e68b021b227ce8dbbf9ef681542abe354ea0f59e0c50e35",
+      "configs/train_math_4096.json": "b43f68a18df3f0ed28295faf0ca1593dc0f46bb57416a38d23fc31b7b912c507"
+    },
+    "helper_sha256": "a0411478fa88c5f3e03f9449add095a9f36e512e53d16e6632f27853e95632b5",
+    "builder_sha256": "157daf39fc64a019ff373948a95749de9957d9263b239bb3c40f6a0a47cc0ec6"
+  },
+  "elapsed_seconds": 50.19389440800296
+}

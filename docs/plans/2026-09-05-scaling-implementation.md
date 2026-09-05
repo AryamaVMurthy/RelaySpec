@@ -65,3 +65,23 @@ Files: `configs/submission/plan.json`, existing scoring/diagnostic scripts, pape
 ## Execution policy
 
 User requested autonomous implementation and parallel use of four GPUs. Continue without an execution-choice prompt. Use isolated branch `research/scaling-autoresearch-20260905` in `/home/aryamavmurthy/work/RelaySpec-scaling`. Preserve user untracked work. Full study completion remains pending until the above artifacts exist; no claim that a universal optimum or paper readiness has been achieved.
+
+## Execution amendment: efficiency and data availability
+
+The user prioritizes robustness, then time, and requires a <=10-minute pilot
+for every new path. The first mapper pilots measured 64–72 seconds. Before
+expanding the full grid, implement two cost reductions with their own pilots:
+(1) frozen-feature caches and four independent cached fitting trials at once,
+with batch-four record weighting validated against DDP; (2) multiple maps in
+one rotated paired decoding campaign so AR/native/source are measured once
+per request rather than once per map. Include feature extraction, validation,
+I/O and fitting costs separately. Do not reduce the declared scientific grid.
+
+The expanded panel now has real 32768-example nested manifests from a pinned
+NuminaMath source shard and a fixed 1024-example fitting validation split.
+Historical MATH-only runs remain separate. The builder rejects wrong source
+file hashes and audits problem/solution lexical overlap; final confirmatory
+decoding data and semantic/template independence remain unresolved.
+
+Execution details, invalidated diagnostics, exact jobs and next steps are in
+`reports/mapper-scaling-20260905/EXECUTION.md`.

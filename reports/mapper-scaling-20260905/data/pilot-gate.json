@@ -1,0 +1,66 @@
+{
+  "status": "pass",
+  "files": {
+    "validation.json": {
+      "sha256": "885f3ebca011b9f33138d711d8ab9bc2472dafa6593ff80480f952557366d409",
+      "records": 16,
+      "source_counts": {
+        "cn_k12": 7,
+        "synthetic_math": 5,
+        "orca_math": 4
+      }
+    },
+    "train-32.json": {
+      "sha256": "cf4ef5713f5473f46b24763bc846ba22b368e9ae159677cbc7808013773fca4e",
+      "records": 32,
+      "source_counts": {
+        "cn_k12": 16,
+        "orca_math": 8,
+        "synthetic_math": 8
+      }
+    },
+    "train-diagnostic.json": {
+      "sha256": "fd55590925dd14eaa804f3cab9e772dbf865269b2369575fd8e659903122db6c",
+      "records": 32,
+      "source_counts": {
+        "cn_k12": 16,
+        "orca_math": 8,
+        "synthetic_math": 8
+      }
+    }
+  },
+  "provenance": {
+    "source": {
+      "id": "AI-MO/NuminaMath-CoT",
+      "revision": "9d8d210c9f6a36c8f3cd84045668c9b7800ef517",
+      "split": "train",
+      "shard": "data/train-00000-of-00005.parquet",
+      "allowed_sources": [
+        "cn_k12",
+        "orca_math",
+        "synthetic_math"
+      ]
+    },
+    "reference_math": {
+      "id": "DigitalLearningGmbH/MATH-lighteval",
+      "revision": "0530c78699ea5e8eb5530600900e1f328b48acad",
+      "split": "test"
+    },
+    "seed": 1729,
+    "eligible_source_records_before_audit": 119604,
+    "reference_records": 9656,
+    "exclusions": {
+      "near": 1
+    },
+    "lexical_filter": "Exact normalized problem/solution; 5-shingle Jaccard >= 0.6 for texts with >= 10 unique shingles. Validation also excluded from training. Does not guarantee semantic/template independence.",
+    "scope": "Separate expanded-data study; do not pool with historical MATH-only fitting curves. Nested source-stratified prefixes. Fitting-validation is not confirmatory decoding evaluation.",
+    "input_sha256": {
+      "data/scaling/numina/data/train-00000-of-00005.parquet": "25c0fa2ca96dd8078470ad1bbc439d0d211fd8b7d22e04abf7f61e9be9bf9ec3",
+      "data/scaling/math-reference/data/test-00000-of-00001.parquet": "7dca8d6e41af88ecf82f2b5f36eb5530e083aaaa86ee325f62bd5c31535178c6",
+      "configs/eval_manifest.json": "ddba7687f3d680390e68b021b227ce8dbbf9ef681542abe354ea0f59e0c50e35",
+      "configs/train_math_4096.json": "b43f68a18df3f0ed28295faf0ca1593dc0f46bb57416a38d23fc31b7b912c507"
+    },
+    "builder_sha256": "9b9079028d57b14dfab1aa4764e119b1d3905af849ebc5d32321e79eb52e83bc"
+  },
+  "elapsed_seconds": 4.280882384002325
+}
