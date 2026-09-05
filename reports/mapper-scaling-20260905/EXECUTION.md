@@ -674,3 +674,10 @@ Both setup and GPU pilot have ten-minute ceilings. No full PARD run is
 promoted before the four-worker gate passes. Sixteen targeted tests pass,
 including three PARD instrumentation/stop-boundary tests, plus targeted lint
 and shell syntax checks. The GPU integration is not yet verified here.
+
+Initial setup submission27822 was cancelled while PENDING, zero elapsed
+and no AllocTRES. Turing's submission plugin adds one GPU to CPU-only
+requests above two cores. The setup launcher now requests two CPU cores
+and sets OMP_NUM_THREADS=2. This avoids extra GPU allocation during the
+running four-GPU quality evaluation. Record actual scheduler resources
+for the replacement before allowing it to run.

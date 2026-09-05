@@ -3,7 +3,7 @@
 #SBATCH --partition=u22
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=2
 #SBATCH --mem=16G
 #SBATCH --time=00:10:00
 #SBATCH --nodelist=node07
@@ -18,7 +18,7 @@ export TRANSFORMERS_CACHE="$HF_HOME/hub"
 export RELAYSPEC_OUTPUT="$PWD/outputs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}"
 export PARD_OVERLAY="$RELAYSPEC_CACHE_DIR/pard-python-overlay-$SLURM_JOB_ID"
 export UV_CONCURRENT_DOWNLOADS=1 UV_CONCURRENT_BUILDS=1 UV_CONCURRENT_INSTALLS=1 UV_LINK_MODE=copy
-export TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=4
+export TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=2
 mkdir -p "$RELAYSPEC_OUTPUT"
 cp SOURCE_COMMIT "$RELAYSPEC_OUTPUT/source-commit.txt"
 "$HOME/.local/bin/uv" pip install --python "$HOME/.venvs/factorspec-20260826/bin/python" \
