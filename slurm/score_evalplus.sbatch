@@ -43,12 +43,19 @@ while IFS=$'\t' read -r benchmark method samples; do
     "$RELAYSPEC_PYTHON" -m evalplus.sanitize --samples "$samples"
     sanitized="${samples%.jsonl}-sanitized.jsonl"
     full_result="${sanitized%.jsonl}-full.eval_results.json"
+    if [[ "${EVALPLUS_SUBSET:-0}" == "1" ]]; then
+        "$RELAYSPEC_PYTHON" scripts/evaluate_evalplus_subset.py "$benchmark" \
+            --samples "$sanitized" --parallel "$SLURM_CPUS_PER_TASK" \
+            --output-file "$full_result" \
+            2>&1 | tee "$RESULT_DIR/evalplus/${benchmark}-${method}.log"
+    else
     "$RELAYSPEC_PYTHON" -m evalplus.evaluate "$benchmark" \
         --samples="$sanitized" \
         --parallel="$SLURM_CPUS_PER_TASK" \
         --i_just_wanna_run=True \
         --output_file="$full_result" \
         2>&1 | tee "$RESULT_DIR/evalplus/${benchmark}-${method}.log"
+    fi
 done < "$RESULT_DIR/evalplus/files.txt"
 
 "$RELAYSPEC_PYTHON" scripts/score_mbpp.py "$RESULT_DIR" \
