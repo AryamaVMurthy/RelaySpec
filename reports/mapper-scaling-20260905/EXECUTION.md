@@ -610,3 +610,30 @@ total allocation at four GPUs and preserves the independent quality run.
 The EAGLE correctness pilot27793 already passed. A durable collector watches
 the new wave. Diagnostic failure must retain its boundary evidence for root
 cause analysis and cannot promote adaptation. No large-data run was queued.
+
+## Convergence decoding and selected seed replication declaration
+
+Declared20 mapper checkpoints for paired16-request256-token development
+decoding: all12 width4096 factor/MLP trials atN512/2048 and rates2e-4,
+6e-4 and1.8e-3, all six distinct validation-selected early checkpoints,
+plus denseN2048 and factor1024N512 controls. Three inherited references
+share the same requests. This tests whether improved feature loss or early
+stopping improves decoding. Neither this cap nor this exposed development
+set supports a full-answer confirmation claim.
+
+The builder verifies raw fit/validation/gate hashes, the exact declared
+trials, cache identity and every selected checkpoint hash. It recomputes
+the validation minimum from raw trajectories before selecting checkpoints.
+The complete focused registry is used because the historically frozen
+primary-only registry intentionally predates completed penalty cells.
+Repeated builds yield identical20-checkpoint declarations and a deliberately
+changed validation hash is rejected. Targeted lint passes.
+
+Declared eight further fits, seeds1730/1731, at four previously tested
+points: factor1024/N512/rate6e-4, factor4096/N2048/rate2e-4,
+MLP4096/N2048/rate2e-4 and MLP4096/N512/rate2e-4. Reference seed1729
+already exists. Report fixed8192-update endpoints and each seed's best
+saved validation checkpoint separately. The N512 MLP arm checks whether
+the early validation minimum repeats across seeds. All fitting remains
+at512/2048 distinct examples on the same cached features. These are
+replications of pilot-verified fitting paths, not new-data experiments.
