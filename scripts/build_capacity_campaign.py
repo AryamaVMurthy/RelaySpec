@@ -7,6 +7,8 @@ from pathlib import Path
 
 import yaml
 
+from relayspec.mapper_campaign import campaign_references
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -17,6 +19,11 @@ def main():
         default=Path("configs/submission/scaling/matrix-focused-v1/matrix.json"),
     )
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--template",
+        type=Path,
+        default=Path("configs/submission/scaling/campaign-pilot.yaml"),
+    )
     args = parser.parse_args()
     primary = json.loads(args.matrix.read_text())["primary_cells"]
     gates = {}
@@ -32,8 +39,9 @@ def main():
                     f"multiple completed fits need explicit resolution: {name}"
                 )
             gates[name] = (p, g)
-    config = yaml.safe_load(
-        Path("configs/submission/scaling/campaign-pilot.yaml").read_text()
+    config = yaml.safe_load(args.template.read_text())
+    references = campaign_references(
+        config["proposer"]["family"], config["benchmark"]["methods"]
     )
     config["run_name"] = "small-data-complete-capacity-decoding"
     config["generation"]["max_new_tokens"] = 256
@@ -44,6 +52,14 @@ def main():
         if t["name"] not in gates:
             raise ValueError(f"primary fit is incomplete: {t['name']}")
         p, g = gates[t["name"]]
+        if (
+            "campaign_config_sha256" in g
+            and g["campaign_config_sha256"]
+            != hashlib.sha256(args.template.read_bytes()).hexdigest()
+        ):
+            raise ValueError(
+                "fit gate was validated with a different family campaign template"
+            )
         cache_hash = cache_hash or g["feature_cache_index_sha256"]
         if cache_hash != g["feature_cache_index_sha256"]:
             raise ValueError("primary fits have different frozen features")
@@ -67,6 +83,11 @@ def main():
         }
         if comparable != declared:
             raise ValueError("completed fit does not match its declared primary cell")
+        expected_normalization = config["proposer"]["family"] == "dflash"
+        if t.get("normalize_input", expected_normalization) != expected_normalization:
+            raise ValueError(
+                "declared mapper normalization differs from this family protocol"
+            )
         alias = "relay_" + t["name"].replace("-s1729", "").replace("-", "_")
         variants[alias] = paths[0][0]
         provenance[alias] = {
@@ -75,12 +96,7 @@ def main():
             "fit_gate_sha256": hashlib.sha256(p.read_bytes()).hexdigest(),
         }
     config["relay_probe"]["variants"] = variants
-    config["benchmark"]["methods"] = [
-        "native_ar",
-        "native_target_dflash",
-        "optimized_source_reuse",
-        *variants,
-    ]
+    config["benchmark"]["methods"] = [*references, *variants]
     args.output.write_text(yaml.safe_dump(config, sort_keys=False))
     args.output.with_suffix(".provenance.json").write_text(
         json.dumps(
@@ -90,7 +106,7 @@ def main():
                 "config_sha256": hashlib.sha256(args.output.read_bytes()).hexdigest(),
                 "feature_cache_index_sha256": cache_hash,
                 "variants": provenance,
-                "scope": "30 predeclared primary endpoints at8192updates, N512/2048. Paired16-request256-token development decoding; neither full-answer quality nor isolated deployment memory.",
+                "scope": f"{len(primary)} predeclared primary endpoints at8192updates, N512/2048. Paired16-request256-token development decoding; neither full-answer quality nor isolated deployment memory.",
             },
             indent=2,
         )

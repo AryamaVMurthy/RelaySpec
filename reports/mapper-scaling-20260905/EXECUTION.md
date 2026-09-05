@@ -548,3 +548,16 @@ is ten minutes including fitting and decoding. Full matched-compute/data
 budgets remain unexecuted and must charge connector initialization, label
 preparation and fitting separately. SD2/PARD comparisons and second-family
 adaptation remain separate pending baseline requirements.
+
+Drafter-adaptation pilot27810 is queued using source45504e8. It follows
+EAGLE fit27802 and precedes the longer development evaluation27806. The
+latter was held only while its allocation-order dependency was changed,
+then released, and depends on afterany27810 so a failed independent pilot
+cannot invalidate its already-passed DFlash decoding gate. No running job
+was interrupted. A durable collector handles the new adaptation_pilot kind.
+
+The capacity-campaign builder now accepts an explicit family template and
+chooses matching AR/native/source references. It checks the template hash
+where the fit gate records one and the family's declared input normalization.
+The original DFlash30-map configuration and provenance reproduce byte for
+byte. EAGLE capacity decoding remains gated on all14 declared primary fits.
