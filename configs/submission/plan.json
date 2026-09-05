@@ -1,0 +1,373 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-05",
+  "scope": "Strong static-retargeting submission; optional forecast and drift require separate evidence",
+  "execution_plan": "docs/plans/2026-09-05-relayspec-evidence-execution-plan.md",
+  "framing_plan": "docs/plans/2026-09-05-relayspec-paper-framing-plan.md",
+  "review_study": "docs/research/2026-09-05-openreview-review-study.md",
+  "audit": "reports/ICLR_SUBMISSION_REVIEW_2026-09-05.md",
+  "issue_ids": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "R9",
+    "R10",
+    "R11",
+    "R12",
+    "R13",
+    "R14",
+    "R15",
+    "R16",
+    "R17",
+    "R18"
+  ],
+  "tasks": [
+    {
+      "id": "E00",
+      "title": "Recover headline raw artifacts",
+      "status": "planned",
+      "required": true,
+      "depends_on": [],
+      "issues": [
+        "R8"
+      ],
+      "existing_files": [
+        "reports/final/MAIN_PAIRED_AR.json",
+        "scripts/merge_benchmark_runs.py"
+      ],
+      "completion_record": "reports/submission-execution/E00.json"
+    },
+    {
+      "id": "E01",
+      "title": "Resolve target-output and cache correctness",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E00"
+      ],
+      "issues": [
+        "R1"
+      ],
+      "existing_files": [
+        "src/relayspec/generation.py",
+        "src/relayspec/cache.py",
+        "src/relayspec/vocab_bridge.py",
+        "scripts/audit_mismatches.py"
+      ],
+      "completion_record": "reports/submission-execution/E01.json"
+    },
+    {
+      "id": "E02",
+      "title": "Correct interface objectives and accounting",
+      "status": "planned",
+      "required": true,
+      "depends_on": [],
+      "issues": [
+        "R2",
+        "R3",
+        "R4",
+        "R9"
+      ],
+      "existing_files": [
+        "src/relayspec/proposers.py",
+        "src/relayspec/relay.py",
+        "scripts/train_relay.py",
+        "scripts/fit_relay_closed_form.py"
+      ],
+      "completion_record": "reports/submission-execution/E02.json"
+    },
+    {
+      "id": "E03",
+      "title": "Repair and validate checkpoint export",
+      "status": "planned",
+      "required": true,
+      "depends_on": [],
+      "issues": [
+        "R7"
+      ],
+      "existing_files": [
+        "scripts/lora_sft_drift.py"
+      ],
+      "completion_record": "reports/submission-execution/E03.json"
+    },
+    {
+      "id": "E04",
+      "title": "Freeze data history and amended protocol",
+      "status": "planned",
+      "required": true,
+      "depends_on": [],
+      "issues": [
+        "R14",
+        "R15"
+      ],
+      "existing_files": [
+        "configs/relayspec_protocol.yaml",
+        "scripts/audit_prompt_similarity.py"
+      ],
+      "completion_record": "reports/submission-execution/E04.json"
+    },
+    {
+      "id": "E05",
+      "title": "Re-establish main paired comparisons",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E01",
+        "E02",
+        "E04"
+      ],
+      "issues": [
+        "R1",
+        "R8"
+      ],
+      "existing_files": [
+        "scripts/benchmark_relay.py",
+        "scripts/benchmark_eagle3.py"
+      ],
+      "completion_record": "reports/submission-execution/E05.json"
+    },
+    {
+      "id": "E06",
+      "title": "Compare inexpensive adaptation choices",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E05"
+      ],
+      "issues": [
+        "R6",
+        "R9"
+      ],
+      "existing_files": [
+        "src/relayspec/lora.py",
+        "scripts/train_relay.py"
+      ],
+      "completion_record": "reports/submission-execution/E06.json"
+    },
+    {
+      "id": "E07",
+      "title": "Separate data diversity from update count",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E05"
+      ],
+      "issues": [
+        "R2",
+        "R3"
+      ],
+      "existing_files": [
+        "scripts/train_relay.py"
+      ],
+      "completion_record": "reports/submission-execution/E07.json"
+    },
+    {
+      "id": "E08",
+      "title": "Compare capacity and useful complexity",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E05"
+      ],
+      "issues": [
+        "R4",
+        "R5"
+      ],
+      "existing_files": [
+        "src/relayspec/relay.py"
+      ],
+      "completion_record": "reports/submission-execution/E08.json"
+    },
+    {
+      "id": "E09",
+      "title": "Test the behavioral mechanism",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E05"
+      ],
+      "issues": [
+        "R12"
+      ],
+      "existing_files": [
+        "scripts/analyze_relay_manifold.py"
+      ],
+      "completion_record": "reports/submission-execution/E09.json"
+    },
+    {
+      "id": "E10",
+      "title": "Complete workload breadth and current quality",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E05"
+      ],
+      "issues": [
+        "R13"
+      ],
+      "existing_files": [
+        "scripts/build_breadth_paired_ar.py"
+      ],
+      "completion_record": "reports/submission-execution/E10.json"
+    },
+    {
+      "id": "E11",
+      "title": "Validate precisely labeled transfer",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E05"
+      ],
+      "issues": [
+        "R4",
+        "R11"
+      ],
+      "existing_files": [
+        "scripts/build_transfer_figures.py",
+        "src/relayspec/vocab_bridge.py"
+      ],
+      "completion_record": "reports/submission-execution/E11.json"
+    },
+    {
+      "id": "E12",
+      "title": "Measure serving, full setup and isolated memory",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E05"
+      ],
+      "issues": [
+        "R9",
+        "R11"
+      ],
+      "existing_files": [
+        "src/relayspec/profiling.py",
+        "src/relayspec/benchmarking.py"
+      ],
+      "completion_record": "reports/submission-execution/E12.json"
+    },
+    {
+      "id": "E13",
+      "title": "Test a prospective deployment rule",
+      "status": "planned",
+      "required": false,
+      "depends_on": [
+        "E05",
+        "E10",
+        "E12"
+      ],
+      "issues": [
+        "R10"
+      ],
+      "existing_files": [
+        "src/relayspec/cost_model.py",
+        "src/relayspec/gates.py"
+      ],
+      "completion_record": "reports/submission-execution/E13.json"
+    },
+    {
+      "id": "E14",
+      "title": "Measure fitting-seed stability",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E05"
+      ],
+      "issues": [
+        "R16"
+      ],
+      "existing_files": [
+        "scripts/train_relay.py"
+      ],
+      "completion_record": "reports/submission-execution/E14.json"
+    },
+    {
+      "id": "E15",
+      "title": "Evaluate valid target drift and adaptation",
+      "status": "planned",
+      "required": false,
+      "depends_on": [
+        "E03",
+        "E05",
+        "E06"
+      ],
+      "issues": [
+        "R7",
+        "R17"
+      ],
+      "existing_files": [
+        "scripts/lora_sft_drift.py"
+      ],
+      "completion_record": "reports/submission-execution/E15.json"
+    },
+    {
+      "id": "E16",
+      "title": "Regenerate paper evidence from one registry",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E03",
+        "E06",
+        "E07",
+        "E08",
+        "E09",
+        "E10",
+        "E11",
+        "E12",
+        "E14"
+      ],
+      "issues": [
+        "R8",
+        "R18"
+      ],
+      "existing_files": [
+        "scripts/build_iclr_paper_assets.py",
+        "scripts/build_transfer_figures.py"
+      ],
+      "completion_record": "reports/submission-execution/E16.json"
+    },
+    {
+      "id": "E17",
+      "title": "Rewrite claims and framing",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E16"
+      ],
+      "issues": [
+        "R6",
+        "R10",
+        "R12",
+        "R17",
+        "R18"
+      ],
+      "existing_files": [
+        "paper/iclr2027/relayspec_iclr2027.tex",
+        "paper/iclr2027/references.bib"
+      ],
+      "completion_record": "reports/submission-execution/E17.json"
+    },
+    {
+      "id": "E18",
+      "title": "Audit actual PDF and anonymous reproduction",
+      "status": "planned",
+      "required": true,
+      "depends_on": [
+        "E17"
+      ],
+      "issues": [
+        "R18"
+      ],
+      "existing_files": [
+        "scripts/audit_iclr_manuscript.py",
+        "docs/REPRODUCIBILITY.md"
+      ],
+      "completion_record": "reports/submission-execution/E18.json"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # RelaySpec ICLR 2027 repair and improvement plan
 
+**Expanded plan:** use the [detailed execution plan](2026-09-05-relayspec-evidence-execution-plan.md), [paper framing blueprint](2026-09-05-relayspec-paper-framing-plan.md), and [public-review study](../research/2026-09-05-openreview-review-study.md) for current planning. This initial overview is retained for context.
+
 Date: 5 September 2026. This plan follows the [submission review](../../reports/ICLR_SUBMISSION_REVIEW_2026-09-05.md). It proposes work; it does not claim the experiments below have run. No GPU jobs were launched as part of the review.
 
 **Objective:** submit a trustworthy paper about low-cost retargeting of existing frozen speculative drafters. Correctness and fair comparisons come before additional architectural complexity. The date windows are planning targets, not estimates of measured run time.

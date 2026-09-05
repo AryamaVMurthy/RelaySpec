@@ -26,7 +26,9 @@ objective/ablation mismatches, and a drift-checkpoint export defect. Passing
 software tests does not establish that these research issues are resolved.
 
 - [Current submission review and known issues](reports/ICLR_SUBMISSION_REVIEW_2026-09-05.md)
-- [Prioritized repair plan](docs/plans/2026-09-05-iclr-submission-repair-plan.md)
+- [Detailed research execution plan and next experiments](docs/plans/2026-09-05-relayspec-evidence-execution-plan.md)
+- [Paper framing, figure/table blueprint and result-presentation rules](docs/plans/2026-09-05-relayspec-paper-framing-plan.md)
+- [Study of 42 public reviews across 11 related submissions](docs/research/2026-09-05-openreview-review-study.md)
 - [Manuscript source](paper/iclr2027/relayspec_iclr2027.tex) and [draft PDF](paper/iclr2027/relayspec_iclr2027.pdf)
 - [Evidence guide](reports/README.md)
 
@@ -47,6 +49,11 @@ cd RelaySpec
 uv sync --locked
 make check
 ```
+
+`make research-plan` validates the [research task ledger](configs/submission/README.md)
+and shows the next work without launching experiments. `make submission-ready`
+requires completion evidence for its required tasks; it currently reports that
+research execution is incomplete. Neither command certifies scientific validity.
 
 `make check` runs Python checks and CPU code/evidence tests without downloading
 model weights. Full manuscript checks need LaTeX, Poppler, Ghostscript, and a
