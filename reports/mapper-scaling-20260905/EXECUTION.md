@@ -724,3 +724,43 @@ plus three inherited references. This makes early-versus-final comparisons
 within the same paired16-request256-token run. The original endpoint
 configuration and provenance still reproduce byte for byte with defaults.
 No fitting or training-data expansion is part of this campaign.
+
+## Completed development quality and localized backward nondeterminism
+
+Quality evaluation27806 completed in40m45s. All1536 rows,128 paired
+development requests,12 methods and pinned scorer outputs were collected.
+The new quality audit passed. DenseN512 reaches193.68tokens/s versus
+denseN2048's198.09, retaining97.78% with95% interval[97.09,98.47].
+Factor1024/N512 retains95.00% with interval[94.14,95.85], so its95% boundary
+is unresolved. Factor4096/N2048 reaches196.25tokens/s, below denseN2048
+in this larger development sample, unlike the earlier small point ranking.
+All nine relay variants score105/128, compared with AR104/128. Their paired
+accuracy-difference interval is[-0.03125,0.046875], which does not establish
+the planned one-point margin. Nine relay outputs reach the2048-token cap,
+versus11 AR outputs. These are capped development outcomes, not uncapped
+quality or untouched confirmation. Raw/scored evidence and source hashes
+are in small-data-quality-results.json.
+
+Diagnostic27811 failed its duplicate-fit gate after45seconds but localized
+the first divergence. Rank32 workers have identical prepared-record,
+teacher-label, initial-trainable and initial-logit hashes. Their first
+gradient hashes differ. Within each worker, repeating backward with unchanged
+weights and restored RNG preserves all forward logits but changes gradients
+by up to0.000244140625 and0.00014495849609375. This establishes backward
+nondeterminism without yet identifying the exact kernel. Raw diagnostic
+files are preserved and hashed in adaptation-reproducibility-diagnosis.json.
+
+The next bounded variant enables deterministic PyTorch algorithms with the
+declared cuBLAS workspace required by the installed PyTorch2.9 CUDA path.
+The reference is https://docs.pytorch.org/docs/2.9/generated/torch.use_deterministic_algorithms.html.
+It retains diagnostics and all exact checks. This is a test of the localized
+cause, not an equality-tolerance relaxation or a successful fix claim.
+
+PARD pilot27824 failed after25seconds at AR-output equality, after successful
+environment/model initialization and actual generation. Saved ranks0/1 match
+AR. Rank3 first differs at generated token84, while its two PARD repetitions
+match. The other worker was stopped by torchrun after the failure. The raw
+available rows are preserved under pard-pilot-wave/failed-27824. A first-
+divergence numerical trace is required before deciding whether this is a
+kernel-shape difference or an algorithm/integration error. No PARD full
+benchmark is promoted. Independent EAGLE decoding27812 started as intended.

@@ -1,0 +1,23 @@
+{
+  "status": "localized_before_fix",
+  "job_id": 27811,
+  "prior_failure_job_id": 27810,
+  "identical_between_workers": {
+    "prepared_records_sha256": "a23ee2d974f8b4dae67a656f1710912dc21511e177e139b50b2aefd2e9caf625",
+    "labels_sha256": "a1676fbc5c392e76cc82d79eb6a8105542f297f1889c16fbcbeca67c3034c7c8",
+    "initial_trainable_sha256": "0d50fc3ef9cce4ffd96d17d37baa23ee1d05289a433ead8c516be982aa67ddb1",
+    "initial_logits_sha256": "df1c8fbdda05429c361105f9d13b8c05b8242c937cd9c453c027936e4c801203"
+  },
+  "diagnostic_sha256": {
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/small-followup-wave/failed-27811/fitting/rank2/diagnostics.json": "8914b86cf8e567e40212542796544ce3f7baafe1afe6bb50a692d2602c7f48d1",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/small-followup-wave/failed-27811/fitting/rank3/diagnostics.json": "ec8d3cc000370d7e1a4162c0c9b1923975b1d2ba4bc011605afab476387db522"
+  },
+  "repeat_backward_max_absolute_gradient_differences": [
+    0.000244140625,
+    0.00014495849609375
+  ],
+  "conclusion": "Nondeterministic backward computation with identical prepared records, teacher labels, trainable initialization and forward outputs. Repeated backward passes within a worker also differ with fixed weights and restored RNG. The exact CUDA kernel is not yet isolated.",
+  "next_test": "Enable torch.use_deterministic_algorithms(True) with required CUBLAS_WORKSPACE_CONFIG=:4096:8 and retain all exact equality checks.",
+  "reference": "https://docs.pytorch.org/docs/2.9/generated/torch.use_deterministic_algorithms.html",
+  "scope": "Correctness diagnosis only. No full drafter-adaptation or task-quality result."
+}

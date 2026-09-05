@@ -45,6 +45,15 @@ def main():
     config = yaml.safe_load(args.config.read_text())
     settings = config["adaptation_pilot"]
     diagnostics = settings.get("diagnostics", False)
+    if settings.get("deterministic_algorithms", False):
+        if (
+            os.environ.get("CUBLAS_WORKSPACE_CONFIG")
+            != settings["cublas_workspace_config"]
+        ):
+            raise ValueError(
+                "deterministic pilot requires its declared cuBLAS workspace"
+            )
+        torch.use_deterministic_algorithms(True)
     rank = int(os.environ["LOCAL_RANK"])
     if int(os.environ["WORLD_SIZE"]) != 4 or torch.cuda.device_count() != 4:
         raise ValueError("pilot requires four independent GPU workers")

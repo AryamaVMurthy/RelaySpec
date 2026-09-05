@@ -1,0 +1,598 @@
+{
+  "status": "complete",
+  "run": "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/small-data-quality-full/run-27806",
+  "rows": 1536,
+  "config_sha256": "27062f52c7e7d58ff1edacbbe4dcc10b8839f7eef4f87a6058ceb3500c959266",
+  "provenance_sha256": "a63a55015185fecf66db2ea41f962f845a1510b6bbfcc90f66e61f932a42243f",
+  "completion_gate_sha256": "51893eb88fa76464e71d128df33d0e324f750160807e6983a099e3047ee6aca0",
+  "analysis_sha256": "f203765afe5193a782b6fd914693b22d7420e17b54f33a71f075d77880c3478f",
+  "scored_rows_sha256": "a4f047bcc733e45827fd04edb45b2d959aaf5965ca80620ccbcbbf08892b6ea1",
+  "raw_sha256": {
+    "benchmark-rank2.jsonl": "ec22fa750d5ec668b69167b18a736a4fb13c0ba5de442cc61b9232daf8c3686e",
+    "benchmark-rank0.jsonl": "50a6ac33f1e132073b8cfcb6c95c7b30f06de43dbba1c2667612660e4c7df1ab",
+    "benchmark-rank1.jsonl": "65cb810215b9d05c0334bf8e8dbc241176260bd330f56cbe3c44c685dfefad87",
+    "benchmark-rank3.jsonl": "ce52f1f6d16527c075098178efe2ad7eb4de9f80c7a541b02f3320d0d8bb7623"
+  },
+  "against_ar": {
+    "requests": 128,
+    "clusters": 128,
+    "reference": "native_ar",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.715675752600525,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 685.4453125,
+        "token_matches": 128,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 2326.274108821992,
+        "accuracy": 0.8125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 204.56553648441366,
+        "throughput_ratio": 5.423886286070553,
+        "throughput_ci95": [
+          5.192663615461827,
+          5.662521160158937
+        ],
+        "request_time_ratio": 5.4367753668038254,
+        "request_time_ci95": [
+          5.167468420048529,
+          5.708370965748938
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 7.780528931487398,
+        "request_seconds": 427.87754723615944,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      },
+      "optimized_source_reuse": {
+        "tokens_per_second": 120.96031556376666,
+        "throughput_ratio": 3.2071628878458145,
+        "throughput_ci95": [
+          3.067179861907865,
+          3.351737159325382
+        ],
+        "request_time_ratio": 3.2147842462604186,
+        "request_time_ci95": [
+          3.05227960385609,
+          3.378456027173255
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 7.532817204301075,
+        "request_seconds": 723.6174905137159,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      },
+      "relay_dense_n2048": {
+        "tokens_per_second": 198.08661570803014,
+        "throughput_ratio": 5.2521030514579055,
+        "throughput_ci95": [
+          5.0239133495566355,
+          5.486902955144333
+        ],
+        "request_time_ratio": 5.264583914197148,
+        "request_time_ci95": [
+          4.993525777702159,
+          5.535483374226298
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 7.3521114935773655,
+        "request_seconds": 441.8723581456579,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      },
+      "relay_dense_n512": {
+        "tokens_per_second": 193.68228848125247,
+        "throughput_ratio": 5.1353259517800875,
+        "throughput_ci95": [
+          4.90317778152105,
+          5.374978782992522
+        ],
+        "request_time_ratio": 5.147529310643667,
+        "request_time_ci95": [
+          4.878376180499462,
+          5.416139234300606
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 7.198027127003699,
+        "request_seconds": 451.9205172881484,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      },
+      "relay_factorized1024_n512": {
+        "tokens_per_second": 188.18708461432232,
+        "throughput_ratio": 4.989625158747067,
+        "throughput_ci95": [
+          4.760505126276855,
+          5.22908707263441
+        ],
+        "request_time_ratio": 5.001482280763992,
+        "request_time_ci95": [
+          4.737412944125985,
+          5.266803676801928
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 6.988589211618257,
+        "request_seconds": 465.1169349872507,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      },
+      "relay_factorized4096_n2048": {
+        "tokens_per_second": 196.2477400988948,
+        "throughput_ratio": 5.20334678307768,
+        "throughput_ci95": [
+          4.977938988327233,
+          5.437929680413323
+        ],
+        "request_time_ratio": 5.215711783601851,
+        "request_time_ci95": [
+          4.949027456335876,
+          5.485529060426476
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 7.321989966555184,
+        "request_seconds": 446.0127793364227,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      },
+      "relay_factorized512_n2048": {
+        "tokens_per_second": 164.61099740222684,
+        "throughput_ratio": 4.364524673560351,
+        "throughput_ci95": [
+          4.1578842904322455,
+          4.5810798024074755
+        ],
+        "request_time_ratio": 4.374896334748078,
+        "request_time_ci95": [
+          4.149246645933821,
+          4.602159209060669
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 6.113523703134818,
+        "request_seconds": 531.7323956559412,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      },
+      "relay_factorized512_n2048_continue32768": {
+        "tokens_per_second": 167.29480517822662,
+        "throughput_ratio": 4.435683620667768,
+        "throughput_ci95": [
+          4.227019142664561,
+          4.653788238928176
+        ],
+        "request_time_ratio": 4.446224380794113,
+        "request_time_ci95": [
+          4.219655890032714,
+          4.675890190065876
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 6.219602272727273,
+        "request_seconds": 523.2021395210177,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      },
+      "relay_mlp4096_n2048": {
+        "tokens_per_second": 190.14801384935683,
+        "throughput_ratio": 5.041617578235914,
+        "throughput_ci95": [
+          4.820803118023739,
+          5.2724282261425675
+        ],
+        "request_time_ratio": 5.053598252712637,
+        "request_time_ci95": [
+          4.795686858666734,
+          5.316230628609883
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 7.088075771067757,
+        "request_seconds": 460.3203484909609,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      },
+      "relay_mlp512_n2048": {
+        "tokens_per_second": 154.38949162120875,
+        "throughput_ratio": 4.093509887876356,
+        "throughput_ci95": [
+          3.8951620428307305,
+          4.297474268220167
+        ],
+        "request_time_ratio": 4.103237521651198,
+        "request_time_ci95": [
+          3.8880951071106176,
+          4.321492931333871
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 5.737255929760189,
+        "request_seconds": 566.9362537623383,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      },
+      "relay_mlp512_n2048_continue32768": {
+        "tokens_per_second": 157.68480002191683,
+        "throughput_ratio": 4.180882269119739,
+        "throughput_ci95": [
+          3.9768226725205436,
+          4.3919277245166395
+        ],
+        "request_time_ratio": 4.190817530712776,
+        "request_time_ci95": [
+          3.9648640674331452,
+          4.417495436973357
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 36,
+        "progress_per_cycle": 5.862881628280664,
+        "request_seconds": 555.088378764689,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0078125,
+        "accuracy_difference_ci95": [
+          -0.03125,
+          0.046875
+        ]
+      }
+    }
+  },
+  "against_dense_n2048": {
+    "requests": 128,
+    "clusters": 128,
+    "reference": "relay_dense_n2048",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.715675752600525,
+        "throughput_ratio": 0.19039991984209353,
+        "throughput_ci95": [
+          0.18225217544691502,
+          0.1990480190324901
+        ],
+        "request_time_ratio": 0.18994853464169742,
+        "request_time_ci95": [
+          0.18065269687063237,
+          0.20025930465150793
+        ],
+        "mean_output_tokens": 685.4453125,
+        "token_matches": 36,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 2326.274108821992,
+        "accuracy": 0.8125,
+        "accuracy_difference": -0.0078125,
+        "accuracy_difference_ci95": [
+          -0.046875,
+          0.03125
+        ]
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 204.56553648441366,
+        "throughput_ratio": 1.0327075141004636,
+        "throughput_ci95": [
+          1.0235439715075798,
+          1.041705989454599
+        ],
+        "request_time_ratio": 1.0327075141004636,
+        "request_time_ci95": [
+          1.0235439715075798,
+          1.041705989454599
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 7.780528931487398,
+        "request_seconds": 427.87754723615944,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "optimized_source_reuse": {
+        "tokens_per_second": 120.96031556376666,
+        "throughput_ratio": 0.6106435567663803,
+        "throughput_ci95": [
+          0.6052639066040856,
+          0.6159203662347528
+        ],
+        "request_time_ratio": 0.6106435567663803,
+        "request_time_ci95": [
+          0.6052639066040856,
+          0.6159203662347528
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 7.532817204301075,
+        "request_seconds": 723.6174905137159,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "relay_dense_n2048": {
+        "tokens_per_second": 198.08661570803014,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 7.3521114935773655,
+        "request_seconds": 441.8723581456579,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "relay_dense_n512": {
+        "tokens_per_second": 193.68228848125247,
+        "throughput_ratio": 0.9777656495819514,
+        "throughput_ci95": [
+          0.9709259747672875,
+          0.9846702439873011
+        ],
+        "request_time_ratio": 0.9777656495819514,
+        "request_time_ci95": [
+          0.9709259747672874,
+          0.9846702439873011
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 7.198027127003699,
+        "request_seconds": 451.9205172881484,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "relay_factorized1024_n512": {
+        "tokens_per_second": 188.18708461432232,
+        "throughput_ratio": 0.9500242302675349,
+        "throughput_ci95": [
+          0.9413649084924854,
+          0.9584674078430836
+        ],
+        "request_time_ratio": 0.9500242302675349,
+        "request_time_ci95": [
+          0.9413649084924856,
+          0.9584674078430836
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 6.988589211618257,
+        "request_seconds": 465.1169349872507,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "relay_factorized4096_n2048": {
+        "tokens_per_second": 196.2477400988948,
+        "throughput_ratio": 0.9907168104086056,
+        "throughput_ci95": [
+          0.985029465955561,
+          0.9959739094364449
+        ],
+        "request_time_ratio": 0.9907168104086056,
+        "request_time_ci95": [
+          0.9850294659555611,
+          0.9959739094364448
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 7.321989966555184,
+        "request_seconds": 446.0127793364227,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "relay_factorized512_n2048": {
+        "tokens_per_second": 164.61099740222684,
+        "throughput_ratio": 0.8310051479947302,
+        "throughput_ci95": [
+          0.8180649946540586,
+          0.8437742420866889
+        ],
+        "request_time_ratio": 0.8310051479947304,
+        "request_time_ci95": [
+          0.8180649946540586,
+          0.8437742420866889
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 6.113523703134818,
+        "request_seconds": 531.7323956559412,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "relay_factorized512_n2048_continue32768": {
+        "tokens_per_second": 167.29480517822662,
+        "throughput_ratio": 0.8445538058200301,
+        "throughput_ci95": [
+          0.8314884864809416,
+          0.8571467149869502
+        ],
+        "request_time_ratio": 0.8445538058200303,
+        "request_time_ci95": [
+          0.8314884864809416,
+          0.8571467149869502
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 6.219602272727273,
+        "request_seconds": 523.2021395210177,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "relay_mlp4096_n2048": {
+        "tokens_per_second": 190.14801384935683,
+        "throughput_ratio": 0.9599235827706077,
+        "throughput_ci95": [
+          0.952974193332487,
+          0.9669575311321781
+        ],
+        "request_time_ratio": 0.9599235827706077,
+        "request_time_ci95": [
+          0.952974193332487,
+          0.9669575311321782
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 7.088075771067757,
+        "request_seconds": 460.3203484909609,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "relay_mlp512_n2048": {
+        "tokens_per_second": 154.38949162120875,
+        "throughput_ratio": 0.7794039545244753,
+        "throughput_ci95": [
+          0.7649607389404356,
+          0.7935188212660232
+        ],
+        "request_time_ratio": 0.7794039545244753,
+        "request_time_ci95": [
+          0.7649607389404356,
+          0.7935188212660232
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 5.737255929760189,
+        "request_seconds": 566.9362537623383,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "relay_mlp512_n2048_continue32768": {
+        "tokens_per_second": 157.68480002191683,
+        "throughput_ratio": 0.7960396489096285,
+        "throughput_ci95": [
+          0.7806844715242235,
+          0.8105964860126594
+        ],
+        "request_time_ratio": 0.7960396489096285,
+        "request_time_ci95": [
+          0.7806844715242234,
+          0.8105964860126594
+        ],
+        "mean_output_tokens": 683.8203125,
+        "token_matches": 128,
+        "progress_per_cycle": 5.862881628280664,
+        "request_seconds": 555.088378764689,
+        "accuracy": 0.8203125,
+        "accuracy_difference": 0.0,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "output_cap": 2048,
+  "cap_length_output_counts": {
+    "native_ar": 11,
+    "native_target_dflash": 9,
+    "optimized_source_reuse": 9,
+    "relay_dense_n512": 9,
+    "relay_dense_n2048": 9,
+    "relay_factorized1024_n512": 9,
+    "relay_factorized4096_n2048": 9,
+    "relay_mlp4096_n2048": 9,
+    "relay_factorized512_n2048": 9,
+    "relay_mlp512_n2048": 9,
+    "relay_factorized512_n2048_continue32768": 9,
+    "relay_mlp512_n2048_continue32768": 9
+  },
+  "scope": "128 exposed MATH development requests, nine frozen small-data mappers and three inherited references. Greedy2048-token outputs scored with the pinned math scorer. Paired request bootstrap95% intervals,10000 samples, seed1729. Cap-length outputs may include an EOS exactly at the cap, so these counts are not asserted to be exact truncation counts. Outcomes at the configured cap do not prove uncapped full-answer quality. Architecture/epoch comparisons are development evidence. Confirmation and reserve sets remain separate and unused."
+}
