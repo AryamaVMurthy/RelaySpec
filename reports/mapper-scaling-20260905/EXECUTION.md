@@ -439,3 +439,15 @@ changes deployed speed or answer quality. These exposed MATH prompts are
 development data, not independent confirmation. Cap hits must be reported.
 The full128-request campaign remains gated on the sub-ten-minute pilot
 and its measured runtime. Generated configurations rebuild byte-identically.
+
+Longer-answer pilot27795 is queued after EAGLE pilot27793, using immutable
+sourceeafdbd6 and a540-second process limit/ten-minute allocation. Its collector
+is running independently. The128-request full evaluation has NOT been submitted.
+Regularization27788 completed in3m13s,27789 is running and27790 is queued.
+The latest verified registry contains64/76 cells; collection may lag Slurm.
+All14 MLP512 penalty cells are already collected. At seed1729 and8192
+updates, no tested L2/AdamW penalty improves either N512 or N2048 endpoint
+over its zero-penalty baseline. These are fitting-validation results only.
+Remaining immediate work is to collect the final focused matrix and the two
+new pilots, review their resource/correctness gates, then promote only the
+matching successful small-data paths. Large-data fits remain paused.
