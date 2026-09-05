@@ -87,6 +87,7 @@ def main():
                         "continuation_pilot",
                         "external_setup",
                         "pard_pilot",
+                        "pard_cache_replay",
                     }
                     if fitting_only:
                         gate_file = {
@@ -96,6 +97,7 @@ def main():
                             "continuation_pilot": "continuation-gate.json",
                             "external_setup": "setup-gate.json",
                             "pard_pilot": "pard-pilot-gate.json",
+                            "pard_cache_replay": "cache-replay-gate.json",
                         }[job["kind"]]
                         gate = json.loads((destination / gate_file).read_text())
                         if gate["status"] != "pass":
