@@ -22,7 +22,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--experiment",
-        choices=["pilot", "continuous", "data512", "data1024", "data2048"],
+        choices=[
+            "pilot",
+            "continuous",
+            "data64",
+            "data128",
+            "data256",
+            "data512",
+            "data1024",
+            "data2048",
+        ],
         required=True,
     )
     args = parser.parse_args()

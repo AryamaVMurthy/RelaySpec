@@ -40,6 +40,7 @@ from relayspec.generation import (
 from relayspec.profiling import CudaRegionRecorder
 from relayspec.relay import TargetFeatureRelay
 from relayspec.source import SourceTapProvider
+from relayspec.unfitted_controls import UnfittedContext
 from relayspec.vocab_bridge import load_vocab_intersection
 
 
@@ -275,6 +276,19 @@ def main() -> None:
         )
         relay.load_state_dict(checkpoint["relay"], strict=True)
         relay = relay.to(device=device, dtype=torch.bfloat16).eval()
+    unfitted = {}
+    for name in {"direct_slice", "frozen_fc_slice"} & set(method_names):
+        unfitted[name] = (
+            UnfittedContext(
+                target_width=target.config.hidden_size,
+                draft_width=draft.config.hidden_size,
+                num_taps=len(source_config.tap_layers),
+                source_fc=draft.fc if name == "frozen_fc_slice" else None,
+            )
+            .to(device=device, dtype=torch.bfloat16)
+            .eval()
+        )
+
     tokenizer = AutoTokenizer.from_pretrained(
         config.target.id,
         revision=resolve_revision(config.target.id, config.target.revision),
@@ -404,7 +418,21 @@ def main() -> None:
             **kwargs,
         )
 
+    def unfitted_generate(name, **kwargs):
+        return relay_dflash_generate(
+            draft,
+            relay=unfitted[name],
+            relay_target_layer_ids=tuple(source_config.tap_layers),
+            native_target=target,
+            source_embedding=source_embedding,
+            source_lm_head=source_lm_head,
+            **common,
+            **kwargs,
+        )
+
     available_methods = {
+        "direct_slice": lambda **kw: unfitted_generate("direct_slice", **kw),
+        "frozen_fc_slice": lambda **kw: unfitted_generate("frozen_fc_slice", **kw),
         "native_ar": native,
         "native_target_dflash": target_specific,
         "naive_source_reuse": baseline,

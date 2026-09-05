@@ -37,7 +37,16 @@ def model_load_plan(
     selected = set(methods)
     source_reuse_names = {"naive_source_reuse", "optimized_source_reuse"}
     needs_source_provider = bool(selected & source_reuse_names)
-    needs_source_heads = bool(selected & {"relay_f", "relay_p", "relay_p_cross_family"})
+    needs_source_heads = bool(
+        selected
+        & {
+            "relay_f",
+            "relay_p",
+            "relay_p_cross_family",
+            "direct_slice",
+            "frozen_fc_slice",
+        }
+    )
     if unload_source_trunk and needs_source_provider:
         raise ValueError(
             "cannot unload the source trunk while benchmarking "

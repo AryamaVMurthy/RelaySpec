@@ -11,9 +11,14 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--once", action="store_true")
+    parser.add_argument(
+        "--jobs",
+        type=Path,
+        default=Path("reports/controlled-scaling-20260905/jobs.json"),
+    )
     args = parser.parse_args()
-    base = Path("reports/controlled-scaling-20260905")
-    jobs = json.loads((base / "jobs.json").read_text())["jobs"]
+    base = args.jobs.parent
+    jobs = json.loads(args.jobs.read_text())["jobs"]
     status_path = base / "collector-status.json"
     status = json.loads(status_path.read_text()) if status_path.exists() else {}
     deadline = time.monotonic() + 86400
