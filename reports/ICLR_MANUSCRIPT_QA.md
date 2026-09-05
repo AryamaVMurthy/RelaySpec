@@ -23,7 +23,7 @@ Generated 2026-09-05 from the compiled anonymous manuscript and final result art
 | fit and evaluation exact-overlap audit | PASS | 0 normalized exact matches across 4,096 fit and 1,250 evaluation records |
 | compiled LaTeX log | PASS | no undefined citation, undefined reference, or overfull box |
 | PDF parse and page format | PASS | 18 pages, US Letter, unencrypted, and identity scan clean |
-| embedded fonts and PDF parser | PASS | 25 font records are embedded and Ghostscript parses every page |
+| embedded fonts and PDF parser | PASS | 26 font records are embedded and Ghostscript parses every page |
 | recorded visual review | PASS | manual color and grayscale review covers all 18 rendered pages |
 
 ## Scientific review remains separate
