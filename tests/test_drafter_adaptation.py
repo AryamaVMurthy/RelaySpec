@@ -141,6 +141,13 @@ def test_adaptation_resume_preserves_adam_trajectory_and_rejects_changed_data(us
     assert all(
         torch.equal(before[name], value) for name, value in resumed.state_dict().items()
     )
+    invalid = copy.deepcopy(state)
+    next(iter(invalid["optimizer"]["state"].values()))["exp_avg"].fill_(float("nan"))
+    with pytest.raises(ValueError, match="nonfinite"):
+        restore_adaptation_state(resumed, resumed_optimizer, invalid, **args)
+    assert all(
+        torch.equal(before[name], value) for name, value in resumed.state_dict().items()
+    )
     start = restore_adaptation_state(resumed, resumed_optimizer, state, **args)
     for step in range(start, 4):
         update(resumed, resumed_optimizer, step)

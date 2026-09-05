@@ -937,3 +937,43 @@ This is a fixed development screen, not an untouched-quality or
 matched-compute claim. The new worker configuration changes learning
 rate and trainable family explicitly and records both in checkpoints
 and fit gates. The original strict pilot retains its duplicate checks.
+
+## Completed three-rate screen, measured budgets, and GPU continuation
+
+Adaptation screen 27849 completed in 4m39s and all four new fits plus
+reused high-rate fits were evaluated in one 16-request256-token campaign.
+The best tested rate for both families is 0.00002 by development
+throughput. Connector CE at that rate retains 92.53% [89.40, 96.39]
+of initial-mapper throughput. Rank32 LoRA retains 100.13%
+[99.27, 101.18], so improvement over the initial mapper is unresolved.
+The fully fitted dense endpoint retains 121.60% [114.90, 128.87]
+of initial throughput in this same run. Both families received three
+rates; these short development points do not establish quality or
+matched-compute superiority. Raw checkpoint and fitting identities
+reproduce through audit_adaptation_screen.py.
+
+Timing calibration 27851 completed in 2m51s. All four repeated fits
+reproduce their existing 128-update or 8192-update mapper weights
+exactly. Training updates take 1.539--1.552s for initialization and
+91.351--91.474s for the baseline. Full worker times are 28.702--28.923s
+and 140.787--141.146s, respectively. Validation, cache setup and
+checkpoint export are recorded separately. The baseline warm mean
+is 91.4127183366s and initialization warm mean is 1.5456294965s.
+The declared quarter/one/four total warm budgets are 22.85318,
+91.41272 and 365.65087s. After initialization, CE/LoRA get 21.30755,
+89.86709 and 364.10524s for additional updates. These are warm training
+budgets, not fresh end-to-end preparation budgets.
+
+Continuation pilot 27852 completed in 3m19s. Connector CE and rank32
+LoRA both match exactly between uninterrupted256 updates and resumed
+128+128 updates: raw trainable weights, Adam state, data order, merged
+LoRA exports and actual decoding trajectories. This proves continuation
+for the declared deterministic path. CPU tests additionally reject
+changed data order and nonfinite optimizer state before changing model
+weights. The measured budget protocol is source-verified and frozen in
+configs/submission/scaling/adaptation-budget-protocol.json. Its status
+explicitly requires implementing and passing the short timed-checkpoint
+pilot before full budget trajectories are launched.
+
+The broader required baseline, transfer, final-quality, autoresearch and
+paper-reproduction work remains active. No large-data run was resumed.

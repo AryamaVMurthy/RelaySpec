@@ -52,6 +52,12 @@ def restore_adaptation_state(
             k: v for k, v in current.items() if k != "params"
         } or len(saved["params"]) != len(current["params"]):
             raise ValueError("adaptation continuation optimizer settings differ")
+    if any(
+        isinstance(value, torch.Tensor) and not torch.isfinite(value).all()
+        for entry in state["optimizer"]["state"].values()
+        for value in entry.values()
+    ):
+        raise ValueError("adaptation continuation optimizer contains nonfinite state")
     optimizer.load_state_dict(state["optimizer"])
     with torch.no_grad():
         for name, parameter in parameters.items():

@@ -1,0 +1,247 @@
+{
+  "status": "declared_requires_timed_checkpoint_pilot",
+  "input_sha256": {
+    "reports/external-baselines-20260906/baseline-time-calibration.json": "556e9d2eb3598c3fe9e3d6bd7ffdea9b75a12d811a924dc01ebf4f4bddfcc3bd",
+    "reports/external-baselines-20260906/adaptation-lr-screen.json": "4adfb357ff830289aca47f14ec59d5c2738e4f2049c5b6d33cecafee931bd500",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/adaptation-continuation-gate.json": "103ea0bae1de072753258c7115abefd728dca3cfc9ada1327672106e9cb69979",
+    "configs/submission/scaling/drafter-adaptation-continuation.yaml": "6d4da9ec036bed16c826f24dfffca8c2827fcd8652a40e45c198f7c619b10359",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/fitting/rank0/adaptation-fit-gate.json": "355d4f45ffa4d3dcfcbe2611de55e351b364ba3d9f07926961e40105a185e21a",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/fitting/rank0/training.jsonl": "0c505568dbec07b63d1f3932d2ade73d5aa4970e915161a0a044396f2e446fa9",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/fitting/rank1/adaptation-fit-gate.json": "51cb75b4fea68e3ec850c915dbddd40506eaa3cddb7696ae7643d63529c82d3f",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/fitting/rank1/training.jsonl": "fa3413cdfc2c57262d2f72c13e7bf9e5a3e50191766ed12bcdf14279facb95a3",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/fitting/rank2/adaptation-fit-gate.json": "0ee8b05ee6bcbf7871c1bebece8b2a64d158d6d3108f3e693050e75417278f8f",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/fitting/rank2/training.jsonl": "2d3c6cc2d0b9207b3969b27938d24e99320a7ee655df53460550639c55a68701",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/fitting/rank3/adaptation-fit-gate.json": "469528fc57799a2850905728c3e25db1f3431c116864248734fdafcbaf54c148",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/fitting/rank3/training.jsonl": "6750682905be9ff899f3f59c03ce32c0a28fe9d7c890e3a9207dc4d45e011ae4",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/evaluation/analysis.json": "a8dfc1276ccab8ca7f1f35793a49e8e39bf3190e6b8d194b27321159b77c88d5",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/evaluation/benchmark-rank2.jsonl": "2945b83bb920efbbf1aa4baa204581e13ab1fdc74b32d3ddd771ce194e01b018",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/evaluation/benchmark-rank0.jsonl": "46dc03e9b0e04141b9308ef2f681c28637b562dc59c81db555552d9738490b64",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/evaluation/benchmark-rank1.jsonl": "dea80fb1d4f71435dec50196da88ec26887c17cd0c4a0a493b8fa95d0c8ac418",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/adaptation-continuation/run-27852/evaluation/benchmark-rank3.jsonl": "dae58f1bccb30a842ebbb3925386ab6d75b2d940affb87b2107c46ec1af6adb0"
+  },
+  "distinct_training_pool_records": 512,
+  "batch_size": 4,
+  "selected_rates": {
+    "ce": {
+      "method": "relay_ce_lr2e5",
+      "learning_rate": 2e-05,
+      "selection": "highest throughput point in the fixed three-rate development screen"
+    },
+    "lora32": {
+      "method": "relay_lora32_lr2e5",
+      "learning_rate": 2e-05,
+      "selection": "highest throughput point in the fixed three-rate development screen"
+    }
+  },
+  "warm_training_budgets": [
+    {
+      "multiplier": 0.25,
+      "total_training_seconds": 22.85317958414089,
+      "initial_mapper_charge_seconds": 1.54562949645333,
+      "remaining_update_seconds": 21.30755008768756
+    },
+    {
+      "multiplier": 1.0,
+      "total_training_seconds": 91.41271833656356,
+      "initial_mapper_charge_seconds": 1.54562949645333,
+      "remaining_update_seconds": 89.86708884011023
+    },
+    {
+      "multiplier": 4.0,
+      "total_training_seconds": 365.65087334625423,
+      "initial_mapper_charge_seconds": 1.54562949645333,
+      "remaining_update_seconds": 364.1052438498009
+    }
+  ],
+  "continuation": {
+    "status": "pass",
+    "pairs": [
+      {
+        "workers": [
+          0,
+          1
+        ],
+        "weights_and_optimizer_bit_identical": true
+      },
+      {
+        "workers": [
+          2,
+          3
+        ],
+        "weights_and_optimizer_bit_identical": true
+      }
+    ],
+    "decoding": {
+      "requests": 8,
+      "clusters": 8,
+      "reference": "relay_initial",
+      "methods": {
+        "native_ar": {
+          "tokens_per_second": 28.93331845071275,
+          "throughput_ratio": 0.285918673611902,
+          "throughput_ci95": [
+            0.23794595338211752,
+            0.3408881231973976
+          ],
+          "request_time_ratio": 0.285918673611902,
+          "request_time_ci95": [
+            0.23794595338211752,
+            0.3408881231973976
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 7,
+          "progress_per_cycle": 1.0,
+          "request_seconds": 35.39172327378765
+        },
+        "native_target_dflash": {
+          "tokens_per_second": 129.99612377188276,
+          "throughput_ratio": 1.2846199908545142,
+          "throughput_ci95": [
+            1.142672518945652,
+            1.417173364955365
+          ],
+          "request_time_ratio": 1.2846199908545142,
+          "request_time_ci95": [
+            1.142672518945652,
+            1.4171733649553648
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 6.434523809523809,
+          "request_seconds": 7.8771579512394965
+        },
+        "optimized_source_reuse": {
+          "tokens_per_second": 72.4459933829081,
+          "throughput_ratio": 0.7159103568373245,
+          "throughput_ci95": [
+            0.6513651832917685,
+            0.7813537528411326
+          ],
+          "request_time_ratio": 0.7159103568373245,
+          "request_time_ci95": [
+            0.6513651832917684,
+            0.7813537528411326
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 6.315789473684211,
+          "request_seconds": 14.134667111095041
+        },
+        "relay_ce_full": {
+          "tokens_per_second": 96.65486624024763,
+          "throughput_ratio": 0.9551421210333593,
+          "throughput_ci95": [
+            0.8821778524301016,
+            1.0525016185959886
+          ],
+          "request_time_ratio": 0.9551421210333593,
+          "request_time_ci95": [
+            0.8821778524301016,
+            1.0525016185959883
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.613333333333333,
+          "request_seconds": 10.59439674206078
+        },
+        "relay_ce_resumed": {
+          "tokens_per_second": 97.0025008969263,
+          "throughput_ratio": 0.9585774421531408,
+          "throughput_ci95": [
+            0.8867147014406258,
+            1.053217346064922
+          ],
+          "request_time_ratio": 0.9585774421531407,
+          "request_time_ci95": [
+            0.8867147014406258,
+            1.053217346064922
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.613333333333333,
+          "request_seconds": 10.556428860407323
+        },
+        "relay_initial": {
+          "tokens_per_second": 101.19422451569578,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.868544600938967,
+          "request_seconds": 10.119154575280845
+        },
+        "relay_lora_full": {
+          "tokens_per_second": 100.66349132581901,
+          "throughput_ratio": 0.9947553015755909,
+          "throughput_ci95": [
+            0.9595417581289757,
+            1.0210491463777973
+          ],
+          "request_time_ratio": 0.9947553015755909,
+          "request_time_ci95": [
+            0.9595417581289756,
+            1.021049146377797
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.778801843317972,
+          "request_seconds": 10.1725063030608
+        },
+        "relay_lora_resumed": {
+          "tokens_per_second": 101.20873662781322,
+          "throughput_ratio": 1.0001434085016896,
+          "throughput_ci95": [
+            0.964101032933131,
+            1.0246792600822394
+          ],
+          "request_time_ratio": 1.0001434085016898,
+          "request_time_ci95": [
+            0.9641010329331311,
+            1.0246792600822394
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.778801843317972,
+          "request_seconds": 10.117703610565513
+        },
+        "relay_lora_zero": {
+          "tokens_per_second": 103.39057348977656,
+          "throughput_ratio": 1.0217042917675614,
+          "throughput_ci95": [
+            1.0076220892064125,
+            1.0387523461050803
+          ],
+          "request_time_ratio": 1.0217042917675614,
+          "request_time_ci95": [
+            1.0076220892064127,
+            1.0387523461050803
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.868544600938967,
+          "request_seconds": 9.904191121459007
+        }
+      }
+    }
+  },
+  "execution_requirements": [
+    "Implement measured-time checkpointing and run a quarter-budget pilot under ten minutes before the full trajectory.",
+    "Stop at the first completed optimizer update reaching each threshold, record actual time and at-most-one-update overshoot.",
+    "Exclude checkpoint I/O from warm optimizer time and charge it in total worker and allocation time.",
+    "Subtract the measured initial-mapper update cost from each CE/LoRA warm budget, and report its full setup/export cost separately.",
+    "Report additional records actually seen and presentations, including initial mapper fitting, rather than relabeling repeated passes as new data.",
+    "Record model load, teacher preparation, shared feature-cache construction/storage, validation, export, fit, decoding and search costs.",
+    "Report fresh-setup budget infeasibility explicitly where required preparation alone exceeds that budget.",
+    "Compare fitted feature-map references, connector CE and frozen-connector LoRA in one declared decoding campaign after fitting.",
+    "Use development prompts only. Final confirmation remains unused until candidate selection is frozen."
+  ],
+  "large_data_scaling": "paused"
+}
