@@ -109,11 +109,13 @@ def main():
                         "cache_pilot",
                         "capacity_pilot",
                         "adaptation_pilot",
+                        "adaptation_screen",
                     }:
                         gate_file = {
                             "cache_pilot": "pilot-gate.json",
                             "capacity_pilot": "batch-gate.json",
                             "adaptation_pilot": "adaptation-pilot-gate.json",
+                            "adaptation_screen": "adaptation-screen-gate.json",
                         }[job["kind"]]
                         gate = json.loads((destination / gate_file).read_text())
                         if gate["status"] != "pass":

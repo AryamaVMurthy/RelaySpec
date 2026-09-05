@@ -4,6 +4,7 @@ import argparse
 import copy
 import hashlib
 import json
+import math
 import os
 import time
 from pathlib import Path
@@ -217,6 +218,22 @@ def main():
     if len(ranks) != 2:
         raise ValueError("pilot requires two declared LoRA ranks")
     lora_rank = (0, ranks[0], ranks[1], ranks[1])[rank]
+    worker_trial = {
+        "name": f"rank{rank}",
+        "lora_rank": lora_rank,
+        "learning_rate": settings["learning_rate"],
+    }
+    if "worker_trials" in settings:
+        trials = settings["worker_trials"]
+        if len(trials) != 4 or len({t["name"] for t in trials}) != 4:
+            raise ValueError("adaptation screen requires four distinct worker trials")
+        worker_trial = trials[rank]
+        lora_rank = worker_trial["lora_rank"]
+        if lora_rank not in {0, *ranks}:
+            raise ValueError("worker LoRA rank is not declared")
+    learning_rate = worker_trial["learning_rate"]
+    if not math.isfinite(learning_rate) or learning_rate <= 0:
+        raise ValueError("worker learning rate must be finite and positive")
     if lora_rank:
         trainable = inject_lora(
             draft,
@@ -237,9 +254,7 @@ def main():
     else:
         mapper.requires_grad_(True)
         trainable = list(mapper.parameters())
-    optimizer = torch.optim.AdamW(
-        trainable, lr=settings["learning_rate"], weight_decay=0.0
-    )
+    optimizer = torch.optim.AdamW(trainable, lr=learning_rate, weight_decay=0.0)
     diagnostic = {}
     if diagnostics:
         diagnostic = {
@@ -406,6 +421,7 @@ def main():
         "optimizer": optimizer.state_dict(),
         "updates": updates,
         "lora_rank": lora_rank,
+        "worker_trial": worker_trial,
         "cpu_rng": torch.get_rng_state(),
         "cuda_rng": torch.cuda.get_rng_state(device),
         "config_sha256": sha(args.config),
@@ -431,6 +447,10 @@ def main():
                 "status": "pass",
                 "rank": rank,
                 "lora_rank": lora_rank,
+                "worker_trial": worker_trial,
+                "checkpoint_sha256": sha(
+                    output / ("adaptation.pt" if lora_rank else "mapper.pt")
+                ),
                 "updates": updates,
                 "distinct_examples": min(count, updates * batch_size),
                 "prepared_distinct_examples": count,
@@ -452,7 +472,10 @@ def main():
                 "export": export_gate,
                 "direct_fusion_equivalence": fusion_equivalence,
                 "config_sha256": sha(args.config),
-                "scope": "Resource/correctness pilot. Teacher-forced target greedy labels on the last 15 proposal positions. Separate rank0 connector-only CE control and ranks1/2/3 frozen-connector drafter LoRA. Ranks2/3 are duplicate-seed checks. No full matched-compute or task-quality conclusion.",
+                "scope": "Bounded equal-data fitting with teacher-forced target greedy labels "
+                "on the last 15 proposal positions. The worker trial declares connector CE "
+                "or frozen-connector drafter LoRA and its learning rate. Duplicate status "
+                "is determined by the outer protocol. No full matched-compute or task-quality conclusion.",
             },
             indent=2,
         )

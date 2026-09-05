@@ -922,3 +922,18 @@ zero-cost cache. Continuation must pass uninterrupted-versus-resumed
 weight equality before its results are used. The PARD runtime/quality
 protocol, faithful frozen SD-square fit, transfer and final confirmation
 remain outstanding. Large-data expansion remains paused.
+
+## Fixed lower-rate adaptation screen
+
+Declared two new rates, 0.00002 and 0.00006, for connector CE and
+rank32 drafter LoRA. All four fits use the same 512 cached records,
+128 batch-four updates, seed, initialization and deterministic runtime.
+The existing 0.0002 fits from 27841 and the dense N512 8192-update
+endpoint are source-hashed and reused in the same 16-request256-token
+decoding campaign. Both adaptation families therefore receive an equal
+three-rate screen. The zero-update decoding control is retained. The
+strict duplicate/export pilot 27841 is a required source-hashed input.
+This is a fixed development screen, not an untouched-quality or
+matched-compute claim. The new worker configuration changes learning
+rate and trainable family explicitly and records both in checkpoints
+and fit gates. The original strict pilot retains its duplicate checks.
