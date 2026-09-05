@@ -277,7 +277,7 @@ def main():
         json.dumps(
             {
                 "status": "pass",
-                "experiment": args.experiment,
+                "experiment": trial["name"] if trial else args.experiment,
                 "evaluated_steps": saves,
                 "pilot": pilot,
                 "trial": trial,

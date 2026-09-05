@@ -571,6 +571,9 @@ def main() -> None:
                 device=device,
                 objective=feature_objective,
                 historical_cosine_weight=historical_cosine_weight,
+                output_transform=draft.hidden_norm
+                if proposer_family == "dflash"
+                else None,
             )
             for name, examples in validation_cache.items()
         }

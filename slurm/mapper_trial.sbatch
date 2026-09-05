@@ -14,7 +14,7 @@
 set -euo pipefail
 module load u22/cuda/12.4
 : "${TRIAL_CONFIG:?Set TRIAL_CONFIG}"
-cd "$HOME/relayspec-mapper-scaling-20260905"
+cd "${RELAYSPEC_PROJECT_DIR:-$HOME/relayspec-mapper-scaling-v2-20260905}"
 export RELAYSPEC_PYTHON="$HOME/.venvs/factorspec-20260826/bin/python"
 export RELAYSPEC_CACHE_DIR="/scratch/$USER/factorspec-runtime-20260826"
 export HF_HOME="$RELAYSPEC_CACHE_DIR/huggingface"

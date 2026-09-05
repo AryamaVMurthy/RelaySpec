@@ -32,7 +32,13 @@ def validate_fit_split(training_rows, validation_rows):
 
 @torch.no_grad()
 def interface_diagnostics(
-    relay, examples, *, device, objective, historical_cosine_weight=None
+    relay,
+    examples,
+    *,
+    device,
+    objective,
+    historical_cosine_weight=None,
+    output_transform=None,
 ):
     """Cache entries are unpadded individual records, matching training weighting."""
     if not examples:
@@ -46,6 +52,8 @@ def interface_diagnostics(
             device_type=device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"
         ):
             prediction = relay(x.to(device))
+            if output_transform is not None:
+                prediction = output_transform(prediction)
         y = y.to(device).float()
         prediction = prediction.float()
         values = {

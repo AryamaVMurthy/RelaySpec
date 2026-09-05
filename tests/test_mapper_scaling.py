@@ -91,3 +91,24 @@ def test_fitting_diagnostics_use_record_weighting_and_preserve_gradients():
     assert result["records"] == 2 and result["tokens"] == 4
     assert result["relative_mse"] < 1e-12
     assert all(p.grad is None for p in relay.parameters())
+
+
+def test_fitting_diagnostics_apply_released_dflash_output_normalization():
+    from relayspec.fitting_validation import interface_diagnostics
+
+    relay = make(normalize_input=False)
+    norm = torch.nn.RMSNorm(5, eps=1e-6, elementwise_affine=False)
+    x = torch.randn(1, 7, 12) * 10
+    y = norm(relay(x)).detach()
+    result = interface_diagnostics(
+        relay,
+        [(x, y)],
+        device=torch.device("cpu"),
+        objective="relative_interface_mse",
+        output_transform=norm,
+    )
+    assert result["relative_mse"] < 1e-12
+    unnormalized = interface_diagnostics(
+        relay, [(x, y)], device=torch.device("cpu"), objective="relative_interface_mse"
+    )
+    assert unnormalized["relative_mse"] > 0.1
