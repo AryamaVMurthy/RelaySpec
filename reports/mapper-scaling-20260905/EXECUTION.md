@@ -420,3 +420,22 @@ whose exact-cache equivalence gate exists only for DFlash. The batch driver
 now checks campaign target/proposer identity against cache metadata and
 selects family-specific controls and dependency paths. No new EAGLE fits
 have run at this declaration point.
+
+
+## Longer-answer development decoding declaration
+
+The EAGLE capacity pilot is job27793, source5aad553, queued after the
+regularization allocation releases. No full EAGLE capacity fits are promoted
+until that exact-cache pilot passes.
+
+The new build_small_data_quality_campaign.py verifies nine completed
+small-data checkpoints and their fit/cache gates before emitting a four-request
+pilot and128-request development configuration, both capped at2048 output
+tokens. They compare dense N512/2048, factor1024 N512, factor4096 N2048,
+MLP4096 N2048, and factor512/MLP512 N2048 at8192 and32768 updates, plus
+AR/native/source references. The latter continuation uses the same2048
+distinct examples. This is decoding only. It tests whether longer training
+changes deployed speed or answer quality. These exposed MATH prompts are
+development data, not independent confirmation. Cap hits must be reported.
+The full128-request campaign remains gated on the sub-ten-minute pilot
+and its measured runtime. Generated configurations rebuild byte-identically.

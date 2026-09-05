@@ -1,12 +1,8 @@
 {
   "status": "incomplete",
   "expected_cells": 76,
-  "completed_cells": 60,
+  "completed_cells": 64,
   "missing_cells": [
-    "dense-n2048-s1729-l2-0.0001",
-    "dense-n2048-s1729-l2-1e-05",
-    "dense-n2048-s1729-l2-1e-06",
-    "dense-n2048-s1729-l2-1e-07",
     "dense-n2048-s1729-wd-0.0001",
     "dense-n2048-s1729-wd-0.001",
     "dense-n2048-s1729-wd-0.01",
@@ -15213,6 +15209,966 @@
         "step-002048.pt": "839b2b8c6855c6643975114c224288d6b7d96bc6a15559600a4208877559b3cb",
         "step-004096.pt": "7de49e74c0a8c2bfaaf0ea24941bda3cb834ba7b633c9233ef25506e0748c766",
         "step-008192.pt": "32641674fa7f31edf94f41631143b84066ea54f3b606d7a60f162cc5b25d5222"
+      }
+    },
+    "dense-n2048-s1729-l2-0.0001": {
+      "trial": {
+        "name": "dense-n2048-s1729-l2-0.0001",
+        "study": "regularization",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0001,
+        "weight_decay": 0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "parameters": 52428800,
+      "train_objective": 0.2686942371656187,
+      "validation_objective": 0.2662311584717827,
+      "best_validation_step": 2048,
+      "validation_trajectory": [
+        {
+          "step": 0,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 4.279390192590654,
+              "relative_mse": 4.279390192590654,
+              "cosine_error": 1.0018441816791892,
+              "relative_norm_error": 0.7741959390696138
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 4.292802511714399,
+              "relative_mse": 4.292802511714399,
+              "cosine_error": 1.0018318401416764,
+              "relative_norm_error": 0.7777143398416229
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 128,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.2894406747072935,
+              "relative_mse": 0.2894406747072935,
+              "cosine_error": 0.1564566590823233,
+              "relative_norm_error": 0.17885533504886553
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.3034637317759916,
+              "relative_mse": 0.3034637317759916,
+              "cosine_error": 0.1652052557983552,
+              "relative_norm_error": 0.18680717432289384
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 512,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.2717199680628255,
+              "relative_mse": 0.2717199680628255,
+              "cosine_error": 0.14892666862579063,
+              "relative_norm_error": 0.14703599858330563
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.26923885782889556,
+              "relative_mse": 0.26923885782889556,
+              "cosine_error": 0.147240928694373,
+              "relative_norm_error": 0.1451683383056661
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 1024,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.26866432186216116,
+              "relative_mse": 0.26866432186216116,
+              "cosine_error": 0.14735098063829355,
+              "relative_norm_error": 0.14374913193751127
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.26626737746119034,
+              "relative_mse": 0.26626737746119034,
+              "cosine_error": 0.14572367048822343,
+              "relative_norm_error": 0.14155348270287504
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 1536,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.26829974149586633,
+              "relative_mse": 0.26829974149586633,
+              "cosine_error": 0.1472149221226573,
+              "relative_norm_error": 0.14382226680754684
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.26590215841133613,
+              "relative_mse": 0.26590215841133613,
+              "cosine_error": 0.1455919480868033,
+              "relative_norm_error": 0.14167619548243238
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 2048,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.2682774302083999,
+              "relative_mse": 0.2682774302083999,
+              "cosine_error": 0.14723689513630234,
+              "relative_norm_error": 0.143651815073099
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.2658654327824479,
+              "relative_mse": 0.2658654327824479,
+              "cosine_error": 0.14560926828562515,
+              "relative_norm_error": 0.14155087141989497
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 4096,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.2684717669035308,
+              "relative_mse": 0.2684717669035308,
+              "cosine_error": 0.1473900409473572,
+              "relative_norm_error": 0.14438024247647263
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.2660246990126325,
+              "relative_mse": 0.2660246990126325,
+              "cosine_error": 0.14574784180877032,
+              "relative_norm_error": 0.14238979295623722
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 8192,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.2686942371656187,
+              "relative_mse": 0.2686942371656187,
+              "cosine_error": 0.1475114563072566,
+              "relative_norm_error": 0.14412109783734195
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.2662311584717827,
+              "relative_mse": 0.2662311584717827,
+              "cosine_error": 0.14586191013950156,
+              "relative_norm_error": 0.14221237543824827
+            }
+          },
+          "regularization_included": false
+        }
+      ],
+      "timing": {
+        "loop_seconds": 131.40394341759384,
+        "setup_seconds": 28.392346622888,
+        "input_io_seconds": 1.9674328570254147,
+        "validation_seconds": 17.413665663916618
+      },
+      "peak_gpu_bytes": 19142448640,
+      "raw_directory": "reports/mapper-scaling-20260905/regularization-wave3/run-27787/fitting/dense-n2048-s1729-l2-0.0001",
+      "fit_sha256": "52e6d34353d6fdf696dd92e49beb129e8e400c1d4e35e15d46cad2ea546c8f4a",
+      "validation_sha256": "815e756473c39aa08cc7270f3329d2c06cc47792ea24f897a104f3b94d980936",
+      "batch_gate_sha256": "93955414acb41a6e3c63d2ea7cc36088d3728a3d0e2aabf433d3b8062b5ba35b",
+      "checkpoint_sha256": {
+        "step-000128.pt": "9af2af5b460c56d659b520cbe869ce9d309267488a516d75d6a0a754a7e582e6",
+        "step-000512.pt": "9cfac05bab67933fdc9b2cf5b60d604f297a1b5530baba9bd2c6d38530b5322a",
+        "step-001024.pt": "6985d21e7e9b579f68a035690963db0fb88188a38f2d55a34d99d67182f09973",
+        "step-001536.pt": "bd6895ffd84c719806cb8e50e271827737c5d462db53d1a3c02a2b9598d46c7c",
+        "step-002048.pt": "7961f73c905b1bec6f548128dfbccfd06f37ee66a7b382b692c1055e493bf57d",
+        "step-004096.pt": "127fbe59e09691e50e4956be0870db653c1ec40a7b9d2c0dfbe73af5a6e3e46a",
+        "step-008192.pt": "bcb212cd170738e8a74fbfad4ccbf7d020e4f36bb1b7bed4aad90fb00da6edfc"
+      }
+    },
+    "dense-n2048-s1729-l2-1e-05": {
+      "trial": {
+        "name": "dense-n2048-s1729-l2-1e-05",
+        "study": "regularization",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 1e-05,
+        "weight_decay": 0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "parameters": 52428800,
+      "train_objective": 0.21938331064302474,
+      "validation_objective": 0.21991389805043582,
+      "best_validation_step": 2048,
+      "validation_trajectory": [
+        {
+          "step": 0,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 4.279390192590654,
+              "relative_mse": 4.279390192590654,
+              "cosine_error": 1.0018441816791892,
+              "relative_norm_error": 0.7741959390696138
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 4.292802511714399,
+              "relative_mse": 4.292802511714399,
+              "cosine_error": 1.0018318401416764,
+              "relative_norm_error": 0.7777143398416229
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 128,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.272065635304898,
+              "relative_mse": 0.272065635304898,
+              "cosine_error": 0.14587435431894846,
+              "relative_norm_error": 0.1566021030594129
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.2893438989704009,
+              "relative_mse": 0.2893438989704009,
+              "cosine_error": 0.1566391285159625,
+              "relative_norm_error": 0.1678052609640872
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 512,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.22813429805682972,
+              "relative_mse": 0.22813429805682972,
+              "cosine_error": 0.12342948431614786,
+              "relative_norm_error": 0.1248307568312157
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.2277683698630426,
+              "relative_mse": 0.2277683698630426,
+              "cosine_error": 0.12308631808991777,
+              "relative_norm_error": 0.12476056567538762
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 1024,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.21989305008901283,
+              "relative_mse": 0.21989305008901283,
+              "cosine_error": 0.11899853960494511,
+              "relative_norm_error": 0.11763521467219107
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.2203231559979031,
+              "relative_mse": 0.2203231559979031,
+              "cosine_error": 0.11911503606825136,
+              "relative_norm_error": 0.11602750531164929
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 1536,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.2180818680790253,
+              "relative_mse": 0.2180818680790253,
+              "cosine_error": 0.11806297866860405,
+              "relative_norm_error": 0.1164056010893546
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.21876245641033165,
+              "relative_mse": 0.21876245641033165,
+              "cosine_error": 0.11833038734039292,
+              "relative_norm_error": 0.1144750505554839
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 2048,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.21771492052357644,
+              "relative_mse": 0.21771492052357644,
+              "cosine_error": 0.11791385142714716,
+              "relative_norm_error": 0.11631253792438656
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.21845716831739992,
+              "relative_mse": 0.21845716831739992,
+              "cosine_error": 0.11822059014957631,
+              "relative_norm_error": 0.11432061657251325
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 4096,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.21857575222384185,
+              "relative_mse": 0.21857575222384185,
+              "cosine_error": 0.11851479130564258,
+              "relative_norm_error": 0.11676946294028312
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.21921513465349562,
+              "relative_mse": 0.21921513465349562,
+              "cosine_error": 0.11876786236098269,
+              "relative_norm_error": 0.11482778620120371
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 8192,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.21938331064302474,
+              "relative_mse": 0.21938331064302474,
+              "cosine_error": 0.11901917133945972,
+              "relative_norm_error": 0.11608816432999447
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.21991389805043582,
+              "relative_mse": 0.21991389805043582,
+              "cosine_error": 0.11921083718334557,
+              "relative_norm_error": 0.11426520271925256
+            }
+          },
+          "regularization_included": false
+        }
+      ],
+      "timing": {
+        "loop_seconds": 131.78619516594335,
+        "setup_seconds": 28.292636314872652,
+        "input_io_seconds": 1.94736393308267,
+        "validation_seconds": 17.51444029668346
+      },
+      "peak_gpu_bytes": 19142448640,
+      "raw_directory": "reports/mapper-scaling-20260905/regularization-wave3/run-27787/fitting/dense-n2048-s1729-l2-1e-05",
+      "fit_sha256": "85f27e7949b040eced33aef0fd613b579d752804fa898d928c4dd4216c3a83be",
+      "validation_sha256": "881cde824c8d3fd13d87f4bd0b5ed16a8b06c4fa7ba6556c35eb1a3d4524fa8b",
+      "batch_gate_sha256": "93955414acb41a6e3c63d2ea7cc36088d3728a3d0e2aabf433d3b8062b5ba35b",
+      "checkpoint_sha256": {
+        "step-000128.pt": "ecc36ecf6660098c96e51008ba4c23b131770ebcb4735ebfec238ed3ff9b3c80",
+        "step-000512.pt": "a7284958876ce3060ff5ba8641e0d59cf41f7ab86340557e08076ae9ac6fe549",
+        "step-001024.pt": "14f9c533c8c93101fb20bf3bcc40f654aa468b06db48e52c17ca341896a800f5",
+        "step-001536.pt": "86c6b3b328776125628a104bb640d7049623a289315feaa2f080bd969ee963a6",
+        "step-002048.pt": "d51376940509b5d859819fcc14a4bc6f0be3c5ea397781bedf3533a5b253a123",
+        "step-004096.pt": "14560478a7e58da8ed65cbba4d809c5459c50be2ac8d19474ef330055709490d",
+        "step-008192.pt": "6cd97898ed7f04fa943866942794fa6fa2760870aede20508617ed3a3ea52028"
+      }
+    },
+    "dense-n2048-s1729-l2-1e-06": {
+      "trial": {
+        "name": "dense-n2048-s1729-l2-1e-06",
+        "study": "regularization",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 1e-06,
+        "weight_decay": 0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "parameters": 52428800,
+      "train_objective": 0.19000552178476937,
+      "validation_objective": 0.19487065054272534,
+      "best_validation_step": 8192,
+      "validation_trajectory": [
+        {
+          "step": 0,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 4.279390192590654,
+              "relative_mse": 4.279390192590654,
+              "cosine_error": 1.0018441816791892,
+              "relative_norm_error": 0.7741959390696138
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 4.292802511714399,
+              "relative_mse": 4.292802511714399,
+              "cosine_error": 1.0018318401416764,
+              "relative_norm_error": 0.7777143398416229
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 128,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.2691706788027659,
+              "relative_mse": 0.2691706788027659,
+              "cosine_error": 0.1441034340823535,
+              "relative_norm_error": 0.15203058076440357
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.28700407630822156,
+              "relative_mse": 0.28700407630822156,
+              "cosine_error": 0.15521911591349635,
+              "relative_norm_error": 0.16386738837172743
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 512,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.21557237661909312,
+              "relative_mse": 0.21557237661909312,
+              "cosine_error": 0.1161400139098987,
+              "relative_norm_error": 0.11750599529477768
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.2164840202894993,
+              "relative_mse": 0.2164840202894993,
+              "cosine_error": 0.11657766229473054,
+              "relative_norm_error": 0.11872532459528884
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 1024,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.20075285475468263,
+              "relative_mse": 0.20075285475468263,
+              "cosine_error": 0.10801520737004466,
+              "relative_norm_error": 0.10734423555550165
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.2036100384866586,
+              "relative_mse": 0.2036100384866586,
+              "cosine_error": 0.10956360603813664,
+              "relative_norm_error": 0.10681832963018678
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 1536,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.19535570306470618,
+              "relative_mse": 0.19535570306470618,
+              "cosine_error": 0.10506518656620756,
+              "relative_norm_error": 0.1042919353058096
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.19917893799720332,
+              "relative_mse": 0.19917893799720332,
+              "cosine_error": 0.1071716711303452,
+              "relative_norm_error": 0.10322823731985409
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 2048,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.19275559997186065,
+              "relative_mse": 0.19275559997186065,
+              "cosine_error": 0.10365800114232115,
+              "relative_norm_error": 0.10293877265939955
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.1971010491688503,
+              "relative_mse": 0.1971010491688503,
+              "cosine_error": 0.10606839433239657,
+              "relative_norm_error": 0.10162677786502172
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 4096,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.19008777476847172,
+              "relative_mse": 0.19008777476847172,
+              "cosine_error": 0.1022835064213723,
+              "relative_norm_error": 0.10191333333204966
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.19499001822259743,
+              "relative_mse": 0.19499001822259743,
+              "cosine_error": 0.10502298197025084,
+              "relative_norm_error": 0.10038781564071542
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 8192,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.19000552178476937,
+              "relative_mse": 0.19000552178476937,
+              "cosine_error": 0.10233945306390524,
+              "relative_norm_error": 0.10099063593952451
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.19487065054272534,
+              "relative_mse": 0.19487065054272534,
+              "cosine_error": 0.1050564871984534,
+              "relative_norm_error": 0.09951728528540116
+            }
+          },
+          "regularization_included": false
+        }
+      ],
+      "timing": {
+        "loop_seconds": 131.23729107202962,
+        "setup_seconds": 28.29265595274046,
+        "input_io_seconds": 1.9225651593878865,
+        "validation_seconds": 17.192300861235708
+      },
+      "peak_gpu_bytes": 19142448640,
+      "raw_directory": "reports/mapper-scaling-20260905/regularization-wave3/run-27787/fitting/dense-n2048-s1729-l2-1e-06",
+      "fit_sha256": "ad63dbd92c90be643ab5e5956265dce1975a964db0732b9a517b37900b9ed9fa",
+      "validation_sha256": "400c67b143af848e6258a23ca962cbdc8f3f5d1607ef00dedcccb0ccbcc2b09f",
+      "batch_gate_sha256": "93955414acb41a6e3c63d2ea7cc36088d3728a3d0e2aabf433d3b8062b5ba35b",
+      "checkpoint_sha256": {
+        "step-000128.pt": "4939747395c9b8cd1dba0978e43a305a2706d540f400981fedcb505af79d7727",
+        "step-000512.pt": "7b775db594417a7bd127aaf3bf59423729cdb9b8bc300872de91f568328714b3",
+        "step-001024.pt": "f60811b6de3e0c9945c96d7777daf3617972c93d0b50dd4ef592fd9e0bce133f",
+        "step-001536.pt": "2155a44a5bc29dc97947a9f6655bf10761adc5b512143f746271fc14ccd100f4",
+        "step-002048.pt": "2efb1415d0a48fcb9c1128f95dd25c49ebe7d07ca21fe23f605f12580247bd40",
+        "step-004096.pt": "2de4d1a865be20b75e2be281bda75c67401f92d351dd42f9c463d6bd784b2609",
+        "step-008192.pt": "b4b10822bc68f4fe5c6d08fc69a7da9761cd658fa2672d61a18eb0cb5d5e26a8"
+      }
+    },
+    "dense-n2048-s1729-l2-1e-07": {
+      "trial": {
+        "name": "dense-n2048-s1729-l2-1e-07",
+        "study": "regularization",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 1e-07,
+        "weight_decay": 0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "parameters": 52428800,
+      "train_objective": 0.17520329519174993,
+      "validation_objective": 0.18423948513373034,
+      "best_validation_step": 8192,
+      "validation_trajectory": [
+        {
+          "step": 0,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 4.279390192590654,
+              "relative_mse": 4.279390192590654,
+              "cosine_error": 1.0018441816791892,
+              "relative_norm_error": 0.7741959390696138
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 4.292802511714399,
+              "relative_mse": 4.292802511714399,
+              "cosine_error": 1.0018318401416764,
+              "relative_norm_error": 0.7777143398416229
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 128,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.2688514380133711,
+              "relative_mse": 0.2688514380133711,
+              "cosine_error": 0.1439055407536216,
+              "relative_norm_error": 0.15142763062613085
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.28674504977243487,
+              "relative_mse": 0.28674504977243487,
+              "cosine_error": 0.15506025118520483,
+              "relative_norm_error": 0.1633317291853018
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 512,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.21350143558811396,
+              "relative_mse": 0.21350143558811396,
+              "cosine_error": 0.11493598954984918,
+              "relative_norm_error": 0.11609818431315944
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.21467671493883245,
+              "relative_mse": 0.21467671493883245,
+              "cosine_error": 0.11553322084364481,
+              "relative_norm_error": 0.11759885289211525
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 1024,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.1966242280905135,
+              "relative_mse": 0.1966242280905135,
+              "cosine_error": 0.10564797173719853,
+              "relative_norm_error": 0.10497127694543451
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.20014906103460817,
+              "relative_mse": 0.20014906103460817,
+              "cosine_error": 0.10758568037272198,
+              "relative_norm_error": 0.10483603597822366
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 1536,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.18956891493871808,
+              "relative_mse": 0.18956891493871808,
+              "cosine_error": 0.10176126271835528,
+              "relative_norm_error": 0.10108134751499165
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.19447928477893583,
+              "relative_mse": 0.19447928477893583,
+              "cosine_error": 0.10449536964006256,
+              "relative_norm_error": 0.10046191466244636
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 2048,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.1856003025895916,
+              "relative_mse": 0.1856003025895916,
+              "cosine_error": 0.09958097683556844,
+              "relative_norm_error": 0.09900269962963648
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.19145228917477652,
+              "relative_mse": 0.19145228917477652,
+              "cosine_error": 0.1028552461284562,
+              "relative_norm_error": 0.09817066569303279
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 4096,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.1789008752675727,
+              "relative_mse": 0.1789008752675727,
+              "cosine_error": 0.09593066506204195,
+              "relative_norm_error": 0.09551807220850606
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.18668901455384912,
+              "relative_mse": 0.18668901455384912,
+              "cosine_error": 0.10031340521163656,
+              "relative_norm_error": 0.09442057953492622
+            }
+          },
+          "regularization_included": false
+        },
+        {
+          "step": 8192,
+          "groups": {
+            "train": {
+              "records": 256,
+              "tokens": 48168,
+              "objective": 0.17520329519174993,
+              "relative_mse": 0.17520329519174993,
+              "cosine_error": 0.09396576412837021,
+              "relative_norm_error": 0.09281124945846386
+            },
+            "validation": {
+              "records": 1024,
+              "tokens": 192967,
+              "objective": 0.18423948513373034,
+              "relative_mse": 0.18423948513373034,
+              "cosine_error": 0.09905241369779105,
+              "relative_norm_error": 0.0917306613009714
+            }
+          },
+          "regularization_included": false
+        }
+      ],
+      "timing": {
+        "loop_seconds": 130.76957279909402,
+        "setup_seconds": 28.4318389990367,
+        "input_io_seconds": 1.9207167676649988,
+        "validation_seconds": 17.146886720787734
+      },
+      "peak_gpu_bytes": 19142448640,
+      "raw_directory": "reports/mapper-scaling-20260905/regularization-wave3/run-27787/fitting/dense-n2048-s1729-l2-1e-07",
+      "fit_sha256": "096481446a856e434aeff3606109231fb698d2a410eb1d75e575e0101c40fa65",
+      "validation_sha256": "2bdc9d14dbd8a2b7a1a939bea8364386f8ce56d5883a638991973b7d14b1e6a0",
+      "batch_gate_sha256": "93955414acb41a6e3c63d2ea7cc36088d3728a3d0e2aabf433d3b8062b5ba35b",
+      "checkpoint_sha256": {
+        "step-000128.pt": "75ae0880967b37b7d5efccbb080bbdc673c7ae3fd1a9f5b65c51d51a5700104e",
+        "step-000512.pt": "2268102bf2d3876e7f468b01a6e39bad6477a85f1adbbbd63c534d98c9f1b2fc",
+        "step-001024.pt": "871b57b1c4d188210864d630b5fe8c01453f207e8209d1043f54f246581b1caa",
+        "step-001536.pt": "6c3f6487802d89e4ffec248fc4cbf8456aeecf94838ac2f45553a0b6f0589b17",
+        "step-002048.pt": "3f7830bd26b2c1205eb55453eced15a1f6b2687387486d43a49e45d259380b82",
+        "step-004096.pt": "6c6db795faf99c45012a266bb2c14c14bc3421fa9fd7ee72a04f4d832ab499fd",
+        "step-008192.pt": "47418e2bd496c1ba489721f543e4199343049210f6c73515855bb7f2267b4895"
       }
     }
   },
