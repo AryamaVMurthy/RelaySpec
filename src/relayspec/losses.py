@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+
 import torch
 import torch.nn.functional as F
 
@@ -206,3 +208,15 @@ def proposal_kl_loss(
         teacher_probabilities * (teacher_log_probabilities - student_log_probabilities)
     ).sum(dim=-1)
     return token_kl.mean() * (temperature**2)
+
+
+def explicit_l2_penalty(parameters, coefficient: float) -> torch.Tensor:
+    """lambda/2 * sum(w**2) over trainable parameters, distinct from AdamW decay."""
+    if not math.isfinite(coefficient) or coefficient < 0:
+        raise ValueError("L2 coefficient must be finite and non-negative")
+    weights = [p for p in parameters if p.requires_grad]
+    if not weights:
+        raise ValueError("L2 requires at least one trainable parameter")
+    if coefficient == 0:
+        return weights[0].new_zeros((), dtype=torch.float32)
+    return (coefficient / 2) * sum(p.float().square().sum() for p in weights)

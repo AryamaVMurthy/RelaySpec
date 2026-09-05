@@ -13,6 +13,8 @@ from pathlib import Path
 import torch
 import yaml
 
+from relayspec.scaling_trials import validate_trial
+
 
 def run(command, env):
     subprocess.run(command, env=env, check=True)
@@ -32,9 +34,12 @@ def main():
             "data1024",
             "data2048",
         ],
-        required=True,
+        default="pilot",
     )
+    parser.add_argument("--trial-config", type=Path)
     args = parser.parse_args()
+    trial = json.loads(args.trial_config.read_text()) if args.trial_config else None
+    budget = validate_trial(trial) if trial else None
     output = Path(os.environ["RELAYSPEC_OUTPUT"])
     output.mkdir(parents=True, exist_ok=True)
     python = os.environ["RELAYSPEC_PYTHON"]
@@ -64,8 +69,58 @@ def main():
             "configs/protocol_active/train_dflash_qwen3_8b_relative_4gpu.yaml"
         ).read_text()
     )
-    train["run_name"] = f"controlled-{args.experiment}-{os.environ['SLURM_JOB_ID']}"
+    if trial:
+        distinct = int(trial["distinct_examples"])
+        steps = budget["steps"]
+        saves = [steps]
+        pilot = trial["stage"] == "pilot"
+        train["seed"] = int(trial["seed"])
+        train["relay_training"].update(
+            factorized_rank=trial.get("width")
+            if trial["architecture"] == "factorized"
+            else None,
+            mlp_hidden_width=trial.get("width")
+            if trial["architecture"] == "mlp"
+            else None,
+            l2_weight=float(trial.get("l2_weight", 0.0)),
+            weight_decay=float(trial.get("weight_decay", 0.0)),
+        )
+        (output / "trial.json").write_text(
+            json.dumps(
+                {
+                    "spec": trial,
+                    "budget": budget,
+                    "config_sha256": hashlib.sha256(
+                        args.trial_config.read_bytes()
+                    ).hexdigest(),
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+    train["run_name"] = (
+        f"controlled-{trial['name'] if trial else args.experiment}-{os.environ['SLURM_JOB_ID']}"
+    )
     manifest = json.loads(Path(train["relay_training"]["manifest_path"]).read_text())
+    if trial:
+        if distinct + 32 > len(manifest["records"]):
+            raise ValueError(
+                "trial requires 32 disjoint fitting-validation records beyond the fit budget"
+            )
+        validation_path = output / "validation-manifest.json"
+        validation_path.write_text(
+            json.dumps(
+                {
+                    "records": manifest["records"][-32:],
+                    "role": "fitting validation for this trial; historically exposed training pool",
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+        train["relay_training"]["validation_manifest_path"] = str(validation_path)
+    if distinct > len(manifest["records"]):
+        raise ValueError("declared distinct budget exceeds available manifest")
     manifest["records"] = manifest["records"][:distinct]
     manifest_path = output / "fit-manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
@@ -141,6 +196,10 @@ def main():
         warmups=1,
     )
     benchmark["generation"]["max_new_tokens"] = 64 if pilot else 2048
+    if trial:
+        benchmark["benchmark"]["max_prompts"] = budget["max_prompts"]
+        benchmark["benchmark"]["profile_regions"] = False
+        benchmark["generation"]["max_new_tokens"] = budget["max_new_tokens"]
     for check in checks:
         config = copy.deepcopy(benchmark)
         config["run_name"] = train["run_name"] + f"-step{check['step']}"
@@ -221,6 +280,10 @@ def main():
                 "experiment": args.experiment,
                 "evaluated_steps": saves,
                 "pilot": pilot,
+                "trial": trial,
+                "evaluation_role": budget["role"]
+                if budget
+                else "historical development-exposed evaluation",
             },
             indent=2,
         )

@@ -34,6 +34,7 @@ class TargetFeatureRelay(nn.Module):
         delta_rank: int | None = None,
         delta_nonlinear: bool = False,
         mlp_hidden_width: int | None = None,
+        factorized_rank: int | None = None,
     ) -> None:
         super().__init__()
         if target_hidden_size <= 0 or num_taps <= 0 or draft_hidden_size <= 0:
@@ -54,7 +55,19 @@ class TargetFeatureRelay(nn.Module):
         self.mlp_hidden_width = (
             int(mlp_hidden_width) if mlp_hidden_width is not None else None
         )
-        if self.mlp_hidden_width is not None:
+        self.factorized_rank = (
+            int(factorized_rank) if factorized_rank is not None else None
+        )
+        if self.factorized_rank is not None and self.mlp_hidden_width is not None:
+            raise ValueError("factorized rank and MLP width are alternative maps")
+        if self.factorized_rank is not None:
+            if self.factorized_rank <= 0:
+                raise ValueError("factorized rank must be positive")
+            self.projection = nn.Sequential(
+                nn.Linear(self.input_width, self.factorized_rank, bias=False),
+                nn.Linear(self.factorized_rank, draft_hidden_size, bias=False),
+            )
+        elif self.mlp_hidden_width is not None:
             if self.mlp_hidden_width <= 0:
                 raise ValueError("mlp hidden width must be positive")
             self.projection = nn.Sequential(

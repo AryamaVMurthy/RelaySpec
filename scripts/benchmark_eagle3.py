@@ -250,6 +250,8 @@ def main() -> None:
             draft_hidden_size=source_draft.config.hidden_size,
             eps=target.config.rms_norm_eps,
             normalize_input=relay_architecture == "normalized_linear",
+            mlp_hidden_width=checkpoint.get("mlp_hidden_width"),
+            factorized_rank=checkpoint.get("factorized_rank"),
         )
         relay.load_state_dict(checkpoint["relay"], strict=True)
         relay = relay.to(device=device, dtype=torch.bfloat16).eval()

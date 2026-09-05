@@ -248,6 +248,7 @@ def main() -> None:
         delta_rank = checkpoint.get("delta_rank")
         delta_nonlinear = bool(checkpoint.get("delta_nonlinear", False))
         mlp_hidden_width = checkpoint.get("mlp_hidden_width")
+        factorized_rank = checkpoint.get("factorized_rank")
         # E4-P1: an adapted checkpoint's projection weight belongs to the
         # frozen base relay's native target, not the target being served
         # here, so its width must come from the checkpoint, not from this
@@ -258,7 +259,7 @@ def main() -> None:
         # which architecture this checkpoint actually is.
         projection_weight_key = (
             "projection.0.weight"
-            if mlp_hidden_width is not None
+            if mlp_hidden_width is not None or factorized_rank is not None
             else "projection.weight"
         )
         native_input_width = checkpoint["relay"][projection_weight_key].shape[1]
@@ -273,6 +274,7 @@ def main() -> None:
             delta_rank=delta_rank,
             delta_nonlinear=delta_nonlinear,
             mlp_hidden_width=mlp_hidden_width,
+            factorized_rank=factorized_rank,
         )
         relay.load_state_dict(checkpoint["relay"], strict=True)
         relay = relay.to(device=device, dtype=torch.bfloat16).eval()

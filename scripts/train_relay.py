@@ -20,9 +20,11 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from relayspec.benchmarking import resolve_revision
 from relayspec.dflash import import_official_dflash
 from relayspec.eagle3 import import_official_eagle3
+from relayspec.fitting_validation import interface_diagnostics, validate_fit_split
 from relayspec.generation import _conditioned_dflash_forward
 from relayspec.losses import (
     expected_accepted_length_surrogate,
+    explicit_l2_penalty,
     greedy_agreement_ce,
     hard_accepted_prefix_diagnostic,
     interface_alignment_loss,
@@ -233,6 +235,10 @@ def main() -> None:
     # docs/plans/2026-09-02-relayspec-source-free-adaptive-relay-plan.md
     # section 3.5, P1. Mutually exclusive with the ordinary warm-start
     # mechanism below: a frozen base is a fixed decoder, not a starting point.
+    factorized_rank = training.get("factorized_rank")
+    l2_weight = float(training.get("l2_weight", 0.0))
+    if l2_weight and float(training["weight_decay"]):
+        raise ValueError("controlled L2 and AdamW weight decay must be separate arms")
     freeze_base_relay = bool(training.get("freeze_base_relay", False))
     # E3 Stage B: freeze a relay already fit for one target and train only a
     # small low-rank delta on top of it, for a fine-tuned descendant that
@@ -259,6 +265,10 @@ def main() -> None:
             "freeze_base_relay, delta_rank, and initial_checkpoint_path are "
             "alternative mechanisms; do not combine them"
         )
+    if (mlp_hidden_width is not None or factorized_rank is not None) and (
+        freeze_base_relay or delta_rank is not None
+    ):
+        raise ValueError("capacity maps cannot be combined with frozen-base adapters")
     if delta_rank is not None:
         delta_checkpoint_path = training["delta_base_checkpoint_path"]
         delta_checkpoint = torch.load(
@@ -334,6 +344,7 @@ def main() -> None:
             eps=target.config.rms_norm_eps,
             normalize_input=relay_architecture == "normalized_linear",
             mlp_hidden_width=mlp_hidden_width,
+            factorized_rank=factorized_rank,
         ).to(device)
         if initial_checkpoint is not None:
             initial = torch.load(
@@ -485,6 +496,12 @@ def main() -> None:
             "delta_rank": delta_rank,
             "delta_nonlinear": delta_nonlinear,
             "mlp_hidden_width": mlp_hidden_width,
+            "factorized_rank": factorized_rank,
+            "l2_weight": l2_weight,
+            "mapper_parameters": sum(p.numel() for p in relay.parameters()),
+            "trainable_parameters": sum(
+                p.numel() for p in relay.parameters() if p.requires_grad
+            ),
             "supervision": supervision,
             "verifier_objective": (
                 verifier_objective if supervision == "target_verifier" else None
@@ -492,6 +509,86 @@ def main() -> None:
             "regression_anchor_weight": regression_anchor_weight,
         }
 
+    validation_cache = {}
+    validation_path = training.get("validation_manifest_path")
+    if validation_path:
+        if cross_family or supervision != "source_interface" or proposal_weight:
+            raise ValueError(
+                "fitting diagnostics currently require same-tokenizer pure interface fitting"
+            )
+        validation_rows = json.loads(Path(validation_path).read_text())["records"]
+        split = validate_fit_split(records, validation_rows)
+        diagnostic_count = int(training.get("diagnostic_train_examples", 32))
+        if diagnostic_count < world_size or len(validation_rows) < world_size:
+            raise ValueError("diagnostic splits must cover every worker")
+        groups = {"train": records[:diagnostic_count], "validation": validation_rows}
+        with torch.no_grad():
+            for name, group in groups.items():
+                validation_cache[name] = []
+                for row in group[rank::world_size]:
+                    ids = encode_example(
+                        tokenizer, row, int(training["max_length"]), device
+                    )
+                    source_output = source(
+                        ids,
+                        use_cache=False,
+                        output_hidden_states=True,
+                        logits_to_keep=1,
+                    )
+                    context = project_source_interface(
+                        draft,
+                        extract_hidden_taps(
+                            source_output.hidden_states,
+                            tuple(int(v) for v in draft.target_layer_ids),
+                        ),
+                        family=proposer_family,
+                    )
+                    del source_output
+                    target_output = target(
+                        ids,
+                        use_cache=False,
+                        output_hidden_states=True,
+                        logits_to_keep=1,
+                    )
+                    features = extract_hidden_taps(
+                        target_output.hidden_states, target_layer_ids
+                    )
+                    validation_cache[name].append((features.cpu(), context.cpu()))
+                    del target_output, features, context
+        if rank == 0:
+            (output_dir / "validation-split.json").write_text(
+                json.dumps(split, indent=2) + "\n"
+            )
+    validation_seconds = 0.0
+
+    def record_validation(saved_step):
+        if not validation_cache:
+            return
+        result = {
+            name: interface_diagnostics(
+                relay,
+                examples,
+                device=device,
+                objective=feature_objective,
+                historical_cosine_weight=historical_cosine_weight,
+            )
+            for name, examples in validation_cache.items()
+        }
+        with (output_dir / f"fitting-validation-rank{rank}.jsonl").open("a") as handle:
+            handle.write(
+                json.dumps(
+                    {
+                        "step": saved_step,
+                        "rank": rank,
+                        "groups": result,
+                        "weighting": "mean per record; reduce workers using record counts",
+                        "regularization_included": False,
+                    }
+                )
+                + "\n"
+            )
+
+    record_validation(0)
     started = time.perf_counter()
     with metrics_path.open("x", encoding="utf-8") as metrics:
         iterator = islice(cycle(local_rows), steps)
@@ -775,7 +872,8 @@ def main() -> None:
                     objective=feature_objective,
                     historical_cosine_weight=historical_cosine_weight,
                 )
-            loss = feature_loss + proposal_weight * proposal_kl
+            l2_penalty = explicit_l2_penalty(distributed.parameters(), l2_weight)
+            loss = feature_loss + proposal_weight * proposal_kl + l2_penalty
             loss.backward()
             gradient_clip = training.get("gradient_clip")
             if gradient_clip is None:
@@ -795,6 +893,10 @@ def main() -> None:
                 )
             optimizer.step()
             if step in checkpoint_steps:
+                validation_started = time.perf_counter()
+                record_validation(step)
+                torch.cuda.synchronize()
+                validation_seconds += time.perf_counter() - validation_started
                 torch.cuda.synchronize()
                 save_started = time.perf_counter()
                 dist.barrier()
@@ -803,7 +905,10 @@ def main() -> None:
                         checkpoint_dir / f"step-{step:06d}.pt",
                         checkpoint_payload(step),
                         optimizer,
-                        time.perf_counter() - started - checkpoint_seconds,
+                        time.perf_counter()
+                        - started
+                        - checkpoint_seconds
+                        - validation_seconds,
                     )
                 dist.barrier()
                 checkpoint_seconds += time.perf_counter() - save_started
@@ -825,6 +930,9 @@ def main() -> None:
                 "feature_objective": feature_objective,
                 "feature_loss": float(feature_loss.detach().item()),
                 "loss": float(loss.detach().item()),
+                "l2_penalty": float(l2_penalty.detach().item()),
+                "l2_weight": l2_weight,
+                "weight_decay": float(training["weight_decay"]),
                 "gradient_norm": float(gradient_norm.detach().item()),
                 "elapsed_seconds": time.perf_counter() - started,
                 "initialized_from": initial_checkpoint,
@@ -877,6 +985,11 @@ def main() -> None:
             ],
             "data_accounting": accounting,
             "checkpoint_seconds": checkpoint_seconds,
+            "validation_seconds": validation_seconds,
+            "training_seconds_excluding_checkpoint_and_validation": time.perf_counter()
+            - started
+            - checkpoint_seconds
+            - validation_seconds,
             "training_seconds_excluding_checkpoint_io": time.perf_counter()
             - started
             - checkpoint_seconds,
