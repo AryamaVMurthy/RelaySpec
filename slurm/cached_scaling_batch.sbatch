@@ -35,6 +35,9 @@ access_args=()
 if [[ -n "${RELAYSPEC_CACHE_ACCESS_GATE:-}" ]]; then
   access_args=(--cache-access-gate "$RELAYSPEC_CACHE_ACCESS_GATE")
 fi
+if [[ -n "${RELAYSPEC_CONTINUATION_GATE:-}" ]]; then
+  access_args+=(--continuation-gate "$RELAYSPEC_CONTINUATION_GATE")
+fi
 mkdir -p "$RELAYSPEC_OUTPUT"
 cp SOURCE_COMMIT "$RELAYSPEC_OUTPUT/source-commit.txt"
 tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm SOURCE_COMMIT

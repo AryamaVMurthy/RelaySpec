@@ -84,12 +84,14 @@ def main():
                         "feature_cache",
                         "cached_fit",
                         "cache_access",
+                        "continuation_pilot",
                     }
                     if fitting_only:
                         gate_file = {
                             "feature_cache": "extraction-complete.json",
                             "cached_fit": "batch-gate.json",
                             "cache_access": "cache-access-gate.json",
+                            "continuation_pilot": "continuation-gate.json",
                         }[job["kind"]]
                         gate = json.loads((destination / gate_file).read_text())
                         if gate["status"] != "pass":

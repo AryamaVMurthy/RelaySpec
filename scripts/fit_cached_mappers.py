@@ -18,6 +18,7 @@ from relayspec.feature_cache import (
     record_weighted_loss,
     restore_output_norm,
 )
+from relayspec.fit_continuation import validate_continuation
 from relayspec.fitting_validation import interface_diagnostics
 from relayspec.losses import explicit_l2_penalty, interface_alignment_loss
 from relayspec.relay import TargetFeatureRelay
@@ -218,13 +219,33 @@ def main():
                 + "\n"
             )
 
-    diagnostics(0)
+    start_step = 0
+    tokens_seen = 0
+    if trial.get("resume_from"):
+        if args.equivalence_pilot:
+            raise ValueError("batch-gradient pilot cannot also resume a fit")
+        parent_path = Path(trial["resume_from"])
+        if (
+            hashlib.sha256(parent_path.read_bytes()).hexdigest()
+            != trial["resume_sha256"]
+        ):
+            raise ValueError("continuation state hash mismatch")
+        state = torch.load(parent_path, weights_only=True, map_location="cpu")
+        start_step = validate_continuation(
+            state, trial, hashlib.sha256(index_path.read_bytes()).hexdigest()
+        )
+        relay.load_state_dict(state["relay"], strict=True)
+        optimizer.load_state_dict(state["optimizer"])
+        torch.set_rng_state(state["torch_rng_state"])
+        torch.cuda.set_rng_state(state["cuda_rng_state"], device)
+        tokens_seen = state["tokens_seen"]
+        del state
+    diagnostics(start_step)
     started = time.perf_counter()
     validation_seconds = 0.0
     io_seconds = 0.0
-    tokens_seen = 0
     with (output / "training.jsonl").open("x") as log:
-        for step in range(1, steps + 1):
+        for step in range(start_step + 1, steps + 1):
             io_start = time.perf_counter()
             selected = [entries[((step - 1) * 4 + j) % n] for j in range(4)]
             x, y, mask = pad_feature_batch([get_example(e) for e in selected], device)
@@ -331,6 +352,8 @@ def main():
                 "trial": trial,
                 "parameters": sum(p.numel() for p in relay.parameters()),
                 "steps": steps,
+                "start_step": start_step,
+                "updates_this_job": steps - start_step,
                 "tokens_seen": tokens_seen,
                 "record_presentations": steps * 4,
                 "epochs": steps * 4 / n,

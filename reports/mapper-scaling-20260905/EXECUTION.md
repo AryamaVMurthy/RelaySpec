@@ -246,3 +246,24 @@ N128/512/2048/8192, with shared AR/native/source controls on16 MATH requests
 capped at256tokens. This analyzes existing data and does not resume large-data
 fitting. It remains a development throughput/acceptance diagnostic, not a
 full-answer quality result. CPU validation:16 targeted tests and lint passed.
+
+
+## Focused first wave and continuation implementation
+
+Job27736 completed eight-map decoding in2m20s. The N8192/N2048 paired throughput
+ratios were1.0165 (95% CI0.9859--1.0495) for factor512 and1.0342 (1.0123--1.0615)
+for MLP512, on16 requests capped256tokens. Keep the limited protocol explicit;
+large-data fitting remains paused. All raw outputs and scoring are collected.
+
+Job27737 completed four dense fits in2m59s; fitting-loop times106.8--112.6s,
+input preparation1.8--1.9s. N512 validation objectives across seeds1729/1730/1731
+were0.21008/0.21018/0.20985; N2048 seed1729 was0.18055. These are fitting results,
+not yet dense decoding comparisons. Width64/128 batches27739/27740 follow.
+
+The collector now supports cache-access and continuation pilot gates. Exact
+continuation restores optimizer, mapper, RNG, token count and cyclic sample
+position, rejecting changes to data, seed, loss, learning rate or architecture.
+The bounded pilot compares1024 uninterrupted updates with512+512 for dense
+and MLP512 with explicit L2, checking every loss and final state bit for bit.
+Promotion requires this exact-cache pilot gate. CPU validation:17 targeted tests
+and lint passed. The GPU continuation pilot has not yet run.

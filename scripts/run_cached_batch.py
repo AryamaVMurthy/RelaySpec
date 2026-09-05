@@ -21,6 +21,7 @@ def main():
     parser.add_argument("--mode", choices=["pilot", "fit"], required=True)
     parser.add_argument("--pilot-gate", type=Path, required=True)
     parser.add_argument("--cache-access-gate", type=Path)
+    parser.add_argument("--continuation-gate", type=Path)
     args = parser.parse_args()
     output = Path(os.environ["RELAYSPEC_OUTPUT"])
     cache = Path(os.environ["RELAYSPEC_FEATURE_CACHE"])
@@ -37,6 +38,17 @@ def main():
         else None
     )
     validate_cache_access_gate(trials, access_gate, index_hash)
+    if any(t.get("resume_from") for t in trials):
+        if not args.continuation_gate:
+            raise ValueError("continued fitting requires the exact continuation pilot")
+        continued = json.loads(args.continuation_gate.read_text())
+        if (
+            continued.get("status") != "pass"
+            or continued.get("feature_cache_index_sha256") != index_hash
+            or len(continued.get("pairs", [])) != 4
+            or any(p.get("bit_identical") is not True for p in continued["pairs"])
+        ):
+            raise ValueError("continuation pilot did not pass on this cache")
     if len(trials) != 4 or len({t["name"] for t in trials}) != 4:
         raise ValueError("batch requires four unique candidate trials")
     for trial in trials:
@@ -158,6 +170,11 @@ def main():
                 "cache_access_gate_sha256": (
                     hashlib.sha256(args.cache_access_gate.read_bytes()).hexdigest()
                     if args.cache_access_gate
+                    else None
+                ),
+                "continuation_gate_sha256": (
+                    hashlib.sha256(args.continuation_gate.read_bytes()).hexdigest()
+                    if args.continuation_gate
                     else None
                 ),
                 "checkpoint_sha256": checkpoint_hashes,
