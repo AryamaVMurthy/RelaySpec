@@ -249,3 +249,13 @@ Cache-access pilot27730 is an implementation speed/equivalence check using
 4096 records for mapped I/O and512 for GPU residency, not a new32k data
 scaling experiment. Keep its10minute ceiling; its results may accelerate
 the remaining smaller-data fits.
+
+
+The executable post-pause declaration is now
+`configs/submission/scaling/matrix-focused-v1/matrix.json`: N512/2048,
+30 primary capacity cells,42 nonzero regularization cells and four dense seed
+confirmations, with four prior matching fits reused. See
+`reports/mapper-scaling-20260905/focused-results.json` for explicit completed
+and missing cells. More-epoch continuations use the same smaller fitting sets
+and are separately declared in `continued-small-data.json`. All new jobs
+remain bounded by successful pilots; these declarations do not claim completion.

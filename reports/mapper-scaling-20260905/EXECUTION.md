@@ -267,3 +267,23 @@ The bounded pilot compares1024 uninterrupted updates with512+512 for dense
 and MLP512 with explicit L2, checking every loss and final state bit for bit.
 Promotion requires this exact-cache pilot gate. CPU validation:17 targeted tests
 and lint passed. The GPU continuation pilot has not yet run.
+
+
+## Continuation verified and smaller-data work resumed
+
+Continuation pilot27741 passed in1m11s: dense and MLP uninterrupted1024-update
+fits were bit-identical to512+512 resumed fits for weights, Adam state, RNG,
+token accounting, every training loss and common validation checkpoints.
+The verified gate is continuation-pilot/verified-gate.json; raw artifacts are
+collected. The focused registry now contains16 completed cells out of76,
+including four reused fits and three N512 dense seeds. The study is incomplete.
+
+Job27742 continues the four original width512 factorized/MLP fits at N512/2048,
+from8192 to32768 total optimizer updates. This is MORE EPOCHS ON THE SAME SMALL
+DATASETS, not32768 distinct examples. The explicit config is
+configs/submission/scaling/continued-small-data.json; saved optimizer and exact
+parent hashes are required. It has the10minute job/540second process ceiling.
+Widths256 and1024 follow as27743/27744. All use source d34d85f and four GPUs
+sequentially; collector346496 handles this immutable wave. Widths2048/4096,
+regularization, remaining confirmation and full decoding are still pending.
+No new large-data scaling jobs have been submitted or resumed.
