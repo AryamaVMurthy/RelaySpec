@@ -451,3 +451,33 @@ over its zero-penalty baseline. These are fitting-validation results only.
 Remaining immediate work is to collect the final focused matrix and the two
 new pilots, review their resource/correctness gates, then promote only the
 matching successful small-data paths. Large-data fits remain paused.
+
+
+## Confirmation data and learning-rate declaration
+
+A new GSM8K confirmation manifest freezes256 requests plus a separate256
+reserve from the pinned1319-question test Arrow cache. The reverse lexical
+index was checked against individual existing overlap audits, including
+multiple matches and short duplicates (three tests passed). The scan covers
+381 collected rank files, all existing evaluation manifests,32768 cached
+Numina fitting problems/solutions,1024 validation records and4096 historical
+fitting records. It excludes the128 previously evaluated GSM8K questions;
+1191 candidates survive the declared exact/near rule and within-set filtering.
+This is an audit of existing text, not more large-data fitting. The gate
+records all input/output hashes and does not claim semantic independence or
+global non-exposure. The data builder uses the existing .venv-data interpreter,
+which supplies pyarrow; the ML test interpreter does not contain it.
+
+The confirmation analysis freezes a3-percentage-point quality margin versus
+matched AR and95% throughput retention versus a frozen best development
+mapper, with paired95% intervals and10000 request bootstrap samples. The
+selected checkpoint/config/scorer record is still required before generation.
+Neither confirmation nor reserve outputs have been generated.
+
+The matrix-small-lr-v1 declaration adds eight bounded learning-rate checks:
+width4096 factorized/MLP, N512/2048, rates2e-4 and1.8e-3 versus the existing
+6e-4 trajectories, fixed8192 updates and validation1024. These test whether
+the wide MLP gap reflects optimizer settings or convergence. Every batch
+retains the ten-minute ceiling and existing exact-cache/width correctness
+gates. These fits have not started at declaration. Large-data expansion is
+still paused.

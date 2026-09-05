@@ -1,0 +1,38 @@
+{
+  "status": "data_and_analysis_frozen_model_selection_pending",
+  "dataset": "openai/gsm8k main test",
+  "data_sha256": {
+    "gsm8k-confirmation-256.json": "32547a43396eba226f43639c2dd52d36176beb7b4805bbb9e4d6560f1a6983f0",
+    "gsm8k-reserve-256.json": "1eb17ff4d3b294ad2091f11201f7c027e4fa76fb96b63cf45c5ce7a9de348bab"
+  },
+  "primary_requests": 256,
+  "reserve_requests": 256,
+  "selection_rule": "Freeze one deployment candidate using fitting validation plus existing development decoding before any confirmation generation. Freeze its trained checkpoint hash, comparison checkpoint hashes, model revisions, generation configuration and scorer version in a separate model-selection record. Never tune on confirmation/reserve results.",
+  "primary_quality_comparison": "Selected candidate minus matched native autoregressive target accuracy on the same requests.",
+  "quality_noninferiority_margin_absolute": 0.03,
+  "quality_pass_rule": "Lower endpoint of a paired 95% confidence interval for candidate minus AR accuracy must exceed -0.03. An inconclusive interval does not prove noninferiority.",
+  "primary_speed_comparison": "Selected smaller-data/capacity candidate versus a separately frozen best development mapper, measured on the same requests and allocation.",
+  "speed_retention_threshold": 0.95,
+  "speed_pass_rule": "Lower endpoint of paired 95% interval for ratio of aggregate output tokens per decode second must exceed 0.95 to confirm operational speed retention. Also report total request latency and different output lengths.",
+  "resampling": {
+    "unit": "request",
+    "paired": true,
+    "bootstrap_samples": 10000,
+    "seed": 1729,
+    "interval": "percentile 95%"
+  },
+  "controls": [
+    "native_ar",
+    "native_target_dflash",
+    "optimized_source_reuse"
+  ],
+  "generation": {
+    "temperature": 0.0,
+    "enable_thinking": false,
+    "max_new_tokens": 2048
+  },
+  "cap_handling": "Report cap-hit count/rate and score all requests under the fixed cap. Do not silently remove truncated or failed examples. Diagnose invalid result rows before reporting timing/quality.",
+  "joint_claim": "Require both predeclared speed-retention and quality-noninferiority criteria. Secondary candidate/length/acceptance analyses are exploratory and do not redefine the primary test.",
+  "reserve_policy": "Do not run reserve for tuning, selecting among candidates, or optional sample-size extension after inspecting primary confirmation. It remains available for a separately preregistered future replication.",
+  "scope": "The data gate covers scanned local evaluation history and lexical overlap, not global non-exposure, pretrained-model contamination or semantic/template independence. A successful test concerns the selected setting and sampled GSM8K workload, not a unique global optimum."
+}
