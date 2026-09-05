@@ -18,7 +18,7 @@ Generated 2026-09-05 from the compiled anonymous manuscript and final result art
 | citation resolution | PASS | 42 unique citation keys resolve |
 | generated result assets | PASS | all generated tables, macros, and figures match validated JSON/raw artifacts |
 | prompt separation audits | PASS | exact-overlap and unique-token similarity artifacts reproduce from the fixed manifests |
-| language constraints | FAIL | no semicolon, em dash, banned phrase, or placeholder appears in manuscript source |
+| language constraints | PASS | no semicolon, em dash, banned phrase, or placeholder appears in manuscript source |
 | paragraph overlap | PASS | no exact or at least 0.90 Jaccard duplicate among paragraphs of 35 or more words |
 | fit and evaluation exact-overlap audit | PASS | 0 normalized exact matches across 4,096 fit and 1,250 evaluation records |
 | compiled LaTeX log | PASS | no undefined citation, undefined reference, or overfull box |
