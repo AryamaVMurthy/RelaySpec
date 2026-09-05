@@ -602,3 +602,11 @@ and RNG before the original optimizer update. The equality gate remains
 unchanged. This gathers boundary evidence before choosing a fix, and its
 instrumented timing is not a scientific training-cost result. Nineteen
 existing adaptation, LoRA and mapper-campaign tests and targeted lint pass.
+
+Queued diagnostic27811 afterany27806 and EAGLE decoding27812 afterany27811
+from immutable source5d44306. Each requests four L40S GPUs with a540second
+process timeout and ten-minute Slurm ceiling. The dependency chain keeps
+total allocation at four GPUs and preserves the independent quality run.
+The EAGLE correctness pilot27793 already passed. A durable collector watches
+the new wave. Diagnostic failure must retain its boundary evidence for root
+cause analysis and cannot promote adaptation. No large-data run was queued.
