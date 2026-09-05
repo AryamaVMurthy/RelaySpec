@@ -1,0 +1,59 @@
+{
+  "methods": {
+    "native_ar": {
+      "decode_seconds": 11967.851072302088,
+      "decode_tokens_per_second": 26.815340369895555,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 830,
+      "mean_acceptance_length": 1.0,
+      "output_tokens": 320922,
+      "requests": 830,
+      "speedup_vs_native_ar": 1.0
+    },
+    "optimized_source_reuse": {
+      "decode_seconds": 4407.707916504238,
+      "decode_tokens_per_second": 72.17515453072652,
+      "exact_sequence_match_rate": 0.3036144578313253,
+      "exact_sequence_matches": 252,
+      "mean_acceptance_length": 5.592029834383628,
+      "output_tokens": 318127,
+      "requests": 830,
+      "speedup_vs_native_ar": 2.691562125825354
+    },
+    "relay_p": {
+      "decode_seconds": 4426.798542243894,
+      "decode_tokens_per_second": 71.863898247049,
+      "exact_sequence_match_rate": 0.3036144578313253,
+      "exact_sequence_matches": 252,
+      "mean_acceptance_length": 3.7908659648564638,
+      "output_tokens": 318127,
+      "requests": 830,
+      "speedup_vs_naive_source_reuse": 0.9956874871179525,
+      "speedup_vs_native_ar": 2.6799547294849013
+    }
+  },
+  "paired_requests": 830,
+  "pairwise": {
+    "optimized_source_reuse_vs_native_ar": {
+      "candidate_method": "optimized_source_reuse",
+      "exact_sequence_match_rate": 0.3036144578313253,
+      "exact_sequence_matches": 252,
+      "reference_method": "native_ar",
+      "throughput_speedup": 2.691562125825354
+    },
+    "relay_p_vs_native_ar": {
+      "candidate_method": "relay_p",
+      "exact_sequence_match_rate": 0.3036144578313253,
+      "exact_sequence_matches": 252,
+      "reference_method": "native_ar",
+      "throughput_speedup": 2.6799547294849013
+    },
+    "relay_p_vs_optimized_source_reuse": {
+      "candidate_method": "relay_p",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 830,
+      "reference_method": "optimized_source_reuse",
+      "throughput_speedup": 0.9956874871179525
+    }
+  }
+}

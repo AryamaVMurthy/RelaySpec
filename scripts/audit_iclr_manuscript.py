@@ -19,13 +19,13 @@ OFFICIAL_HASHES = {
 }
 REQUIRED_SECTIONS = (
     "Introduction",
-    "Drafting with target verification",
+    "Deployment setting and related work",
     "Method",
-    "Why removing the source can save time",
+    "Throughput and acceptance",
     "Experimental setup",
     "Results",
-    "Related work",
-    "Scope and conclusion",
+    "Ablations",
+    "Conclusion",
 )
 
 BANNED_PHRASES = (

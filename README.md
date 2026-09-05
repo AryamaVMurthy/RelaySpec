@@ -33,13 +33,19 @@ software tests does not establish that these research issues are resolved.
 - [Manuscript source](paper/iclr2027/relayspec_iclr2027.tex) and [draft PDF](paper/iclr2027/relayspec_iclr2027.pdf)
 - [Evidence guide](reports/README.md)
 
-The current manuscript reports the recorded source-reuse comparisons: **1.08–1.48×
-MATH-500 throughput**, equal recorded task scores within each paired comparison,
-and **7.63–7.80 GiB** lower peak memory in separate EAGLE-3 measurements.
-Its asset pipeline checks all four main and sixteen breadth cells against saved
-request records. The [rewrite and evidence-selection record](docs/plans/2026-09-05-relayspec-current-evidence-rewrite.md)
-explains the current claim scope and which exploratory results require further
-validation. These checks do not establish equivalence to plain target decoding.
+The current manuscript uses **plain autoregressive decoding (AR) as its primary
+baseline**. Four completed MATH-500 comparisons show **2.35–5.11× AR throughput**.
+RelaySpec retains **89.1–90.3% of measured native target-specific drafter
+throughput** in the three paired native comparisons. Fitting uses **4,096
+additional records**, with the existing drafter's training inherited. The paper
+reports accepted progress, paired task scores, complete workload results and
+the existing fitting-budget, interface, objective and block-size ablations.
+
+The [current evidence and execution record](reports/ar-revision-20260905/EXECUTION.md)
+identifies the reused runs and ongoing experiments. The
+[next 24-hour plan](docs/plans/2026-09-05-relayspec-next-24-hours.md) separates
+controlled data scaling from continued optimization. Measured task quality and
+token agreement are reported separately.
 
 ## Install and test
 

@@ -1,0 +1,59 @@
+{
+  "methods": {
+    "native_ar": {
+      "decode_seconds": 8671.206702349242,
+      "decode_tokens_per_second": 37.65312155591259,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 830,
+      "mean_acceptance_length": 1.0,
+      "output_tokens": 326498,
+      "requests": 830,
+      "speedup_vs_native_ar": 1.0
+    },
+    "optimized_source_reuse": {
+      "decode_seconds": 4012.0038729892112,
+      "decode_tokens_per_second": 80.78132780029635,
+      "exact_sequence_match_rate": 0.3132530120481928,
+      "exact_sequence_matches": 260,
+      "mean_acceptance_length": 5.772906589326873,
+      "output_tokens": 324095,
+      "requests": 830,
+      "speedup_vs_native_ar": 2.145408520256176
+    },
+    "relay_p": {
+      "decode_seconds": 3001.476128777489,
+      "decode_tokens_per_second": 107.97853659159533,
+      "exact_sequence_match_rate": 0.3132530120481928,
+      "exact_sequence_matches": 260,
+      "mean_acceptance_length": 4.508693309841566,
+      "output_tokens": 324095,
+      "requests": 830,
+      "speedup_vs_naive_source_reuse": 1.3366769219061934,
+      "speedup_vs_native_ar": 2.8677180570873464
+    }
+  },
+  "paired_requests": 830,
+  "pairwise": {
+    "optimized_source_reuse_vs_native_ar": {
+      "candidate_method": "optimized_source_reuse",
+      "exact_sequence_match_rate": 0.3132530120481928,
+      "exact_sequence_matches": 260,
+      "reference_method": "native_ar",
+      "throughput_speedup": 2.145408520256176
+    },
+    "relay_p_vs_native_ar": {
+      "candidate_method": "relay_p",
+      "exact_sequence_match_rate": 0.3132530120481928,
+      "exact_sequence_matches": 260,
+      "reference_method": "native_ar",
+      "throughput_speedup": 2.8677180570873464
+    },
+    "relay_p_vs_optimized_source_reuse": {
+      "candidate_method": "relay_p",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 830,
+      "reference_method": "optimized_source_reuse",
+      "throughput_speedup": 1.3366769219061934
+    }
+  }
+}

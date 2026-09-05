@@ -1215,9 +1215,12 @@ def _draw_acceptance_survival(data: dict[str, Any], path: Path) -> None:
 
 
 def build_all(root: Path, output: Path) -> dict[str, Any]:
+    from relayspec.ar_paper_evidence import build_ar_assets
     from relayspec.paper_evidence import build_current_assets
 
-    return build_current_assets(root, output, load_paper_data(root))
+    data = build_current_assets(root, output, load_paper_data(root))
+    data["ar_revision"] = build_ar_assets(root, output)
+    return data
 
 
 def main() -> None:

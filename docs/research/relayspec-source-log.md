@@ -526,3 +526,25 @@ evaluation. Preprints are explicitly distinguished from peer-reviewed work.
 - EAGLE-3 proceedings: https://proceedings.neurips.cc/paper_files/paper/2025/hash/c7b5a35ea98b62512a869c19ea7b03cb-Abstract-Conference.html . Confirms title, authors and NeurIPS 2025 publication.
 - SD² proceedings: https://ojs.aaai.org/index.php/AAAI/article/view/40255 . Confirms AAAI 2026 bibliographic metadata. Frozen and fine-tuned variants are distinguished using the earlier primary-paper audit.
 - ICLR 2027 author guidelines: https://iclr.cc/Conferences/2027/AuthorGuidelines . Checked main-text limit, anonymous style, placement of appendices, required AI statement and recommended reproducibility statement. Review-note fetches this turn were blocked by the public site's browser check/HTTP 403. The existing 42-review study is reused and explicitly identified as such.
+
+## AR-primary revision: additional primary-source checks
+
+Checked on 5 September 2026. These are evidence for reporting choices, not an
+external speed leaderboard. The earlier 42-review study remains the review basis.
+
+- DFlash, https://arxiv.org/html/2602.06036v2 : reports approximately 800,000 training records, target-generated training data, end-to-end speed relative to AR and accepted length. Its hardware and runtime differ from ours.
+- EAGLE-3, https://arxiv.org/html/2503.01840v2 : approximately 68,000 ShareGPT and 464,000 UltraChat records. The combined 532,000 count describes the paper recipe, not the DeepSpec checkpoint training audit. Speed and position-wise acceptance must retain their implementation definitions.
+- DeepSpec source drafter, https://huggingface.co/deepseek-ai/eagle3_qwen3_4b_ttt7 : a checkpoint identifier, not proof of the published recipe's record count.
+- PARD, https://arxiv.org/html/2504.18583v4 : reuse across targets and hardware-specific speed comparisons. This limits a broad claim that frozen drafter reuse itself is new.
+- RepSpec, https://proceedings.iclr.cc/paper_files/paper/2026/hash/d70ea003729b440b89a2f958a5554c1f-Abstract-Conference.html : ICLR 2026. Training-time structural expansion differs from RelaySpec's fitted input map.
+- Speculative speculative decoding, https://proceedings.iclr.cc/paper_files/paper/2026/hash/1b96f01343ff10150e6719eb163e1536-Abstract-Conference.html : ICLR 2026. Overlapping proposal and verification is an execution comparison, not the same feature-compatibility mechanism.
+- VSD, https://arxiv.org/abs/2602.05774 : sequence-acceptance training. Used to distinguish improving the drafter's objective from fitting a new input interface.
+- Draft-OPD, https://arxiv.org/abs/2605.29343 : on-policy distillation for speculative drafting. Its training changes the drafter, unlike the frozen drafter evaluated here.
+- SPEED-Bench, https://arxiv.org/abs/2604.09557 : current metadata and the need to report hardware, workload and runtime with speed. Corrected coauthor name to Izzy Putterman.
+- AdamW, https://arxiv.org/abs/1711.05101 : optimizer citation, ICLR 2019.
+- Let's Verify Step by Step, https://arxiv.org/abs/2305.20050 : MATH-500 source citation. The bibliography uses the verified 2023 preprint metadata.
+
+Presentation changes follow the recurring review questions: compare with AR,
+include absolute throughput, expose the native-drafter reference, account for
+additional training work, preserve workload scope, distinguish accepted progress
+from proposal acceptance, and separate observed output agreement from task quality.

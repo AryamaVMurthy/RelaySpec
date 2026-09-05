@@ -1,0 +1,86 @@
+{
+  "dataset_revisions": {
+    "evalplus_mbpp": "26d6d00bb1fd0fa37f39c99d5290da67891d1c5e",
+    "gsm8k": "740312add88f781978c0658806c59bc2815b9866",
+    "humaneval": "7dce6050a7d6d172f3cc5c32aa97f52fa1a2e544",
+    "math500": "6e4ed1a2a79af7d8630a6b768ec859cb5af4d3be",
+    "mtbench": "e3a795c5e9a82ee40611c416b8a7786c73198991"
+  },
+  "records": [
+    {
+      "answer": "52",
+      "benchmark": "gsm8k",
+      "problem_id": "gsm8k/4ec5e5a37705b3e0",
+      "prompt": "Jared is trying to increase his typing speed. He starts with 47 words per minute (WPM). After some lessons the next time he tests his typing speed it has increased to 52 WPM. If he continues to increase his typing speed once more by 5 words, what will be the average of the three measurements?"
+    },
+    {
+      "answer": "5",
+      "benchmark": "gsm8k",
+      "problem_id": "gsm8k/f8718355d40182ca",
+      "prompt": "Jordan has 2 children who wear diapers.  Each child requires 5 diaper changes per day.  Jordan's wife changes half of the diapers.  How many diapers does Jordan change per day?"
+    },
+    {
+      "answer": {
+        "entry_point": "has_close_elements",
+        "test": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.3) == True\n    assert candidate([1.0, 2.0, 3.9, 4.0, 5.0, 2.2], 0.05) == False\n    assert candidate([1.0, 2.0, 5.9, 4.0, 5.0], 0.95) == True\n    assert candidate([1.0, 2.0, 5.9, 4.0, 5.0], 0.8) == False\n    assert candidate([1.0, 2.0, 3.0, 4.0, 5.0, 2.0], 0.1) == True\n    assert candidate([1.1, 2.2, 3.1, 4.1, 5.1], 1.0) == True\n    assert candidate([1.1, 2.2, 3.1, 4.1, 5.1], 0.5) == False\n\n"
+      },
+      "benchmark": "humaneval",
+      "problem_id": "HumanEval/0",
+      "prompt": "Write a solution to the following problem and make sure that it passes the tests:\n```python\nfrom typing import List\n\n\ndef has_close_elements(numbers: List[float], threshold: float) -> bool:\n    \"\"\" Check if in given list of numbers, are any two numbers closer to each other than\n    given threshold.\n    >>> has_close_elements([1.0, 2.0, 3.0], 0.5)\n    False\n    >>> has_close_elements([1.0, 2.8, 3.0, 4.0, 5.0, 2.0], 0.3)\n    True\n    \"\"\"\n\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "separate_paren_groups",
+        "test": "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate('(()()) ((())) () ((())()())') == [\n        '(()())', '((()))', '()', '((())()())'\n    ]\n    assert candidate('() (()) ((())) (((())))') == [\n        '()', '(())', '((()))', '(((())))'\n    ]\n    assert candidate('(()(())((())))') == [\n        '(()(())((())))'\n    ]\n    assert candidate('( ) (( )) (( )( ))') == ['()', '(())', '(()())']\n"
+      },
+      "benchmark": "humaneval",
+      "problem_id": "HumanEval/1",
+      "prompt": "Write a solution to the following problem and make sure that it passes the tests:\n```python\nfrom typing import List\n\n\ndef separate_paren_groups(paren_string: str) -> List[str]:\n    \"\"\" Input to this function is a string containing multiple groups of nested parentheses. Your goal is to\n    separate those group into separate strings and return the list of those.\n    Separate groups are balanced (each open brace is properly closed) and not nested within each other\n    Ignore any spaces in the input string.\n    >>> separate_paren_groups('( ) (( )) (( )( ))')\n    ['()', '(())', '(()())']\n    \"\"\"\n\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "max_product",
+        "tests": [
+          "assert max_product([3, 100, 4, 5, 150, 6]) == 3000",
+          "assert max_product([4, 42, 55, 68, 80]) == 50265600",
+          "assert max_product([10, 22, 9, 33, 21, 50, 41, 60]) == 2460"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/468",
+      "prompt": "\"\"\"\nWrite a function to find the maximum product formed by multiplying numbers of an increasing subsequence of that array.\nassert max_product([3, 100, 4, 5, 150, 6]) == 3000\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert max_product([3, 100, 4, 5, 150, 6]) == 3000\nassert max_product([4, 42, 55, 68, 80]) == 50265600\nassert max_product([10, 22, 9, 33, 21, 50, 41, 60]) == 2460\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "is_Sub_Array",
+        "tests": [
+          "assert is_Sub_Array([1,4,3,5],[1,2]) == False",
+          "assert is_Sub_Array([1,2,1],[1,2,1]) == True",
+          "assert is_Sub_Array([1,0,2,2],[2,2,0]) ==False"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/576",
+      "prompt": "\"\"\"\nWrite a python function to check whether a list is sublist of another or not.\nassert is_Sub_Array([1,4,3,5],[1,2]) == False\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert is_Sub_Array([1,4,3,5],[1,2]) == False\nassert is_Sub_Array([1,2,1],[1,2,1]) == True\nassert is_Sub_Array([1,0,2,2],[2,2,0]) ==False\n```"
+    },
+    {
+      "answer": null,
+      "benchmark": "mtbench",
+      "problem_id": "mtbench/0",
+      "turns": [
+        "Compose an engaging travel blog post about a recent trip to Hawaii, highlighting cultural experiences and must-see attractions.",
+        "Rewrite your previous response. Start every sentence with the letter A."
+      ]
+    },
+    {
+      "answer": null,
+      "benchmark": "mtbench",
+      "problem_id": "mtbench/1",
+      "turns": [
+        "Draft a professional email seeking your supervisor's feedback on the 'Quarterly Financial Report' you prepared. Ask specifically about the data analysis, presentation style, and the clarity of conclusions drawn. Keep the email short and to the point.",
+        "Take a moment to evaluate and critique your own response."
+      ]
+    }
+  ],
+  "seed": 42
+}
