@@ -34,6 +34,9 @@ cp "$SD_SQUARE_SETUP_GATE" "$RELAYSPEC_OUTPUT/setup-gate.json"
 extra_evidence=()
 if [[ -n "${SD_SQUARE_TRAIN_CONFIG:-}" ]]; then
   cp "${SD_SQUARE_CAUSAL_GATE:?causal prerequisite required}" "$RELAYSPEC_OUTPUT/causal-gate.json"
+  if [[ -n "${SD_SQUARE_FULL_PILOT_GATE:-}" ]]; then
+    cp "$SD_SQUARE_FULL_PILOT_GATE" "$RELAYSPEC_OUTPUT/full-pilot-prerequisite.json"
+  fi
   extra_evidence=(reports/external-baselines-20260906)
 fi
 tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm vendor/sd-square SOURCE_COMMIT "${extra_evidence[@]}"

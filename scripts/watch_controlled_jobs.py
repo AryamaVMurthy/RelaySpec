@@ -91,6 +91,7 @@ def main():
                         "timed_budget_fit",
                         "sd_square_pilot",
                         "sd_square_numerical",
+                        "sd_square_fullpilot",
                     }
                     if fitting_only:
                         gate_file = {
@@ -104,6 +105,7 @@ def main():
                             "timed_budget_fit": "timed-budget-gate.json",
                             "sd_square_pilot": "sd-square-pilot-gate.json",
                             "sd_square_numerical": "sd-square-numerical-gate.json",
+                            "sd_square_fullpilot": "sd-square-full-pilot-gate.json",
                         }[job["kind"]]
                         gate = json.loads((destination / gate_file).read_text())
                         if gate["status"] != "pass":

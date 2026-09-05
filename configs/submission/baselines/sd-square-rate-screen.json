@@ -1,0 +1,35 @@
+{
+  "setup_config": "configs/submission/baselines/sd-square-compatibility.json",
+  "setup_config_sha256": "4f882be369fc364b60b33b0b0ac75fc4d6f973c5be7ada71c62217e22d78519a",
+  "seed": 1729,
+  "feature_cache_index_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+  "manifest_path": "configs/eval_manifest.json",
+  "updates": 128,
+  "batch_size": 4,
+  "learning_rate": 1e-05,
+  "learning_rate_end": 1e-06,
+  "warmup_steps": 8,
+  "gradient_clip": 0.5,
+  "max_new_tokens": 64,
+  "worker_objectives": [
+    "tvd",
+    "tvd",
+    "kl",
+    "kl"
+  ],
+  "scope": "Four followup frozen SD-square objective/rate trials after the complete512-example pilot passed. Each fit uses the same512 records, batch4 and128updates. Combined with prior1e-5 TVD/KL, this yields six unique settings. Exact prior replicas establish the training path. Current learning rates differ by declaration. Task quality and common16-request development decoding remain separate required evidence. Old exact-AR failures remain preserved.",
+  "verification_protocol": {
+    "path": "configs/submission/baselines/external-verification-protocol.json",
+    "sha256": "488d60999dcb0b80fba7e8c1106aa474fc15a8bfe0af4296fa359e153b65b9f0",
+    "causal_gate_sha256": "2a701f7c79cd24a3a0b487043a71e581794e2b7918376ed8cb93bf443471e5cc"
+  },
+  "followup_screen": {
+    "pilot_gate_sha256": "904ca4d5a7b3d052d158629243bf511b07363e5cc15cadfee5c6eff6750d69bf"
+  },
+  "worker_learning_rates": [
+    4e-06,
+    2e-05,
+    4e-06,
+    2e-05
+  ]
+}

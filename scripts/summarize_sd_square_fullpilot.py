@@ -74,7 +74,16 @@ def main():
             raise ValueError("prospective SD-square token verification differs")
         fits.append(fit)
         rows.append(row)
+        if "followup_screen" in config and (
+            fit["learning_rate"] != config["worker_learning_rates"][rank]
+            or fit["learning_rate_end"] != config["worker_learning_rates"][rank] / 10
+            or fit["parent_full_pilot_gate_sha256"]
+            != config["followup_screen"]["pilot_gate_sha256"]
+        ):
+            raise ValueError("SD-square rate screen changed its declared trial")
     for a, b in ((0, 1), (2, 3)):
+        if "followup_screen" in config:
+            continue  # Distinct declared rates, using the prior exact-replica pilot.
         if any(
             fits[a][k] != fits[b][k]
             for k in (

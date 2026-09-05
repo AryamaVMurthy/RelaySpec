@@ -103,6 +103,23 @@ def main():
             or pilot["learning_rate_end"] != expected["learning_rate_end"]
         ):
             raise ValueError("full-pool pilot differs from prospective declaration")
+        if "followup_screen" in pilot:
+            parent_path = Path(os.environ["SD_SQUARE_FULL_PILOT_GATE"])
+            parent = json.loads(parent_path.read_text())
+            if (
+                digest(parent_path) != pilot["followup_screen"]["pilot_gate_sha256"]
+                or parent["status"] != "pass"
+                or parent["verification_protocol_sha256"] != prospective["sha256"]
+                or parent["config_sha256"]
+                != digest(
+                    Path("configs/submission/baselines/sd-square-full-pilot.json")
+                )
+                or pilot["worker_learning_rates"]
+                != protocol["fitting"]["sd_square_followup_rates"] * 2
+            ):
+                raise ValueError(
+                    "SD-square rate screen lacks its successful full-pool pilot"
+                )
     if (
         digest(config_path) != pilot["setup_config_sha256"]
         or setup["status"] != "pass"
@@ -132,6 +149,17 @@ def main():
         "objective": pilot["worker_objectives"][rank],
         "seed": pilot["seed"],
     }
+    learning_rate = pilot.get("worker_learning_rates", [pilot["learning_rate"]] * 4)[
+        rank
+    ]
+    learning_rate_end = (
+        learning_rate / 10
+        if "worker_learning_rates" in pilot
+        else pilot["learning_rate_end"]
+    )
+    gate.update(learning_rate=learning_rate, learning_rate_end=learning_rate_end)
+    if "followup_screen" in pilot:
+        gate["parent_full_pilot_gate_sha256"] = digest(parent_path)
     if prospective:
         gate.update(
             verification_protocol_sha256=digest(protocol_path),
@@ -228,8 +256,8 @@ def main():
 
         optim = setup_optim(
             params,
-            lr_start=pilot["learning_rate"],
-            lr_end=pilot["learning_rate_end"],
+            lr_start=learning_rate,
+            lr_end=learning_rate_end,
             warmup_steps=pilot["warmup_steps"],
             estimated_stepping_batches=pilot["updates"],
         )
