@@ -18,6 +18,19 @@ RESERVED_METHODS = {
 }
 
 
+def campaign_references(family, methods):
+    choices = {
+        "dflash": ("native_ar", "native_target_dflash", "optimized_source_reuse"),
+        "eagle3": ("native_ar", "native_target_eagle3", "source_reuse_eagle3"),
+    }
+    if family not in choices:
+        raise ValueError("unsupported campaign reference family")
+    required = {choices[family][0], choices[family][2]}
+    if not required.issubset(methods):
+        raise ValueError("campaign requires AR and source-reuse references")
+    return [name for name in choices[family] if name in methods]
+
+
 def campaign_model_methods(methods, variants, *, relay_method="relay_p"):
     if relay_method not in {"relay_p", "relay_eagle3"}:
         raise ValueError("unsupported campaign relay family")

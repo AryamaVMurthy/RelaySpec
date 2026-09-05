@@ -399,3 +399,24 @@ Continue the regularization matrix, selected learning-rate/seed checks, full
 answer-quality evaluations, other pending paper baselines, and bounded
 hypothesis-driven research after fixed baselines. Large-data expansion remains
 paused. Neither the focused matrix nor the overall paper is complete.
+
+
+## Small-data continuation and second-family capacity declaration
+
+Large-data expansion remains paused. EAGLE cache27783 passed in1m35s,
+containing2048 training and1024 validation records (26.67GB, index hash
+9c18d186420ff569186fc1232b411cbb984ae05bbe09564a36f6179ceaccad19).
+DFlash regularization27785/27786 completed in2m22s/2m16s. Batches07--10
+are jobs27787--27790, chained through the validated DFlash path, using
+at most four GPUs. Sixty of76 focused cells are currently collected and verified.
+
+The new matrix-eagle3-small-v1 declaration contains14 primary fits:
+N512/2048 crossed with dense and factorized/MLP widths128/512/2048, plus
+two additional dense N2048 seeds. Each uses8192 updates and the EAGLE
+scale-preserving input convention. A separate four-candidate16-update
+pilot checks the width extremes, BF16 batch gradients and duplicate-map
+decoding before full runs. Host-buffer caching avoids promoting an optimization
+whose exact-cache equivalence gate exists only for DFlash. The batch driver
+now checks campaign target/proposer identity against cache metadata and
+selects family-specific controls and dependency paths. No new EAGLE fits
+have run at this declaration point.

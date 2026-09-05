@@ -1,0 +1,1145 @@
+{
+  "status": "predeclared",
+  "family": "eagle3",
+  "target": "Qwen/Qwen3-8B",
+  "distinct_examples": [
+    512,
+    2048
+  ],
+  "feature_cache_index_sha256": "9c18d186420ff569186fc1232b411cbb984ae05bbe09564a36f6179ceaccad19",
+  "campaign_config": "configs/submission/scaling/campaign-eagle3-8b-pilot.yaml",
+  "scope": "Selected second-family replication. No new large-data fitting. Same relative interface objective, 8192 updates, batch four and 1024 validation records. EAGLE uses its scale-preserving input convention. Buffer host cache until an exact optimization pilot passes for this family/cache.",
+  "primary_cells": [
+    {
+      "name": "eagle3-dense-n512-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "dense",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 512,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        256,
+        384,
+        512,
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 512,
+          "presentations": 2048
+        }
+      },
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-factorized128-n512-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "factorized",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 512,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        256,
+        384,
+        512,
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 512,
+          "presentations": 2048
+        }
+      },
+      "width": 128,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-factorized512-n512-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "factorized",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 512,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        256,
+        384,
+        512,
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 512,
+          "presentations": 2048
+        }
+      },
+      "width": 512,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-factorized2048-n512-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "factorized",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 512,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        256,
+        384,
+        512,
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 512,
+          "presentations": 2048
+        }
+      },
+      "width": 2048,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-mlp128-n512-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "mlp",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 512,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        256,
+        384,
+        512,
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 512,
+          "presentations": 2048
+        }
+      },
+      "width": 128,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-mlp512-n512-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "mlp",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 512,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        256,
+        384,
+        512,
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 512,
+          "presentations": 2048
+        }
+      },
+      "width": 512,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-mlp2048-n512-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "mlp",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 512,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        256,
+        384,
+        512,
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 512,
+          "presentations": 2048
+        }
+      },
+      "width": 2048,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-dense-n2048-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "dense",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        1024,
+        1536,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-factorized128-n2048-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "factorized",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        1024,
+        1536,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "width": 128,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-factorized512-n2048-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "factorized",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        1024,
+        1536,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "width": 512,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-factorized2048-n2048-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "factorized",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        1024,
+        1536,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "width": 2048,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-mlp128-n2048-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "mlp",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        1024,
+        1536,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "width": 128,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-mlp512-n2048-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "mlp",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        1024,
+        1536,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "width": 512,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle3-mlp2048-n2048-s1729",
+      "study": "eagle3_family_replication",
+      "architecture": "mlp",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        1024,
+        1536,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "width": 2048,
+      "cache_backend": "buffer",
+      "device_cache": false
+    }
+  ],
+  "groups": {
+    "replication": [
+      [
+        {
+          "name": "eagle3-factorized128-n2048-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "factorized",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            512,
+            1024,
+            1536,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "width": 128,
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-factorized128-n512-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "factorized",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 512,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            256,
+            384,
+            512,
+            1024,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 512,
+              "presentations": 2048
+            }
+          },
+          "width": 128,
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-mlp128-n2048-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "mlp",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            512,
+            1024,
+            1536,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "width": 128,
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-mlp128-n512-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "mlp",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 512,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            256,
+            384,
+            512,
+            1024,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 512,
+              "presentations": 2048
+            }
+          },
+          "width": 128,
+          "cache_backend": "buffer",
+          "device_cache": false
+        }
+      ],
+      [
+        {
+          "name": "eagle3-factorized512-n2048-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "factorized",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            512,
+            1024,
+            1536,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "width": 512,
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-factorized512-n512-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "factorized",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 512,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            256,
+            384,
+            512,
+            1024,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 512,
+              "presentations": 2048
+            }
+          },
+          "width": 512,
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-mlp512-n2048-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "mlp",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            512,
+            1024,
+            1536,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "width": 512,
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-mlp512-n512-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "mlp",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 512,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            256,
+            384,
+            512,
+            1024,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 512,
+              "presentations": 2048
+            }
+          },
+          "width": 512,
+          "cache_backend": "buffer",
+          "device_cache": false
+        }
+      ],
+      [
+        {
+          "name": "eagle3-factorized2048-n2048-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "factorized",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            512,
+            1024,
+            1536,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "width": 2048,
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-factorized2048-n512-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "factorized",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 512,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            256,
+            384,
+            512,
+            1024,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 512,
+              "presentations": 2048
+            }
+          },
+          "width": 2048,
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-mlp2048-n2048-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "mlp",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            512,
+            1024,
+            1536,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "width": 2048,
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-mlp2048-n512-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "mlp",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 512,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            256,
+            384,
+            512,
+            1024,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 512,
+              "presentations": 2048
+            }
+          },
+          "width": 2048,
+          "cache_backend": "buffer",
+          "device_cache": false
+        }
+      ],
+      [
+        {
+          "name": "eagle3-dense-n2048-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "dense",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            512,
+            1024,
+            1536,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-dense-n2048-s1730",
+          "study": "eagle3_seed_confirmation",
+          "architecture": "dense",
+          "seed": 1730,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            512,
+            1024,
+            1536,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-dense-n2048-s1731",
+          "study": "eagle3_seed_confirmation",
+          "architecture": "dense",
+          "seed": 1731,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            512,
+            1024,
+            1536,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "eagle3-dense-n512-s1729",
+          "study": "eagle3_family_replication",
+          "architecture": "dense",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 512,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            128,
+            256,
+            384,
+            512,
+            1024,
+            2048,
+            4096,
+            8192
+          ],
+          "validation_records": 1024,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": false,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 512,
+              "presentations": 2048
+            }
+          },
+          "cache_backend": "buffer",
+          "device_cache": false
+        }
+      ]
+    ]
+  },
+  "reuse": []
+}

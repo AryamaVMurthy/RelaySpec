@@ -1,7 +1,11 @@
 import pytest
 import torch
 
-from relayspec.mapper_campaign import campaign_model_methods, restore_mapper
+from relayspec.mapper_campaign import (
+    campaign_model_methods,
+    campaign_references,
+    restore_mapper,
+)
 from relayspec.relay import TargetFeatureRelay
 
 
@@ -19,6 +23,20 @@ def test_campaign_shares_model_load_plan_without_losing_candidate_names():
         variants,
         relay_method="relay_eagle3",
     ) == ("native_ar", "relay_eagle3")
+
+
+def test_family_references_preserve_available_controls():
+    assert campaign_references(
+        "dflash", ["native_ar", "optimized_source_reuse", "relay_a"]
+    ) == ["native_ar", "optimized_source_reuse"]
+    assert campaign_references(
+        "eagle3",
+        ["native_ar", "native_target_eagle3", "source_reuse_eagle3", "relay_a"],
+    ) == ["native_ar", "native_target_eagle3", "source_reuse_eagle3"]
+    with pytest.raises(ValueError, match="requires AR"):
+        campaign_references("eagle3", ["relay_a", "source_reuse_eagle3"])
+    with pytest.raises(ValueError, match="unsupported"):
+        campaign_references("unknown", ["native_ar"])
 
 
 @pytest.mark.parametrize(

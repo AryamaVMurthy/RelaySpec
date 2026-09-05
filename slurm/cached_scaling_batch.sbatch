@@ -19,7 +19,18 @@ export RELAYSPEC_CACHE_DIR="/scratch/$USER/factorspec-runtime-20260826"
 export HF_HOME="$RELAYSPEC_CACHE_DIR/huggingface"
 export TRANSFORMERS_CACHE="$HF_HOME/hub"
 export DFLASH_SOURCE="$HOME/factorspec/vendor/dflash"
-export PYTHONPATH="$PWD/src:$DFLASH_SOURCE"
+export DEEPSPEC_SOURCE="$HOME/relayspec/vendor/deepspec"
+export DEEPSPEC_PYTHON_OVERLAY="$RELAYSPEC_CACHE_DIR/deepspec-python-overlay-node07"
+campaign_config="${CACHE_CAMPAIGN_CONFIG:-configs/submission/scaling/campaign-pilot.yaml}"
+family="$("$RELAYSPEC_PYTHON" -c 'import sys,yaml; print(yaml.safe_load(open(sys.argv[1]))["proposer"]["family"])' "$campaign_config")"
+case "$family" in
+  dflash) export PYTHONPATH="$PWD/src:$DFLASH_SOURCE" ;;
+  eagle3)
+    test -d "$DEEPSPEC_PYTHON_OVERLAY/transformers"
+    export PYTHONPATH="$PWD/src:$DEEPSPEC_PYTHON_OVERLAY:$DEEPSPEC_SOURCE"
+    ;;
+  *) echo "Unsupported proposer family: $family" >&2; exit 2 ;;
+esac
 export TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=4
 export RELAYSPEC_OUTPUT="$PWD/outputs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}"
 export RELAYSPEC_FIT_OUTPUT="$RELAYSPEC_CACHE_DIR/relayspec/cached-fits/${SLURM_JOB_NAME}-${SLURM_JOB_ID}"
@@ -46,4 +57,5 @@ nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used --format
 monitor=$!
 trap 'kill "$monitor" 2>/dev/null || true' EXIT
 timeout --signal=TERM --kill-after=10s "$seconds" "$RELAYSPEC_PYTHON" scripts/run_cached_batch.py \
-  --mode "$mode" --trials "$RELAYSPEC_TRIALS" --pilot-gate "$RELAYSPEC_PILOT_GATE" "${access_args[@]}"
+  --mode "$mode" --trials "$RELAYSPEC_TRIALS" --pilot-gate "$RELAYSPEC_PILOT_GATE" \
+  --campaign-config "$campaign_config" "${access_args[@]}"

@@ -12,6 +12,7 @@ from pathlib import Path
 import torch
 import yaml
 
+from relayspec.mapper_campaign import campaign_references
 from relayspec.scaling_matrix import validate_cache_access_gate, validate_trial
 
 
@@ -22,10 +23,19 @@ def main():
     parser.add_argument("--pilot-gate", type=Path, required=True)
     parser.add_argument("--cache-access-gate", type=Path)
     parser.add_argument("--continuation-gate", type=Path)
+    parser.add_argument(
+        "--campaign-config",
+        type=Path,
+        default=Path("configs/submission/scaling/campaign-pilot.yaml"),
+    )
     args = parser.parse_args()
     output = Path(os.environ["RELAYSPEC_OUTPUT"])
     cache = Path(os.environ["RELAYSPEC_FEATURE_CACHE"])
     index_hash = hashlib.sha256((cache / "cache-index.json").read_bytes()).hexdigest()
+    metadata = json.loads((cache / "cache-index.json").read_text())["metadata"]
+    campaign = yaml.safe_load(args.campaign_config.read_text())
+    if any(campaign[key] != metadata["config"][key] for key in ["target", "proposer"]):
+        raise ValueError("campaign models differ from the frozen-feature cache")
     pilot = json.loads(args.pilot_gate.read_text())
     if pilot["status"] != "pass":
         raise ValueError("a successful pilot gate is required")
@@ -126,21 +136,17 @@ def main():
             if path.suffix != ".pt":
                 shutil.copy2(path, destination / path.name)
     if args.mode == "pilot":
-        config = yaml.safe_load(
-            Path("configs/submission/scaling/campaign-pilot.yaml").read_text()
-        )
+        config = campaign
         variants = {
             f"relay_{i}": str(fits / t["name"] / "step-000016.pt")
             for i, t in enumerate(trials)
         }
         variants["relay_duplicate"] = variants["relay_0"]
         config["relay_probe"]["variants"] = variants
-        config["benchmark"]["methods"] = [
-            "native_ar",
-            "native_target_dflash",
-            "optimized_source_reuse",
-            *variants,
-        ]
+        references = campaign_references(
+            config["proposer"]["family"], config["benchmark"]["methods"]
+        )
+        config["benchmark"]["methods"] = [*references, *variants]
         path = output / "campaign-config.yaml"
         path.write_text(yaml.safe_dump(config, sort_keys=False))
         subprocess.run(
@@ -164,6 +170,9 @@ def main():
                 "trials": [t["name"] for t in trials],
                 "trials_sha256": hashlib.sha256(args.trials.read_bytes()).hexdigest(),
                 "feature_cache_index_sha256": index_hash,
+                "campaign_config_sha256": hashlib.sha256(
+                    args.campaign_config.read_bytes()
+                ).hexdigest(),
                 "pilot_gate_sha256": hashlib.sha256(
                     args.pilot_gate.read_bytes()
                 ).hexdigest(),
