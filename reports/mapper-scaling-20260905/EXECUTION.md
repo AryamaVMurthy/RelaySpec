@@ -884,3 +884,41 @@ drafter's fc module and compares logits against relay conditioning.
 This is an implementation-equivalence check, not a separate method.
 Thirteen relevant CPU tests and targeted lint pass. Actual 512-record
 fitting, export, duplicate equality and decoding still require this pilot.
+
+Adaptation calibration 27841, source f51a35b, passed end to end in 2m45s.
+All four workers used the same 512 distinct records and 128 updates.
+Connector CE fitting took 27.09s, rank8 LoRA 29.14s and rank32 LoRA
+29.50s. Teacher/feature preparation took 28.60--30.82s and loading took
+5.27--5.53s. The unchanged inherited weights, duplicate merged weights,
+duplicate actual decoding and merged reload checks passed. Installing
+the mapper as the public drafter fc produced bit-identical logits on
+four teacher-forced records in each worker. This equivalence does not
+yet cover the complete cached decoding loop.
+
+The eight-request128-token calibration is negative at learning rate
+0.0002: connector CE retains 67.48% [60.93, 73.75] of initial-mapper
+throughput, rank8 LoRA retains 93.06% [88.21, 99.33], and rank32 LoRA
+93.63% [89.08, 99.23]. All are descriptive short development outcomes.
+The zero-update identity control has the same outputs and trajectory but
+measures 1.29% faster, exposing runtime variation even with identical
+behavior. Do not interpret small throughput gaps as architecture gains
+without repeated timing and stronger evaluation. Source-verified raw
+calibration and controlled PARD replay diagnoses are now curated under
+reports/external-baselines-20260906.
+
+Next baseline execution: test lower learning rates 0.00002 and 0.00006
+for both connector CE and rank32 LoRA on the same 512-record one-pass
+calibration, with the existing 0.0002 endpoints included in one common
+decoding campaign. This gives both trainable families the same declared
+three-rate screen. Do not choose rates from untouched confirmation.
+Before formal 0.25/1/4 measured-baseline budgets, measure the cost of
+the shared 128-update mapper initialization explicitly rather than
+extrapolating its time from the 8192-update run. Separate warm optimizer
+time from model loading, teacher preparation, initialization, validation,
+export and shared cache construction. Report actual distinct records seen
+and presentations at each budget. A budget that cannot cover required
+setup is infeasible in the fresh-setup view, not silently credited as a
+zero-cost cache. Continuation must pass uninterrupted-versus-resumed
+weight equality before its results are used. The PARD runtime/quality
+protocol, faithful frozen SD-square fit, transfer and final confirmation
+remain outstanding. Large-data expansion remains paused.
