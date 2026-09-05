@@ -518,3 +518,33 @@ analysis, the cheap-drafter-adaptation control, then bounded hypothesis-driven
 research after the fixed baselines. Freeze the final model selection before
 confirmation outputs. The paper and overall research goal remain incomplete.
 Large-data expansion remains paused throughout.
+
+
+## Drafter-adaptation implementation and optimizer results
+
+The eight wide-mapper learning-rate cells are complete. At N2048, reducing
+the learning rate from6e-4 to2e-4 lowers width4096 MLP validation error
+from0.193615 to0.191160 (1.27%) and factored linear from0.184454 to0.182866
+(0.86%). Raising it to1.8e-3 worsens the MLP endpoint. N512 wide MLPs show
+earlier validation minima, so the final-update ranking alone is insufficient
+for architecture claims. These fitting results still need decoding checks.
+
+The new bounded DFlash drafter-adaptation pilot is implemented, not yet run
+at this declaration. It reuses64 cached training records and a verified
+dense N512 mapper checkpoint at128 initial updates. Four GPU workers compare
+connector-only target-greedy CE, frozen-connector drafter LoRA ranks8/32,
+and a duplicate rank32 seed. It uses16 additional updates, batch4, lr2e-4,
+q_proj/v_proj adaptation and alpha2r. Target-greedy labels are teacher-forced
+on the final15 positions of a16-token block. No source transformer forward
+is needed during fitting after frozen inputs are prepared.
+
+The pilot checks zero-LoRA forward identity, finite nonzero gradients,
+inherited drafter weights unchanged, independent merged-weight export/reload,
+duplicate-seed fitted weights, zero-update decoding identity and duplicate
+adapted-drafter decoding. The benchmark driver isolates each adapted drafter
+from inherited controls and records both mapper and drafter hashes. Nineteen
+CPU tests pass, including FP32/BF16 export/reload cases. The pilot ceiling
+is ten minutes including fitting and decoding. Full matched-compute/data
+budgets remain unexecuted and must charge connector initialization, label
+preparation and fitting separately. SD2/PARD comparisons and second-family
+adaptation remain separate pending baseline requirements.

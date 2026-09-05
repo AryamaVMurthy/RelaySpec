@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import gc
 import hashlib
 import json
@@ -31,6 +32,7 @@ from relayspec.benchmarking import (
     shard_records,
 )
 from relayspec.dflash import import_official_dflash
+from relayspec.drafter_adaptation import apply_merged_lora
 from relayspec.generation import (
     cross_family_relay_dflash_generate,
     matched_full_target_dflash_generate,
@@ -283,6 +285,10 @@ def main() -> None:
         relay = relay.to(device=device, dtype=torch.bfloat16).eval()
     variant_mappers = {}
     variant_provenance = {}
+    drafter_updates = probe.get("drafter_updates", {})
+    if set(drafter_updates) - set(variants):
+        raise ValueError("every adapted drafter requires an explicit mapper variant")
+    variant_drafters = {}
     for name, checkpoint_path in variants.items():
         checkpoint_path = Path(checkpoint_path)
         checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=True)
@@ -310,6 +316,29 @@ def main() -> None:
             "target_layer_ids": taps,
         }
         del checkpoint
+        if name in drafter_updates:
+            adaptation_path = Path(drafter_updates[name])
+            adaptation = torch.load(
+                adaptation_path, map_location="cpu", weights_only=True
+            )
+            adapted = copy.deepcopy(draft).requires_grad_(False).eval()
+            apply_merged_lora(
+                adapted,
+                adaptation,
+                proposer=payload["proposer"],
+                mapper_sha256=variant_provenance[name]["sha256"],
+            )
+            variant_drafters[name] = adapted
+            variant_provenance[name]["drafter_update"] = {
+                "checkpoint": str(adaptation_path),
+                "sha256": hashlib.sha256(adaptation_path.read_bytes()).hexdigest(),
+                "base_sha256": adaptation["base_sha256"],
+                "updated_weights": sorted(adaptation["weights"]),
+                "resident_parameter_bytes": sum(
+                    p.numel() * p.element_size() for p in adapted.parameters()
+                ),
+            }
+            del adaptation
     unfitted = {}
     for name in {"direct_slice", "frozen_fc_slice"} & set(method_names):
         unfitted[name] = (
@@ -476,12 +505,12 @@ def main() -> None:
         "relay_p_cross_family": relayed_cross_family,
     }
 
-    def variant_generator(mapper, taps):
+    def variant_generator(mapper, taps, inherited_draft):
         def generate(**kwargs):
             if source_embedding is None or source_lm_head is None:
                 raise RuntimeError("mapper campaign requires source embedding/head")
             return relay_dflash_generate(
-                draft,
+                inherited_draft,
                 relay=mapper,
                 relay_target_layer_ids=taps,
                 native_target=target,
@@ -494,7 +523,9 @@ def main() -> None:
         return generate
 
     for name, (mapper, taps) in variant_mappers.items():
-        available_methods[name] = variant_generator(mapper, taps)
+        available_methods[name] = variant_generator(
+            mapper, taps, variant_drafters.get(name, draft)
+        )
     unknown = sorted(set(method_names) - set(available_methods))
     if unknown:
         raise ValueError(f"unsupported benchmark methods: {unknown}")
@@ -529,6 +560,7 @@ def main() -> None:
             json.dumps(
                 {
                     "variants": variant_provenance,
+                    "adapted_drafter_variants": sorted(variant_drafters),
                     "methods": method_names,
                     "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment.",
                 },
@@ -577,6 +609,10 @@ def main() -> None:
                             row["mapper_checkpoint_sha256"] = variant_provenance[name][
                                 "sha256"
                             ]
+                            if name in variant_drafters:
+                                row["drafter_checkpoint_sha256"] = variant_provenance[
+                                    name
+                                ]["drafter_update"]["sha256"]
                         histories[name] = [
                             *messages,
                             {"role": "assistant", "content": row["completion"]},

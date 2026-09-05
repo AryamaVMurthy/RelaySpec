@@ -99,12 +99,16 @@ def main():
                                 "fitting/cache completion gate did not pass"
                             )
                         evaluations = []
-                    elif job["kind"] in {"cache_pilot", "capacity_pilot"}:
-                        gate_file = (
-                            "pilot-gate.json"
-                            if job["kind"] == "cache_pilot"
-                            else "batch-gate.json"
-                        )
+                    elif job["kind"] in {
+                        "cache_pilot",
+                        "capacity_pilot",
+                        "adaptation_pilot",
+                    }:
+                        gate_file = {
+                            "cache_pilot": "pilot-gate.json",
+                            "capacity_pilot": "batch-gate.json",
+                            "adaptation_pilot": "adaptation-pilot-gate.json",
+                        }[job["kind"]]
                         gate = json.loads((destination / gate_file).read_text())
                         if gate["status"] != "pass":
                             raise ValueError("cached fitting pilot gate did not pass")
