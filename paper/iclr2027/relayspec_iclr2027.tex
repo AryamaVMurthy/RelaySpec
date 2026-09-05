@@ -976,6 +976,46 @@ new examples. Actual decoding requires a separate checkpoint comparison.}
 \label{fig:eagle-small-epochs}
 \end{figure}
 
+\clearpage
+\subsection{Longer development outputs for small-data mappers}
+
+We evaluate nine saved DFlash connectors on 128 paired MATH development
+questions with a 2,048-token cap, greedy decoding and the same source,
+target and native-drafter references. These exposed questions provide a
+larger development comparison than the 16-question, 256-token screen.
+They are separate from any untouched confirmation set. The continued
+width-512 fits reuse the same 2,048 distinct training examples.
+
+\begin{table}[H]
+\caption{Capped development outcomes for small-data DFlash fitting.
+Throughput retention uses the dense $N=2048$, 8,192-update connector.
+Intervals use 10,000 paired request bootstrap samples. Correct counts
+scored answers. Cap counts outputs reaching 2,048 tokens, which can include
+EOS exactly at the limit and are not exact truncation counts.}
+\label{tab:small-quality}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/small_quality_table.tex}
+\end{table}
+
+Dense fitting on 512 examples retains 97.78\% of the dense $N=2048$
+throughput, with interval [97.09, 98.47]\%. This establishes a lower-data
+performance point in this setting, but does not establish that 512 is
+minimal. The width-1024 linear mapper at $N=512$ retains 95.00\%, with
+interval [94.14, 95.85]\%, leaving its 95\% boundary unresolved.
+The width-4096 linear mapper is slightly below the dense connector in
+this larger sample, so the earlier short-screen point ranking should
+not be interpreted as an established architecture advantage.
+
+All nine connectors score 105 of 128 answers, compared with 104 for AR.
+Their paired accuracy-difference intervals are $[-0.03125,0.046875]$.
+These intervals do not establish a one-percentage-point noninferiority
+margin. Nine connector outputs and eleven AR outputs reach the token cap.
+The observed scores therefore concern the configured capped evaluation,
+not uncapped answer quality. Longer width-512 fitting gives modest
+throughput increases while remaining below the wider or dense connectors.
+This comparison does not treat additional updates as additional data.
+
 \section{Acceptance and numerical agreement}
 \label{app:acceptance}
 

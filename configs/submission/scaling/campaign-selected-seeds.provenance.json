@@ -1,0 +1,1034 @@
+{
+  "status": "declared_after_all_seed_fit_gates",
+  "input_sha256": {
+    "configs/submission/scaling/matrix-focused-v1/matrix.json": "a399380a7ef062ee69f8eeae7e837d3c2d805b696cc825095e3654119d53c285",
+    "reports/mapper-scaling-20260905/focused-results.json": "59d254dc7eef0777b149225a77cf401417032e633cefa4a369bb33e2629f5d23",
+    "configs/submission/scaling/matrix-small-lr-v1/matrix.json": "6b5e83e88d4e4248db9f4b82dacf8acf19524ff41cd58887ecef52d76116ebf4",
+    "reports/mapper-scaling-20260905/learning-rate-results.json": "d868eda9ba98b469c4e84a128f2e35eee336137c29f6f1e40eb24241403e786a",
+    "configs/submission/scaling/matrix-selected-small-seeds-v1/matrix.json": "f5e87bc52487c92b83c85c1d05f477af9a20c47af486cc2bdf48e9cb709c4208",
+    "reports/mapper-scaling-20260905/selected-seed-results.json": "b0119483da33fd9e37395b28f53924c79d219d8b4b2eb9558df142fed1fa68e3"
+  },
+  "feature_cache_index_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+  "config_sha256": "08e9dc2d045c42700097a28bd1a53e990907aba78757452c023ebd7eeacf1e1a",
+  "variants": {
+    "relay_dense_n512_s1729_step8192": {
+      "trial": {
+        "name": "dense-n512-s1729",
+        "study": "core",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "b4562dc664748ec2da6e0f1ccac13820bfd0fa9c413a7a3235ebec5f1d84b613",
+      "fit_gate_sha256": "7c63ee876f184bcf95f15cc60a6b2f9f400916109a2671cd519fdc22401ac644",
+      "validation_sha256": "3cf1defe1ca54aef42a3c8b270d64e3c8091ef795209cfd12af77a722fb52c90"
+    },
+    "relay_dense_n2048_s1729_step8192": {
+      "trial": {
+        "name": "dense-n2048-s1729",
+        "study": "core",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "5631b89afc6a4966afa146efa79fe66c9b51182e2edf7f15e6975198a9dd143a",
+      "fit_gate_sha256": "7c63ee876f184bcf95f15cc60a6b2f9f400916109a2671cd519fdc22401ac644",
+      "validation_sha256": "f2a23736ad589cad96cd68935f03f6757f7a80ffaa16584bd253f66f7c525d38"
+    },
+    "relay_factorized1024_n512_s1729_step8192": {
+      "trial": {
+        "name": "factorized1024-n512-s1729",
+        "study": "core",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 1024,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "39a8de3c12646417492ae41fbb9b008168832c7a2ef14b4bcca30b3d92d66663",
+      "fit_gate_sha256": "5dccafec8f9a63808948ec5aa2c4a15f65ff533235c76a271897a653f5fcb3ee",
+      "validation_sha256": "df25538c4fec1b929d516ecca10e6b898cad11ccea7977cf5144eea3535feff7"
+    },
+    "relay_factorized4096_n2048_s1729_lr_0p0002_step8192": {
+      "trial": {
+        "name": "factorized4096-n2048-s1729-lr-0.0002",
+        "study": "learning_rate_convergence",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "84086b6da91791cf8b7e55a144cb9d026e2030ab967bb08620c516a25419bb74",
+      "fit_gate_sha256": "f6acf04073e81088d26cea625ad45a7066c2c7dfa227b24443f408f4ae7146e7",
+      "validation_sha256": "e12f1f3cdced3f446dc460d3df1e7c0f5c9f83ff77380dae7bbc6c96d82bf1c8"
+    },
+    "relay_mlp4096_n2048_s1729_lr_0p0002_step8192": {
+      "trial": {
+        "name": "mlp4096-n2048-s1729-lr-0.0002",
+        "study": "learning_rate_convergence",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "11b206a306c75ab8e4039958d46678ed3ab60c750351087d0145d053b1678bf2",
+      "fit_gate_sha256": "e254c0d95d9932b93ad74eaf2f2f92c8254d217ae9e4d54f5f5b655394cd51e3",
+      "validation_sha256": "a0214238264922fed0a30d6535c2bcf0636a5527306d29b78e1025f3968e756a"
+    },
+    "relay_mlp4096_n512_s1729_lr_0p0002_step2048": {
+      "trial": {
+        "name": "mlp4096-n512-s1729-lr-0.0002",
+        "study": "learning_rate_convergence",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 2048,
+      "best_validation_step": 2048,
+      "checkpoint_sha256": "ee103b8d1fb7a599ef024fc7bb1f5369c89257691e8545ee450b37f5e61915ea",
+      "fit_gate_sha256": "e254c0d95d9932b93ad74eaf2f2f92c8254d217ae9e4d54f5f5b655394cd51e3",
+      "validation_sha256": "ee9b9516ba7e042c95e0e886d261d2e88efee69316041067865a44382ea14b35"
+    },
+    "relay_mlp4096_n512_s1729_lr_0p0002_step8192": {
+      "trial": {
+        "name": "mlp4096-n512-s1729-lr-0.0002",
+        "study": "learning_rate_convergence",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 2048,
+      "checkpoint_sha256": "3541c9d73b9c8f881eef8322fce1b35f4b45de9a7338186df3087ce3e636a87a",
+      "fit_gate_sha256": "e254c0d95d9932b93ad74eaf2f2f92c8254d217ae9e4d54f5f5b655394cd51e3",
+      "validation_sha256": "ee9b9516ba7e042c95e0e886d261d2e88efee69316041067865a44382ea14b35"
+    },
+    "relay_dense_n512_s1730_step4096": {
+      "trial": {
+        "name": "dense-n512-s1730",
+        "study": "seed_confirmation",
+        "architecture": "dense",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 4096,
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "5ba31c822ff25b43e5b750ae637bfe933c17e50e60d514982075653b52fa8aa6",
+      "fit_gate_sha256": "7c63ee876f184bcf95f15cc60a6b2f9f400916109a2671cd519fdc22401ac644",
+      "validation_sha256": "7bb3561706cfffad0f9d25a48c45f56aabaca190de8e6bcff70dc8c1905de24b"
+    },
+    "relay_dense_n512_s1730_step8192": {
+      "trial": {
+        "name": "dense-n512-s1730",
+        "study": "seed_confirmation",
+        "architecture": "dense",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "92726d743f97cef3e13b8c99a9ce359a3976a57eb972cc0f2c6edc9671af5aee",
+      "fit_gate_sha256": "7c63ee876f184bcf95f15cc60a6b2f9f400916109a2671cd519fdc22401ac644",
+      "validation_sha256": "7bb3561706cfffad0f9d25a48c45f56aabaca190de8e6bcff70dc8c1905de24b"
+    },
+    "relay_dense_n2048_s1730_step8192": {
+      "trial": {
+        "name": "dense-n2048-s1730",
+        "study": "seed_confirmation",
+        "architecture": "dense",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "a3e56629de42ca07ab8bd08896317859071634ac992337bdab9dd93db1343e13",
+      "fit_gate_sha256": "9c031ea9573a21f876db894142247e7a7a6e175f86e9bc89cc392de086a598e9",
+      "validation_sha256": "2b73ccaa19bad82db7e83fe272e0495d20636bd9b0fc42445805985c1b2186ce"
+    },
+    "relay_factorized1024_n512_s1730_step8192": {
+      "trial": {
+        "name": "factorized1024-n512-s1730",
+        "study": "selected_small_seed_replication",
+        "architecture": "factorized",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 1024,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "6830ecaac124beb6e98ed8bf2b6be893c6f0e76b9e257695e2003b1f4e28eca6",
+      "fit_gate_sha256": "5dcff96732496133a7e36e97eec7b12b22270fc8ee72b0cb8c85a9d11570f5b8",
+      "validation_sha256": "acb0c43f91df79cf9edc00f1f2dfec5d8b71676588feae8c8270eeb6613ae759"
+    },
+    "relay_factorized4096_n2048_s1730_lr_0p0002_step8192": {
+      "trial": {
+        "name": "factorized4096-n2048-s1730-lr-0.0002",
+        "study": "selected_small_seed_replication",
+        "architecture": "factorized",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "c2597df71c1ad77339d966451a04cd070f72f302b3368a1b0f32b6b21d2d8b1c",
+      "fit_gate_sha256": "5dcff96732496133a7e36e97eec7b12b22270fc8ee72b0cb8c85a9d11570f5b8",
+      "validation_sha256": "4ee3d65ff2f6e95cafeb0c04fde20e9eb087d6db0b720b287810f403983248bf"
+    },
+    "relay_mlp4096_n2048_s1730_lr_0p0002_step8192": {
+      "trial": {
+        "name": "mlp4096-n2048-s1730-lr-0.0002",
+        "study": "selected_small_seed_replication",
+        "architecture": "mlp",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "fc9e4e47fb029fad7c9b7f9bcb6a283dead91a44481677a3aa14541f550308b5",
+      "fit_gate_sha256": "f0681926f7b05336ebb1235a9ff4d830a0dfda871846905d9aaf729015b26109",
+      "validation_sha256": "ed901f8f9f6f7466ece8b91890bde7918c402da1a18c966970da0eeaceaebc34"
+    },
+    "relay_mlp4096_n512_s1730_lr_0p0002_step2048": {
+      "trial": {
+        "name": "mlp4096-n512-s1730-lr-0.0002",
+        "study": "selected_small_seed_replication",
+        "architecture": "mlp",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 2048,
+      "best_validation_step": 2048,
+      "checkpoint_sha256": "1a18bf12a1741bb802909d1e37cc56580d1d284561821643c4d75564823c3db6",
+      "fit_gate_sha256": "f0681926f7b05336ebb1235a9ff4d830a0dfda871846905d9aaf729015b26109",
+      "validation_sha256": "423e9307fb746fc4e1d24d805413b9f8d9f6475dd38fd3c24a444a062d9b4b91"
+    },
+    "relay_mlp4096_n512_s1730_lr_0p0002_step8192": {
+      "trial": {
+        "name": "mlp4096-n512-s1730-lr-0.0002",
+        "study": "selected_small_seed_replication",
+        "architecture": "mlp",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 2048,
+      "checkpoint_sha256": "bba883ba8323a394d762098c3c44a69100d8507b7f9686d87ae588dcbbee13da",
+      "fit_gate_sha256": "f0681926f7b05336ebb1235a9ff4d830a0dfda871846905d9aaf729015b26109",
+      "validation_sha256": "423e9307fb746fc4e1d24d805413b9f8d9f6475dd38fd3c24a444a062d9b4b91"
+    },
+    "relay_dense_n512_s1731_step4096": {
+      "trial": {
+        "name": "dense-n512-s1731",
+        "study": "seed_confirmation",
+        "architecture": "dense",
+        "seed": 1731,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 4096,
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "6063c3c3bcc1c8931bf84ffa62f8cbeed33d59dfb9ecbc5f0e781a8f4ca12b5c",
+      "fit_gate_sha256": "7c63ee876f184bcf95f15cc60a6b2f9f400916109a2671cd519fdc22401ac644",
+      "validation_sha256": "a40dcc96f5880db384be8ced9b351afe127802acdfad08cf482b82f008795a63"
+    },
+    "relay_dense_n512_s1731_step8192": {
+      "trial": {
+        "name": "dense-n512-s1731",
+        "study": "seed_confirmation",
+        "architecture": "dense",
+        "seed": 1731,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 4096,
+      "checkpoint_sha256": "e7fe3ee766e991e896f8b81f99b85dd9ce5b4beb702ae5c863acd6a6a174ab51",
+      "fit_gate_sha256": "7c63ee876f184bcf95f15cc60a6b2f9f400916109a2671cd519fdc22401ac644",
+      "validation_sha256": "a40dcc96f5880db384be8ced9b351afe127802acdfad08cf482b82f008795a63"
+    },
+    "relay_dense_n2048_s1731_step8192": {
+      "trial": {
+        "name": "dense-n2048-s1731",
+        "study": "seed_confirmation",
+        "architecture": "dense",
+        "seed": 1731,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "4d1c1b576f932b56da10d641706a23ace9dc6324cde480c5cc3ce35bc995fbc6",
+      "fit_gate_sha256": "f9bbd98d9f2ee03612bfcf471dd22a8c51c1bb7cfe6015e2aa6235bf3dcf2e47",
+      "validation_sha256": "4c6202ef3aa8d0da5f3de99803cea5f3f715d2418e4ff3465bdd588db67eba2f"
+    },
+    "relay_factorized1024_n512_s1731_step8192": {
+      "trial": {
+        "name": "factorized1024-n512-s1731",
+        "study": "selected_small_seed_replication",
+        "architecture": "factorized",
+        "seed": 1731,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 1024,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "fc81ad8a001d6178db1b2840d896b421cf0fae099b16fc856da313f16982c572",
+      "fit_gate_sha256": "5dcff96732496133a7e36e97eec7b12b22270fc8ee72b0cb8c85a9d11570f5b8",
+      "validation_sha256": "639d620c325b5a1494076406abe4b0b2d2718ecde2acb57d5a3552dc7f9a1e2f"
+    },
+    "relay_factorized4096_n2048_s1731_lr_0p0002_step8192": {
+      "trial": {
+        "name": "factorized4096-n2048-s1731-lr-0.0002",
+        "study": "selected_small_seed_replication",
+        "architecture": "factorized",
+        "seed": 1731,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "b51bcaaaf0e16805102303e523ee948ca86daeec493514298b1cdacb09b09908",
+      "fit_gate_sha256": "5dcff96732496133a7e36e97eec7b12b22270fc8ee72b0cb8c85a9d11570f5b8",
+      "validation_sha256": "0d050934896b89a86f1e9076d047ccde41971ee37d6fedac2024e2256c7ef4c6"
+    },
+    "relay_mlp4096_n2048_s1731_lr_0p0002_step8192": {
+      "trial": {
+        "name": "mlp4096-n2048-s1731-lr-0.0002",
+        "study": "selected_small_seed_replication",
+        "architecture": "mlp",
+        "seed": 1731,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          512,
+          1024,
+          1536,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 8192,
+      "checkpoint_sha256": "94803d8872a86784ec3b8d5fea28d0b82462f7250174bb021a93e3dd4a740447",
+      "fit_gate_sha256": "f0681926f7b05336ebb1235a9ff4d830a0dfda871846905d9aaf729015b26109",
+      "validation_sha256": "fc43ff7be4bd5bb838a19ecd4b828adbc4408eea57f85ce813c8b7763b634589"
+    },
+    "relay_mlp4096_n512_s1731_lr_0p0002_step2048": {
+      "trial": {
+        "name": "mlp4096-n512-s1731-lr-0.0002",
+        "study": "selected_small_seed_replication",
+        "architecture": "mlp",
+        "seed": 1731,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 2048,
+      "best_validation_step": 2048,
+      "checkpoint_sha256": "2a7218a28a31c7e96a875050a272fae66056de3072f0d78d58d2c4e27fde04ec",
+      "fit_gate_sha256": "f0681926f7b05336ebb1235a9ff4d830a0dfda871846905d9aaf729015b26109",
+      "validation_sha256": "0a416b4c511502995c22714ad2e65b97a9549d62b3338320a464efa9c6083e0f"
+    },
+    "relay_mlp4096_n512_s1731_lr_0p0002_step8192": {
+      "trial": {
+        "name": "mlp4096-n512-s1731-lr-0.0002",
+        "study": "selected_small_seed_replication",
+        "architecture": "mlp",
+        "seed": 1731,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0002,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          128,
+          256,
+          384,
+          512,
+          1024,
+          2048,
+          4096,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 512,
+            "presentations": 2048
+          }
+        },
+        "width": 4096,
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "selected_step": 8192,
+      "best_validation_step": 2048,
+      "checkpoint_sha256": "c11f2a01794bbb39e7543a1d304d65109b79fd51dd07ac3ab56ebcc18aa083c9",
+      "fit_gate_sha256": "f0681926f7b05336ebb1235a9ff4d830a0dfda871846905d9aaf729015b26109",
+      "validation_sha256": "0a416b4c511502995c22714ad2e65b97a9549d62b3338320a464efa9c6083e0f"
+    }
+  },
+  "scope": "Six small-data fitting settings at three seeds.18 fixed8192-update endpoints plus every distinct minimum saved feature-validation checkpoint. Paired16-request256-token development decoding. Selection precedes decoding. Report endpoint and validation-selected seed variation separately. No full-answer quality claim or training-data expansion."
+}

@@ -789,3 +789,30 @@ performance comparison. Workers now write explicit failed gates and let the
 parent fail after all peers finish, preserving all four requests instead
 of losing unfinished peers to torchrun's fail-fast handling. Four PARD
 unit tests and targeted lint pass. Equality requirements are unchanged.
+
+## Completed small-data seed fits and source-audited development evidence
+
+Large-data scaling remains paused. Turing had no active or queued jobs at
+this check. Selected seed fits 27818 and 27819 completed in 4m08s and
+4m22s, respectively. All eight new fits reproduce in the complete registry.
+The next declared decoding campaign compares six settings at three seeds,
+using 23 existing checkpoints (18 endpoints and five distinct validation
+minima), with three inherited controls on 16 development requests capped
+at 256 tokens. It performs no training or data expansion.
+
+EAGLE validation-selected decoding 27826 completed in 6m37s and its collector
+finished. Paired comparisons remain to be curated. The capped 128-request
+development-quality table now regenerates from verified raw and scored rows
+in the paper appendix. The PDF has 24 pages with nine main-text pages.
+Full final visual review remains pending.
+
+PARD diagnostic 27831 failed its original exact-AR gate in 31 seconds.
+The new trace audit verifies all four duplicate outputs and recorded
+acceptance trajectories. Three requests match AR exactly. On the remaining
+request, the first difference is token 84 on an identical token prefix,
+where AR leading scores are 33.5 versus 33.25 and PARD leading scores tie
+at 33.5. Recorded cache positions and accepted proposal prefixes pass.
+Cache tensor equality and the numerical cause are not yet established,
+and the original failed gate remains failed. A mutation check confirms
+that the auditor rejects an altered cache position even with an updated
+row hash. Targeted lint and source-backed asset regeneration pass.
