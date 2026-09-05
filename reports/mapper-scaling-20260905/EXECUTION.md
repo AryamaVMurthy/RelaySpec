@@ -637,3 +637,40 @@ saved validation checkpoint separately. The N512 MLP arm checks whether
 the early validation minimum repeats across seeds. All fitting remains
 at512/2048 distinct examples on the same cached features. These are
 replications of pilot-verified fitting paths, not new-data experiments.
+
+Convergence decoding is queued as27817, followed by selected seed fits27818
+and27819, immutable sourceeb650a3. Each has a540second process cap and
+ten-minute Slurm ceiling. Slurm returned nonconsecutive job IDs. The seed
+dependencies were corrected while both jobs were still pending, and every
+final dependency was verified through scontrol before recording the ledger.
+No extra GPU allocation occurred. A durable collector watches all three.
+
+## Public PARD baseline pilot implementation
+
+Pinned AMD-AGI/PARD code6f279bf3f1680e0b5d71c562ca5b91bdeef4c038 and
+released amd/PARD-Qwen3-0.6B revisionf9f650fbab180c26498817718f0db5cae8f25136.
+The public1.50GB weight blob is checked against its LFS SHA256 before use.
+The baseline performs zero new-target fitting. Its inherited training cost
+is separate from checkpoint preparation and inference.
+
+The adapter verifies the exact upstream source hash and inserts request
+timing and raw-token capture into the public generation loop. An AST test
+proves every original statement remains in its original order. The original
+reported TPS is not used: its timer is reset after the first verification
+block, while its numerator includes that block's tokens. Our measured
+request interval includes cache reset and both prefills, ending before
+detokenization. Raw cap/EOS overshoot remains recorded, while output counts
+include only the requested prefix without subtracting computation time.
+
+This first setting uses the public uncompiled eager-attention/static-cache
+path and a matched eager AR control on identical pretokenized user prompts.
+It does not claim a cross-engine RelaySpec speed ranking. Four independent
+GPU workers each evaluate one128-token request, with matched16-token warmups
+excluded. PARD must match its duplicate and matched AR outputs, and its
+duplicate proposal trajectory must match. Raw rows are written before a
+failed equality gate. A CPU-only Slurm stage prepares an isolated pinned
+Transformers4.51.3 inference overlay and public checkpoint on scratch.
+Both setup and GPU pilot have ten-minute ceilings. No full PARD run is
+promoted before the four-worker gate passes. Sixteen targeted tests pass,
+including three PARD instrumentation/stop-boundary tests, plus targeted lint
+and shell syntax checks. The GPU integration is not yet verified here.

@@ -13,6 +13,8 @@ project-wide software license is assigned by this repository cleanup.
 | NVIDIA Nemotron | https://huggingface.co/nvidia |
 | ICLR 2027 style | https://iclr.cc/Conferences/2027/AuthorGuidelines |
 | EvalPlus | https://github.com/evalplus/evalplus |
+| PARD public inference code and released checkpoints | https://github.com/AMD-AGI/PARD |
+| SD² public code and released checkpoints | https://github.com/ETH-DISCO/SD-square |
 
 Pinned revisions and dataset sources are in configurations, manifests, and
 [the source log](docs/research/relayspec-source-log.md). Manifests contain

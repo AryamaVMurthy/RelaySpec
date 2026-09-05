@@ -1,0 +1,38 @@
+{
+  "max_gpus": 4,
+  "source_commit": "eb650a30f25e25821773593f57dfff0c0469eece",
+  "large_data_scaling": "paused",
+  "process_timeout_seconds": 540,
+  "slurm_limit_seconds": 600,
+  "capacity_pilot": 27725,
+  "cache_access_pilot": 27730,
+  "jobs": [
+    {
+      "id": 27817,
+      "kind": "campaign",
+      "remote": "/home/aryama.murthy/relayspec-convergence-eb650a3/outputs/rs-convergence-decode-27817",
+      "local": "reports/mapper-scaling-20260905/convergence-seed-wave/run-27817",
+      "config": "configs/submission/scaling/campaign-convergence-small.yaml",
+      "config_sha256": "8ec26bb09f9944ffd5fa4388bbeed1f78bac3a30e25b7f88d052d9bfd6a6c378",
+      "dependency": "afterany:27812"
+    },
+    {
+      "id": 27818,
+      "kind": "cached_fit",
+      "remote": "/home/aryama.murthy/relayspec-convergence-eb650a3/outputs/rs-small-seeds00-27818",
+      "local": "reports/mapper-scaling-20260905/convergence-seed-wave/run-27818",
+      "config": "configs/submission/scaling/matrix-selected-small-seeds-v1/batch-00.json",
+      "config_sha256": "18211787d705e6e043ae54d1a46b340ff7d9281a75d32483736408f9bdaa9f5c",
+      "dependency": "afterany:27817"
+    },
+    {
+      "id": 27819,
+      "kind": "cached_fit",
+      "remote": "/home/aryama.murthy/relayspec-convergence-eb650a3/outputs/rs-small-seeds01-27819",
+      "local": "reports/mapper-scaling-20260905/convergence-seed-wave/run-27819",
+      "config": "configs/submission/scaling/matrix-selected-small-seeds-v1/batch-01.json",
+      "config_sha256": "bda9fbf60ff533bc7b1c52dbe259f731b954924d19db75163e9cd15130fe7cbc",
+      "dependency": "afterok:27818"
+    }
+  ]
+}

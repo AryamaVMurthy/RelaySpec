@@ -1,0 +1,26 @@
+protocol_version: 1
+seed: 1729
+manifest_path: configs/eval_manifest.json
+target:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  id: amd/PARD-Qwen3-0.6B
+  revision: f9f650fbab180c26498817718f0db5cae8f25136
+  weights_sha256: 67c5df60ee615265ea7b354ccbe18d118d6b3c046315e1ea56467b996331bd82
+  source_commit: 6f279bf3f1680e0b5d71c562ca5b91bdeef4c038
+pilot:
+  requests: 4
+  max_new_tokens: 128
+  draft_k: 12
+  max_cache_len: 2048
+  compiled: false
+  attention: eager
+  dtype: bfloat16
+  warmup_tokens: 16
+new_target_fitting_examples: 0
+new_target_fitting_seconds: 0
+scope: Released target-independent PARD with matched eager/static-cache AR. Under-ten-minute
+  four-GPU correctness/resource pilot. Shared pretokenized user prompts, no generation/fit
+  on confirmation or reserve data. No published-speed reproduction or cross-engine
+  ranking claim.
