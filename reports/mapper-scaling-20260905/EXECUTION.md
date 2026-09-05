@@ -481,3 +481,40 @@ the wide MLP gap reflects optimizer settings or convergence. Every batch
 retains the ten-minute ceiling and existing exact-cache/width correctness
 gates. These fits have not started at declaration. Large-data expansion is
 still paused.
+
+
+## Focused matrix complete, pilot promotions and paper update
+
+All76 focused fitting cells are now complete and source-verified, including
+42 nonzero penalty cells and the four additional dense seed fits. The largest
+AdamW endpoint improvement is0.165% relative validation error for linear512
+N512. No tested L2 improves a matched zero-penalty endpoint, and no tested
+penalty improves either MLP512 endpoint at seed1729. The new source-checked
+regularization figure/table are in the appendix. The22-page PDF compiled,
+and new pages19/20 were rendered and visually inspected. Every technical
+manuscript audit passes, including generated-asset regeneration and the
+nine-page main-text boundary. Full22-page color/grayscale review remains
+pending and is explicitly not marked passed.
+
+EAGLE capacity pilot27793 passed in2m39s, including four width-extreme fits
+and eight-request identical-checkpoint decoding equivalence. It promoted
+the declared16 small-data family fits as27799/27800/27801/27802, using
+source5aad553, host-buffer caching and at most four GPUs. These follow
+learning-rate trials27796/27797 (source0c63a4c).
+
+Longer-answer pilot27795 passed in1m58s with48 paired rows, nine selected
+small-data maps, AR/native/source controls, and zero2048-token cap hits.
+Every candidate checkpoint hash matches the frozen declaration. The128-request
+development evaluation is now job27806, sourceeafdbd6, queued after27802.
+The pilot projects28.77 minutes of generation. Its process cap is60minutes
+and Slurm ceiling65minutes to accommodate longer requests. This time is
+existing-checkpoint decoding, not mapper fitting. Raw/scored outputs are
+collected by independent durable watchers. This development evaluation does
+not consume the new GSM8K confirmation/reserve requests.
+
+Remaining work includes collecting these studies, selected target/family
+replication, stronger seed/deployment-boundary checks, composition/workload
+analysis, the cheap-drafter-adaptation control, then bounded hypothesis-driven
+research after the fixed baselines. Freeze the final model selection before
+confirmation outputs. The paper and overall research goal remain incomplete.
+Large-data expansion remains paused throughout.

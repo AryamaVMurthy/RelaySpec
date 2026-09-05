@@ -873,6 +873,41 @@ distinct datasets remain fixed at 512 or 2,048 records.}
 \label{fig:numina-epochs}
 \end{figure}
 
+\paragraph{Explicit regularization on fixed smaller datasets.}
+We complete 42 nonzero-penalty fits for the dense, width-512 factored
+linear and width-512 GELU MLP connectors at $N\in\{512,2048\}$.
+Each fit uses 8,192 updates, the same 1,024 validation records and seed 1729.
+Explicit L2 coefficients are $10^{-7},10^{-6},10^{-5},10^{-4}$.
+Separate AdamW arms use decay $10^{-4},10^{-3},10^{-2}$.
+No tested L2 coefficient improves its matched zero-penalty endpoint.
+The largest AdamW improvement is a 0.17\% relative decrease in validation
+error for the width-512 linear connector at $N=512$.
+Neither MLP setting improves with either penalty family.
+Table~\ref{tab:numina-regularization} reports the best validation value
+within each penalty family, so these minima are development selections.
+Figure~\ref{fig:numina-regularization} retains all tested coefficients.
+This grid does not establish a decoding gain or a penalty effect across
+seeds, and it does not resolve regularization for the wider MLPs.
+
+\begin{table}[H]
+\caption{Matched regularization endpoints. Lower relative interface MSE
+is better. Each nonzero minimum is selected from four L2 or three AdamW
+coefficients using the same fitting validation split.}
+\label{tab:numina-regularization}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\input{generated/numina_regularization_table.tex}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/numina_regularization.pdf}
+\caption{All 42 penalty endpoints relative to their matched zero-penalty
+validation error. Positive values indicate worse fitting validation.
+The two curves are separate objective-L2 and AdamW experiments.}
+\label{fig:numina-regularization}
+\end{figure}
+
 \begin{table}[H]
 \caption{Matched EAGLE-3 8B normalization comparison on 32 development
 questions after 128 updates. Throughput ratios use source reuse.}

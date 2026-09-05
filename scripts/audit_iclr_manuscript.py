@@ -194,6 +194,10 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
     for registry_name, builder_name in [
         ("scaling_evidence_registry.json", "build_scaling_paper_assets.py"),
         ("capacity_evidence_registry.json", "build_capacity_paper_assets.py"),
+        (
+            "regularization_evidence_registry.json",
+            "build_regularization_paper_assets.py",
+        ),
     ]:
         registry = paper / "generated" / registry_name
         if not registry.exists():
