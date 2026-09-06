@@ -145,3 +145,16 @@ available native EAGLE and the seed-1729 dense2048 reference. The 256-token scor
 remain short-output diagnostics, not full-answer quality or noninferiority.
 The script passes formatting, lint and CLI import checks; validation against
 actual 14B capacity output remains pending. No new decoding result is claimed.
+
+DFlash14B jobs 27936--27939 all completed in 4m59s, 5m09s, 6m50s and
+8m26s. The full source/cache-bound audit passes all 16 trajectories, including
+all 8192 updates, validation checkpoints, actual dimensions and token exposure.
+The curated result is target14b-dflash-fit-results.json. Both dense seeds agree
+closely: validation objective about 0.244 at N512 and 0.204 at N2048.
+These are fitting results only, not a decoding ranking or final-quality claim.
+
+Generated campaign-dflash-capacity.yaml and its provenance after the completed
+registry. It contains all 16 endpoints and two controls (AR and source reuse),
+16 common development requests and a 256-token cap. Every endpoint remains fixed
+at 8192 updates. Schedule its bounded ten-minute comparison after the existing
+four-GPU chain, then run audit_target14_capacity.py before using any result.
