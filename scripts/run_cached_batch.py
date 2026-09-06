@@ -59,8 +59,11 @@ def main():
             or any(p.get("bit_identical") is not True for p in continued["pairs"])
         ):
             raise ValueError("continuation pilot did not pass on this cache")
-    if len(trials) != 4 or len({t["name"] for t in trials}) != 4:
-        raise ValueError("batch requires four unique candidate trials")
+    allowed_counts = {4} if args.mode == "pilot" else {4, 5}
+    if len(trials) not in allowed_counts or len({t["name"] for t in trials}) != len(
+        trials
+    ):
+        raise ValueError("batch requires four unique trials, or five in fit mode")
     for trial in trials:
         validate_trial(trial)
         if args.mode == "pilot" and trial["steps"] > 16:
@@ -69,6 +72,10 @@ def main():
     shutil.copy2(args.trials, output / "trials.json")
     fits = Path(os.environ["RELAYSPEC_FIT_OUTPUT"])
     python = os.environ["RELAYSPEC_PYTHON"]
+    first_trials = args.trials
+    if len(trials) == 5:
+        first_trials = output / "first-four-trials.json"
+        first_trials.write_text(json.dumps({"trials": trials[:4]}, indent=2) + "\n")
     command = [
         python,
         "-m",
@@ -77,7 +84,7 @@ def main():
         "--nproc_per_node=4",
         "scripts/fit_cached_mappers.py",
         "--trials",
-        str(args.trials),
+        str(first_trials),
     ]
     if args.mode == "pilot":
         command.append("--equivalence-pilot")
@@ -85,6 +92,26 @@ def main():
     subprocess.run(
         command, env={**os.environ, "RELAYSPEC_OUTPUT": str(fits)}, check=True
     )
+    if len(trials) == 5:
+        final_trials = output / "last-trial.json"
+        final_trials.write_text(json.dumps({"trials": trials[4:]}, indent=2) + "\n")
+        subprocess.run(
+            [
+                python,
+                "scripts/fit_cached_mappers.py",
+                "--single-trial",
+                "--trials",
+                str(final_trials),
+            ],
+            env={
+                **os.environ,
+                "RELAYSPEC_OUTPUT": str(fits),
+                "LOCAL_RANK": "0",
+                "RANK": "0",
+                "WORLD_SIZE": "4",
+            },
+            check=True,
+        )
     fit_wall = time.perf_counter() - started
     checkpoint_hashes = {}
     reference_checks = []
