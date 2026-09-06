@@ -374,14 +374,12 @@ in percentage points. Token matches count identical full output sequences.}
 \input{generated/ar_quality_table.tex}
 \end{table}
 
-In BF16, AR and block verification can select different tokens on an
-identical prefix. Traces of eight selected DFlash early-divergence prompts show
-changes in the leading target scores shared by native drafting, source
-reuse and RelaySpec. This diagnostic is separate from the timed runs.
-A separate 16-question Qwen3-0.6B diagnostic gives 7/16 exact AR matches
-in BF16 and 16/16 in full FP32 (Appendix~\ref{app:downscale}).
-We report measured quality and agreement rather than claiming bitwise
-identity from the verifier's mathematical contract.
+BF16 AR and block verification can select different tokens on the same
+prefix. Eight selected DFlash traces show target-score changes across
+native drafting, source reuse and RelaySpec. A separate Qwen3-0.6B
+diagnostic yields 7/16 AR matches in BF16 and 16/16 in full FP32
+(Appendix~\ref{app:downscale}). These diagnostics do not establish
+bitwise agreement generally.
 
 \subsection{Speed across workloads}
 
