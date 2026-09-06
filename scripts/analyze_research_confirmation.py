@@ -23,10 +23,11 @@ def main():
     parser.add_argument("--wave", type=Path, required=True)
     parser.add_argument("--scoring-repo", type=Path, required=True)
     parser.add_argument("--secondary", action="store_true")
+    parser.add_argument("--protocol", type=Path, default=Path("configs/autoresearch/20260907/confirmation-v1/protocol.json"))
     args = parser.parse_args()
     run, wave = args.run.resolve(), args.wave.resolve()
     repo = Path.cwd()
-    protocol_path = repo / "configs/autoresearch/20260907/confirmation-v1/protocol.json"
+    protocol_path = repo / args.protocol
     protocol = json.loads(protocol_path.read_text())
     specs = json.loads(wave.read_text())["lanes"]
     status = json.loads((run / "wave-result.json").read_text())["lanes"]
@@ -89,7 +90,7 @@ def main():
         raise ValueError("Reserve identity changed")
     frozen_ids = sorted(
         r["problem_id"] for r in json.loads(reserve.read_text())["records"]
-    )[:64]
+    )[protocol.get("reserve_start", 0):protocol.get("reserve_stop", 64)]
     if all_ids != set(frozen_ids):
         raise ValueError("Confirmation requests differ from frozen selection")
     os.chdir(args.scoring_repo)
@@ -105,8 +106,8 @@ def main():
         if key not in cache:
             cache[key] = scorer(*key)
         r.update(cache[key])
-    reference = "native_target_dflash" if args.secondary else "relay_base"
-    candidate = "relay_svd1536" if args.secondary else "relay_last2"
+    reference = protocol.get("reference", "native_target_dflash" if args.secondary else "relay_base")
+    candidate = protocol.get("primary_candidate", "relay_svd1536" if args.secondary else "relay_last2")
     summary = summarize(rows, reference=reference)
     lookup = {(r["problem_id"], r["method"]): r for r in rows}
     ordered = sorted(all_ids)
