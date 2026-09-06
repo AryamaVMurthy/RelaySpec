@@ -132,6 +132,14 @@ def main() -> None:
     probe = payload.pop("relay_probe", {})
     config = namespace(payload)
     source_config = config.source_trunk
+    precision = str(getattr(config.benchmark, "precision", "bfloat16"))
+    if precision not in {"bfloat16", "float32"}:
+        raise ValueError("DFlash benchmark precision must be bfloat16 or float32")
+    runtime_dtype = getattr(torch, precision)
+    if precision == "float32":
+        # Numerical diagnostic: use FP32 for every model and mapper, without TF32.
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
     method_names = tuple(str(value) for value in config.benchmark.methods)
     unload_source_trunk = bool(getattr(config.benchmark, "unload_source_trunk", False))
     variants = probe.get("variants", {})
@@ -167,7 +175,7 @@ def main() -> None:
                 revision=source_config.model.revision,
                 cache_dir=cache_dir,
                 attn_implementation="sdpa",
-                dtype=torch.bfloat16,
+                dtype=runtime_dtype,
                 local_files_only=True,
             )
             .to(device)
@@ -179,7 +187,7 @@ def main() -> None:
             revision=resolve_revision(config.target.id, config.target.revision),
             cache_dir=cache_dir,
             attn_implementation="sdpa",
-            dtype=torch.bfloat16,
+            dtype=runtime_dtype,
             local_files_only=True,
         )
         .to(device)
@@ -191,7 +199,7 @@ def main() -> None:
             revision=config.proposer.revision,
             cache_dir=cache_dir,
             attn_implementation="sdpa",
-            dtype=torch.bfloat16,
+            dtype=runtime_dtype,
             local_files_only=True,
         )
         .to(device)
@@ -209,7 +217,7 @@ def main() -> None:
                 revision=config.native_target_proposer.revision,
                 cache_dir=cache_dir,
                 attn_implementation="sdpa",
-                dtype=torch.bfloat16,
+                dtype=runtime_dtype,
                 local_files_only=True,
             )
             .to(device)
@@ -224,7 +232,7 @@ def main() -> None:
                 source_layers=source_config.layers,
                 tap_layers=tuple(source_config.tap_layers),
             )
-            .to(device=device, dtype=torch.bfloat16)
+            .to(device=device, dtype=runtime_dtype)
             .eval()
         )
     source_embedding = None
@@ -286,7 +294,7 @@ def main() -> None:
             factorized_rank=factorized_rank,
         )
         relay.load_state_dict(checkpoint["relay"], strict=True)
-        relay = relay.to(device=device, dtype=torch.bfloat16).eval()
+        relay = relay.to(device=device, dtype=runtime_dtype).eval()
     variant_mappers = {}
     variant_provenance = {}
     drafter_updates = probe.get("drafter_updates", {})
@@ -308,7 +316,7 @@ def main() -> None:
         )
         if taps[-1] >= target.config.num_hidden_layers:
             raise ValueError("mapper taps lie outside the target")
-        mapper = mapper.to(device=device, dtype=torch.bfloat16).eval()
+        mapper = mapper.to(device=device, dtype=runtime_dtype).eval()
         variant_mappers[name] = (mapper, taps)
         variant_provenance[name] = {
             "checkpoint": str(checkpoint_path),
@@ -352,7 +360,7 @@ def main() -> None:
                 num_taps=len(source_config.tap_layers),
                 source_fc=draft.fc if name == "frozen_fc_slice" else None,
             )
-            .to(device=device, dtype=torch.bfloat16)
+            .to(device=device, dtype=runtime_dtype)
             .eval()
         )
 
