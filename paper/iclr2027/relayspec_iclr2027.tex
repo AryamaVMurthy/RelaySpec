@@ -873,6 +873,25 @@ confirmation tests. They motivate studying which features a frozen
 interface requires rather than asserting that two target layers always
 suffice.
 
+At equal two-layer mapper size, depth matters (Figure~\ref{fig:layer-depth}).
+Refitting from early layers 1 and 9 retains 56.3\% of full-map throughput
+for DFlash and 57.0\% for EAGLE-3. Spaced layers 9 and 25 retain
+91.5\% and 91.4\%, while late layers 25 and 33 retain 98.7\% and
+96.2\% on the same 16 development questions. All fits use 512 records,
+8,192 updates and seed 1729. This controls mapper capacity, supporting
+an information-depth explanation within these settings. It does not
+establish that this particular layer pair is optimal across tasks or models.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.76\linewidth]{figures/layer_depth.pdf}
+\caption{Equal-capacity target-layer comparison on 16 exposed GSM8K
+questions with a 128-token cap. Each arm is paired with its own full-map
+baseline. Late-arm rows are the matching subset of the earlier 32-request
+screen. Paired 95\% request intervals exclude fitting-seed variation.}
+\label{fig:layer-depth}
+\end{figure}
+
 \paragraph{Native interface compression as an application.}
 The same interface abstraction supports a secondary experiment without
 retargeting: compress the released Qwen3-8B DFlash input projection by
@@ -890,7 +909,9 @@ and output cap. Relative to the released native path, compression retains
 retains 99.16\%, so the table distinguishes packaging overhead from
 compression. This is a preselected secondary comparison, not another
 primary significance test. It demonstrates an application of inspecting
-and replacing the feature interface. SVD itself is not a novel method.
+and replacing the feature interface. SVD itself is not a novel method, and activation-aware
+LLM compression already has established precedents
+\citep{yuan2023asvd,wang2025svdllm}.
 
 \begin{table}[H]
 \centering\small
