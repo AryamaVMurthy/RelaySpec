@@ -89,3 +89,5 @@ These use stage-specific completion gates, not independent lane summaries.
 |---:|---:|---|---|---|---|
 | 20 | 28440 | boundary_pipeline_pilot | pass | 00:01:35 | pilot-gate.json |
 | 21 | 28448 | boundary_extraction | pass | 00:00:42 | extraction-complete.json |
+| 22 | 28455 | boundary_capacity_pilot | pass | 00:01:25 | batch-gate.json |
+| 23 | 28457 | boundary_full_fit | pass | 00:01:20 | batch-gate.json |
