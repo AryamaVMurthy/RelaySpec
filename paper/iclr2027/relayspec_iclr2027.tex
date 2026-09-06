@@ -960,8 +960,8 @@ different outputs across precision settings.}
 
 The initial 8B agreement does not generalize to a broader development
 screen (Table~\ref{tab:head-extension}). On 32 additional GSM8K requests,
-FP32-head agreement with own-runtime AR rises from 15/32 to 20/32;
-on sixteen MATH requests it rises from 3/16 to 5/16. Released native
+FP32-head agreement with own-runtime AR rises from 15/32 to 20/32.
+On sixteen MATH requests it rises from 3/16 to 5/16. Released native
 DFlash and RelaySpec have identical output strings on every request
 within each precision setting, including their disagreements with AR.
 This points to a shared execution issue in these samples, rather than
@@ -976,8 +976,8 @@ full-answer accuracy.
 \input{generated/head_precision_extension_table.tex}
 \caption{Broader 8B head-precision diagnostic. Matches compare complete
 recorded token sequences with each runtime's own AR, including capped
-sequences. MATH AR reaches the cap on 11/16 requests in both settings;
-native and RelaySpec reach it on 11/16 in BF16 and 10/16 with the FP32
+sequences. MATH AR reaches the cap on 11/16 requests in both settings.
+Native and RelaySpec reach it on 11/16 in BF16 and 10/16 with the FP32
 head. One GSM8K request is capped for every method in both settings.}
 \label{tab:head-extension}
 \end{table}
@@ -1174,8 +1174,8 @@ with a 256-token per-turn cap. All are exposed development workloads.}
 We subsequently freeze the two-layer student's checkpoint and a new
 64-question set before decoding. These are sorted reserve positions
 64--127, disjoint from the preceding interface/SVD confirmation.
-A scan of 932 prior local result files finds no matching question IDs;
-this does not establish global or pretraining non-exposure. The primary
+A scan of 932 prior local result files finds no matching question IDs.
+This does not establish global or pretraining non-exposure. The primary
 criterion requires the lower endpoint of the paired 95\% throughput
 interval against released native to exceed 95\%. We retain the one-layer
 student, rank-1,536 SVD and full repacked projection as descriptive
@@ -1200,7 +1200,7 @@ that two layers suffice for every drafter or verifier.
 questions. Retention uses the released-native reference and 10,000
 paired question bootstrap replicates, seed 1729. Only the two-layer
 comparison is primary. Counts refer to the input projection, not the
-whole drafter; fitting-seed variation is outside these intervals.}
+whole drafter. Fitting-seed variation is outside these intervals.}
 \label{tab:native-student-confirmation}
 \end{table}
 
@@ -1218,7 +1218,7 @@ one fitting seed, not a general lower bound on the required layers.
 \centering\small
 \input{generated/downscale_depth_table.tex}
 \caption{Downward-retargeting depth screen, 4B-trained DFlash to a 0.6B
-verifier. All fits use 512 records and 8,192 updates; decoding uses eight
+verifier. All fits use 512 records and 8,192 updates. Decoding uses eight
 exposed GSM8K requests with a 512-token cap. Retention is relative to
 each worker's paired full mapper. Errors use the common fitting and
 validation sets.}
@@ -1231,7 +1231,7 @@ A matched-capacity nonlinear follow-up does not recover that deficit
 maps each have 5,239,296 parameters, versus 5,242,880 for late dense.
 MLPs lower training error from about 0.332 to 0.303--0.304 and validation
 error from 0.351 to 0.345, yet retain only 81.1--83.1\% throughput at
-two fitting seeds. Factorized maps retain 83.1--84.2\%; their paired
+two fitting seeds. Factorized maps retain 83.1--84.2\%. Their paired
 late-dense controls retain 82.8--84.3\%. The same eight questions are
 reused across seeds. This closes the tested fitting intervention,
 without establishing that later features are unrecoverable in principle.
@@ -1242,7 +1242,7 @@ without establishing that later features are unrecoverable in principle.
 \caption{Matched-size nonlinear follow-up for 0.6B late-layer mapping.
 Both architectures use layers [19,25], 512 records and 8,192 updates.
 Retention is relative to each worker's full mapper on the same eight
-exposed questions; fitting seeds do not add independent evaluation
+exposed questions. Fitting seeds do not add independent evaluation
 samples. Better feature regression does not close the decoding deficit.}
 \label{tab:downscale-nonlinearity}
 \end{table}
@@ -2311,7 +2311,7 @@ so these runs show memory savings without a material runtime change.
 \centering\small
 \input{generated/capture_memory_table.tex}
 \caption{Selective-capture memory diagnostic on L40S. Values are mean
-peak allocated GiB over two order-reversed repetitions; these repeats
+peak allocated GiB over two order-reversed repetitions. These repeats
 are not independent prompts. Both frozen mapper copies are resident
 for both methods. Release-prefill rows control buffer lifetime after
 conditioning. Allocator-reserved memory is not the reported quantity.}

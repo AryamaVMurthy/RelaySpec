@@ -2,7 +2,7 @@
 
 Generated 2026-09-06 from the compiled anonymous manuscript and recorded result artifacts.
 
-- Overall: **FAIL**
+- Overall: **PASS**
 - Main-text boundary: page 9 of the allowed 9
 - Complete PDF: 45 pages including references and appendix
 - Resolved citation keys: 46
@@ -18,7 +18,7 @@ Generated 2026-09-06 from the compiled anonymous manuscript and recorded result 
 | citation resolution | PASS | 46 unique citation keys resolve |
 | generated result assets | PASS | registered core assets match validated evidence; 17 autoresearch tables/raster plots reproduce from 17 isolated builders |
 | prompt separation audits | PASS | exact-overlap and unique-token similarity artifacts reproduce from the fixed manifests |
-| language constraints | FAIL | no semicolon, em dash, banned phrase, or placeholder appears in manuscript source |
+| language constraints | PASS | no semicolon, em dash, banned phrase, or placeholder appears in manuscript source |
 | paragraph overlap | PASS | no exact or at least 0.90 Jaccard duplicate among paragraphs of 35 or more words |
 | fit and evaluation exact-overlap audit | PASS | 0 normalized exact matches across 4,096 fit and 1,250 evaluation records |
 | compiled LaTeX log | PASS | no undefined citation, undefined reference, or overfull box |
