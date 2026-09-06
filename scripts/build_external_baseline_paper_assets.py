@@ -209,6 +209,66 @@ def main():
             f"{counts['correct_count']}/128 & {counts['cap_count']} " + r"\\"
         )
     sqtable += [r"\bottomrule", r"\end{tabular}"]
+    relay_registry = Path(
+        "reports/mapper-scaling-20260905/small-data-quality-results.json"
+    )
+    relay = json.loads(relay_registry.read_text())
+    with tempfile.TemporaryDirectory() as temporary:
+        expected = Path(temporary) / "relay.json"
+        subprocess.run(
+            [
+                sys.executable,
+                "scripts/summarize_small_quality.py",
+                "--run",
+                str(base / "small-data-quality-full/run-27806"),
+                "--output",
+                str(expected),
+            ],
+            check=True,
+            capture_output=True,
+        )
+        if json.loads(expected.read_text()) != relay:
+            raise ValueError("relay quality registry does not reproduce")
+    inputs[str(relay_registry)] = hashlib.sha256(
+        relay_registry.read_bytes()
+    ).hexdigest()
+    relay_methods = relay["against_ar"]["methods"]
+    public_table = [
+        r"\begin{tabular}{lrrrr}",
+        r"\toprule",
+        r"System & Tok/s & Own AR tok/s & Speedup [95\% CI] & Correct (AR) \\",
+        r"\midrule",
+    ]
+    for label, row, ar, correct, ar_correct in [
+        (
+            r"RelaySpec ($N=512$)",
+            relay_methods["relay_dense_n512"],
+            relay_methods["native_ar"],
+            round(relay_methods["relay_dense_n512"]["accuracy"] * 128),
+            round(relay_methods["native_ar"]["accuracy"] * 128),
+        ),
+        (
+            "PARD",
+            full["comparison"]["methods"]["pard"],
+            full["comparison"]["methods"]["native_ar"],
+            full["capped_quality"]["methods"]["pard"]["correct_count"],
+            full["capped_quality"]["methods"]["native_ar"]["correct_count"],
+        ),
+        (
+            r"SD$^2$ (frozen drafter)",
+            sd_full["comparisons"]["native_ar"]["methods"]["sd2_selected"],
+            sd_full["comparisons"]["native_ar"]["methods"]["native_ar"],
+            sd_full["capped_quality"]["methods"]["sd2_selected"]["correct_count"],
+            sd_full["capped_quality"]["methods"]["native_ar"]["correct_count"],
+        ),
+    ]:
+        lo, hi = row["throughput_ci95"]
+        public_table.append(
+            f"{label} & {row['tokens_per_second']:.2f} & {ar['tokens_per_second']:.2f} & "
+            f"{row['throughput_ratio']:.2f} [{lo:.2f}, {hi:.2f}] & {correct} ({ar_correct}) "
+            + r"\\"
+        )
+    public_table += [r"\bottomrule", r"\end{tabular}"]
     generated = args.output / "generated"
     generated.mkdir(parents=True, exist_ok=True)
     for name, rows in [
@@ -216,6 +276,7 @@ def main():
         ("pard_development_table.tex", ptable),
         ("sd_square_epoch_table.tex", etable),
         ("pard_quality_table.tex", qtable),
+        ("public_baseline_comparison_table.tex", public_table),
         ("sd_square_quality_table.tex", sqtable),
     ]:
         (generated / name).write_text("\n".join(rows) + "\n")

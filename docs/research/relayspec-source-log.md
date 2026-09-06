@@ -564,3 +564,7 @@ Rechecked primary sources for the expanded main related-work section. Existing b
 - `lei2026draftopd`: https://arxiv.org/abs/2605.29343 . Preprint, labeled as such in the related work. On-policy drafter distillation is positioned as an alternative objective, not a baseline we claim to have reproduced.
 
 Numerical positioning uses audited repository experiments. The strongest matched claim is that feature regression wins all three measured warm-budget comparisons against connector CE and both LoRA fits. The larger cross-runtime speedups are descriptive deployment measurements and do not establish algorithm-only superiority. Dense linear mapping leads the completed 8B long-output mapper comparisons, but this does not imply dominance at every fixed parameter/data count, on all 14B screens, or over native target-specific drafters.
+
+### Competitor table presentation, 6 September 2026
+
+The mechanism table reuses the verified PARD (`an2026pard`) and SD-square (`berdoz2026sd2`) sources above, together with the recorded RelaySpec/CE/LoRA implementation protocols. It adds no new literature claim or citation. PARD's no-new-fit entry is explicitly restricted to retargeting the released checkpoint. SD-square refers to the evaluated frozen-drafter option. Numerical comparison entries come from the raw-replayed quality registries, with separate AR runtimes visible in the table.

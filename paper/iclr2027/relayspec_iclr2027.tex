@@ -535,16 +535,21 @@ All twelve fits and paired intervals appear in Table~\ref{tab:timed-budget}.}
 \end{table}
 
 \paragraph{Public-runtime baselines.}
-On the 128-question, 2,048-token development comparison, the 512-example
-DFlash relay reaches 193.68 tokens/s and 5.14 times its AR throughput
-(Table~\ref{tab:small-quality}). Our public-runtime PARD run reaches
-105.63 tokens/s and 3.34 times AR, while the tested frozen-drafter SD$^2$
-configuration reaches 19.92 tokens/s and 1.60 times AR. Their observed
-correct counts are 105 versus 103 and 103 versus 103. These results
-show competitive measured acceleration from the small fitted interface,
-but precision, attention and library differences prevent an algorithm-only
-ranking. Appendix~\ref{app:externalbaselines} retains all settings,
-paired uncertainty and quality outcomes.
+Table~\ref{tab:public-comparison} places the completed public baselines
+beside RelaySpec. The relay has the highest measured throughput, but the
+separate runtime controls prevent an algorithm-only ranking.
+Table~\ref{tab:method-differences} distinguishes their adaptation mechanisms.
+
+\begin{table}[H]
+\caption{Public-runtime comparison on 128 MATH development questions,
+2,048-token cap. Correct counts are out of 128, with each system's AR in
+parentheses. Precision, attention and libraries differ, so speedups use
+own-runtime AR. Settings and paired quality uncertainty appear in
+Appendix~\ref{app:externalbaselines}.}
+\label{tab:public-comparison}
+\centering\small
+\input{generated/public_baseline_comparison_table.tex}
+\end{table}
 
 \section{Conclusion}
 \label{sec:scope}
@@ -1333,6 +1338,28 @@ normalization comparisons with their distinct fitting recipes.
 
 \section{External baselines in their public runtimes}
 \label{app:externalbaselines}
+
+
+\begin{table}[H]
+\caption{Mechanism and evaluation scope of the closest alternatives.
+All rows inherit pretrained models. ``No new fit'' for PARD refers to
+retargeting its released checkpoint, not its original training cost.
+DFlash and EAGLE-3 are the inherited drafter families rather than
+independent competitors to RelaySpec's interface replacement.}
+\label{tab:method-differences}
+\centering\footnotesize
+\begin{tabular}{p{0.18\linewidth}p{0.25\linewidth}p{0.22\linewidth}p{0.23\linewidth}}
+\toprule
+Method & New-target adaptation & Use of target features & Evidence here \\
+\midrule
+RelaySpec & Fit input map, freeze drafter & Replace source conditioning & Two drafter families, 8B/14B targets \\
+PARD \citep{an2026pard} & No new fit for released drafter & Target-independent proposals & Public runtime, 128-question capped quality \\
+SD$^2$ \citep{berdoz2026sd2} & Fit steering in tested frozen-drafter option & Inject steering within drafter & Rate and epoch sweeps, 128-question capped quality \\
+Connector CE & Fit input map with token CE & Same replacement interface & Common-runtime matched warm budgets \\
+Drafter LoRA & Fit initial map, then LoRA with map frozen & Adapt feature-conditioned drafter & Common-runtime matched warm budgets, two seeds \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 We evaluate SD$^2$'s public frozen-drafter option and the released PARD
 parallel drafter on sixteen exposed MATH development requests with a

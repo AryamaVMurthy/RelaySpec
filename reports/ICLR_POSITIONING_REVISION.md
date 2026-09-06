@@ -10,3 +10,9 @@ The revised paper explains why a small interface is useful: it reuses an inherit
 - Preserved held-out confirmation, quality uncertainty, composition tradeoffs and unresolved 14B optimization behavior. No experiments or numerical results were changed for this revision.
 
 The compiled paper has nine main-text pages and 37 pages including references and appendix, with 42 resolved citations. All pages were visually inspected in color and all distinct grayscale renderings were reviewed. The final automated check results are recorded in ICLR_MANUSCRIPT_QA.md.
+
+## Competitor tables added
+
+Main Table 5 (page 9) now compares RelaySpec N512, released PARD and the tested frozen-drafter SD-square configuration on the 128-question, 2,048-token MATH development evaluation. It reports tokens/s, each runtime's AR tokens/s, paired speedup intervals and candidate/AR correct counts. The builder replays both external-baseline audits and the RelaySpec quality audit before generating this joint table. Cross-runtime differences remain explicit in the caption.
+
+Appendix D Table 30 (page 28) compares new-target fitting, use of target features and evaluation coverage for RelaySpec, PARD, SD-square, connector CE and drafter LoRA. It distinguishes published competitor methods from adaptation baselines and acknowledges PARD's zero additional target-specific fitting. The scientific main text still ends on page 9; the reproducibility statement now precedes references on page 10.
