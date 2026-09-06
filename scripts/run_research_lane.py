@@ -223,6 +223,9 @@ def main():
     a = p.parse_args()
     spec = json.loads(a.spec.read_text())
     a.output.mkdir(parents=True, exist_ok=False)
+    for checkpoint, expected in spec.get("checkpoint_sha256", {}).items():
+        if hashlib.sha256(Path(checkpoint).read_bytes()).hexdigest() != expected:
+            raise ValueError(f"Frozen checkpoint hash mismatch: {checkpoint}")
     variants = prepare(spec, a.output)
     gc.collect()
     torch.cuda.empty_cache()
@@ -233,7 +236,7 @@ def main():
         max_prompts=spec.get("requests", 8),
         research_single_gpu=True,
         methods=[
-            "native_ar",
+            *(["native_ar"] if spec.get("include_ar", True) else []),
             *(
                 [
                     "native_target_dflash"
@@ -290,7 +293,10 @@ def main():
         "status": "pass",
         "hypothesis": spec["hypothesis"],
         "summary": summarize(rows, reference="relay_base"),
-        "scope": "Exposed development questions at the recorded output cap; exploratory screen, no full-answer quality or confirmatory significance claim.",
+        "scope": spec.get(
+            "scope",
+            "Exposed development questions at the recorded output cap; exploratory screen, no full-answer quality or confirmatory significance claim.",
+        ),
     }
     if spec.get("duplicate_control"):
         expected = {r["problem_id"]: r for r in rows if r["method"] == "relay_base"}
