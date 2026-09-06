@@ -49,6 +49,13 @@ def main():
     setup = json.loads(setup_path.read_text())
     protocol_path = Path(config["verification_protocol"])
     protocol = json.loads(protocol_path.read_text())
+    for path, sha in config.get("prerequisites", {}).items():
+        prerequisite = Path(path)
+        if (
+            digest(prerequisite) != sha
+            or json.loads(prerequisite.read_text())["status"] != "complete"
+        ):
+            raise ValueError("SD-square longer-output prerequisite did not pass")
     if (
         digest(source_path) != config["source_config_sha256"]
         or setup["status"] != "pass"
@@ -153,6 +160,13 @@ def main():
             else initial
         )
         identity = load_inference_steering(named, saved, value.get("trainable_sha256"))
+        if (
+            value.get("inference_sha256", identity["inference_sha256"])
+            != identity["inference_sha256"]
+        ):
+            raise ValueError(
+                "SD-square quality used different inference weights from selection"
+            )
         if name in fingerprints and fingerprints[name] != identity:
             raise ValueError("SD-square steering identity changed between requests")
         fingerprints[name] = identity

@@ -73,6 +73,13 @@ def main():
             ):
                 raise ValueError("invalid SD-square campaign row")
             value = config["variants"][row["method"]]
+            if (
+                value.get("inference_sha256", row["steering_inference_sha256"])
+                != row["steering_inference_sha256"]
+            ):
+                raise ValueError(
+                    "SD-square row differs from selected inference fingerprint"
+                )
             key = (row["problem_id"], row["repetition"])
             group = groups.setdefault(key, {})
             if row["method"] in group:
