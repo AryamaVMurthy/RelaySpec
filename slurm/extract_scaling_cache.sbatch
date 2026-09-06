@@ -38,6 +38,15 @@ extraction_args=()
 if [[ -n "${CACHE_TRAINING_CONFIG:-}" ]]; then
   extraction_args+=(--training-config "$CACHE_TRAINING_CONFIG")
 fi
+if [[ -n "${CACHE_DATA_ROOT:-}" ]]; then
+  extraction_args+=(--data-root "$CACHE_DATA_ROOT")
+fi
+if [[ -n "${CACHE_TRAINING_MANIFEST:-}" ]]; then
+  extraction_args+=(--training-manifest "$CACHE_TRAINING_MANIFEST")
+fi
+if [[ "${CACHE_REPORT_DOMAINS:-0}" == 1 ]]; then
+  extraction_args+=(--report-domain-diagnostics)
+fi
 mkdir -p "$RELAYSPEC_OUTPUT"
 cp SOURCE_COMMIT "$RELAYSPEC_OUTPUT/source-commit.txt"
 tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm SOURCE_COMMIT

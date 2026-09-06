@@ -11,6 +11,8 @@ from pathlib import Path
 import torch
 import yaml
 
+from relayspec.cache_data_inputs import checked_data_inputs
+
 
 def run(command, env):
     subprocess.run(command, env=env, check=True)
@@ -30,6 +32,9 @@ def main():
         type=Path,
         default=Path("configs/submission/scaling/campaign-pilot.yaml"),
     )
+    parser.add_argument("--data-root", type=Path)
+    parser.add_argument("--training-manifest", default="train-32768.json")
+    parser.add_argument("--report-domain-diagnostics", action="store_true")
     args = parser.parse_args()
     python = os.environ["RELAYSPEC_PYTHON"]
     artifacts = Path(os.environ["RELAYSPEC_OUTPUT"])
@@ -44,18 +49,18 @@ def main():
         "--nproc_per_node=4",
     ]
     train = yaml.safe_load(args.training_config.read_text())
-    data_root = (
+    data_root = args.data_root or (
         Path(os.environ["RELAYSPEC_CACHE_DIR"]) / "relayspec/scaling-data/numina-v1"
     )
-    data_gate = json.loads((data_root / "manifest-gate.json").read_text())
-    for name in ["train-32768.json", "validation.json"]:
-        if (
-            hashlib.sha256((data_root / name).read_bytes()).hexdigest()
-            != data_gate["files"][name]["sha256"]
-        ):
-            raise ValueError("remote fitting manifest hash mismatch")
+    data_inputs = checked_data_inputs(
+        data_root,
+        args.training_manifest,
+        train_records=64,
+        validation_records=16,
+        report_domains=args.report_domain_diagnostics,
+    )
     train["relay_training"].update(
-        manifest_path=str(data_root / "train-32768.json"),
+        manifest_path=str(data_root / args.training_manifest),
         validation_manifest_path=str(data_root / "validation.json"),
         feature_cache={"train_records": 64, "validation_records": 16},
     )
@@ -86,6 +91,13 @@ def main():
         }
         if width is not None:
             trial["width"] = width
+        if args.report_domain_diagnostics:
+            trial.update(
+                report_domain_diagnostics=True,
+                validation_required_domains=sorted(
+                    data_inputs["files"]["validation"]["domain_counts"]
+                ),
+            )
         trials.append(trial)
     trial_path = artifacts / "cached-trials.json"
     trial_path.write_text(json.dumps({"trials": trials}, indent=2) + "\n")
@@ -152,6 +164,7 @@ def main():
         json.dumps(
             {
                 "status": "pass",
+                "data_inputs": data_inputs,
                 "feature_cache": str(cache_root),
                 "feature_cache_index_sha256": hashlib.sha256(
                     (cache_root / "cache-index.json").read_bytes()

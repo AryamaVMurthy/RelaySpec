@@ -1,0 +1,314 @@
+{
+  "status": "declared_before_composition_fitting",
+  "large_data_scaling": "paused",
+  "data_root_tag": "math-dolly-v2",
+  "manifest_gate_sha256": "f8ca68ff7a666e64ad8ed1aabc2c648c24f5d25f6a11ef52633585a860f890fd",
+  "training_config": "configs/protocol_active/train_dflash_qwen3_8b_relative_4gpu.yaml",
+  "campaign_config": "configs/submission/scaling/campaign-pilot.yaml",
+  "arms": {
+    "math": {
+      "training_manifest": "train-math-2048.json",
+      "fits": [
+        {
+          "name": "composition-math-dense-n2048-s1729",
+          "study": "matched_count_composition",
+          "architecture": "dense",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            2048,
+            8192
+          ],
+          "validation_records": 2048,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": true,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "report_domain_diagnostics": true,
+          "validation_required_domains": [
+            "general_instruction",
+            "math"
+          ],
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "composition-math-factorized512-n2048-s1729",
+          "study": "matched_count_composition",
+          "architecture": "factorized",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            2048,
+            8192
+          ],
+          "validation_records": 2048,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": true,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "width": 512,
+          "report_domain_diagnostics": true,
+          "validation_required_domains": [
+            "general_instruction",
+            "math"
+          ],
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "composition-math-mlp512-n2048-s1729",
+          "study": "matched_count_composition",
+          "architecture": "mlp",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            2048,
+            8192
+          ],
+          "validation_records": 2048,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": true,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "width": 512,
+          "report_domain_diagnostics": true,
+          "validation_required_domains": [
+            "general_instruction",
+            "math"
+          ],
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "composition-math-dense-n2048-s1730",
+          "study": "matched_count_composition",
+          "architecture": "dense",
+          "seed": 1730,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            2048,
+            8192
+          ],
+          "validation_records": 2048,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": true,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "report_domain_diagnostics": true,
+          "validation_required_domains": [
+            "general_instruction",
+            "math"
+          ],
+          "cache_backend": "buffer",
+          "device_cache": false
+        }
+      ]
+    },
+    "mixed": {
+      "training_manifest": "train-mixed-2048.json",
+      "fits": [
+        {
+          "name": "composition-mixed-dense-n2048-s1729",
+          "study": "matched_count_composition",
+          "architecture": "dense",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            2048,
+            8192
+          ],
+          "validation_records": 2048,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": true,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "report_domain_diagnostics": true,
+          "validation_required_domains": [
+            "general_instruction",
+            "math"
+          ],
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "composition-mixed-factorized512-n2048-s1729",
+          "study": "matched_count_composition",
+          "architecture": "factorized",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            2048,
+            8192
+          ],
+          "validation_records": 2048,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": true,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "width": 512,
+          "report_domain_diagnostics": true,
+          "validation_required_domains": [
+            "general_instruction",
+            "math"
+          ],
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "composition-mixed-mlp512-n2048-s1729",
+          "study": "matched_count_composition",
+          "architecture": "mlp",
+          "seed": 1729,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            2048,
+            8192
+          ],
+          "validation_records": 2048,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": true,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "width": 512,
+          "report_domain_diagnostics": true,
+          "validation_required_domains": [
+            "general_instruction",
+            "math"
+          ],
+          "cache_backend": "buffer",
+          "device_cache": false
+        },
+        {
+          "name": "composition-mixed-dense-n2048-s1730",
+          "study": "matched_count_composition",
+          "architecture": "dense",
+          "seed": 1730,
+          "steps": 8192,
+          "distinct_examples": 2048,
+          "learning_rate": 0.0006,
+          "l2_weight": 0.0,
+          "weight_decay": 0.0,
+          "checkpoint_steps": [
+            2048,
+            8192
+          ],
+          "validation_records": 2048,
+          "diagnostic_train_records": 256,
+          "feature_objective": "relative_interface_mse",
+          "normalize_input": true,
+          "budget_panels": {
+            "fixed_exposure": {
+              "checkpoint_step": 8192,
+              "presentations": 32768
+            },
+            "fixed_passes": {
+              "checkpoint_step": 2048,
+              "presentations": 8192
+            }
+          },
+          "report_domain_diagnostics": true,
+          "validation_required_domains": [
+            "general_instruction",
+            "math"
+          ],
+          "cache_backend": "buffer",
+          "device_cache": false
+        }
+      ]
+    }
+  },
+  "execution": "Each arm requires a 64-train/16-validation cache-fit-decode compatibility pilot, then 2048/2048 frozen extraction, then an exact-cache 16-update resource/decode pilot before 8192-update fits. All pilots have a 540-second process timeout and 10-minute Slurm limit. Sequential four-GPU allocations.",
+  "scope": "Six primary fits plus two dense seed controls. 32768 record presentations reuse each 2048-example pool. Common validation is diagnostic only and cannot select a horizon. Compare actual non-padding training tokens, exposed development decoding, and full-answer quality separately. Not large-data scaling or untouched confirmation."
+}

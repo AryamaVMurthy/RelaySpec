@@ -11,6 +11,8 @@ from pathlib import Path
 
 import yaml
 
+from relayspec.cache_data_inputs import checked_data_inputs, require_pilot_data_inputs
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -18,6 +20,9 @@ def main():
     parser.add_argument("--train-records", type=int, default=2048)
     parser.add_argument("--validation-records", type=int, default=1024)
     parser.add_argument("--training-config", type=Path)
+    parser.add_argument("--data-root", type=Path)
+    parser.add_argument("--training-manifest", default="train-32768.json")
+    parser.add_argument("--report-domain-diagnostics", action="store_true")
     args = parser.parse_args()
     pilot = json.loads(args.pilot_gate.read_text())
     if pilot["status"] != "pass":
@@ -26,7 +31,7 @@ def main():
         "configs/protocol_active/train_dflash_qwen3_8b_relative_4gpu.yaml"
     )
     if (
-        args.training_config
+        (args.training_config or args.data_root or pilot.get("training_config_sha256"))
         and pilot.get("training_config_sha256")
         != hashlib.sha256(training_config.read_bytes()).hexdigest()
     ):
@@ -36,17 +41,25 @@ def main():
     if cache.exists():
         raise ValueError("refusing to overwrite a feature cache")
     output.mkdir(parents=True, exist_ok=True)
-    data = Path(os.environ["RELAYSPEC_CACHE_DIR"]) / "relayspec/scaling-data/numina-v1"
-    gate = json.loads((data / "manifest-gate.json").read_text())
-    for name, count in [
-        ("train-32768.json", args.train_records),
-        ("validation.json", args.validation_records),
-    ]:
-        payload = (data / name).read_bytes()
-        if hashlib.sha256(payload).hexdigest() != gate["files"][name]["sha256"]:
-            raise ValueError(f"manifest hash mismatch: {name}")
-        if count < 4 or count > len(json.loads(payload)["records"]):
-            raise ValueError(f"invalid requested cache record count: {name}")
+    data = args.data_root or (
+        Path(os.environ["RELAYSPEC_CACHE_DIR"]) / "relayspec/scaling-data/numina-v1"
+    )
+    data_inputs = checked_data_inputs(
+        data,
+        args.training_manifest,
+        train_records=args.train_records,
+        validation_records=args.validation_records,
+        report_domains=args.report_domain_diagnostics,
+    )
+    require_pilot_data_inputs(
+        pilot,
+        data_inputs,
+        custom_inputs=bool(
+            args.data_root
+            or args.training_manifest != "train-32768.json"
+            or args.report_domain_diagnostics
+        ),
+    )
     config = yaml.safe_load(training_config.read_text())
     pilot_index_path = Path(pilot["feature_cache"]) / "cache-index.json"
     pilot_index = json.loads(pilot_index_path.read_text())
@@ -69,7 +82,7 @@ def main():
     if free < required:
         raise ValueError(f"cache needs {required} free bytes, found {free}")
     config["relay_training"].update(
-        manifest_path=str(data / "train-32768.json"),
+        manifest_path=str(data / args.training_manifest),
         validation_manifest_path=str(data / "validation.json"),
         feature_cache={
             "train_records": args.train_records,
@@ -100,6 +113,7 @@ def main():
         json.dumps(
             {
                 "status": "pass",
+                "data_inputs": data_inputs,
                 "counts": expected,
                 "wall_seconds_including_model_load": time.perf_counter() - started,
                 "pilot_gate_sha256": hashlib.sha256(

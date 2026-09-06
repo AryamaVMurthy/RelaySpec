@@ -128,11 +128,25 @@ def main():
         for pair in zip(math_training[:1024], general_training, strict=True)
         for row in pair
     ]
-    common_validation = math_validation + general_validation
+    # Exercise both domains even in the bounded 16-record cache pilot.
+    common_validation = [
+        row
+        for pair in zip(math_validation, general_validation, strict=True)
+        for row in pair
+    ]
     train_keys = {content_hash(r["problem"]) for r in math_training + general_training}
     if train_keys & {content_hash(r["problem"]) for r in common_validation}:
         raise ValueError("training and validation overlap")
     args.output.mkdir(parents=True)
+    (args.output / "ATTRIBUTION.md").write_text(
+        "General-instruction records are adapted from Databricks Dolly 15k.\n\n"
+        "Source: https://huggingface.co/datasets/databricks/databricks-dolly-15k\n\n"
+        "License: CC BY-SA 3.0, https://creativecommons.org/licenses/by-sa/3.0/\n\n"
+        f"Pinned revision: {source['revision']}\n\n"
+        "Changes: deterministic subset selection and lexical overlap filtering; "
+        "instruction and context joined, metadata added, and selected records "
+        "combined with the separately sourced Numina math pool.\n"
+    )
     files = {}
     for name, records, role in [
         ("train-math-2048.json", math_training, "math-only fitting"),
@@ -178,6 +192,7 @@ def main():
         "status": "pass",
         "files": files,
         "seed": 1729,
+        "validation_order": "alternating_math_general_instruction_v2",
         "general_source": source,
         "input_sha256": {str(p): digest(p) for p in inputs},
         "exclusions": dict(exclusions),

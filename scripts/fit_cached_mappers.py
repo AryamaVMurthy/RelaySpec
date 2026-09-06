@@ -133,6 +133,19 @@ def main():
     ]
     if not validation:
         raise ValueError("cached fitting requires a fixed validation split")
+    diagnostic_domains = {}
+    if trial.get("report_domain_diagnostics"):
+        for name, group in [
+            ("train", entries[: int(trial.get("diagnostic_train_records", 32))]),
+            ("validation", validation_entries),
+        ]:
+            labels = [e.get("domain") for e in group]
+            if any(not isinstance(label, str) or not label for label in labels):
+                raise ValueError("domain diagnostics require labeled cache entries")
+            diagnostic_domains[name] = labels
+        required = trial.get("validation_required_domains")
+        if required and set(diagnostic_domains["validation"]) != set(required):
+            raise ValueError("validation prefix does not cover declared domains")
     setup_seconds = time.perf_counter() - setup_started
     if args.equivalence_pilot:
         examples = [get_example(e) for e in entries[:4]]
@@ -217,6 +230,7 @@ def main():
                 objective=objective,
                 historical_cosine_weight=cosine_weight,
                 output_transform=norm,
+                domains=diagnostic_domains.get(name),
             )
             for name, examples in [
                 ("train", diagnostic_train),

@@ -55,6 +55,10 @@ def write_cache_shard(root, groups, *, rank, world_size, extract):
                     ).hexdigest(),
                 }
             )
+            if "domain" in row:
+                if not isinstance(row["domain"], str) or not row["domain"]:
+                    raise ValueError("feature-cache domain must be a nonempty string")
+                entries[-1]["domain"] = row["domain"]
     (root / f"cache-rank{rank}.json").write_text(json.dumps(entries, indent=2) + "\n")
     return entries
 

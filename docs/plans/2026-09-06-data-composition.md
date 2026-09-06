@@ -56,6 +56,31 @@ and its audit gate byte-for-byte. This verifies deterministic selection
 and overlap filtering for the pinned inputs. It does not replace the
 required cache/gradient/export/decoding pilot or per-domain fitting metrics.
 
+Before any composition fitting, version 2 changes only common-validation order
+to alternate math and general-instruction records. Version 1 placed all math
+records first, so the 16-record compatibility pilot would miss general-domain
+validation. Training files are byte-identical to version 1; validation membership
+and counts are unchanged. Preserve manifest-gate-v1.json as the earlier prototype.
+The active data directory is data/composition/math-dolly-v2; its validation SHA
+is 4581ca42c4c4faa3eda1b2d4802178dafc29fee9c1083b2fba4c336e578d7037.
+The version 2 builder also writes attribution with the derived data.
+
+Cache extraction now accepts an explicit data root and training filename.
+The pilot records both manifest hashes, the manifest-gate hash, available counts,
+and domain policy. Full extraction must match these exact inputs; an old Numina
+pilot cannot authorize a custom composition cache. Domain diagnostics reuse the
+same per-record forward passes and preserve aggregate record weighting. Labels
+are cache metadata and do not alter tensor payloads or the training objective.
+Tests cover input mismatches, domain coverage, count limits, and unchanged metrics.
+
+The eight proper fits and exact-cache resource pilots are declared in
+configs/submission/scaling/composition-small-v1. Each arm uses four independent
+fits: dense, factorized 512, MLP 512, and a second dense seed. Save the four-pass
+and fixed-exposure checkpoints (2048 and 8192 updates); per-update training loss
+still records the complete learning trajectory. Full validation runs initially
+and at those checkpoints. Compatibility and exact-cache pilots must pass before
+proper fitting; no proper composition fitting has been launched yet.
+
 The task-difficulty analysis is separately integrated into the31-page
 paper on page24. All technical audits pass and main text remains9pages,
 with42 resolved citation keys. The new page was visually inspected in

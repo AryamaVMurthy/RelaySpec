@@ -50,4 +50,13 @@ fi
 if [[ -n "${CACHE_CAMPAIGN_CONFIG:-}" ]]; then
   pilot_args+=(--campaign-config "$CACHE_CAMPAIGN_CONFIG")
 fi
+if [[ -n "${CACHE_DATA_ROOT:-}" ]]; then
+  pilot_args+=(--data-root "$CACHE_DATA_ROOT")
+fi
+if [[ -n "${CACHE_TRAINING_MANIFEST:-}" ]]; then
+  pilot_args+=(--training-manifest "$CACHE_TRAINING_MANIFEST")
+fi
+if [[ "${CACHE_REPORT_DOMAINS:-0}" == 1 ]]; then
+  pilot_args+=(--report-domain-diagnostics)
+fi
 timeout --signal=TERM --kill-after=10s 540s "$RELAYSPEC_PYTHON" scripts/run_cached_fit_pilot.py "${pilot_args[@]}"

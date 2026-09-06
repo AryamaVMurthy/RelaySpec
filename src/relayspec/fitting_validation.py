@@ -39,15 +39,22 @@ def interface_diagnostics(
     objective,
     historical_cosine_weight=None,
     output_transform=None,
+    domains=None,
 ):
     """Cache entries are unpadded individual records, matching training weighting."""
     if not examples:
         raise ValueError("diagnostic examples must be nonempty")
+    if domains is not None and (
+        len(domains) != len(examples)
+        or any(not isinstance(name, str) or not name for name in domains)
+    ):
+        raise ValueError("one nonempty domain label per diagnostic record required")
+    by_domain = {}
     sums = dict(
         objective=0.0, relative_mse=0.0, cosine_error=0.0, relative_norm_error=0.0
     )
     tokens = 0
-    for x, y in examples:
+    for index, (x, y) in enumerate(examples):
         with torch.autocast(
             device_type=device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"
         ):
@@ -74,9 +81,27 @@ def interface_diagnostics(
             raise ValueError("nonfinite fitting validation metric")
         for key, value in values.items():
             sums[key] += value.item()
+        if domains is not None:
+            group = by_domain.setdefault(
+                domains[index],
+                {"records": 0, "tokens": 0, **{key: 0.0 for key in sums}},
+            )
+            group["records"] += 1
+            group["tokens"] += y.shape[-2]
+            for key, value in values.items():
+                group[key] += value.item()
         tokens += y.shape[-2]
-    return {
+    result = {
         "records": len(examples),
         "tokens": tokens,
         **{k: v / len(examples) for k, v in sums.items()},
     }
+    if domains is not None:
+        result["by_domain"] = {
+            name: {
+                key: value if key in {"records", "tokens"} else value / group["records"]
+                for key, value in group.items()
+            }
+            for name, group in sorted(by_domain.items())
+        }
+    return result
