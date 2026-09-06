@@ -158,3 +158,10 @@ registry. It contains all 16 endpoints and two controls (AR and source reuse),
 16 common development requests and a 256-token cap. Every endpoint remains fixed
 at 8192 updates. Schedule its bounded ten-minute comparison after the existing
 four-GPU chain, then run audit_target14_capacity.py before using any result.
+
+Queued DFlash capacity decoding 27954 from source e744b57, at
+/home/aryama.murthy/relayspec-dflash14-capacity-e744b57. It follows 27952
+with afterany resource sequencing, has a ten-minute allocation and 540-second
+process limit, and was released only after verifying its held four-GPU request
+and deployed config/source hashes. Collection/scoring is tracked by
+reports/mapper-scaling-20260905/target14b-capacity-dflash/jobs.json.
