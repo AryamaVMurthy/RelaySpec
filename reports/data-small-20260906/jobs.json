@@ -1,0 +1,31 @@
+{
+  "max_gpus": 4,
+  "source_commit": "95bd944da9f40a1e9e08a3beb2768a2b9a2a66bf",
+  "axis": "distinct training records",
+  "jobs": [
+    {
+      "id": 28337,
+      "kind": "cached_fit",
+      "remote": "/home/aryama.murthy/relayspec-small-data-v1/outputs/rs-small-records-28337",
+      "local": "/home/aryamavmurthy/work/RelaySpec-scaling/reports/data-small-20260906/run-28337",
+      "fits": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337",
+      "command": "cd /home/aryama.murthy/relayspec-small-data-v1 && sbatch --parsable --job-name=rs-small-records --time=00:15:00 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-small-data-v1,RELAYSPEC_FEATURE_CACHE=/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723,RELAYSPEC_TRIALS=configs/submission/data-small-20260906/dense-fits.json,RELAYSPEC_PILOT_GATE=/home/aryama.murthy/relayspec-matrix-v2-20260905/outputs/rs-capacity-pilot-27725/batch-gate.json,RELAYSPEC_CACHE_ACCESS_GATE=/home/aryama.murthy/relayspec-cache-access-20260906/outputs/rs-cache-access-27730/cache-access-gate.json,RELAYSPEC_BATCH_MODE=fit,RELAYSPEC_FIT_TIMEOUT=840 slurm/cached_scaling_batch.sbatch"
+    },
+    {
+      "id": 28338,
+      "kind": "data_evaluation_pilot",
+      "remote": "/home/aryama.murthy/relayspec-small-eval-v1/outputs/rs-small-eval-pilot-28338",
+      "local": "/home/aryamavmurthy/work/RelaySpec-scaling/reports/data-small-20260906/run-28338",
+      "config": "configs/submission/data-small-20260906/eval-pilot.yaml",
+      "command": "cd /home/aryama.murthy/relayspec-small-eval-v1 && sbatch --parsable --kill-on-invalid-dep=yes --dependency=afterok:28337 --job-name=rs-small-eval-pilot --time=00:10:00 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-small-eval-v1,CAMPAIGN_CONFIG=configs/submission/data-small-20260906/eval-pilot.yaml,CAMPAIGN_CHECK_DUPLICATE=0,CAMPAIGN_TIMEOUT=540 slurm/mapper_campaign.sbatch"
+    },
+    {
+      "id": 28339,
+      "kind": "data_evaluation_full",
+      "remote": "/home/aryama.murthy/relayspec-small-eval-v1/outputs/rs-small-eval-full-28339",
+      "local": "/home/aryamavmurthy/work/RelaySpec-scaling/reports/data-small-20260906/run-28339",
+      "config": "configs/submission/data-small-20260906/eval-full.yaml",
+      "command": "cd /home/aryama.murthy/relayspec-small-eval-v1 && sbatch --parsable --kill-on-invalid-dep=yes --dependency=afterok:28338 --job-name=rs-small-eval-full --time=01:15:00 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-small-eval-v1,CAMPAIGN_CONFIG=configs/submission/data-small-20260906/eval-full.yaml,CAMPAIGN_CHECK_DUPLICATE=0,CAMPAIGN_TIMEOUT=4440 slurm/mapper_campaign.sbatch"
+    }
+  ]
+}
