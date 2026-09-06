@@ -56,3 +56,15 @@ cache-index SHA matches the declaration. CUBLAS_WORKSPACE_CONFIG=:4096:8 is
 explicit in submission. Ledger and collection use eagle3-adaptation-pilot/jobs.json.
 This is a bounded infrastructure pilot; proper calibration, rate and time-budget
 runs remain unsubmitted until it passes.
+
+The calibration auditor now uses EAGLE-specific checkpoint hashes, acceptance
+fields and four shifted-prefix cache/logit checks. EAGLE audits require the
+immutable submission ledger and reproduce saved scoring from raw outputs.
+Existing DFlash calibration27841 reproduces its curated result exactly after
+the change. Ten focused family-evidence/alignment/LoRA tests pass.
+
+Prepared build_eagle_adaptation_calibration.py. It cannot emit the512-example,
+128-update configuration until the EAGLE compatibility registry passes with
+unchanged source/config/gate hashes. The resulting GPU runner rechecks its exact
+prerequisite gate and cache/initial-mapper bindings before fitting. Prepared
+records use CPU memory. No additional calibration job has been launched yet.

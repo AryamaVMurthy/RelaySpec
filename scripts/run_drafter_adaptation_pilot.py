@@ -27,6 +27,29 @@ def main():
     declared_config = yaml.safe_load(args.config.read_text())
     declared_settings = declared_config["adaptation_pilot"]
     family = declared_config["proposer"]["family"]
+    prerequisite = declared_settings.get("prerequisite_gate")
+    if prerequisite:
+        prerequisite_path = Path(prerequisite["path"])
+        prior = json.loads(prerequisite_path.read_text())
+        if (
+            hashlib.sha256(prerequisite_path.read_bytes()).hexdigest()
+            != prerequisite["sha256"]
+            or prior.get("status") != "pass"
+            or prior.get("duplicate_seed_weights_and_decoding_bit_identical")
+            is not True
+            or prior.get("zero_update_decoding_bit_identical") is not True
+            or len(prior.get("fitting", [])) != 4
+            or any(
+                fit["feature_cache_index_sha256"]
+                != declared_settings["feature_cache_index_sha256"]
+                or fit["initial_mapper_sha256"]
+                != declared_settings["initial_mapper_sha256"]
+                for fit in prior["fitting"]
+            )
+        ):
+            raise ValueError(
+                "adaptation calibration requires its exact cache/mapper compatibility pilot"
+            )
     subprocess.run(
         [
             python,

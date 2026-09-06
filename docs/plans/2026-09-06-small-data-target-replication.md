@@ -182,3 +182,9 @@ mapper hashes, changed reference answers, modified fitting evidence and source
 mismatches before emitting a result. The scoring replay is mocked only inside
 these synthetic binding tests; actual campaign audits still execute the pinned
 scorer. No synthetic rows enter a research registry or paper artifact.
+
+EAGLE14 jobs27940--27943 completed in4m43s,4m44s,6m00s and7m47s.
+The full audit passes all16 EAGLE trajectories. Together with DFlash, all32
+proper14B fits are complete and source/cache-bound. Generated the complete
+EAGLE16-endpoint decoding configuration and provenance; its submission and
+actual decoding remain pending. DFlash capacity job27954 is already queued.
