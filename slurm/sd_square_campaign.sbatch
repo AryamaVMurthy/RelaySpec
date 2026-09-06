@@ -15,6 +15,7 @@ set -euo pipefail
 module load u22/cuda/12.4
 cd "${RELAYSPEC_PROJECT_DIR:?immutable source required}"
 : "${SD_SQUARE_SETUP_GATE:?verified CPU setup required}"
+: "${SD_SQUARE_SHARD_INDEX:?fixed request shard required}"
 export RELAYSPEC_PYTHON="$HOME/.venvs/factorspec-20260826/bin/python"
 export SD_SQUARE_OVERLAY
 SD_SQUARE_OVERLAY="$("$RELAYSPEC_PYTHON" -c 'import json,sys; g=json.load(open(sys.argv[1])); assert g["status"]=="pass"; print(g["overlay"])' "$SD_SQUARE_SETUP_GATE")"
@@ -29,7 +30,7 @@ export RELAYSPEC_OUTPUT="$PWD/outputs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}"
 mkdir -p "$RELAYSPEC_OUTPUT" "$TMP_PATH"
 cp SOURCE_COMMIT "$RELAYSPEC_OUTPUT/source-commit.txt"
 cp "$SD_SQUARE_SETUP_GATE" "$RELAYSPEC_OUTPUT/setup-gate.json"
-"$RELAYSPEC_PYTHON" scripts/build_sd_square_campaign.py --check-files --output "$RELAYSPEC_OUTPUT/campaign-config.json" --runs \
+"$RELAYSPEC_PYTHON" scripts/build_sd_square_campaign.py --shard-index "$SD_SQUARE_SHARD_INDEX" --check-files --output "$RELAYSPEC_OUTPUT/campaign-config.json" --runs \
   /home/aryama.murthy/relayspec-sd2-fullpilot-c7325cb/outputs/rs-sd2-fullpilot-27888 \
   /home/aryama.murthy/relayspec-sd2-rates-9e79fba/outputs/rs-sd2-rates-27890
 tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm vendor/sd-square SOURCE_COMMIT reports/external-baselines-20260906 reports/mapper-scaling-20260905/sd-square-fullpilot/jobs.json reports/mapper-scaling-20260905/sd-square-rates/jobs.json

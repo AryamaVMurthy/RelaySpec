@@ -118,7 +118,8 @@ def main():
         if r["benchmark"] == "math500"
     ]
     random.Random(config["seed"]).shuffle(records)
-    records = records[: config["requests"]][rank::4]
+    start = config["request_offset"]
+    records = records[start : start + config["requests"]][rank::4]
     prompts = []
     for record in records:
         ids = model.tok.apply_chat_template(
@@ -128,8 +129,8 @@ def main():
             return_tensors="pt",
         ).to(device)
         prompts.append((record, ids))
-    if len(prompts) != 4:
-        raise ValueError("SD-square worker lacks four declared prompts")
+    if len(prompts) != config["requests"] // 4:
+        raise ValueError("SD-square worker lacks declared prompts")
     validated, fingerprints = {}, {}
 
     def select(name):

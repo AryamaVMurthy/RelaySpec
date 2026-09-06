@@ -100,3 +100,11 @@ artifacts and exclude its timings. The corrected campaign follows public
 eval.py with BF16 drafter/steering and FP16 inherited target, under BF16
 autocast. Verify original FP32 training fingerprints before conversion
 and separately fingerprint the actual BF16 inference tensors.
+
+Corrected inference job27898 was cancelled at5m13s after measured
+SD-square requests took10--15seconds for256 tokens. The full nine-method
+sixteen-request batch would exceed the pilot limit once setup and
+verification are included. Preserve partial artifacts without a completion
+claim. Execute the same fixed comparison in two disjoint eight-request
+shards, each with four GPUs and a ten-minute allocation. Aggregate only
+after both source-bound gates pass and the sixteen prompts are disjoint.

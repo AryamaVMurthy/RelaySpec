@@ -23,6 +23,7 @@ def main():
     parser.add_argument("--runs", type=Path, nargs=2, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--check-files", action="store_true")
+    parser.add_argument("--shard-index", type=int, choices=(0, 1), required=True)
     args = parser.parse_args()
     variants = {
         "native_ar": {"kind": "ar"},
@@ -125,7 +126,9 @@ def main():
             "autocast": "bfloat16",
         },
         "manifest_path": "configs/eval_manifest.json",
-        "requests": 16,
+        "requests": 8,
+        "request_offset": 8 * args.shard_index,
+        "total_development_requests": 16,
         "max_new_tokens": 256,
         "observer_pilot_tokens": 64,
         "warmup_tokens": 16,
@@ -138,6 +141,7 @@ def main():
         "independent-drafter controls, and correct runtime-local AR. Sixteen paired exposed "
         "development requests with256-token cap. Immediate/deferred observer equality is "
         "checked before measurements. GPU decision capture is timed, CPU materialization and "
+        "Each ten-minute job covers one disjoint eight-request shard of the fixed sixteen. "
         "verification occur after the timer. Shared resident steering storage prevents isolated "
         "serving-memory claims. No full-answer quality, untouched confirmation or cross-runtime "
         "algorithm-only ranking. Old exact-AR failures are preserved.",
