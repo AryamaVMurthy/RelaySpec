@@ -1,0 +1,34 @@
+{
+  "max_gpus": 4,
+  "source_commit": "a78b8580e87f46dba5ce8e6b7b1e67ff5af7eb77",
+  "jobs": [
+    {
+      "id": 28132,
+      "arm": "math",
+      "stage": "exact_cache_pilot",
+      "remote": "/home/aryama.murthy/relayspec-resume-a78b858/outputs/rs-comp-math-exact-28132",
+      "environment": {
+        "RELAYSPEC_PROJECT_DIR": "/home/aryama.murthy/relayspec-resume-a78b858",
+        "RELAYSPEC_FEATURE_CACHE": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/composition-math-v2-27959",
+        "RELAYSPEC_TRIALS": "configs/submission/scaling/composition-small-v1/math-pilot.json",
+        "RELAYSPEC_PILOT_GATE": "/home/aryama.murthy/relayspec-composition-ce00aab/outputs/rs-comp-math-pilot-27944/pilot-gate.json",
+        "RELAYSPEC_BATCH_MODE": "pilot"
+      },
+      "command": "cd /home/aryama.murthy/relayspec-resume-a78b858 && sbatch --parsable --job-name=rs-comp-math-exact --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-resume-a78b858,RELAYSPEC_FEATURE_CACHE=/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/composition-math-v2-27959,RELAYSPEC_TRIALS=configs/submission/scaling/composition-small-v1/math-pilot.json,RELAYSPEC_PILOT_GATE=/home/aryama.murthy/relayspec-composition-ce00aab/outputs/rs-comp-math-pilot-27944/pilot-gate.json,RELAYSPEC_BATCH_MODE=pilot slurm/cached_scaling_batch.sbatch"
+    },
+    {
+      "id": 28133,
+      "arm": "mixed",
+      "stage": "exact_cache_pilot",
+      "remote": "/home/aryama.murthy/relayspec-resume-a78b858/outputs/rs-comp-mixed-exact-28133",
+      "environment": {
+        "RELAYSPEC_PROJECT_DIR": "/home/aryama.murthy/relayspec-resume-a78b858",
+        "RELAYSPEC_FEATURE_CACHE": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/composition-mixed-v2-27966",
+        "RELAYSPEC_TRIALS": "configs/submission/scaling/composition-small-v1/mixed-pilot.json",
+        "RELAYSPEC_PILOT_GATE": "/home/aryama.murthy/relayspec-composition-ce00aab/outputs/rs-comp-mixed-pilot-27945/pilot-gate.json",
+        "RELAYSPEC_BATCH_MODE": "pilot"
+      },
+      "command": "cd /home/aryama.murthy/relayspec-resume-a78b858 && sbatch --parsable --job-name=rs-comp-mixed-exact --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-resume-a78b858,RELAYSPEC_FEATURE_CACHE=/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/composition-mixed-v2-27966,RELAYSPEC_TRIALS=configs/submission/scaling/composition-small-v1/mixed-pilot.json,RELAYSPEC_PILOT_GATE=/home/aryama.murthy/relayspec-composition-ce00aab/outputs/rs-comp-mixed-pilot-27945/pilot-gate.json,RELAYSPEC_BATCH_MODE=pilot --dependency=afterany:28132 slurm/cached_scaling_batch.sbatch"
+    }
+  ]
+}
