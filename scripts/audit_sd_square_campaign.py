@@ -11,6 +11,7 @@ from pathlib import Path
 
 from relayspec.ar_paper_evidence import load_scored, read_rows, summarize
 from relayspec.paired_accuracy import paired_accuracy_interval
+from relayspec.quality_scoring import verify_saved_scores
 
 
 def digest(path):
@@ -107,6 +108,7 @@ def main():
     parser.add_argument("--runs", type=Path, nargs=2, required=True)
     parser.add_argument("--ledger", type=Path, required=True)
     parser.add_argument("--guarded-warmup", action="store_true")
+    parser.add_argument("--scoring-repo", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     shards = [audit_shard(args, run, i) for i, run in enumerate(args.runs)]
@@ -122,6 +124,7 @@ def main():
         scorer = Path("reports/ar-revision-20260905/scorer-provenance.json")
         rows = []
         for run in args.runs:
+            verify_saved_scores(run, args.scoring_repo or run.resolve().parents[3])
             analysis_path = run / "analysis.json"
             analysis = json.loads(analysis_path.read_text())
             if (

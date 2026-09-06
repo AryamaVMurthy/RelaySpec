@@ -11,6 +11,7 @@ from pathlib import Path
 
 from relayspec.ar_paper_evidence import load_scored, read_rows, summarize
 from relayspec.paired_accuracy import paired_accuracy_interval
+from relayspec.quality_scoring import verify_saved_scores
 
 
 def digest(path):
@@ -27,6 +28,7 @@ def main():
         default=Path("configs/submission/baselines/pard-campaign.json"),
     )
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--scoring-repo", type=Path)
     args = parser.parse_args()
     run = args.run.resolve()
     ledger = json.loads(args.ledger.read_text())
@@ -81,6 +83,7 @@ def main():
     quality = None
     quality_inputs = []
     if config.get("phase") in {"quality_pilot", "quality_full"}:
+        verify_saved_scores(run, args.scoring_repo or run.parents[3])
         analysis_path = run / "analysis.json"
         analysis = json.loads(analysis_path.read_text())
         scorer_path = Path("reports/ar-revision-20260905/scorer-provenance.json")

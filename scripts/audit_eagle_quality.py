@@ -3,17 +3,13 @@
 import argparse
 import hashlib
 import json
-import os
-import shutil
-import subprocess
-import sys
-import tempfile
 from pathlib import Path
 
 import yaml
 
 from relayspec.ar_paper_evidence import load_scored, summarize
 from relayspec.paired_accuracy import paired_accuracy_interval
+from relayspec.quality_scoring import verify_saved_scores
 
 
 def digest(path):
@@ -130,32 +126,7 @@ def main():
                     "quality row has an undeclared checkpoint, answer or cap"
                 )
         # Re-score saved text; do not trust an unbound correctness column.
-        with tempfile.TemporaryDirectory(
-            prefix="relayspec-eagle-quality-audit-"
-        ) as temporary:
-            fresh = Path(temporary)
-            for path in [
-                run / "completion-gate.json",
-                *sorted(run.glob("benchmark-rank*.jsonl")),
-            ]:
-                shutil.copy2(path, fresh / path.name)
-            subprocess.run(
-                [sys.executable, "scripts/analyze_controlled_run.py", str(fresh)],
-                cwd=args.scoring_repo,
-                env={**os.environ, "PYTHONPATH": "src:vendor/qwen-score-deps"},
-                check=True,
-                capture_output=True,
-            )
-            if json.loads((fresh / "analysis.json").read_text()) != json.loads(
-                (run / "analysis.json").read_text()
-            ):
-                raise ValueError(
-                    "quality analysis does not reproduce from pinned raw scoring"
-                )
-            if (fresh / "math-scored.jsonl").read_bytes() != (
-                run / "math-scored.jsonl"
-            ).read_bytes():
-                raise ValueError("quality scores do not reproduce from raw text")
+        verify_saved_scores(run, args.scoring_repo)
         rows.extend(shard)
         for path in [
             config_path,

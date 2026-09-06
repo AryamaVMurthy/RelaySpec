@@ -78,6 +78,19 @@ def main():
                     "configs/submission/baselines/pard-quality-full.json",
                 ],
             ),
+            (
+                "sd-square-quality-guarded-full",
+                "audit_sd_square_campaign.py",
+                [
+                    "--quality-full",
+                    "--guarded-warmup",
+                    "--runs",
+                    str(base / "sd-square-quality-guarded-full/run-27934"),
+                    str(base / "sd-square-quality-guarded-full/run-27935"),
+                    "--ledger",
+                    "reports/mapper-scaling-20260905/sd-square-quality-guarded-full/jobs.json",
+                ],
+            ),
         ]:
             expected = Path(temporary) / f"{name}.json"
             subprocess.run(
@@ -177,6 +190,25 @@ def main():
             f"{counts['correct_count']}/128 & {counts['cap_count']} " + r"\\"
         )
     qtable += [r"\bottomrule", r"\end{tabular}"]
+    sd_full = results["sd-square-quality-guarded-full"]
+    sqtable = [
+        r"\begin{tabular}{lrrrr}",
+        r"\toprule",
+        r"Setting & Tok/s & AR ratio [95\% CI] & Correct & Cap hits \\",
+        r"\midrule",
+    ]
+    for name, label in [
+        ("native_ar", "Matched AR"),
+        ("sd2_selected", "Selected SD$^2$"),
+    ]:
+        row = sd_full["comparisons"]["native_ar"]["methods"][name]
+        counts = sd_full["capped_quality"]["methods"][name]
+        lo, hi = row["throughput_ci95"]
+        sqtable.append(
+            f"{label} & {row['tokens_per_second']:.2f} & {row['throughput_ratio']:.3f} [{lo:.3f}, {hi:.3f}] & "
+            f"{counts['correct_count']}/128 & {counts['cap_count']} " + r"\\"
+        )
+    sqtable += [r"\bottomrule", r"\end{tabular}"]
     generated = args.output / "generated"
     generated.mkdir(parents=True, exist_ok=True)
     for name, rows in [
@@ -184,6 +216,7 @@ def main():
         ("pard_development_table.tex", ptable),
         ("sd_square_epoch_table.tex", etable),
         ("pard_quality_table.tex", qtable),
+        ("sd_square_quality_table.tex", sqtable),
     ]:
         (generated / name).write_text("\n".join(rows) + "\n")
     (generated / "external_baseline_evidence_registry.json").write_text(

@@ -263,3 +263,23 @@ process ceilings. The first follows the14B pilots, the second requires
 its first shard to pass. Collector493303 handles scoring/collection.
 This reruns the complete fixed128-request evaluation rather than pooling
 partial rows across failed attempts. No additional mapper training.
+
+Guarded full quality jobs 27934/27935 completed in 26m37s/37m49s.
+The combined audit reproduces all 256 scored rows on 128 unique development
+requests, both source/config identities, selected training fingerprints,
+strict measured verifier/termination checks and the pinned text scorer.
+SD-square and matched AR both score 103/128 with 11 cap hits; throughput
+is 19.916 versus 12.479 tokens/s, ratio 1.596 [1.560, 1.632]. There are
+three beneficial and three adverse discordances. The conservative paired
+accuracy interval is [-7.04, 7.04] percentage points; the one-point margin
+is not established. The descriptive bootstrap interval is [-3.91, 3.91]
+points. Exact token sequences agree on 42 requests. No failed preliminary
+rows are pooled into this result. The shared scoring replay also verifies
+the earlier PARD full quality result without modifying its raw artifacts.
+
+The regenerated manuscript now has 32 pages (nine main-text pages), with
+SD-square full capped quality in Table 31. Pages 28 and 29 were inspected
+in color and grayscale; tables, text and boundaries are legible without
+clipping. Full-manuscript visual review remains pending. Large-data
+scaling remains paused; current 14B fits use 512/2048 distinct examples.
+The first two four-fit batches completed in 4m59s and 5m09s.

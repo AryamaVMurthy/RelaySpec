@@ -11,6 +11,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -350,9 +351,15 @@ def _recorded_visual_review(root: Path, pdf: Path, pages: int) -> tuple[bool, st
     passed = passed and review.get("color_rendered_pages") == pages
     passed = passed and review.get("grayscale_rendered_pages") == pages
     passed = passed and all(review.get(key) is True for key in required_true)
-    return (
-        passed,
-        f"manual color and grayscale review covers all {pages} rendered pages",
+    if passed:
+        return (
+            True,
+            f"manual color and grayscale review covers all {pages} rendered pages",
+        )
+    return False, (
+        f"current {pages}-page PDF lacks a complete matching visual review "
+        f"(recorded {review.get('pages')} pages, matching PDF hash: "
+        f"{review.get('pdf_sha256') == _sha256(pdf)})"
     )
 
 
@@ -556,7 +563,7 @@ def audit_manuscript(root: Path, *, write_report: bool = True) -> dict[str, Any]
         lines = [
             "# RelaySpec ICLR 2027 manuscript QA",
             "",
-            "Generated 2026-09-05 from the compiled anonymous manuscript and final result artifacts.",
+            f"Generated {datetime.now(timezone.utc).date().isoformat()} from the compiled anonymous manuscript and recorded result artifacts.",
             "",
             f"- Overall: **{'PASS' if result['all_passed'] else 'FAIL'}**",
             f"- Main-text boundary: page {main_page} of the allowed 9",

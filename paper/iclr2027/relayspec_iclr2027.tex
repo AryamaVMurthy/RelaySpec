@@ -1300,6 +1300,35 @@ specified runtime and scorer, not untouched confirmation or an isolated
 algorithm ranking across runtimes.
 
 \clearpage
+\begin{table}[H]
+\caption{Selected one-epoch SD$^2$ on the same 128 exposed MATH
+development requests, with a 2048-token cap. The public mixed-precision
+runtime and matched AR control are retained. Both have 11 cap-length
+outputs, none with EOS exactly at the cap.}
+\label{tab:sd-square-quality}
+\centering\footnotesize
+\input{generated/sd_square_quality_table.tex}
+\end{table}
+
+SD$^2$ and matched AR both score 103 of 128, with three beneficial
+and three adverse correctness discordances. The conservative paired
+95\% interval is $[-7.04,7.04]$ percentage points, which does not
+establish the one-point noninferiority margin. The descriptive paired
+bootstrap interval is $[-3.91,3.91]$ points. Full capped sequences agree
+on 42 requests. Mean output lengths are 679.1 versus 680.9 tokens,
+so the 1.60-fold token-throughput and request-time ratios are close.
+Both shards retain the same selected training and inference fingerprints,
+and saved answers reproduce under the pinned scorer.
+
+The public physical-buffer limit can end an untimed warmup before its
+token cap. We record this termination only during warmup. Measured
+requests must still reach EOS or the cap and pass all actual-verifier
+checks. A replacement eight-request pilot passed before the complete
+quality run. Failed preliminary attempts remain excluded from the
+reported timings. These results concern the tested frozen-drafter
+configuration and its public runtime, not all SD$^2$ training options.
+
+\clearpage
 \section{Acceptance and numerical agreement}
 \label{app:acceptance}
 
