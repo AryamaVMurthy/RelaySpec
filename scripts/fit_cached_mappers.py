@@ -140,11 +140,26 @@ def main():
             .requires_grad_(False)
             .eval()
         )
+    initialization = trial.get("initialization", "random")
+    initialization_record = {"mode": "random"}
+    if initialization == "native_columns":
+        if native_teacher is None or trial.get("resume_from"):
+            raise ValueError("Native initialization requires a fresh native-teacher fit")
+        from relayspec.native_initialization import initialize_native_columns
+
+        initialization_record = initialize_native_columns(
+            relay, native_teacher["weight"], all_taps, selected_taps,
+            metadata["target_hidden_size"],
+        )
+        initialization_record["native_teacher_sha256"] = trial["native_teacher_sha256"]
+    elif initialization != "random":
+        raise ValueError("Unknown mapper initialization")
     optimizer = torch.optim.AdamW(
         relay.parameters(), lr=float(trial["learning_rate"]), weight_decay=decay
     )
     output = Path(os.environ["RELAYSPEC_OUTPUT"]) / trial["name"]
     output.mkdir(parents=True, exist_ok=False)
+    (output / "initialization.json").write_text(json.dumps(initialization_record, indent=2) + "\n")
     (output / "trial.json").write_text(json.dumps(trial, indent=2) + "\n")
     objective = trial.get("feature_objective", "relative_interface_mse")
     cosine_weight = trial.get("historical_cosine_weight")
