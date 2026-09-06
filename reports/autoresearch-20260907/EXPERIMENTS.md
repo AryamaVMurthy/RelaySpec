@@ -80,3 +80,12 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 19 / 1 | 28435 | dflash / fit_reduced_taps | pass | 145.1 | 8 | relay_early: 55.5%; relay_last2: 97.4%; relay_reduced: 50.0% |
 | 19 / 2 | 28435 | eagle3 / fit_reduced_taps | pass | 180.3 | 8 | relay_early: 56.5%; relay_last2: 92.7%; relay_reduced: 57.9% |
 | 19 / 3 | 28435 | eagle3 / fit_reduced_taps | pass | 180.0 | 8 | relay_early: 56.5%; relay_last2: 92.6%; relay_reduced: 57.4% |
+
+## Four-GPU pipeline stages
+
+These use stage-specific completion gates, not independent lane summaries.
+
+| Wave | Job | Stage | Status | Elapsed | Gate |
+|---:|---:|---|---|---|---|
+| 20 | 28440 | boundary_pipeline_pilot | pass | 00:01:35 | pilot-gate.json |
+| 21 | 28448 | boundary_extraction | pass | 00:00:42 | extraction-complete.json |

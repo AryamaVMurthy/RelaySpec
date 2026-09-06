@@ -1,7 +1,7 @@
 {
-  "ledger_sha256": "2af1892256014ee3ed199948d1be3ae31ce78ba533ad18e27887ceaa33542d4a",
+  "ledger_sha256": "11a3996737d6cf28030c96028921279de01e7d5756020c055c4b89b12db454fc",
   "input_sha256": {
-    "reports/autoresearch-20260907/jobs.json": "2af1892256014ee3ed199948d1be3ae31ce78ba533ad18e27887ceaa33542d4a",
+    "reports/autoresearch-20260907/jobs.json": "11a3996737d6cf28030c96028921279de01e7d5756020c055c4b89b12db454fc",
     "reports/autoresearch-20260907/run-28391/lane0-spec.json": "7fdea513452813b344401685df68196078f856e9a55424c4f6095dd9bb218899",
     "reports/autoresearch-20260907/run-28391/lane0-status.json": "0365096180cbfe28907df3238cfe80a9b4103228addca34c0736d5302a8836ef",
     "reports/autoresearch-20260907/run-28391/lane0/research-result.json": "7472d4f0cd8da2ad29fb0132c6f1f7ac972e0d0b24ec4b3c2bf496733f27763e",
@@ -227,7 +227,9 @@
     "reports/autoresearch-20260907/run-28435/lane2/research-result.json": "93596980ce52b2f265525f7e76d855058da6a7905433f45786d7be77f2bbbf50",
     "reports/autoresearch-20260907/run-28435/lane3-spec.json": "6fd72130105784956f915fed5e9179b9b02cccde58d9553f49afa1a7430146ad",
     "reports/autoresearch-20260907/run-28435/lane3-status.json": "0f5bf8c9501af23760455b6974ec3ddf73d973c50881b083784d308af08ed2ff",
-    "reports/autoresearch-20260907/run-28435/lane3/research-result.json": "1083bdc052ba196f1c16f5c572d8367055fa1f90af8f115ed0f1e41bee9d3896"
+    "reports/autoresearch-20260907/run-28435/lane3/research-result.json": "1083bdc052ba196f1c16f5c572d8367055fa1f90af8f115ed0f1e41bee9d3896",
+    "reports/autoresearch-20260907/run-28440/pilot-gate.json": "ce35b42d31a64ec51af4136accb5bf0465e1db4f5c28e0e7b2a6fc148f9dd792",
+    "reports/autoresearch-20260907/run-28448/extraction-complete.json": "d6dc4510ae320d0625ef1b6c3695b3148f4a66c5dcd97e46211f17e8ade79323"
   },
   "lanes": [
     {
@@ -7650,6 +7652,96 @@
         }
       },
       "duplicate_control": null
+    }
+  ],
+  "pipelines": [
+    {
+      "job": 28440,
+      "wave": 20,
+      "kind": "boundary_pipeline_pilot",
+      "status": "pass",
+      "slurm_state": "COMPLETED",
+      "elapsed": "00:01:35",
+      "gate": "pilot-gate.json",
+      "details": {
+        "status": "pass",
+        "data_inputs": {
+          "manifest_gate_sha256": "ea62bbc97140cb27761aed6d96f79c8b5fc5f972d27370ddc31bb72671a4009d",
+          "report_domain_diagnostics": false,
+          "files": {
+            "train": {
+              "name": "train-32768.json",
+              "sha256": "6e3e358415d8a5903b9d005cb6d23334cc5b49aaa1cd45c399cb0daded677d81",
+              "available_records": 32768
+            },
+            "validation": {
+              "name": "validation.json",
+              "sha256": "dbf0ae502016859540fdf42c31bc1dd69d51cd0fd47b9ef9d681ea63a684dcbe",
+              "available_records": 1024
+            }
+          }
+        },
+        "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/downscale-pilot-28440",
+        "feature_cache_index_sha256": "60277be138373f19809bad3a1e36cd397c0e5c492057364124b5092b3fba8711",
+        "training_config_sha256": "140b8abf5f0ab7b07691ed835834d6b33ad9aa238e7aeeb0f840262e0c07a406",
+        "models": {
+          "target": {
+            "id": "Qwen/Qwen3-0.6B",
+            "revision": "c1899de289a04d12100db370d81485cdf75e47ca"
+          },
+          "proposer": {
+            "family": "dflash",
+            "id": "z-lab/Qwen3-4B-DFlash-b16",
+            "revision": "b74e3a329c4d963783143b1e970d95b002be72bd",
+            "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+          }
+        },
+        "fitted_maps": [
+          "dense",
+          "factor512",
+          "mlp512",
+          "mlp512-l2"
+        ],
+        "evaluation": "/home/aryama.murthy/relayspec-autoresearch-w20/outputs/rs-research-w20-28440/evaluation",
+        "scope": "Cache integrity, BF16 gradient equivalence within declared tolerances, independent four-GPU fitting, finite checkpoints, paired decoding and duplicate-map isolation. No full-answer quality or scaling claim."
+      }
+    },
+    {
+      "job": 28448,
+      "wave": 21,
+      "kind": "boundary_extraction",
+      "status": "pass",
+      "slurm_state": "COMPLETED",
+      "elapsed": "00:00:42",
+      "gate": "extraction-complete.json",
+      "details": {
+        "status": "pass",
+        "data_inputs": {
+          "manifest_gate_sha256": "ea62bbc97140cb27761aed6d96f79c8b5fc5f972d27370ddc31bb72671a4009d",
+          "report_domain_diagnostics": false,
+          "files": {
+            "train": {
+              "name": "train-32768.json",
+              "sha256": "6e3e358415d8a5903b9d005cb6d23334cc5b49aaa1cd45c399cb0daded677d81",
+              "available_records": 32768
+            },
+            "validation": {
+              "name": "validation.json",
+              "sha256": "dbf0ae502016859540fdf42c31bc1dd69d51cd0fd47b9ef9d681ea63a684dcbe",
+              "available_records": 1024
+            }
+          }
+        },
+        "counts": {
+          "train": 512,
+          "validation": 128
+        },
+        "wall_seconds_including_model_load": 32.7692679297179,
+        "pilot_gate_sha256": "ce35b42d31a64ec51af4136accb5bf0465e1db4f5c28e0e7b2a6fc148f9dd792",
+        "cache_index_sha256": "ee1c15bbdd3cf6dee4390b67f38f266ad1fbdbb8463645c1477881e863cb0d73",
+        "total_bytes": 1854900544,
+        "cache_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/downscale-full-28448"
+      }
     }
   ],
   "scope": "All collected terminal lanes, including failures and negative results. Missing lanes are not assumed completed. Repeated baselines and overlapping development questions are not independent experiments. Per-lane confirmation summaries must not replace the aggregated fixed analyses."

@@ -8,9 +8,31 @@ root = Path("reports/autoresearch-20260907")
 ledger_path = root / "jobs.json"
 ledger = json.loads(ledger_path.read_text())
 records = []
+pipelines = []
+collector_path = root / "collector-status.json"
+collector = json.loads(collector_path.read_text()) if collector_path.exists() else {}
 inputs = {str(ledger_path): hashlib.sha256(ledger_path.read_bytes()).hexdigest()}
 for job in ledger["jobs"]:
     run = root / f"run-{job['id']}"
+    if job.get("kind", "").startswith("boundary_"):
+        state = collector.get(str(job["id"]), {})
+        if not state.get("collected"):
+            continue
+        gate_name = {
+            "boundary_pipeline_pilot": "pilot-gate.json",
+            "boundary_extraction": "extraction-complete.json",
+            "boundary_capacity_pilot": "batch-gate.json",
+            "boundary_full_fit": "batch-gate.json",
+        }[job["kind"]]
+        path = run / gate_name
+        gate = json.loads(path.read_text()) if path.exists() else {}
+        if path.exists():
+            inputs[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
+        pipelines.append(dict(job=job["id"], wave=job["wave"], kind=job["kind"],
+                              status="pass" if state["state"] == "COMPLETED" and gate.get("status") == "pass" else "fail",
+                              slurm_state=state["state"], elapsed=state["elapsed"],
+                              gate=gate_name, details=gate))
+        continue
     for lane in range(4):
         spec_path = run / f"lane{lane}-spec.json"
         status_path = run / f"lane{lane}-status.json"
@@ -47,6 +69,7 @@ output = dict(
     ledger_sha256=inputs[str(ledger_path)],
     input_sha256=inputs,
     lanes=records,
+    pipelines=pipelines,
     scope="All collected terminal lanes, including failures and negative results. Missing lanes are not assumed completed. Repeated baselines and overlapping development questions are not independent experiments. Per-lane confirmation summaries must not replace the aggregated fixed analyses.",
 )
 (root / "experiment-registry.json").write_text(json.dumps(output, indent=2) + "\n")
@@ -76,6 +99,12 @@ for r in records:
     lines.append(
         f"| {r['wave']} / {r['lane']} | {r['job']} | {r['family']} / {r['transform']} | {r['status']} | {r['elapsed_seconds']:.1f} | {summary.get('requests', '—')} | {arms or '—'} |"
     )
+lines += ["", "## Four-GPU pipeline stages", "",
+          "These use stage-specific completion gates, not independent lane summaries.", "",
+          "| Wave | Job | Stage | Status | Elapsed | Gate |",
+          "|---:|---:|---|---|---|---|"]
+for p in pipelines:
+    lines.append(f"| {p['wave']} | {p['job']} | {p['kind']} | {p['status']} | {p['elapsed']} | {p['gate']} |")
 (root / "EXPERIMENTS.md").write_text("\n".join(lines) + "\n")
 print(
     json.dumps(
@@ -83,6 +112,7 @@ print(
             terminal_lanes=len(records),
             passed=sum(r["status"] == "pass" for r in records),
             other=sum(r["status"] != "pass" for r in records),
+            terminal_pipelines=len(pipelines),
         )
     )
 )
