@@ -16,6 +16,31 @@ from relayspec.ar_paper_evidence import summarize
 
 
 def prepare(spec, root):
+    if spec["transform"] == "native_svd":
+        from relayspec.dflash import import_official_dflash
+
+        config = yaml.safe_load(Path(spec["config"]).read_text())
+        klass, _ = import_official_dflash(
+            os.environ["DFLASH_SOURCE"], config["proposer"]["source_commit"]
+        )
+        draft = klass.from_pretrained(
+            config["proposer"]["id"],
+            revision=config["proposer"]["revision"],
+            cache_dir=os.environ["TRANSFORMERS_CACHE"],
+            dtype=torch.bfloat16,
+            local_files_only=True,
+        )
+        native = {
+            "target_layer_ids": list(draft.config.target_layer_ids),
+            "relay": {"projection.weight": draft.fc.weight.detach().float().cpu()},
+            "relay_architecture": "scale_preserving_linear",
+            "steps": 0,
+            "origin": "Released native drafter fc; no fitting",
+        }
+        native_path = root / "native-fc.pt"
+        torch.save(native, native_path)
+        spec = {**spec, "checkpoint": str(native_path)}
+        del draft
     source = Path(spec["checkpoint"])
     base = torch.load(source, map_location="cpu", weights_only=True)
     weight = base["relay"]["projection.weight"]
@@ -31,7 +56,7 @@ def prepare(spec, root):
         torch.save(checkpoint, path)
         variants[name] = str(path)
 
-    if spec["transform"] == "svd":
+    if spec["transform"] in {"svd", "native_svd"}:
         torch.manual_seed(1729)
         w = weight.float().cuda()
         u, s, v = torch.svd_lowrank(
@@ -65,6 +90,32 @@ def prepare(spec, root):
             cp = copy.deepcopy(base)
             cp["relay"]["projection.weight"][:, i * width : (i + 1) * width] = 0
             save(f"relay_drop{layer}", cp)
+    elif spec["transform"] == "joint_drop":
+        taps = list(base["target_layer_ids"])
+        width = weight.shape[1] // len(taps)
+        for group in spec["drop_groups"]:
+            if not set(group).issubset(taps):
+                raise ValueError("Intervention layer absent from mapper")
+            cp = copy.deepcopy(base)
+            for layer in group:
+                i = taps.index(layer)
+                cp["relay"]["projection.weight"][:, i * width : (i + 1) * width] = 0
+            save("relay_drop_" + "_".join(map(str, group)), cp)
+        provenance["interpretation"] = (
+            "Joint block masking at fixed input normalization and feature capture."
+        )
+    elif spec["transform"] == "quantization_noise":
+        for bits in [2, 4, 8]:
+            levels = 2 ** (bits - 1) - 1
+            scale = weight.abs().amax(dim=1, keepdim=True).clamp_min(1e-12) / levels
+            cp = copy.deepcopy(base)
+            cp["relay"]["projection.weight"] = (weight / scale).round().clamp(
+                -levels, levels
+            ) * scale
+            save(f"relay_fakeq{bits}", cp)
+        provenance["interpretation"] = (
+            "Per-row symmetric quantize/dequantize weights, evaluated in BF16. This tests numerical robustness, not integer-kernel speed or memory savings."
+        )
     elif spec["transform"] == "data_interpolation":
         small_path = Path(spec["small_checkpoint"])
         small = torch.load(small_path, map_location="cpu", weights_only=True)

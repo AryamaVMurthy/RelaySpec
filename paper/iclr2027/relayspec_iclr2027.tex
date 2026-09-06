@@ -298,7 +298,7 @@ cells in each reported suite are included.
 \paragraph{Controlled scaling protocol.}
 The original 4,096-record checkpoints remain fixed for the broad workload
 results. A fixed-1,024-update sweep varies distinct records from 64 to
-4,096. A separate NuminaMath study uses nested 512/2,048-record sets,
+4,096. A separate NuminaMath study uses nested 16--32,768-record sets,
 1,024 feature-validation records and 8,192 batch-four updates per fit.
 Frozen feature caches are shared across matched linear and MLP fits.
 The longer-output capacity comparisons use 128 exposed MATH questions
@@ -418,24 +418,26 @@ transformer, not every tensor inherited from the source.
 \label{sec:controlled-scaling}
 
 We separate distinct training examples from optimization work. With
-1,024 updates and four examples per update held fixed, DFlash-8B
-throughput increases from 134.4 tokens/s at 64 examples to 181.9 at
-512, then ranges from 183.8 to 184.6 at 1,024--4,096 examples.
-Thus 512 is the smallest tested count within 5\% of the observed best
-point, not a confirmed data threshold beyond this setting. The right panel of
-Figure~\ref{fig:scaling} separately follows one continuous fit.
+8,192 batch-four updates held fixed, the NuminaMath sweep spans 16 to
+32,768 distinct records. DFlash-8B throughput rises from 96.9 tokens/s
+at 16 examples to 192.8 at 512, then ranges from 196.9 to 198.4 at
+2,048--32,768 (Figure~\ref{fig:scaling}). Thus 16 examples already give
+$2.58\times$ AR throughput, and 512 retain 97.2\% of the observed best.
+All eleven mappers score 105/128. These are single-seed development
+results, not a universal minimum-data threshold. Appendix~\ref{app:design}
+retains the separate historical MATH-only study.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=.94\linewidth]{figures/controlled_fitting.pdf}
-\caption{DFlash-8B on 128 development requests. Left: distinct-data
-scaling at fixed optimization work. Right: checkpoints from one
-continuous fit. Paired 95\% request intervals exclude fitting-seed
-variation and selection uncertainty.}
+\includegraphics[width=.94\linewidth]{figures/expanded_numina_data.pdf}
+\caption{DFlash-8B data scaling on 128 development questions, with
+NuminaMath training and 8,192 updates per fit. All dataset sizes are
+measured with shared controls in one campaign. Paired 95\% request
+intervals exclude fitting-seed variation and selection uncertainty.}
 \label{fig:scaling}
 \end{figure}
 
-A separate NuminaMath study crosses 512/2,048 examples with dense,
+The NuminaMath capacity study crosses 512/2,048 examples with dense,
 factored linear and GELU MLP maps over seven widths, using 8,192
 updates per cell. This holds parameter count equal between each
 factored map and MLP. Validation error decreases with capacity and
@@ -813,8 +815,36 @@ therefore measures a second pass, not 8,192 distinct examples.
 End-to-end AR-relative throughput increases from 3.65 to 5.03 across
 this trajectory. All five checkpoints score 105/128. Unlike the earlier
 separately fitted budget configurations, these checkpoints share one
-optimization trajectory. Figure~\ref{fig:scaling} separates
+optimization trajectory. Figure~\ref{fig:historical-scaling} separates
 this experiment from the fixed-work data study.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.94\linewidth]{figures/controlled_fitting.pdf}
+\caption{Historical MATH-only fitting study. Left: distinct-data scaling
+at 1,024 updates. Right: one continuous optimization trajectory.
+This uses a different training dataset and budget from Figure~\ref{fig:scaling}.}
+\label{fig:historical-scaling}
+\end{figure}
+
+\paragraph{Expanded NuminaMath data curve.}
+Table~\ref{tab:expanded-numina-data} reports all eleven completed sizes
+at 8,192 batch-four updates, spanning 2,048 epochs at 16 records to one
+epoch at 32,768. The same 1,024 feature-validation records are used
+throughout. Larger data marginally improves feature loss but does not
+improve measured decoding beyond the plateau. The 512-record mapper
+retains 97.2\% of the observed best throughput, while the 256-record
+mapper retains 93.9\%. These percentages are descriptive and conditional
+on the evaluated fitting seed and development questions.
+
+\begin{table}[H]
+\centering\small
+\caption{NuminaMath fitting at fixed 8,192 updates; 128 paired MATH
+questions with a 2,048-token output cap. All eleven mapper outputs
+score 105/128, versus AR's 104/128.}
+\label{tab:expanded-numina-data}
+\input{generated/expanded_numina_data_table.tex}
+\end{table}
 
 
 
