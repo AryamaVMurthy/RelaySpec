@@ -21,7 +21,7 @@ def audit(root):
     root = Path(root).resolve()
     with tempfile.TemporaryDirectory(prefix="relayspec-autoresearch-audit-") as directory:
         sandbox = Path(directory)
-        for name in ("reports", "configs", "scripts"):
+        for name in ("reports", "configs", "scripts", "src"):
             shutil.copytree(root / name, sandbox / name)
         paper = sandbox / "paper/iclr2027"
         for name in ("generated", "figures"):
