@@ -1,0 +1,49 @@
+{
+  "family": "dflash",
+  "transform": "fit_reduced_taps",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28428/lane2/fitting/native-dflash-taps-25-33/step-008192.pt",
+  "config": "configs/autoresearch/20260907/native-gsm8k-screen.yaml",
+  "hypothesis": "How much calibration work is needed to improve an inherited cropped native interface?",
+  "trial": {
+    "name": "native-late2-n128-s1729-native-columns-u1024",
+    "study": "native_initialization_budget",
+    "architecture": "dense",
+    "seed": 1729,
+    "steps": 1024,
+    "distinct_examples": 128,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      1024
+    ],
+    "validation_records": 128,
+    "diagnostic_train_records": 16,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": false,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 1024,
+        "presentations": 4096
+      }
+    },
+    "target_layer_ids": [
+      25,
+      33
+    ],
+    "cache_backend": "buffer",
+    "device_cache": false,
+    "initialization": "native_columns"
+  },
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+  "pilot_gate": "/home/aryama.murthy/relayspec-matrix-v2-20260905/outputs/rs-capacity-pilot-27725/batch-gate.json",
+  "native_teacher": true,
+  "requests": 8,
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28428/lane2/fitting/native-dflash-taps-25-33/step-008192.pt": "a53b21494b39f7139d3a04b206a5698dbf22fbd0fa7192f8f9cc577bcf4a59e9"
+  },
+  "max_new_tokens": 512,
+  "include_ar": false,
+  "include_native": false,
+  "scope": "Native-column initialization with16/128 records and128/1024 updates. Same record prefixes and optimizer as8192-update wave42. Eight exposed GSM8K requests512token cap. No additional data threshold or quality confirmation. All lanes540second cap."
+}
