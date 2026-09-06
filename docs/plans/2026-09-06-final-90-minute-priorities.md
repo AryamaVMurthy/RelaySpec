@@ -19,3 +19,8 @@ The final paper rewrite must begin after the90-minute experiment window and inco
 Final deliverable: rewrite the ICLR manuscript after the timeboxed results are audited, organizing the strongest supported findings in the nine-page main text and moving exhaustive supporting evidence to the appendix. Keep all negative findings, narrow unmatched-runtime and quality claims, and complete the regenerated-asset and visual checks. The original broad experiment list is deferred by the user's explicit time constraint, not silently considered achieved.
 
 The targeted EAGLE14 rate pilot was cancelled as27976 when rewriting was initially prioritized. After the user clarified that writing follows the experiment window, the same immutable pilot was resubmitted as27977, after27968, with unchanged trials/cache and ten-minute limit. It is registered with the deadline monitor. Only promote its proper fits if the successful pilot and complete run limits fit within the cutoff. Original cancelled output is not pooled.
+
+
+## Post-window completion
+
+The timeboxed GPU work and post-results paper revision are complete. See `reports/mapper-scaling-20260905/timebox-90min/COMPLETION.md` for exact completed jobs, deferred experiments, final PDF identity and validation. The revised manuscript has nine main-text pages and 32 total pages, and its manuscript audit passes all checks. No broad or large-data experiment was resumed.
