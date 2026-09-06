@@ -71,3 +71,19 @@ index are revalidated by fitting before use. Capacity pilots27931/27932
 use source759b0a3, widths512/4096 and only16 updates. They run sequentially
 after the guarded SD-square pilots27928/27929; collector488196 covers
 both. No proper fit is launched before its exact cache capacity pilot.
+
+Capacity pilots27931/27932 passed in3m23s/3m31s, with matching cache-index
+and trial hashes. DFlash width4096 fits use about3.29GB peak GPU memory.
+Its16-update optimizer time is0.61--0.63seconds, separate from validation,
+cache loading, checkpoint export and decoding. These costs support the
+bounded proper8192-update batches, whose completion remains unproven.
+
+Queued DFlash fitting27936--27939 and EAGLE fitting27940--27943 from
+source759b0a3. Each batch has four unique cells, four GPUs and a ten-minute
+allocation/540-second process limit. The first DFlash batch follows
+SD-square full quality27935, then each family uses afterok sequencing.
+EAGLE begins after the DFlash chain terminates, independently of its
+success. All runs recheck the exact-cache capacity pilot and source-bound
+trials before fitting. Collectors494794/495278 cover DFlash/EAGLE.
+The32 cells include28 primary fits and four dense seed1730 controls.
+Do not report a fitting or replication result before collecting its gate.

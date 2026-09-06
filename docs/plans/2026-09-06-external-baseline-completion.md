@@ -256,3 +256,10 @@ AR5/8 and reaches19.540 versus12.371tokens/s. Retain this negative small
 quality result. Its role is compatibility before the full128 development
 comparison, not evidence for or against a final1pp margin by itself.
 The guarded full configuration now binds this new pilot plus diagnosis.
+
+Guarded full quality27934/27935 is launched from7a7864e, two disjoint
+64-request shards with four GPUs,45-minute Slurm ceilings and2640-second
+process ceilings. The first follows the14B pilots, the second requires
+its first shard to pass. Collector493303 handles scoring/collection.
+This reruns the complete fixed128-request evaluation rather than pooling
+partial rows across failed attempts. No additional mapper training.

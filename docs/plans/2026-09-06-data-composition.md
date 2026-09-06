@@ -50,3 +50,14 @@ source download hashes, deterministic builder and license attribution
 are retained. No composition fitting or decoding has occurred yet.
 Implementation of data-root/manifest selection in cache extraction and
 per-domain validation reporting remains required before its GPU pilot.
+
+A second independent local build reproduces every selected JSON manifest
+and its audit gate byte-for-byte. This verifies deterministic selection
+and overlap filtering for the pinned inputs. It does not replace the
+required cache/gradient/export/decoding pilot or per-domain fitting metrics.
+
+The task-difficulty analysis is separately integrated into the31-page
+paper on page24. All technical audits pass and main text remains9pages,
+with42 resolved citation keys. The new page was visually inspected in
+color without clipping or overlap. Full31-page color/grayscale review
+remains pending, and the paper is not declared submission-ready.
