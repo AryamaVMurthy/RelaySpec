@@ -1,0 +1,23 @@
+{
+  "hypothesis": "Test end-to-end feasibility of retargeting the inherited Qwen3-4B DFlash drafter to Qwen3-0.6B before measuring deployment utility.",
+  "target_layers": [
+    1,
+    7,
+    13,
+    19,
+    25
+  ],
+  "cache_records": {
+    "train": 64,
+    "validation": 16
+  },
+  "fit_updates": 16,
+  "gpus": 4,
+  "timeout_seconds": 540,
+  "tokenizer_identity": {
+    "tokenizer_json_sha256": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+    "tokenizer_config_json_sha256": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+    "scope": "Both cached model revisions have byte-identical tokenizer.json and tokenizer_config.json; checked on Turing before submission."
+  },
+  "scope": "Pipeline pilot only: cache completeness, BF16 gradient equivalence, finite checkpoints, duplicate-map decoding equivalence. Sixteen fitting updates do not establish the achievable throughput or quality."
+}
