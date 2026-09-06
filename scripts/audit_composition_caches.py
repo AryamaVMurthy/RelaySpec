@@ -226,7 +226,11 @@ def main():
             or digest(index_path) != cache_gate["cache_index_sha256"]
             or cache_gate["metadata"] != index["metadata"]
             or config != expected_config
-            or index["metadata"]["config"] != config
+            or {
+                **index["metadata"]["config"],
+                "relay_training": index["metadata"]["relay_training"],
+            }
+            != config
             or index["metadata"]["config_sha256"] != digest(config_path)
         ):
             raise ValueError(

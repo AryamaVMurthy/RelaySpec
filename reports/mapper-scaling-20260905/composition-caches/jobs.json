@@ -1,0 +1,31 @@
+{
+  "max_gpus": 4,
+  "source_commit": "34b7685da4fa959a6f6418970e9c5bf44d11a7af",
+  "large_data_scaling": "paused",
+  "jobs": [
+    {
+      "id": 27959,
+      "kind": "feature_cache",
+      "arm": "math",
+      "remote": "/home/aryama.murthy/relayspec-small-followup-34b7685/outputs/rs-comp-math-cache-27959",
+      "local": "reports/mapper-scaling-20260905/composition-caches/run-27959",
+      "dependency": "afterany:27958",
+      "cache_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/composition-math-v2-27959",
+      "training_records": 2048,
+      "validation_records": 2048,
+      "config": "configs/protocol_active/train_dflash_qwen3_8b_relative_4gpu.yaml"
+    },
+    {
+      "id": 27966,
+      "kind": "feature_cache",
+      "arm": "mixed",
+      "remote": "/home/aryama.murthy/relayspec-small-followup-34b7685/outputs/rs-comp-mixed-cache-27966",
+      "local": "reports/mapper-scaling-20260905/composition-caches/run-27966",
+      "dependency": "afterok:27959",
+      "cache_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/composition-mixed-v2-27966",
+      "training_records": 2048,
+      "validation_records": 2048,
+      "config": "configs/protocol_active/train_dflash_qwen3_8b_relative_4gpu.yaml"
+    }
+  ]
+}
