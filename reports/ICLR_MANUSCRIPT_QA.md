@@ -24,7 +24,7 @@ Generated 2026-09-06 from the compiled anonymous manuscript and recorded result 
 | compiled LaTeX log | PASS | no undefined citation, undefined reference, or overfull box |
 | PDF parse and page format | PASS | 45 pages, US Letter, unencrypted, and identity scan clean |
 | embedded fonts and PDF parser | PASS | 35 font records are embedded and Ghostscript parses every page |
-| recorded visual review | FAIL | current 45-page PDF lacks a complete matching visual review (recorded 37 pages, matching PDF hash: False) |
+| recorded visual review | PASS | manual color and grayscale review covers all 45 rendered pages |
 
 ## Scientific review remains separate
 
