@@ -359,25 +359,24 @@ def main():
         ),
     }
     if spec.get("duplicate_control"):
-        expected = {r["problem_id"]: r for r in rows if r["method"] == "relay_base"}
+        expected = {(r["problem_id"], r["repetition"]): r for r in rows if r["method"] == "relay_base"}
+        actual = {(r["problem_id"], r["repetition"]): r for r in rows if r["method"] == spec["duplicate_control"]}
         differences = []
-        for row in rows:
-            if row["method"] == spec["duplicate_control"]:
-                for field in [
-                    "output_hash",
-                    "acceptance_lengths",
-                    "target_calls",
-                    "draft_calls",
-                ]:
-                    if row[field] != expected[row["problem_id"]][field]:
-                        differences.append(
-                            {"problem_id": row["problem_id"], "field": field}
-                        )
+        if not expected or expected.keys() != actual.keys():
+            differences.append({"field": "request_repetition_coverage"})
+        for key in expected.keys() & actual.keys():
+            for field in ["output_hash", "output_tokens", "acceptance_lengths", "target_calls", "draft_calls"]:
+                if actual[key][field] != expected[key][field]:
+                    differences.append({"problem_id": key[0], "repetition": key[1], "field": field})
         report["duplicate_control"] = {
             "status": "pass" if not differences else "failed",
             "differences": differences,
         }
+        if differences:
+            report["status"] = "control_failed"
     (a.output / "research-result.json").write_text(json.dumps(report, indent=2) + "\n")
+    if report["status"] != "pass":
+        raise RuntimeError("Paired identical-checkpoint control failed; details saved")
 
 
 if __name__ == "__main__":

@@ -61,7 +61,7 @@ for job in ledger["jobs"]:
                 summary=result["summary"],
                 duplicate_control=result.get("duplicate_control"),
             )
-            if result.get("duplicate_control", {}).get("status") == "fail":
+            if result.get("duplicate_control", {}).get("status") in {"fail", "failed"}:
                 item["status"] = "control_failed"
         elif item["status"] == "pass":
             raise ValueError(f"Completed lane has no scientific summary: {run}/{lane}")

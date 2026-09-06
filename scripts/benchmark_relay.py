@@ -527,7 +527,7 @@ def main() -> None:
         "relay_p_cross_family": relayed_cross_family,
     }
 
-    def variant_generator(mapper, taps, inherited_draft):
+    def variant_generator(mapper, taps, inherited_draft, selective_capture=False):
         def generate(**kwargs):
             if source_embedding is None or source_lm_head is None:
                 raise RuntimeError("mapper campaign requires source embedding/head")
@@ -538,6 +538,7 @@ def main() -> None:
                 native_target=target,
                 source_embedding=source_embedding,
                 source_lm_head=source_lm_head,
+                selective_capture=selective_capture,
                 **common,
                 **kwargs,
             )
@@ -546,7 +547,8 @@ def main() -> None:
 
     for name, (mapper, taps) in variant_mappers.items():
         available_methods[name] = variant_generator(
-            mapper, taps, variant_drafters.get(name, draft)
+            mapper, taps, variant_drafters.get(name, draft),
+            bool(probe.get("selective_capture", {}).get(name, False)),
         )
     unknown = sorted(set(method_names) - set(available_methods))
     if unknown:
@@ -584,6 +586,7 @@ def main() -> None:
                     "variants": variant_provenance,
                     "adapted_drafter_variants": sorted(variant_drafters),
                     "methods": method_names,
+                    "selective_capture": probe.get("selective_capture", {}),
                     "runtime_precision": precision,
                     "target_head_precision": head_precision,
                     "target_head_diagnostic": head_diagnostic,

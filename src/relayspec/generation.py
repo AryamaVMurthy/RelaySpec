@@ -301,6 +301,7 @@ def relay_dflash_generate(
     mask_token_id: int | None = None,
     return_stats: bool = False,
     profile_recorder: Any | None = None,
+    selective_capture: bool = False,
 ) -> Any:
     """Run verified DFlash while relaying cached target taps to the proposer.
 
@@ -339,23 +340,35 @@ def relay_dflash_generate(
     torch.cuda.synchronize()
     prefill_started = time.perf_counter()
     with _profile_region(profile_recorder, "prefill_full_target"):
-        target_prefill = native_target(
-            input_ids,
-            past_key_values=target_cache,
-            use_cache=True,
-            logits_to_keep=1,
-            output_hidden_states=True,
-        )
+        if selective_capture:
+            from relayspec.selected_taps import forward_selected_taps
+
+            target_prefill, selected_prefill_taps = forward_selected_taps(
+                native_target, input_ids, relay_target_layer_ids,
+                past_key_values=target_cache, use_cache=True, logits_to_keep=1,
+            )
+        else:
+            target_prefill = native_target(
+                input_ids,
+                past_key_values=target_cache,
+                use_cache=True,
+                logits_to_keep=1,
+                output_hidden_states=True,
+            )
     output_ids[:, :num_input_tokens] = input_ids
     output_ids[:, num_input_tokens : num_input_tokens + 1] = greedy_sample(
         target_prefill.logits,
         temperature,
     )
     with _profile_region(profile_recorder, "prefill_relay"):
-        relay_features = extract_hidden_taps(
-            target_prefill.hidden_states,
-            relay_target_layer_ids,
-        )
+        if selective_capture:
+            relay_features = torch.cat(selected_prefill_taps, dim=-1)
+            del selected_prefill_taps
+        else:
+            relay_features = extract_hidden_taps(
+                target_prefill.hidden_states,
+                relay_target_layer_ids,
+            )
         conditioned_context = draft.hidden_norm(relay(relay_features))
     torch.cuda.synchronize()
     time_to_first_token = time.perf_counter() - prefill_started
@@ -386,12 +399,18 @@ def relay_dflash_generate(
             block_ids[:, 1:] = greedy_sample(draft_logits, temperature)
 
         with _profile_region(profile_recorder, "verification_full_target"):
-            target_verification = native_target(
-                block_ids,
-                past_key_values=target_cache,
-                use_cache=True,
-                output_hidden_states=True,
-            )
+            if selective_capture:
+                target_verification, selected_verification_taps = forward_selected_taps(
+                    native_target, block_ids, relay_target_layer_ids,
+                    past_key_values=target_cache, use_cache=True,
+                )
+            else:
+                target_verification = native_target(
+                    block_ids,
+                    past_key_values=target_cache,
+                    use_cache=True,
+                    output_hidden_states=True,
+                )
         target_calls += 1
         posterior = greedy_sample(target_verification.logits, temperature)
         accepted = accepted_block_length(block_ids, posterior)
@@ -402,10 +421,14 @@ def relay_dflash_generate(
         acceptance_lengths.append(accepted)
         proposal_lengths.append(int(block_ids.shape[1]) - 1)
         with _profile_region(profile_recorder, "relay"):
-            relay_features = extract_hidden_taps(
-                target_verification.hidden_states,
-                relay_target_layer_ids,
-            )[:, :accepted, :]
+            if selective_capture:
+                relay_features = torch.cat(selected_verification_taps, dim=-1)[:, :accepted, :]
+                del selected_verification_taps
+            else:
+                relay_features = extract_hidden_taps(
+                    target_verification.hidden_states,
+                    relay_target_layer_ids,
+                )[:, :accepted, :]
             conditioned_context = draft.hidden_norm(relay(relay_features))
 
         if stop_token_ids is not None:
