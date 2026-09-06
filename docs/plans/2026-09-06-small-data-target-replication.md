@@ -175,3 +175,10 @@ at the fixed endpoint. Wide MLP512-data loss rises from 0.27389 at4096 updates t
 0.27839 at8192; the 2048-data endpoint reaches0.21467. This does not select a
 decoding checkpoint or establish a unique optimum. Preserve full trajectories,
 including step0, and separate training-seed from request uncertainty.
+
+Seven capacity-registry/evidence tests pass. Synthetic 16-endpoint/288-row
+fixtures verify complete request coverage and reject omitted methods, changed
+mapper hashes, changed reference answers, modified fitting evidence and source
+mismatches before emitting a result. The scoring replay is mocked only inside
+these synthetic binding tests; actual campaign audits still execute the pinned
+scorer. No synthetic rows enter a research registry or paper artifact.
