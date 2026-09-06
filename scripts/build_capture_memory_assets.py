@@ -56,6 +56,26 @@ def main():
         print(r["job"], r["lane"], r["input_tokens"], round(baseline-selected, 3), "GiB saved")
     lines += [r"\bottomrule", r"\end{tabular}"]
     Path("paper/iclr2027/generated/capture_memory_table.tex").write_text("\n".join(lines) + "\n")
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(6.4, 3.5), layout="constrained")
+    for taps, color, marker in [(5, "#285a8c", "o"), (2, "#b45520", "s")]:
+        points = sorted((r for r in results if r["taps"] == taps and not r["prefill_lifetime_control"]),
+                        key=lambda r: r["input_tokens"])
+        for method, style, label in [("relay_base", "--", "All states"),
+                                     ("relay_selected", "-", "Selected states")]:
+            ax.plot([r["input_tokens"] for r in points],
+                    [sum(r["peak_allocated_gib"][method]) / 2 for r in points],
+                    color=color, marker=marker, linestyle=style, label=f"{taps} taps: {label}")
+    ax.set(xlabel="Input tokens (one synthetic archive per length)",
+           ylabel="Peak allocated GPU memory (GiB)")
+    ax.grid(alpha=0.2)
+    ax.legend(fontsize=8)
+    for suffix in ("pdf", "png"):
+        fig.savefig(root / f"capture-memory-scaling.{suffix}", dpi=180)
+    plt.close(fig)
 
 
 if __name__ == "__main__":
