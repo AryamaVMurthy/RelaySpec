@@ -38,6 +38,6 @@ for i, cell in enumerate(result["results"]):
         assert record["native_teacher_sha256"] == t["native_teacher_sha256"]
     result["input_sha256"][str(p)] = digest(p)
 result["scope"] = (
-    "Matched128-update initialization controls at16/128 records and seed1730 inherited-fit replication. Compare wave44 seed1729 inherited fits with unchanged optimizer, record prefixes and teacher. Eight reused exposed GSM8K questions,512token cap and same512-record compact reference. Seeds do not add independent evaluation questions. No fresh confirmation."
+    "Matched128-update initialization controls at16/128 records and seed1730 inherited-fit repeat execution. Compare wave44 seed1729 inherited fits with unchanged optimizer, record prefixes and teacher. Eight reused exposed GSM8K questions,512token cap and same512-record compact reference. Inherited repeats have identical tensor storage because column copying removes the random initialization and record order is fixed. They do not measure fitting-seed variation or add independent evaluation questions. No fresh confirmation."
 )
 output.write_text(json.dumps(result, indent=2) + "\n")
