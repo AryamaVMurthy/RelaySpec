@@ -9,7 +9,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from relayspec.ar_paper_evidence import read_rows, summarize
+from relayspec.ar_paper_evidence import load_scored, read_rows, summarize
 
 
 def digest(path):
@@ -77,6 +77,48 @@ def main():
         if gate != json.loads((run / "completion-gate.json").read_text()):
             raise ValueError("PARD completion gate does not reproduce")
     rows = read_rows(run)
+    quality = None
+    quality_inputs = []
+    if config.get("phase") in {"quality_pilot", "quality_full"}:
+        analysis_path = run / "analysis.json"
+        analysis = json.loads(analysis_path.read_text())
+        scorer_path = Path("reports/ar-revision-20260905/scorer-provenance.json")
+        if (
+            analysis["status"] != "complete"
+            or analysis["scorer_provenance_sha256"] != digest(scorer_path)
+            or analysis["raw_sha256"]
+            != {p.name: digest(p) for p in run.glob("benchmark-rank*.jsonl")}
+        ):
+            raise ValueError(
+                "PARD quality analysis does not bind the pinned scorer and raw outputs"
+            )
+        rows = load_scored(run)
+        quality_inputs = [analysis_path, run / "math-scored.jsonl", scorer_path]
+        quality = {
+            "phase": config["phase"],
+            "requests": config["requests"],
+            "token_cap": config["max_new_tokens"],
+            "methods": {
+                name: {
+                    "correct_count": sum(
+                        bool(r["correct"]) for r in rows if r["method"] == name
+                    ),
+                    "cap_count": sum(
+                        r["output_tokens"] == config["max_new_tokens"]
+                        for r in rows
+                        if r["method"] == name
+                    ),
+                    "eos_at_cap_count": sum(
+                        r["output_tokens"] == config["max_new_tokens"]
+                        and r["output_ids"][-1] == 151645
+                        for r in rows
+                        if r["method"] == name
+                    ),
+                }
+                for name in config["methods"]
+            },
+            "scope": "Capped exposed development outcomes. Paired bootstrap intervals are descriptive, especially for small samples and sparse discordances. This does not establish the final one-percentage-point noninferiority requirement or untouched confirmation.",
+        }
     result = {
         "status": "complete",
         "input_sha256": {
@@ -91,6 +133,7 @@ def main():
                 run / "campaign-config.json",
                 run / "completion-gate.json",
                 *raw_files,
+                *quality_inputs,
             ]
         },
         "comparison": summarize(rows),
@@ -99,6 +142,8 @@ def main():
         "original_exact_ar_gates": protocol["original_exact_ar_gates"],
         "scope": config["scope"],
     }
+    if quality is not None:
+        result["capped_quality"] = quality
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result["comparison"]))
 

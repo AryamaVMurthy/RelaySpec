@@ -26,8 +26,19 @@ def audit_shard(args, run, index):
     with tempfile.TemporaryDirectory() as temporary:
         directory = Path(temporary)
         config_path = directory / "campaign-config.json"
-        subprocess.run(
+        builder = (
             [
+                sys.executable,
+                "scripts/build_sd_square_epoch_campaign.py",
+                "--run",
+                str(args.epoch_run),
+                "--shard-index",
+                str(index),
+                "--output",
+                str(config_path),
+            ]
+            if args.epoch_run is not None
+            else [
                 sys.executable,
                 "scripts/build_sd_square_campaign.py",
                 "--shard-index",
@@ -36,7 +47,10 @@ def audit_shard(args, run, index):
                 *map(str, args.fits),
                 "--output",
                 str(config_path),
-            ],
+            ]
+        )
+        subprocess.run(
+            builder,
             check=True,
             capture_output=True,
         )
@@ -69,7 +83,9 @@ def audit_shard(args, run, index):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--fits", type=Path, nargs=2, required=True)
+    fitting = parser.add_mutually_exclusive_group(required=True)
+    fitting.add_argument("--fits", type=Path, nargs=2)
+    fitting.add_argument("--epoch-run", type=Path)
     parser.add_argument("--runs", type=Path, nargs=2, required=True)
     parser.add_argument("--ledger", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -85,6 +101,7 @@ def main():
     summaries = {
         ref: summarize(rows, reference=ref)
         for ref in ("native_ar", "sd2_independent", "sd2_zero_guidance")
+        if ref in config["variants"]
     }
     acceptance = {}
     if summaries["native_ar"]["requests"] != 16:
