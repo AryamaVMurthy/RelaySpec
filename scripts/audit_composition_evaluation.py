@@ -68,8 +68,15 @@ def main():
     campaign = json.loads((args.run / "campaign-gate.json").read_text())
     assert campaign["status"] == "pass" and campaign["methods"] == protocol["methods"]
     rows = read_rows(args.run)
+    references = {
+        r["problem_id"]: r.get("answer")
+        for r in json.loads(Path(declaration["manifest"]).read_text())["records"]
+        if r["benchmark"] in ["math500", "gsm8k"]
+    }
     for row in rows:
         assert 0 < row["output_tokens"] <= config["generation"]["max_new_tokens"]
+        if row["benchmark"] in ["math500", "gsm8k"]:
+            assert str(row["reference_answer"]) == str(references[row["problem_id"]])
         if row["method"] in protocol["variants"]:
             assert (
                 row["mapper_checkpoint_sha256"]

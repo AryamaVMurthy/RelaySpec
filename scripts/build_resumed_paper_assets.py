@@ -25,12 +25,29 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--raw-root", type=Path, default=Path.cwd())
     parser.add_argument("--output", type=Path, default=Path("paper/iclr2027"))
+    parser.add_argument("--fitting-and-confirmation-only", action="store_true")
     args = parser.parse_args()
     root = args.raw_root / "reports/mapper-scaling-20260905"
     output = args.output / "generated"
     figures = args.output / "figures"
     output.mkdir(parents=True, exist_ok=True)
     figures.mkdir(parents=True, exist_ok=True)
+    validation_proof = json.loads(
+        (root / "resumed-composition/common-validation-identity.json").read_text()
+    )
+    validation_entries = []
+    for path, sha in validation_proof["input_sha256"].items():
+        assert digest(Path(path)) == sha
+        validation_entries.append(
+            [
+                e
+                for e in json.loads(Path(path).read_text())["entries"]
+                if e["split"] == "validation"
+            ]
+        )
+    assert len(validation_entries) == 2
+    assert len(validation_entries[0]) == 2048
+    assert validation_entries[0] == validation_entries[1]
     lines = [
         r"\begin{tabular}{llrrrr}",
         r"\toprule",
@@ -38,6 +55,12 @@ def main():
         r"\midrule",
     ]
     summary = {}
+    controls = [
+        r"\begin{tabular}{llrrr}",
+        r"\toprule",
+        r"Family & Method & Tokens/s & Correct & At cap \\",
+        r"\midrule",
+    ]
     for family, label in [("dflash", "DFlash"), ("eagle3", "EAGLE-3")]:
         path = root / "resumed-confirmation" / f"{family}-full-audit.json"
         data = checked(path)
@@ -51,6 +74,23 @@ def main():
         accuracy = data["comparisons"]["native_ar"]["conservative_paired_accuracy"][
             candidate
         ]
+        for method in protocol["methods"]:
+            method_label = (
+                "AR"
+                if method == "native_ar"
+                else "Native drafter"
+                if method.startswith("native_target")
+                else "Source reuse"
+                if "source" in method
+                else "Dense 512"
+                if method == candidate
+                else "Dense 2,048"
+            )
+            controls.append(
+                f"{label} & {method_label} & {metrics[method]['tokens_per_second']:.1f} & "
+                f"{data['methods'][method]['correct_count']}/256 & "
+                f"{data['methods'][method]['cap_length_outputs']} " + r"\\"
+            )
         summary[family] = {
             "candidate": candidate,
             "reference": reference,
@@ -75,6 +115,10 @@ def main():
             )
     lines.extend([r"\bottomrule", r"\end{tabular}"])
     (output / "frozen_confirmation_table.tex").write_text("\n".join(lines) + "\n")
+    controls.extend([r"\bottomrule", r"\end{tabular}"])
+    (output / "frozen_confirmation_controls_table.tex").write_text(
+        "\n".join(controls) + "\n"
+    )
     fit_lines = [
         r"\begin{tabular}{llrrrr}",
         r"\toprule",
@@ -100,6 +144,11 @@ def main():
             )
     fit_lines.extend([r"\bottomrule", r"\end{tabular}"])
     (output / "composition_fitting_table.tex").write_text("\n".join(fit_lines) + "\n")
+    if args.fitting_and_confirmation_only:
+        print(
+            "Exported completed fitting and confirmation tables; decoding is separate"
+        )
+        return
     decode = checked(root / "resumed-composition-evaluation/full-audit.json")
     tasks = list(decode["tasks"])
     labels = {

@@ -22,9 +22,10 @@ achieve 2.35--5.11 times autoregressive throughput on MATH-500.
 Separate EAGLE-3 measurements reduce peak allocated memory by
 7.63--7.80 GiB relative to source reuse. Controlled scaling studies show
 that the interface can be learned from substantially fewer records:
-512-example maps retain 97.8\% (DFlash) and 98.3\% (EAGLE-3) of
-their respective 2,048-example maps' throughput on 128 development
-questions with 8B targets. Increasing mapper capacity
+frozen 512-example maps retain 97.5\% (DFlash) and 98.9\% (EAGLE-3)
+of their 2,048-example maps' throughput on 256 held-out GSM8K questions
+with 8B targets. Both confidence intervals exceed 95\% retention,
+although tight accuracy noninferiority remains unresolved. Increasing mapper capacity
 improves feature fitting initially, but wider MLPs and longer training
 do not consistently improve decoding. Under matched warm-training
 budgets, feature regression outperforms the tested connector-CE and
@@ -338,40 +339,19 @@ This is a comparison of the stated released models and decoding settings.
 The two integrations use different pinned Transformers versions, so their
 cross-family difference is not an isolated architectural effect.
 
-\subsection{Retaining target-specific drafter performance}
-For the motivating 4B-to-8B case, RelaySpec reaches 186.49 tokens/s
-against native DFlash-8B's 206.58, retaining 90.3\% of its throughput.
-EAGLE-3 retains 90.2\% at 8B and 89.1\% at 14B
-(Table~\ref{tab:retention}). These are within-runtime comparisons to
-released target-specific drafters. They measure the performance of
-reuse, not a matched experiment on the cost of originally training
-those releases. We evaluate marginal adaptation cost directly below.
-
-\subsection{Acceptance and the source-removal mechanism}
-
-Table~\ref{tab:retention} pairs retained throughput with accepted progress.
-RelaySpec advances 6.98 tokens per DFlash-8B cycle versus 7.89 for its
-native drafter. EAGLE-3 advances 4.33 versus 5.40 at 8B and 4.01 versus
-5.28 at 14B. Acceptance and speed retention therefore answer different
-questions: per-cycle work also changes with drafter size and implementation.
-
-\begin{table}[H]
-\caption{Native throughput retained and mean recorded progress per cycle.
-N and R denote native drafting and RelaySpec. Progress includes the
-implementation's target-supplied token.}
-\label{tab:retention}
-\centering\small
-\setlength{\tabcolsep}{4pt}
-\input{generated/native_retention_table.tex}
-\end{table}
+\subsection{Native retention and source removal}
+RelaySpec retains 90.3\% of native DFlash-8B throughput, reaching
+186.49 versus 206.58 tokens/s. EAGLE-3 retains 90.2\% at 8B and 89.1\%
+at 14B (Table~\ref{tab:retention}). These compare released drafters, not
+matched original training costs. Retained progress is lower than retained
+throughput because per-cycle work also differs: DFlash-8B advances
+6.98 tokens per relay cycle versus 7.89 for native drafting.
 
 Against source reuse, the relay's throughput ratios are 1.531 and 1.268
 for DFlash, and 1.278 and 1.097 for EAGLE-3, at 8B and 14B respectively.
-This secondary comparison holds the inherited drafter fixed and isolates
-source replacement. The source's computation disappears from each cycle,
-while the target's retained states already contain useful context.
-The matched EAGLE-3 normalization result in Section~\ref{sec:ablations}
-supports the importance of supplying that context at its expected scale.
+This comparison holds the inherited drafter fixed. Source computation
+is removed from each cycle, while retained target states supply the
+context at the scale tested in Section~\ref{sec:ablations}.
 
 \subsection{Math accuracy and output agreement}
 
@@ -417,11 +397,10 @@ conversations. Full absolute values are in Table~\ref{tab:breadth-ar}.}
 
 \subsection{Fitting work and deployment memory}
 
-The selected maps have 52.43--65.54M trainable weights. Recorded fitting
-loops take 85.6--118.5 seconds on four RTX 6000 Ada GPUs with models
-already loaded. The interval covers feature computation and optimization.
-Loading, checkpoint writing and deployment initialization are separate
-setup costs. Appendix~\ref{app:cost} gives each measured fitting loop.
+The selected maps have 52.43--65.54M weights. Fitting takes 85.6--118.5
+seconds on four RTX 6000 Ada GPUs after model loading, including feature
+computation and optimization. Loading, export and deployment initialization
+are separate costs (Appendix~\ref{app:cost}).
 
 Separate EAGLE-3 processes measure memory after removing source layers.
 Peak allocated memory falls from 25.56 to 17.76 GiB at 8B and from 37.56
@@ -465,14 +444,28 @@ Linear-1024 at $N=512$ retains 95.00\% [94.14, 95.85]\% with 23.59M
 parameters instead of 52.43M. The latter interval crosses the 95\%
 boundary. These are development comparisons with fixed fitting seeds.
 
-The completed EAGLE-3 comparison independently measures the same data-count
-contrast: dense $N=512$ reaches 93.47 tokens/s versus 95.10 for dense
-$N=2048$, retaining 98.28\% [97.59, 99.01]\%. Linear-2048 at $N=512$
-retains 98.69\% [98.08, 99.31]\%, while MLP-2048 at $N=2048$ retains
-93.85\% [93.27, 94.46]\%. All eight maps score 105/128, versus AR's
-104/128. Identical paired correctness among these maps still permits a
-conservative 95\% difference interval of $\pm3.37$ percentage points.
-Table~\ref{tab:eagle-quality} retains every evaluated method.
+EAGLE-3 repeats the dense data-count contrast on the same development
+questions, retaining 98.28\% [97.59, 99.01]\%. Its matched MLP remains
+slower than dense. Table~\ref{tab:eagle-quality} retains all eight maps.
+
+\paragraph{Confirmation with frozen checkpoints.}
+Before generating confirmation outputs, we fix the dense checkpoints and
+analysis criteria, then evaluate 256 GSM8K questions excluded from the
+recorded development history (Table~\ref{tab:frozen-confirmation}).
+Both families exceed the predeclared 95\% speed-retention threshold.
+The two data sizes have identical per-question correctness within each
+family. Relative to AR, conservative accuracy-difference intervals are
+$[-3.07,3.07]$ points for DFlash and $[-1.63,3.14]$ for EAGLE-3.
+Neither establishes the one-point noninferiority margin.
+
+\begin{table}[H]
+\caption{Frozen small-data confirmation on 256 GSM8K questions.
+Retention is a percentage relative to the 2,048-example mapper in the
+same family, with paired 95\% intervals. Outputs are capped at 2,048 tokens.}
+\label{tab:frozen-confirmation}
+\centering\small
+\input{generated/frozen_confirmation_table.tex}
+\end{table}
 
 \begin{figure}[H]
 \centering
@@ -507,17 +500,15 @@ Very long inputs have too few examples for a reliable generalization claim.
 
 \subsubsection{Is feature fitting a useful adaptation budget?}
 We compare DFlash feature regression with connector cross-entropy and
-rank-32 drafter LoRA on the same 512 records. An equal three-rate screen
-sets CE and LoRA rates. Budgets of 22.85, 91.41 and 365.65 warm-training
-seconds count the initial mapper required by CE and LoRA. At the middle
-budget, feature regression reaches 144.80 tokens/s, connector CE 109.60,
-and two LoRA initializations 115.02 and 115.49. Across all three budgets,
-CE retains 73.2--76.6\% and LoRA 79.4--82.7\% of feature throughput.
-This supports the tested reuse procedure under limited update time.
-It is not a general ranking of LoRA or an end-to-end training-cost
-comparison: preparation and export are reported separately, and decoding
-uses sixteen development questions capped at 256 tokens. The appendix
-provides all budgets, fitting histories and uncertainty intervals.
+rank-32 drafter LoRA on the same 512 records, with equal three-rate
+screens for CE and LoRA. Three warm-training budgets include their
+initial mapper cost. At 91.41 seconds, feature regression reaches 144.80
+tokens/s, CE 109.60 and two LoRA initializations 115.02 and 115.49.
+Across budgets, CE retains 73.2--76.6\% and LoRA 79.4--82.7\% of feature
+throughput. These are sixteen-question, 256-token development comparisons.
+Preparation and export are separate costs, so this is neither a general
+LoRA ranking nor an end-to-end cost comparison. The appendix reports
+all budgets and uncertainty intervals.
 
 \paragraph{Public-runtime baselines.}
 On 128 exposed questions capped at 2,048 tokens, PARD reaches 3.34
@@ -562,9 +553,10 @@ models, greedy decoding and one request per worker. Existing development
 exposure and limited fitting seeds prevent general minimum-data or
 noninferiority claims. Code workloads can favor source reuse, and
 EAGLE-3 optimization is sensitive to the training recipe. Zero exact
-training overlap does not rule out shared math templates. The controlled
-14B and adaptation comparisons remain short-output screens. Neither
-untouched confirmation nor tight quality noninferiority is established.
+training overlap does not rule out shared math templates. Frozen-checkpoint
+GSM8K confirmation supports speed retention, but not tight quality
+noninferiority. The controlled 14B and adaptation comparisons remain
+short-output screens.
 
 \label{maintextend}
 \section*{AI use statement}
@@ -665,6 +657,16 @@ R is RelaySpec. Time ratio divides summed AR time by summed relay time.}
 \end{table}
 
 \section{Complete workload results}
+
+\begin{table}[H]
+\caption{Native throughput retained and mean recorded progress per cycle.
+N and R denote native drafting and RelaySpec. Progress includes the
+implementation's target-supplied token.}
+\label{tab:retention}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\input{generated/native_retention_table.tex}
+\end{table}
 \label{app:breadth}
 
 \begin{table}[H]
@@ -1385,7 +1387,7 @@ their opposite endpoints using a Bonferroni bound. This construction
 requires IID request pairs and a fixed candidate. It does not establish
 a one-percentage-point noninferiority margin. The descriptive paired
 bootstrap interval is $[-2.34,5.47]$ points. Sparse or absent discordances
-can make such intervals misleadingly narrow. No untouched confirmation sample was generated in this study.
+can make such intervals misleadingly narrow. These external-baseline measurements use development questions.
 
 PARD matches AR's full capped token sequence on 28 of 128 requests.
 Its mean output length is 664.5 tokens versus AR's 690.4, so the
@@ -1453,6 +1455,97 @@ or changed ordering with gaps up to 0.25 at those positions. Such traces
 identify numerical score differences in the selected cases. They do not
 establish that all mismatches have the same cause. The task-quality
 intervals in Table~\ref{tab:quality} remain the empirical quality evidence.
+
+\section{Matched-count training composition}
+\label{app:composition}
+We compare two 2,048-record DFlash-8B fitting pools. The math-only arm
+uses NuminaMath records. The mixed arm replaces half with 1,024
+Dolly general-instruction records.\footnote{\texttt{databricks/databricks-dolly-15k},
+revision \texttt{bdd27f4d94b9}, CC-BY-SA 3.0. General instructions can
+include mathematical questions.} Exact and lexical filters exclude
+matches to fitting validation, recorded evaluation prompts and the
+confirmation and reserve sets. The common validation set contains
+1,024 math and 1,024 general-instruction records. Its cached feature
+files are identical across arms.
+
+Each arm fits dense, linear-512 and MLP-512 maps at seed 1729, plus a
+second dense seed, 1730. Each fit uses 8,192 batch-four updates, learning
+rate 0.0006, no regularization and the same relative interface objective.
+We retain the 2,048-update checkpoint as a fitting diagnostic, but
+preselect the 8,192-update endpoint for decoding rather than selecting
+by validation. Four independent fits run simultaneously on four L40S
+GPUs. Feature extraction took 111.4 seconds for the math cache and
+107.1 for the mixed cache. The full fitting allocations took 4m36s and
+4m21s, respectively. Extraction and fitting are separate costs.
+
+Equal record counts and updates do not imply equal token exposure.
+With a 192-token record cap, the math pool contains 385,492 non-padding
+tokens and the mixed pool 316,518. Sixteen passes expose 6,167,872 and
+5,064,288 tokens, respectively. The experiment therefore measures
+composition at matched records and updates, not matched tokens.
+
+\begin{table}[H]
+\caption{Composition fitting at the preselected 8,192-update endpoint.
+Validation columns use the same held-out features in both arms.
+Reported seconds cover per-worker data access, updates and training-log
+writes, excluding validation, export and setup. Training losses concern
+different input distributions and are not directly comparable across arms.}
+\label{tab:composition-fitting}
+\centering\small
+\input{generated/composition_fitting_table.tex}
+\end{table}
+
+Mixed training lowers dense general-instruction validation error by
+32.9\%, from 0.3329 to 0.2234, while raising math error by 10.2\%,
+from 0.1805 to 0.1990. The second dense seed reproduces this tradeoff.
+At width 512, the linear and MLP maps show general-error reductions of
+30.2\% and 29.4\%, with math-error increases of 12.3\% in both cases.
+The matched linear map retains lower validation error than the MLP
+in both domains and both training arms. All three architectures improve
+in both validation domains between 2,048 and 8,192 updates.
+
+\section{Frozen-checkpoint GSM8K confirmation}
+\label{app:frozen-confirmation}
+We freeze the dense 512- and 2,048-example checkpoints at 8,192 updates
+and seed 1729 before generating confirmation outputs. The fixed test
+contains 256 GSM8K questions, sampled after exact and lexical exclusion
+against fitting data and collected evaluation history. A separate
+256-question reserve remains unused. Operational pilots use eight
+previously exposed GSM8K questions, not confirmation requests.
+The same confirmation questions are evaluated in both drafter families,
+so the second family is not an independent benchmark sample.
+
+The primary speed criterion requires the lower endpoint of the paired
+95\% throughput-ratio interval to exceed 0.95. DFlash retains
+97.48\% [96.90,98.06]\% and EAGLE-3 retains 98.90\% [98.14,99.66]\%.
+Throughput includes prompt processing. Resampling uses requests as paired
+units, 10,000 draws and seed 1729. These intervals condition on the
+frozen fitting checkpoints rather than estimating fitting-seed variation.
+
+\begin{table}[H]
+\caption{All frozen-confirmation methods on 256 GSM8K requests per family.
+At cap counts outputs of exactly 2,048 tokens. Comparisons are within
+each family's runtime.}
+\label{tab:frozen-confirmation-controls}
+\centering\small
+\input{generated/frozen_confirmation_controls_table.tex}
+\end{table}
+
+The predeclared quality criterion requires the conservative paired
+95\% accuracy-difference lower bound relative to AR to exceed $-1$
+percentage point. DFlash has two beneficial and two adverse discordances,
+giving $[-3.07,3.07]$ points. EAGLE-3 has two beneficial and no adverse
+discordances, giving $[-1.63,3.14]$ points. Both quality outcomes are
+inconclusive under this criterion. Therefore the joint speed-and-quality
+criterion is not established, despite both speed criteria passing.
+Within each family, the two mapper sizes have identical per-question
+correctness, with a conservative interval of $\pm1.70$ points.
+DFlash also has identical token outputs between mapper sizes on all 256
+requests, while EAGLE-3 has identical outputs on 254. Comparisons with
+AR retain the finite-precision distinctions discussed elsewhere.
+No reserve extension or outcome-dependent tuning is performed.
+Exclusion checks concern the recorded local history and lexical matches,
+not unknown pretraining exposure or semantic independence.
 
 \section{Data checks and development exposure}
 \label{app:data}

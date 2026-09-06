@@ -1,3 +1,5 @@
+> Revision in progress: the checks below describe the previously audited draft. New held-out and composition results are being integrated. Final checks and PDF visual review will be regenerated after the remaining decoding results.
+
 # RelaySpec ICLR 2027 manuscript QA
 
 Generated 2026-09-06 from the compiled anonymous manuscript and recorded result artifacts.
