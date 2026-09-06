@@ -117,3 +117,13 @@ replica of every timed request against its actual target argmax decisions
 and checks raw tokens and acceptance against the trace-free timed run.
 Public generation statements remain unchanged, tested by AST equality.
 Auditors rebuild source-bound gates before creating result registries.
+
+SD-square shards27900/27901 both passed in9m07s/9m00s. The source-bound
+audit verifies all144 outputs and identical inference fingerprints across
+sixteen disjoint prompts. The best fitted setting is KL at4e-6,18.6639
+tokens/s versus18.8321 for the independent drafter. Its independent-ratio
+interval is0.96192--1.01624, so this screen establishes no steering gain.
+Freeze that objective/rate before the1/2/4/8-epoch512-example screen.
+Every initial fit uses95,835 supervised non-padding positions capped
+at192 tokens per record. Report this separately from feature regression's
+supervision and retain all six rates and duplicate fitting costs.

@@ -1,0 +1,39 @@
+{
+  "setup_config": "configs/submission/baselines/sd-square-compatibility.json",
+  "setup_config_sha256": "4f882be369fc364b60b33b0b0ac75fc4d6f973c5be7ada71c62217e22d78519a",
+  "seed": 1729,
+  "feature_cache_index_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+  "manifest_path": "configs/eval_manifest.json",
+  "updates": 128,
+  "batch_size": 4,
+  "learning_rate": 4e-06,
+  "learning_rate_end": 4e-07,
+  "warmup_steps": 8,
+  "gradient_clip": 0.5,
+  "max_new_tokens": 64,
+  "worker_objectives": [
+    "kl",
+    "kl",
+    "kl",
+    "kl"
+  ],
+  "scope": "SD-square epoch-budget screen at fixed512 distinct examples. Four fresh fits use1,2,4,8 epochs, batch4 and128,256,512,1024updates. The objective/rate is frozen from the complete sixteen-request development screen before further fitting. Each horizon has its own public learning-rate decay schedule. These are separate fits, not checkpoints from one continued trajectory. Rank0 must reproduce the selected128-update training fingerprint exactly. No new data, quality or untouched confirmation claim. The10-minute pilot ceiling remains. Common decoding must compare all epoch endpoints.",
+  "verification_protocol": {
+    "path": "configs/submission/baselines/external-verification-protocol.json",
+    "sha256": "488d60999dcb0b80fba7e8c1106aa474fc15a8bfe0af4296fa359e153b65b9f0",
+    "causal_gate_sha256": "2a701f7c79cd24a3a0b487043a71e581794e2b7918376ed8cb93bf443471e5cc"
+  },
+  "worker_updates": [
+    128,
+    256,
+    512,
+    1024
+  ],
+  "convergence_screen": {
+    "registry": "reports/external-baselines-20260906/sd-square-decoding.json",
+    "registry_sha256": "f4a6bf36a2126112b3c6515dd68758bd5384948d59bfda86f20d5aacb0088699",
+    "selected_method": "sd2_kl_lr4e-06",
+    "reproduction_trainable_sha256": "e863b421e960547c6b20cccb6c7c2ead724afeacfaf9d7142283a4ecec6f189a",
+    "selection_rule": "highest throughput point among all six predeclared objective/rate settings"
+  }
+}
