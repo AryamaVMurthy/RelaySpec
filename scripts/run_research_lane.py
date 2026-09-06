@@ -228,6 +228,34 @@ def prepare(spec, root):
                 raise FileNotFoundError(candidate)
             variants[name] = candidate
         provenance["candidates"] = spec["candidates"]
+    elif spec["transform"] == "native_columns":
+        from relayspec.native_initialization import initialize_native_columns
+        from relayspec.relay import TargetFeatureRelay
+
+        if base.get("relay_architecture") != "scale_preserving_linear" or set(
+            base["relay"]
+        ) != {"projection.weight"}:
+            raise ValueError(
+                "Cropping requires an unnormalized released native projection"
+            )
+        taps = base["target_layer_ids"]
+        selected = spec["selected_taps"]
+        hidden = weight.shape[1] // len(taps)
+        relay = TargetFeatureRelay(
+            target_hidden_size=hidden,
+            num_taps=len(selected),
+            draft_hidden_size=weight.shape[0],
+            eps=1e-6,
+            normalize_input=False,
+        )
+        provenance["column_selection"] = initialize_native_columns(
+            relay, weight, taps, selected, hidden
+        )
+        cp = copy.deepcopy(base)
+        cp["target_layer_ids"] = selected
+        cp["relay"] = {"projection.weight": relay.projection.weight.detach().clone()}
+        cp["origin"] = "Released native selected columns; no fitting"
+        save("relay_cropped", cp)
     elif spec["transform"] == "joint_drop":
         taps = list(base["target_layer_ids"])
         width = weight.shape[1] // len(taps)
@@ -359,15 +387,31 @@ def main():
         ),
     }
     if spec.get("duplicate_control"):
-        expected = {(r["problem_id"], r["repetition"]): r for r in rows if r["method"] == "relay_base"}
-        actual = {(r["problem_id"], r["repetition"]): r for r in rows if r["method"] == spec["duplicate_control"]}
+        expected = {
+            (r["problem_id"], r["repetition"]): r
+            for r in rows
+            if r["method"] == "relay_base"
+        }
+        actual = {
+            (r["problem_id"], r["repetition"]): r
+            for r in rows
+            if r["method"] == spec["duplicate_control"]
+        }
         differences = []
         if not expected or expected.keys() != actual.keys():
             differences.append({"field": "request_repetition_coverage"})
         for key in expected.keys() & actual.keys():
-            for field in ["output_hash", "output_tokens", "acceptance_lengths", "target_calls", "draft_calls"]:
+            for field in [
+                "output_hash",
+                "output_tokens",
+                "acceptance_lengths",
+                "target_calls",
+                "draft_calls",
+            ]:
                 if actual[key][field] != expected[key][field]:
-                    differences.append({"problem_id": key[0], "repetition": key[1], "field": field})
+                    differences.append(
+                        {"problem_id": key[0], "repetition": key[1], "field": field}
+                    )
         report["duplicate_control"] = {
             "status": "pass" if not differences else "failed",
             "differences": differences,
