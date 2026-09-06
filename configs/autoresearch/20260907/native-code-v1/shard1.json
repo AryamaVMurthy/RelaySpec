@@ -1,0 +1,116 @@
+{
+  "dataset_revisions": {
+    "evalplus_mbpp": "26d6d00bb1fd0fa37f39c99d5290da67891d1c5e",
+    "gsm8k": "740312add88f781978c0658806c59bc2815b9866",
+    "humaneval": "7dce6050a7d6d172f3cc5c32aa97f52fa1a2e544",
+    "math500": "6e4ed1a2a79af7d8630a6b768ec859cb5af4d3be",
+    "mtbench": "e3a795c5e9a82ee40611c416b8a7786c73198991"
+  },
+  "seed": 1729,
+  "records": [
+    {
+      "answer": {
+        "entry_point": "text_match_wordz_middle",
+        "tests": [
+          "assert text_match_wordz_middle(\"pythonzabc.\")==True",
+          "assert text_match_wordz_middle(\"zxyabc.\")==False",
+          "assert text_match_wordz_middle(\"  lang  .\")==False"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/643",
+      "prompt": "\"\"\"\nWrite a function that checks if a strings contains 'z', except at the start and end of the word.\nassert text_match_wordz_middle(\"pythonzabc.\")==True\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert text_match_wordz_middle(\"pythonzabc.\")==True\nassert text_match_wordz_middle(\"zxyabc.\")==False\nassert text_match_wordz_middle(\"  lang  .\")==False\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "bell_Number",
+        "tests": [
+          "assert bell_Number(2) == 2",
+          "assert bell_Number(3) == 5",
+          "assert bell_Number(4) == 15"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/608",
+      "prompt": "\"\"\"\nWrite a python function to find nth bell number.\nassert bell_Number(2) == 2\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert bell_Number(2) == 2\nassert bell_Number(3) == 5\nassert bell_Number(4) == 15\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "is_octagonal",
+        "tests": [
+          "assert is_octagonal(5) == 65",
+          "assert is_octagonal(10) == 280",
+          "assert is_octagonal(15) == 645"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/59",
+      "prompt": "\"\"\"\nWrite a function to find the nth octagonal number.\nassert is_octagonal(5) == 65\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert is_octagonal(5) == 65\nassert is_octagonal(10) == 280\nassert is_octagonal(15) == 645\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "Extract",
+        "tests": [
+          "assert Extract([[1, 2], [3, 4, 5], [6, 7, 8, 9]]) == [1, 3, 6]",
+          "assert Extract([[1,2,3],[4, 5]]) == [1,4]",
+          "assert Extract([[9,8,1],[1,2]]) == [9,1]"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/460",
+      "prompt": "\"\"\"\nWrite a python function to get the first element of each sublist.\nassert Extract([[1, 2], [3, 4, 5], [6, 7, 8, 9]]) == [1, 3, 6]\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert Extract([[1, 2], [3, 4, 5], [6, 7, 8, 9]]) == [1, 3, 6]\nassert Extract([[1,2,3],[4, 5]]) == [1,4]\nassert Extract([[9,8,1],[1,2]]) == [9,1]\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "kth_element",
+        "tests": [
+          "assert kth_element([12,3,5,7,19], 2) == 3",
+          "assert kth_element([17,24,8,23], 3) == 8",
+          "assert kth_element([16,21,25,36,4], 4) == 36"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/101",
+      "prompt": "\"\"\"\nWrite a function to find the kth element in the given array using 1-based indexing.\nassert kth_element([12,3,5,7,19], 2) == 3\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert kth_element([12,3,5,7,19], 2) == 3\nassert kth_element([17,24,8,23], 3) == 8\nassert kth_element([16,21,25,36,4], 4) == 36\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "big_diff",
+        "tests": [
+          "assert big_diff([1,2,3,4]) == 3",
+          "assert big_diff([4,5,12]) == 8",
+          "assert big_diff([9,2,3]) == 7"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/588",
+      "prompt": "\"\"\"\nWrite a python function to find the difference between largest and smallest value in a given list.\nassert big_diff([1,2,3,4]) == 3\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert big_diff([1,2,3,4]) == 3\nassert big_diff([4,5,12]) == 8\nassert big_diff([9,2,3]) == 7\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "amicable_numbers_sum",
+        "tests": [
+          "assert amicable_numbers_sum(999)==504",
+          "assert amicable_numbers_sum(9999)==31626",
+          "assert amicable_numbers_sum(99)==0"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/123",
+      "prompt": "\"\"\"\nWrite a function to sum all amicable numbers from 1 to a specified number.\nassert amicable_numbers_sum(999)==504\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert amicable_numbers_sum(999)==504\nassert amicable_numbers_sum(9999)==31626\nassert amicable_numbers_sum(99)==0\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "substract_elements",
+        "tests": [
+          "assert substract_elements((10, 4, 5), (2, 5, 18)) == (8, -1, -13)",
+          "assert substract_elements((11, 2, 3), (24, 45 ,16)) == (-13, -43, -13)",
+          "assert substract_elements((7, 18, 9), (10, 11, 12)) == (-3, 7, -3)"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/273",
+      "prompt": "\"\"\"\nWrite a function that takes in two tuples and subtracts the elements of the first tuple by the elements of the second tuple with the same index.\nassert substract_elements((10, 4, 5), (2, 5, 18)) == (8, -1, -13)\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert substract_elements((10, 4, 5), (2, 5, 18)) == (8, -1, -13)\nassert substract_elements((11, 2, 3), (24, 45 ,16)) == (-13, -43, -13)\nassert substract_elements((7, 18, 9), (10, 11, 12)) == (-3, 7, -3)\n```"
+    }
+  ]
+}

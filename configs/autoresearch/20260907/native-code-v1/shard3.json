@@ -1,0 +1,116 @@
+{
+  "dataset_revisions": {
+    "evalplus_mbpp": "26d6d00bb1fd0fa37f39c99d5290da67891d1c5e",
+    "gsm8k": "740312add88f781978c0658806c59bc2815b9866",
+    "humaneval": "7dce6050a7d6d172f3cc5c32aa97f52fa1a2e544",
+    "math500": "6e4ed1a2a79af7d8630a6b768ec859cb5af4d3be",
+    "mtbench": "e3a795c5e9a82ee40611c416b8a7786c73198991"
+  },
+  "seed": 1729,
+  "records": [
+    {
+      "answer": {
+        "entry_point": "issort_list",
+        "tests": [
+          "assert issort_list([1,2,4,6,8,10,12,14,16,17])==True",
+          "assert issort_list([1, 2, 4, 6, 8, 10, 12, 14, 20, 17])==False",
+          "assert issort_list([1, 2, 4, 6, 8, 10,15,14,20])==False"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/567",
+      "prompt": "\"\"\"\nWrite a function to check whether a specified list is sorted or not.\nassert issort_list([1,2,4,6,8,10,12,14,16,17])==True\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert issort_list([1,2,4,6,8,10,12,14,16,17])==True\nassert issort_list([1, 2, 4, 6, 8, 10, 12, 14, 20, 17])==False\nassert issort_list([1, 2, 4, 6, 8, 10,15,14,20])==False\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "find_lucas",
+        "tests": [
+          "assert find_lucas(9) == 76",
+          "assert find_lucas(4) == 7",
+          "assert find_lucas(3) == 4"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/389",
+      "prompt": "\"\"\"\nWrite a function to find the n'th lucas number.\nassert find_lucas(9) == 76\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert find_lucas(9) == 76\nassert find_lucas(4) == 7\nassert find_lucas(3) == 4\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "multiply_num",
+        "tests": [
+          "assert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)",
+          "assert math.isclose(multiply_num((-10,-20,-30)), -2000.0, rel_tol=0.001)",
+          "assert math.isclose(multiply_num((19,15,18)), 1710.0, rel_tol=0.001)"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/98",
+      "prompt": "\"\"\"\nWrite a function to multiply all the numbers in a list and divide with the length of the list.\nassert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert math.isclose(multiply_num((8, 2, 3, -1, 7)), -67.2, rel_tol=0.001)\nassert math.isclose(multiply_num((-10,-20,-30)), -2000.0, rel_tol=0.001)\nassert math.isclose(multiply_num((19,15,18)), 1710.0, rel_tol=0.001)\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "find_length",
+        "tests": [
+          "assert find_length(\"11000010001\") == 6",
+          "assert find_length(\"10111\") == 1",
+          "assert find_length(\"11011101100101\") == 2"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/125",
+      "prompt": "\"\"\"\nWrite a function to find the maximum difference between the number of 0s and number of 1s in any sub-string of the given binary string.\nassert find_length(\"11000010001\") == 6\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert find_length(\"11000010001\") == 6\nassert find_length(\"10111\") == 1\nassert find_length(\"11011101100101\") == 2\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "similar_elements",
+        "tests": [
+          "assert similar_elements((3, 4, 5, 6),(5, 7, 4, 10)) == (4, 5)",
+          "assert similar_elements((1, 2, 3, 4),(5, 4, 3, 7)) == (3, 4)",
+          "assert similar_elements((11, 12, 14, 13),(17, 15, 14, 13)) == (13, 14)"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/2",
+      "prompt": "\"\"\"\nWrite a function to find the shared elements from the given two lists.\nassert set(similar_elements((3, 4, 5, 6),(5, 7, 4, 10))) == set((4, 5))\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert similar_elements((3, 4, 5, 6),(5, 7, 4, 10)) == (4, 5)\nassert similar_elements((1, 2, 3, 4),(5, 4, 3, 7)) == (3, 4)\nassert similar_elements((11, 12, 14, 13),(17, 15, 14, 13)) == (13, 14)\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "find_min_diff",
+        "tests": [
+          "assert find_min_diff((1,5,3,19,18,25),6) == 1",
+          "assert find_min_diff((4,3,2,6),4) == 1",
+          "assert find_min_diff((30,5,20,9),4) == 4"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/763",
+      "prompt": "\"\"\"\nWrite a python function to find the minimum difference between any two elements in a given array. \nassert find_min_diff((1,5,3,19,18,25),6) == 1\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert find_min_diff((1,5,3,19,18,25),6) == 1\nassert find_min_diff((4,3,2,6),4) == 1\nassert find_min_diff((30,5,20,9),4) == 4\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "number_of_substrings",
+        "tests": [
+          "assert number_of_substrings(\"abc\") == 6",
+          "assert number_of_substrings(\"abcd\") == 10",
+          "assert number_of_substrings(\"abcde\") == 15"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/238",
+      "prompt": "\"\"\"\nWrite a python function to count the number of non-empty substrings of a given string.\nassert number_of_substrings(\"abc\") == 6\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert number_of_substrings(\"abc\") == 6\nassert number_of_substrings(\"abcd\") == 10\nassert number_of_substrings(\"abcde\") == 15\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "check_Consecutive",
+        "tests": [
+          "assert check_Consecutive([1,2,3,4,5]) == True",
+          "assert check_Consecutive([1,2,3,5,6]) == False",
+          "assert check_Consecutive([1,2,1]) == False"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/472",
+      "prompt": "\"\"\"\nWrite a python function to check whether the given list contains consecutive numbers or not.\nassert check_Consecutive([1,2,3,4,5]) == True\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert check_Consecutive([1,2,3,4,5]) == True\nassert check_Consecutive([1,2,3,5,6]) == False\nassert check_Consecutive([1,2,1]) == False\n```"
+    }
+  ]
+}

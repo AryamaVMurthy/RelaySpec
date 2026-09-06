@@ -128,6 +128,14 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 36 / 1 | 28526 | dflash / fit_reduced_taps | pass | 96.0 | 8 | relay_late_dense: 84.3%; relay_reduced: 84.2% |
 | 36 / 2 | 28526 | dflash / fit_reduced_taps | pass | 93.6 | 8 | relay_late_dense: 82.9%; relay_reduced: 83.1% |
 | 36 / 3 | 28526 | dflash / fit_reduced_taps | pass | 96.2 | 8 | relay_late_dense: 82.8%; relay_reduced: 83.1% |
+| 37 / 0 | 28527 | eagle3 / fit_reduced_taps | pass | 376.9 | 8 | relay_reduced: 104.4% |
+| 37 / 1 | 28527 | eagle3 / fit_reduced_taps | pass | 373.4 | 8 | relay_reduced: 100.3% |
+| 37 / 2 | 28527 | eagle3 / fit_reduced_taps | pass | 510.4 | 8 | relay_reduced: 106.2% |
+| 37 / 3 | 28527 | eagle3 / fit_reduced_taps | pass | 510.4 | 8 | relay_reduced: 105.4% |
+| 38 / 0 | 28528 | eagle3 / existing | pass | 136.4 | 8 | relay_lower_rate: 106.9% |
+| 38 / 1 | 28528 | eagle3 / existing | pass | 133.9 | 8 | relay_lower_rate: 103.7% |
+| 38 / 2 | 28528 | eagle3 / existing | pass | 243.4 | 8 | relay_dense2048: 105.3%; relay_lower_rate: 109.1%; relay_original_matched: 107.3% |
+| 38 / 3 | 28528 | eagle3 / existing | pass | 246.4 | 8 | relay_dense2048: 104.9%; relay_lower_rate: 108.1%; relay_original_matched: 103.5% |
 
 ## Four-GPU pipeline stages
 

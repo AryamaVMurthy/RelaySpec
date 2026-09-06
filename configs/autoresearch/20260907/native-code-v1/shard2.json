@@ -1,0 +1,117 @@
+{
+  "dataset_revisions": {
+    "evalplus_mbpp": "26d6d00bb1fd0fa37f39c99d5290da67891d1c5e",
+    "gsm8k": "740312add88f781978c0658806c59bc2815b9866",
+    "humaneval": "7dce6050a7d6d172f3cc5c32aa97f52fa1a2e544",
+    "math500": "6e4ed1a2a79af7d8630a6b768ec859cb5af4d3be",
+    "mtbench": "e3a795c5e9a82ee40611c416b8a7786c73198991"
+  },
+  "seed": 1729,
+  "records": [
+    {
+      "answer": {
+        "entry_point": "add_string",
+        "tests": [
+          "assert add_string([1,2,3,4],'temp{0}')==['temp1', 'temp2', 'temp3', 'temp4']",
+          "assert add_string(['a','b','c','d'], 'python{0}')==[ 'pythona', 'pythonb', 'pythonc', 'pythond']",
+          "assert add_string([5,6,7,8],'string{0}')==['string5', 'string6', 'string7', 'string8']"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/390",
+      "prompt": "\"\"\"\nWrite a function to apply a given format string to all of the elements in a list.\nassert add_string([1,2,3,4],'temp{0}')==['temp1', 'temp2', 'temp3', 'temp4']\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert add_string([1,2,3,4],'temp{0}')==['temp1', 'temp2', 'temp3', 'temp4']\nassert add_string(['a','b','c','d'], 'python{0}')==[ 'pythona', 'pythonb', 'pythonc', 'pythond']\nassert add_string([5,6,7,8],'string{0}')==['string5', 'string6', 'string7', 'string8']\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "rear_extract",
+        "tests": [
+          "assert rear_extract([(1, 'Rash', 21), (2, 'Varsha', 20), (3, 'Kil', 19)]) == [21, 20, 19]",
+          "assert rear_extract([(1, 'Sai', 36), (2, 'Ayesha', 25), (3, 'Salman', 45)]) == [36, 25, 45]",
+          "assert rear_extract([(1, 'Sudeep', 14), (2, 'Vandana', 36), (3, 'Dawood', 56)]) == [14, 36, 56]"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/272",
+      "prompt": "\"\"\"\nWrite a function that takes in a list of tuples and returns a list containing the rear element of each tuple.\nassert rear_extract([(1, 'Rash', 21), (2, 'Varsha', 20), (3, 'Kil', 19)]) == [21, 20, 19]\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert rear_extract([(1, 'Rash', 21), (2, 'Varsha', 20), (3, 'Kil', 19)]) == [21, 20, 19]\nassert rear_extract([(1, 'Sai', 36), (2, 'Ayesha', 25), (3, 'Salman', 45)]) == [36, 25, 45]\nassert rear_extract([(1, 'Sudeep', 14), (2, 'Vandana', 36), (3, 'Dawood', 56)]) == [14, 36, 56]\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "remove_whitespaces",
+        "tests": [
+          "assert remove_whitespaces(' Google    Flutter ') == 'GoogleFlutter'",
+          "assert remove_whitespaces(' Google    Dart ') == 'GoogleDart'",
+          "assert remove_whitespaces(' iOS    Swift ') == 'iOSSwift'"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/451",
+      "prompt": "\"\"\"\nWrite a function to remove all whitespaces from the given string.\nassert remove_whitespaces(' Google    Flutter ') == 'GoogleFlutter'\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert remove_whitespaces(' Google    Flutter ') == 'GoogleFlutter'\nassert remove_whitespaces(' Google    Dart ') == 'GoogleDart'\nassert remove_whitespaces(' iOS    Swift ') == 'iOSSwift'\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "remove_length",
+        "tests": [
+          "assert remove_length('The person is most value tet', 3) == 'person is most value'",
+          "assert remove_length('If you told me about this ok', 4) == 'If you me about ok'",
+          "assert remove_length('Forces of darkeness is come into the play', 4) == 'Forces of darkeness is the'"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/772",
+      "prompt": "\"\"\"\nWrite a function to remove all the words with k length in the given string.\nassert remove_length('The person is most value tet', 3) == 'person is most value'\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert remove_length('The person is most value tet', 3) == 'person is most value'\nassert remove_length('If you told me about this ok', 4) == 'If you me about ok'\nassert remove_length('Forces of darkeness is come into the play', 4) == 'Forces of darkeness is the'\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "wind_chill",
+        "tests": [
+          "assert wind_chill(120,35)==40",
+          "assert wind_chill(40,20)==19",
+          "assert wind_chill(10,8)==6"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/638",
+      "prompt": "\"\"\"\nWrite a function to calculate the wind chill index rounded to the next integer given the wind velocity in km/h and a temperature in celsius.\nassert wind_chill(120,35)==40\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert wind_chill(120,35)==40\nassert wind_chill(40,20)==19\nassert wind_chill(10,8)==6\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "count_Set_Bits",
+        "tests": [
+          "assert count_Set_Bits(2) == 1",
+          "assert count_Set_Bits(4) == 1",
+          "assert count_Set_Bits(6) == 2"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/224",
+      "prompt": "\"\"\"\nWrite a python function to count the number of set bits (binary digits with value 1) in a given number.\nassert count_Set_Bits(2) == 1\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert count_Set_Bits(2) == 1\nassert count_Set_Bits(4) == 1\nassert count_Set_Bits(6) == 2\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "Find_Min",
+        "tests": [
+          "assert Find_Min([[1],[1,2],[1,2,3]]) == [1]",
+          "assert Find_Min([[1,1],[1,1,1],[1,2,7,8]]) == [1,1]",
+          "assert Find_Min([['x'],['x','y'],['x','y','z']]) == ['x']"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/457",
+      "prompt": "\"\"\"\nWrite a python function to find the sublist having minimum length.\nassert Find_Min([[1],[1,2],[1,2,3]]) == [1]\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert Find_Min([[1],[1,2],[1,2,3]]) == [1]\nassert Find_Min([[1,1],[1,1,1],[1,2,7,8]]) == [1,1]\nassert Find_Min([['x'],['x','y'],['x','y','z']]) == ['x']\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "jacobsthal_num",
+        "tests": [
+          "assert jacobsthal_num(5) == 11",
+          "assert jacobsthal_num(2) == 1",
+          "assert jacobsthal_num(4) == 5",
+          "assert jacobsthal_num(13) == 2731"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/752",
+      "prompt": "\"\"\"\nWrite a function to find the nth jacobsthal number.  0, 1, 1, 3, 5, 11, 21, 43, 85, 171, 341, 683, 1365, 2731, ...\nassert jacobsthal_num(5) == 11\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert jacobsthal_num(5) == 11\nassert jacobsthal_num(2) == 1\nassert jacobsthal_num(4) == 5\nassert jacobsthal_num(13) == 2731\n```"
+    }
+  ]
+}
