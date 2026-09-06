@@ -136,6 +136,9 @@ def main() -> None:
     if precision not in {"bfloat16", "float32"}:
         raise ValueError("DFlash benchmark precision must be bfloat16 or float32")
     runtime_dtype = getattr(torch, precision)
+    head_precision = str(getattr(config.benchmark, "target_head_precision", precision))
+    if head_precision not in {precision, "float32"}:
+        raise ValueError("Target head precision must match runtime or be float32")
     if precision == "float32":
         # Numerical diagnostic: use FP32 for every model and mapper, without TF32.
         torch.backends.cuda.matmul.allow_tf32 = False
@@ -217,6 +220,12 @@ def main() -> None:
         .to(device)
         .eval()
     )
+    head_diagnostic = None
+    if precision == "bfloat16" and head_precision == "float32":
+        from relayspec.numerical_diagnostics import promote_output_head
+
+        torch.backends.cuda.matmul.allow_tf32 = False
+        head_diagnostic = promote_output_head(target)
     draft = (
         draft_class.from_pretrained(
             config.proposer.id,
@@ -576,6 +585,8 @@ def main() -> None:
                     "adapted_drafter_variants": sorted(variant_drafters),
                     "methods": method_names,
                     "runtime_precision": precision,
+                    "target_head_precision": head_precision,
+                    "target_head_diagnostic": head_diagnostic,
                     "matmul_allow_tf32": torch.backends.cuda.matmul.allow_tf32,
                     "target_parameter_dtypes": sorted({str(p.dtype) for p in target.parameters()}),
                     "drafter_parameter_dtypes": sorted({str(p.dtype) for p in draft.parameters()}),

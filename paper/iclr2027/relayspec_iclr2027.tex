@@ -376,8 +376,8 @@ in percentage points. Token matches count identical full output sequences.}
 
 BF16 AR and block verification can select different tokens on the same
 prefix. Eight selected DFlash traces show target-score changes across
-native drafting, source reuse and RelaySpec. A separate Qwen3-0.6B
-diagnostic yields 7/16 AR matches in BF16 and 16/16 in full FP32
+native drafting, source reuse and RelaySpec. A separate Qwen3-8B
+diagnostic yields 12/16 AR matches in BF16 and 16/16 in full FP32
 (Appendix~\ref{app:downscale}). These diagnostics do not establish
 bitwise agreement generally.
 
@@ -898,6 +898,38 @@ match on only 5/16 questions. This intervention supports a numerical
 explanation in this sample, but also changes kernel dispatch and does
 not isolate target precision alone. It is not a proof of agreement on
 other prompts. The four diagnostic workers complete in 61--78 seconds.
+Numerical sensitivity and FP32 mitigation have prior study, including
+LayerCast \citep{yuan2025numerical}. Our contribution here is a controlled
+diagnostic of the inherited-drafter interface, not discovery of this
+numerical phenomenon or a new precision algorithm.
+
+The pattern extends to the tested code and dialogue screens
+(Table~\ref{tab:precision-breadth}). Code agreement rises from 5/8 to
+8/8, and dialogue agreement from 8/16 to 16/16 timed turns across eight
+conversations. Each precision has its own AR baseline. Code outputs are
+not execution-scored, and dialogue responses have no quality scores.
+The results support applicability beyond math in this small verifier,
+while distinguishing token agreement from task performance.
+
+\begin{table}[H]
+\centering\small
+\input{generated/precision_breadth_table.tex}
+\caption{Qwen3-0.6B precision diagnostics with the frozen dense mapper.
+Units are questions or whole conversations. AR matches count timed turns.
+Paired intervals resample the units within each precision. GSM8K and
+code use 512-token caps, dialogue uses 256 tokens per turn.}
+\label{tab:precision-breadth}
+\end{table}
+
+We also run the same sixteen GSM8K questions with the main Qwen3-8B
+verifier and its frozen dense mapper. Exact AR agreement rises from
+12/16 in BF16 to 16/16 in full FP32. No answer reaches the 512-token
+cap. The BF16 workers finish in 87--104 seconds and FP32 workers in
+152--179 seconds. Runtime records confirm the requested parameter
+precision and disabled TF32 for FP32. Together with the smaller-verifier
+screens, this supports the numerical diagnosis across the two tested
+verifier sizes, without extending the agreement claim beyond these
+requests and execution settings.
 
 \begin{table}[H]
 \centering\small
