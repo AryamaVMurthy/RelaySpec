@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -28,6 +29,7 @@ from relayspec.benchmarking import (
     rotate_methods,
     shard_records,
 )
+from relayspec.drafter_adaptation import apply_merged_lora
 from relayspec.eagle3 import eagle3_generate, import_official_eagle3
 from relayspec.generation import native_autoregressive_generate
 from relayspec.mapper_campaign import campaign_model_methods, restore_mapper
@@ -263,6 +265,12 @@ def main() -> None:
 
     variant_mappers = {}
     variant_provenance = {}
+    drafter_updates = probe.get("drafter_updates", {})
+    if set(drafter_updates) - set(variants):
+        raise ValueError(
+            "every adapted EAGLE drafter requires an explicit mapper variant"
+        )
+    variant_drafters = {}
     for name, checkpoint_path in variants.items():
         if source_draft is None:
             raise ValueError("EAGLE-3 mapper campaign requires its source proposer")
@@ -289,6 +297,29 @@ def main() -> None:
             "target_layer_ids": list(taps),
         }
         del checkpoint
+        if name in drafter_updates:
+            adaptation_path = Path(drafter_updates[name])
+            adaptation = torch.load(
+                adaptation_path, map_location="cpu", weights_only=True
+            )
+            adapted = copy.deepcopy(source_draft).requires_grad_(False).eval()
+            apply_merged_lora(
+                adapted,
+                adaptation,
+                proposer=payload["proposer"],
+                mapper_sha256=variant_provenance[name]["checkpoint_sha256"],
+            )
+            variant_drafters[name] = adapted
+            variant_provenance[name]["drafter_update"] = {
+                "checkpoint": str(adaptation_path),
+                "sha256": hashlib.sha256(adaptation_path.read_bytes()).hexdigest(),
+                "base_sha256": adaptation["base_sha256"],
+                "updated_weights": sorted(adaptation["weights"]),
+                "resident_parameter_bytes": sum(
+                    p.numel() * p.element_size() for p in adapted.parameters()
+                ),
+            }
+            del adaptation
 
     tokenizer = AutoTokenizer.from_pretrained(
         config.target.id,
@@ -380,7 +411,7 @@ def main() -> None:
         "relay_eagle3": relayed,
     }
 
-    def variant_generator(mapper, taps):
+    def variant_generator(mapper, taps, selected_draft):
         def generate(**kwargs):
             recorder = kwargs.pop("profile_recorder", None)
             provider = RelayContextProvider(
@@ -391,7 +422,7 @@ def main() -> None:
             return eagle3_generate(
                 api=api,
                 target_model=target,
-                draft_model=source_draft,
+                draft_model=selected_draft,
                 context_provider=provider,
                 temperature=float(config.generation.temperature),
                 stop_token_ids=stop_token_ids,
@@ -403,7 +434,9 @@ def main() -> None:
         return generate
 
     for name, (mapper, taps) in variant_mappers.items():
-        available[name] = variant_generator(mapper, taps)
+        available[name] = variant_generator(
+            mapper, taps, variant_drafters.get(name, source_draft)
+        )
     manifest = json.loads(
         Path(config.benchmark.manifest_path).read_text(encoding="utf-8")
     )
@@ -488,6 +521,10 @@ def main() -> None:
                             row["mapper_checkpoint_sha256"] = variant_provenance[
                                 method
                             ]["checkpoint_sha256"]
+                            if "drafter_update" in variant_provenance[method]:
+                                row["drafter_update_sha256"] = variant_provenance[
+                                    method
+                                ]["drafter_update"]["sha256"]
                         histories[method] = [
                             *messages,
                             {"role": "assistant", "content": row["completion"]},

@@ -19,7 +19,18 @@ export RELAYSPEC_CACHE_DIR="/scratch/$USER/factorspec-runtime-20260826"
 export HF_HOME="$RELAYSPEC_CACHE_DIR/huggingface"
 export TRANSFORMERS_CACHE="$HF_HOME/hub"
 export DFLASH_SOURCE="$HOME/factorspec/vendor/dflash"
-export PYTHONPATH="$PWD/src:$DFLASH_SOURCE"
+export DEEPSPEC_SOURCE="$HOME/relayspec/vendor/deepspec"
+export DEEPSPEC_PYTHON_OVERLAY="$RELAYSPEC_CACHE_DIR/deepspec-python-overlay-node07"
+: "${ADAPTATION_CONFIG:?declared pilot config required}"
+family="$("$RELAYSPEC_PYTHON" -c 'import sys,yaml; print(yaml.safe_load(open(sys.argv[1]))["proposer"]["family"])' "$ADAPTATION_CONFIG")"
+case "$family" in
+  dflash) export PYTHONPATH="$PWD/src:$DFLASH_SOURCE" ;;
+  eagle3)
+    test -d "$DEEPSPEC_PYTHON_OVERLAY/transformers"
+    export PYTHONPATH="$PWD/src:$DEEPSPEC_PYTHON_OVERLAY:$DEEPSPEC_SOURCE"
+    ;;
+  *) echo "Unsupported adaptation family: $family" >&2; exit 2 ;;
+esac
 export OMP_NUM_THREADS=4 TOKENIZERS_PARALLELISM=false
 export RELAYSPEC_OUTPUT="$PWD/outputs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}"
 export RELAYSPEC_FIT_OUTPUT="$RELAYSPEC_CACHE_DIR/relayspec/cached-fits/${SLURM_JOB_NAME}-${SLURM_JOB_ID}"

@@ -1,0 +1,15 @@
+{
+  "status": "declared_before_fitting",
+  "config_sha256": "093b7b922ba8b42dcccd04b8a5e9084eb4d9b147fdddf33cb05893f70a7aa0c3",
+  "initial_mapper_gate": "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/eagle3-capacity-full/run-27802/batch-gate.json",
+  "initial_mapper_gate_sha256": "96d4387fb0013808cccbb347ede391e8b31b747dab898111479792f3ac2e2bb0",
+  "initial_mapper_sha256": "92c5e2648d98d014d2a9968464c4ab73dba8b3905a7cce27da8d7f1b99048e33",
+  "cache_index_sha256": "9c18d186420ff569186fc1232b411cbb984ae05bbe09564a36f6179ceaccad19",
+  "source_commit": "005e03b81cec38b7da6399833d609ee89a2587f2",
+  "source_file": "deepspec/modeling/eagle3/qwen3/modeling.py",
+  "implementation_basis": "Pinned extend_draft_cache and forward combine post-fusion hidden[t] with token[t+1]; the head predicts token[t+2]. Supervise final15 predictions against target greedy logits at the matching shifted prefixes. Local alignment/gradient and existing EAGLE/LoRA/export tests pass; GPU cache equivalence and zero/duplicate decoding remain required.",
+  "proper_followup": "After a successful <=10min pilot, use512 examples for data-matched128-update calibration and fixed warm-time budget comparisons against continued feature regression. Preserve all rates and initialization/preparation cost; quality and final confirmation remain separate.",
+  "large_data_scaling": "paused",
+  "source_file_sha256": "5f9f2bea9f48fba040e77f922b46ede49cae8abe752de9101f1bb16ddfeca43c",
+  "source_worktree_clean_at_inspection": true
+}

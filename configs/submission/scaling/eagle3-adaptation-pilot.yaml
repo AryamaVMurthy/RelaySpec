@@ -1,0 +1,81 @@
+protocol_version: 1
+run_name: eagle3-8b-adaptation-compatibility-pilot
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: eagle3
+  id: deepseek-ai/eagle3_qwen3_4b_ttt7
+  revision: b0b90fd15d052217c226be5e46d468d8d129e0cd
+  source_commit: 005e03b81cec38b7da6399833d609ee89a2587f2
+native_target_proposer:
+  id: deepseek-ai/eagle3_qwen3_8b_ttt7
+  revision: f6485ba8d21e11942958617dbe7e71b467f38f38
+generation:
+  enable_thinking: false
+  max_new_tokens: 128
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/eval_manifest.json
+  benchmarks:
+  - math500
+  methods:
+  - native_ar
+  - native_target_eagle3
+  - source_reuse_eagle3
+  - relay_dense_a
+  - relay_factor512
+  - relay_mlp512
+  - relay_dense_b
+  max_prompts: 8
+  warmups: 1
+  draft_length: 7
+  profile_regions: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants: {}
+adaptation_pilot:
+  diagnostics: true
+  feature_cache_index_sha256: 9c18d186420ff569186fc1232b411cbb984ae05bbe09564a36f6179ceaccad19
+  initial_mapper: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-small03-27802/eagle3-dense-n512-s1729/step-000128.pt
+  initial_mapper_sha256: 92c5e2648d98d014d2a9968464c4ab73dba8b3905a7cce27da8d7f1b99048e33
+  initial_mapper_distinct_examples: 512
+  initial_mapper_updates: 128
+  pilot_distinct_examples: 64
+  pilot_updates: 16
+  batch_size: 4
+  learning_rate: 0.0002
+  lora_ranks:
+  - 8
+  - 32
+  lora_alpha_multiplier: 2
+  target_suffixes:
+  - q_proj
+  - v_proj
+  scope: EAGLE one-step shifted teacher-forced greedy CE and frozen-mapper inherited-drafter
+    LoRA.64 cached records and16 updates; two rank32 duplicate-seed workers, initial-cache/logit
+    equivalence, zero-update full decoding identity and merged reload. Not the public
+    multi-step TTT training recipe and not a matched-time scientific comparison. Initial
+    dense map used512 examples and128 feature updates; charge that initialization
+    and target-label preparation separately in proper comparisons.
+  deterministic_algorithms: true
+  cublas_workspace_config: :4096:8
+  check_direct_fusion_equivalence: false

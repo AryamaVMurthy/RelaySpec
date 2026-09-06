@@ -12,6 +12,8 @@ from pathlib import Path
 import torch
 import yaml
 
+from relayspec.mapper_campaign import campaign_references
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -24,6 +26,7 @@ def main():
     started = time.perf_counter()
     declared_config = yaml.safe_load(args.config.read_text())
     declared_settings = declared_config["adaptation_pilot"]
+    family = declared_config["proposer"]["family"]
     subprocess.run(
         [
             python,
@@ -49,6 +52,15 @@ def main():
             != declared_settings["pilot_distinct_examples"]
         ):
             raise ValueError("incomplete bounded adaptation fit")
+        if family == "eagle3":
+            checks = gate.get("eagle_initial_cache_equivalence", [])
+            if len(checks) != 4 or any(
+                c.get("status") != "pass" or c.get("logits_bit_identical") is not True
+                for c in checks
+            ):
+                raise ValueError(
+                    "EAGLE adaptation lacks its shifted-prefix cache proof"
+                )
         gates.append(gate)
         destination = output / "fitting" / f"rank{rank}"
         destination.mkdir(parents=True, exist_ok=False)
@@ -85,9 +97,7 @@ def main():
         "relay_lora_zero": str(fits / "rank2/zero-adaptation.pt"),
     }
     config["benchmark"]["methods"] = [
-        "native_ar",
-        "native_target_dflash",
-        "optimized_source_reuse",
+        *campaign_references(family, config["benchmark"]["methods"]),
         *variants,
     ]
     config["benchmark"]["max_prompts"] = 8
@@ -121,11 +131,11 @@ def main():
     for key, row in duplicate[0].items():
         if any(
             row[field] != duplicate[1][key][field]
-            for field in (
-                "output_hash",
-                "output_tokens",
-                "accepted_draft_lengths",
-                "proposal_lengths",
+            for field in ("output_hash", "output_tokens")
+            + (
+                ("accepted_draft_lengths", "proposal_lengths")
+                if family == "dflash"
+                else ("acceptance_lengths", "target_calls", "draft_calls")
             )
         ):
             raise ValueError("duplicate adapted drafter decoding differs")
@@ -138,7 +148,7 @@ def main():
                 "duplicate_seed_weights_and_decoding_bit_identical": True,
                 "total_seconds": time.perf_counter() - started,
                 "config_sha256": hashlib.sha256(args.config.read_bytes()).hexdigest(),
-                "scope": "DFlash connector-only CE versus frozen-connector drafter LoRA resource/correctness pilot. Full matched-compute/data budgets and scientific comparisons remain unexecuted.",
+                "scope": f"{family} connector-only CE versus frozen-connector drafter LoRA resource/correctness pilot. Full matched-compute/data budgets and scientific comparisons remain unexecuted.",
             },
             indent=2,
         )

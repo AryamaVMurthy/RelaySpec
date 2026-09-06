@@ -20,6 +20,12 @@ from relayspec.drafter_adaptation import (
     frozen_base_digest,
     restore_adaptation_state,
 )
+from relayspec.eagle3 import import_official_eagle3
+from relayspec.eagle3_adaptation import (
+    check_eagle_initial_cache,
+    eagle_teacher_forced_logits,
+    shifted_eagle_inputs,
+)
 from relayspec.generation import _conditioned_dflash_forward
 from relayspec.lora import inject_lora, merge_lora_into_base
 from relayspec.losses import greedy_agreement_ce
@@ -46,6 +52,11 @@ def main():
     args = parser.parse_args()
     config = yaml.safe_load(args.config.read_text())
     settings = config["adaptation_pilot"]
+    family = config["proposer"]["family"]
+    if family not in {"dflash", "eagle3"}:
+        raise ValueError("unsupported adaptation family")
+    if family == "eagle3" and settings.get("check_direct_fusion_equivalence"):
+        raise ValueError("direct-fusion equivalence is only implemented for DFlash")
     count = settings["pilot_distinct_examples"]
     updates = settings["pilot_updates"]
     batch_size = settings["batch_size"]
@@ -91,9 +102,14 @@ def main():
         raise ValueError("initial mapper hash changed")
     checkpoint = torch.load(mapper_path, map_location="cpu", weights_only=True)
     model_cache = Path(os.environ["TRANSFORMERS_CACHE"])
-    draft_class, _ = import_official_dflash(
-        os.environ["DFLASH_SOURCE"], config["proposer"]["source_commit"]
-    )
+    if family == "dflash":
+        draft_class, _ = import_official_dflash(
+            os.environ["DFLASH_SOURCE"], config["proposer"]["source_commit"]
+        )
+    else:
+        draft_class = import_official_eagle3(
+            os.environ["DEEPSPEC_SOURCE"], config["proposer"]["source_commit"]
+        ).model_class
 
     def load_model(spec, cls=AutoModelForCausalLM):
         return (
@@ -112,7 +128,7 @@ def main():
 
     started = time.perf_counter()
     target = load_model(config["target"])
-    source = load_model(config["source_trunk"]["model"])
+    source = load_model(config["source_trunk"]["model"]) if family == "dflash" else None
     draft = load_model(config["proposer"], draft_class)
     mapper, taps = restore_mapper(
         checkpoint,
@@ -145,19 +161,26 @@ def main():
                 .logits[:, :-1]
                 .argmax(-1)
             )
-            noise = torch.full(
-                (1, block), int(draft.mask_token_id), device=device, dtype=torch.long
-            )
-            noise[:, 0] = ids[:, prefix]
-            records.append(
-                (
-                    saved["x"][:, :prefix].to(record_device),
-                    source.model.embed_tokens(noise).to(record_device),
-                    torch.arange(ids.shape[1], device=record_device).unsqueeze(0),
-                    labels.to(record_device),
+            if family == "dflash":
+                noise = torch.full(
+                    (1, block),
+                    int(draft.mask_token_id),
+                    device=device,
+                    dtype=torch.long,
                 )
-            )
-    head = source.lm_head
+                noise[:, 0] = ids[:, prefix]
+                records.append(
+                    (
+                        saved["x"][:, :prefix].to(record_device),
+                        source.model.embed_tokens(noise).to(record_device),
+                        torch.arange(ids.shape[1], device=record_device).unsqueeze(0),
+                        labels.to(record_device),
+                    )
+                )
+            else:
+                shifted = shifted_eagle_inputs(saved["x"].to(device), ids, block=block)
+                records.append(tuple(t.to(record_device) for t in (*shifted, labels)))
+    head = source.lm_head if family == "dflash" else None
     del source, target
     torch.cuda.empty_cache()
     preparation_seconds = time.perf_counter() - preparation_started
@@ -168,6 +191,10 @@ def main():
     def logits(record, model=draft):
         features, noise, positions = (value.to(device) for value in record[:3])
         with torch.autocast("cuda", dtype=torch.bfloat16):
+            if family == "eagle3":
+                return eagle_teacher_forced_logits(
+                    model, mapper, features, noise, positions, label_count=block - 1
+                )
             context = model.hidden_norm(mapper(features))
             hidden = _conditioned_dflash_forward(
                 model,
@@ -180,6 +207,20 @@ def main():
 
     with torch.no_grad():
         initial_logits = logits(records[0]).clone()
+    eagle_cache_equivalence = None
+    if family == "eagle3":
+        from transformers import DynamicCache
+
+        with torch.autocast("cuda", dtype=torch.bfloat16):
+            eagle_cache_equivalence = [
+                check_eagle_initial_cache(
+                    draft,
+                    mapper,
+                    tuple(t.to(device) for t in record),
+                    cache_factory=DynamicCache,
+                )
+                for record in records[:4]
+            ]
     fusion_equivalence = None
     if settings.get("check_direct_fusion_equivalence", False):
         inherited_fc = draft.fc
@@ -524,6 +565,14 @@ def main():
                 "inherited_weights_unchanged": True,
                 "export": export_gate,
                 "direct_fusion_equivalence": fusion_equivalence,
+                **(
+                    {
+                        "eagle_initial_cache_equivalence": eagle_cache_equivalence,
+                        "supervision": "one-step shifted EAGLE logits on the final15 label positions, not multi-step TTT",
+                    }
+                    if family == "eagle3"
+                    else {}
+                ),
                 "config_sha256": sha(args.config),
                 "scope": "Bounded equal-data fitting with teacher-forced target greedy labels "
                 "on the last 15 proposal positions. The worker trial declares connector CE "
