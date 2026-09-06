@@ -12,6 +12,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--shard-index", type=int, choices=(0, 1), required=True)
     parser.add_argument("--check-files", action="store_true")
+    parser.add_argument("--full", action="store_true")
     args = parser.parse_args()
     registry_path = Path(
         "reports/external-baselines-20260906/sd-square-epoch-decoding.json"
@@ -74,6 +75,37 @@ def main():
         "is separate from timing. This pilot does not establish final quality noninferiority, untouched "
         "confirmation, isolated memory or an algorithm-only cross-runtime ranking.",
     }
+    if args.full:
+        pilot_path = Path(
+            "reports/external-baselines-20260906/sd-square-quality-pilot.json"
+        )
+        pilot = json.loads(pilot_path.read_text())
+        if (
+            pilot["status"] != "complete"
+            or pilot["capped_quality"]["requests"] != 8
+            or pilot["capped_quality"]["token_cap"] != result["max_new_tokens"]
+            or pilot["variants"] != result["variants"]
+            or pilot["steering_fingerprints"]["sd2_selected"] != identity
+            or protocol["development"]["quality_requests"] != 128
+        ):
+            raise ValueError(
+                "SD-square full quality requires the matching eight-request pilot"
+            )
+        result["prerequisites"][str(pilot_path)] = digest(pilot_path)
+        result.update(
+            phase="quality_full",
+            requests=64,
+            request_offset=64 * args.shard_index,
+            total_development_requests=128,
+            scope="Selected SD-square epoch unchanged after the eight-request quality pilot. "
+            "128 exposed development requests in two disjoint 64-request shards at2048-token cap. "
+            "Matched public FP16 target/BF16 drafter and steering runtime with BF16 autocast. "
+            "Training and inference identities match the frozen epoch selection and pilot. "
+            "Strict actual-verifier checks and immediate/deferred observer equivalence. Full request "
+            "time includes GPU observation and excludes CPU materialization/detokenization. "
+            "Capped answer scoring is separate. No untouched confirmation, final quality-margin "
+            "claim, isolated memory or algorithm-only cross-runtime ranking.",
+        )
     args.output.write_text(json.dumps(result, indent=2) + "\n")
 
 

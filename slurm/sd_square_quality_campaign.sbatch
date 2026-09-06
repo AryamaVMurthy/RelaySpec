@@ -30,12 +30,21 @@ export RELAYSPEC_OUTPUT="$PWD/outputs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}"
 mkdir -p "$RELAYSPEC_OUTPUT" "$TMP_PATH"
 cp SOURCE_COMMIT "$RELAYSPEC_OUTPUT/source-commit.txt"
 cp "$SD_SQUARE_SETUP_GATE" "$RELAYSPEC_OUTPUT/setup-gate.json"
-"$RELAYSPEC_PYTHON" scripts/build_sd_square_quality_campaign.py --shard-index "$SD_SQUARE_SHARD_INDEX" --check-files --output "$RELAYSPEC_OUTPUT/campaign-config.json"
+quality_args=()
+if [[ "${SD_SQUARE_QUALITY_PHASE:-quality_pilot}" == quality_full ]]; then
+  quality_args+=(--full)
+elif [[ "${SD_SQUARE_QUALITY_PHASE:-quality_pilot}" != quality_pilot ]]; then
+  echo "Unknown quality phase" >&2
+  exit 1
+fi
+"$RELAYSPEC_PYTHON" scripts/build_sd_square_quality_campaign.py "${quality_args[@]}" --shard-index "$SD_SQUARE_SHARD_INDEX" --check-files --output "$RELAYSPEC_OUTPUT/campaign-config.json"
+export SD_SQUARE_PROCESS_TIMEOUT_SECONDS="${SD_SQUARE_PROCESS_TIMEOUT_SECONDS:-540}"
+"$RELAYSPEC_PYTHON" -c 'import json,os,sys; c=json.load(open(sys.argv[1])); t=int(os.environ["SD_SQUARE_PROCESS_TIMEOUT_SECONDS"]); assert 0<t<=540 or (c["phase"]=="quality_full" and 540<t<=2640 and len(c["prerequisites"])==2), "unapproved duration or missing pilot"' "$RELAYSPEC_OUTPUT/campaign-config.json"
 tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm vendor/sd-square SOURCE_COMMIT reports/external-baselines-20260906 reports/mapper-scaling-20260905/sd-square-epochs/jobs.json
 "$RELAYSPEC_PYTHON" scripts/check_allocation.py > "$RELAYSPEC_OUTPUT/allocation.jsonl"
 nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used --format=csv -l 10 > "$RELAYSPEC_OUTPUT/gpu.csv" &
 monitor=$!
 trap 'kill "$monitor" 2>/dev/null || true' EXIT
-timeout --signal=TERM --kill-after=10s 540s "$RELAYSPEC_PYTHON" -m torch.distributed.run \
+timeout --signal=TERM --kill-after=10s "${SD_SQUARE_PROCESS_TIMEOUT_SECONDS}s" "$RELAYSPEC_PYTHON" -m torch.distributed.run \
   --standalone --nproc_per_node=4 scripts/benchmark_sd_square.py --config "$RELAYSPEC_OUTPUT/campaign-config.json"
 "$RELAYSPEC_PYTHON" scripts/check_sd_square_campaign.py --config "$RELAYSPEC_OUTPUT/campaign-config.json"

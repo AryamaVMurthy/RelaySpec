@@ -155,3 +155,44 @@ The raw/curated public-runtime results are now in the29-page paper,
 whose main text remains nine pages. Every technical audit passes. Only
 the new/adjacent pages26--27 were visually inspected here, so full
 color/grayscale review remains pending and paper completion is not claimed.
+
+## Epoch comparison and capped quality continuation
+
+Jobs27913/27914 passed the common epoch decoding comparison in6m14s and
+5m58s. All96 rows (six methods, sixteen disjoint requests) reproduce.
+At1/2/4/8 epochs the selected KL steering reaches18.561/18.452/18.390/
+18.258tokens/s versus18.750 for the independent drafter. Ratios are
+0.990/0.984/0.981/0.974; the last interval is[0.949,0.9997]. More fitting
+lowers training loss without establishing a decoding improvement.
+Freeze the one-epoch checkpoint before longer quality evaluation.
+
+PARD quality pilot27915 passed in1m40s, both methods8/8 correct. Full
+quality27916 then passed in22m53s: PARD105/128 versus matched eager AR
+103/128,105.626 versus31.668tokens/s, ratio3.335[3.222,3.451]. PARD has
+8 cap hits versus AR11. Its conservative paired accuracy difference
+interval is[-0.06342,0.09301], so the one-point margin is not established.
+All256 raw rows, separate observed replicas, pinned scorer and source
+checks reproduce. This is development data, not untouched confirmation.
+
+SD-square selected-epoch quality pilots27917/27918 passed in3m09s/2m33s.
+Both methods score8/8, with20.934 versus12.559tokens/s. Raw gates,
+training/inference identities and pinned scoring reproduce. Proceed
+with the predeclared128-request quality batch at the same2048-token cap,
+using two sequential64-request shards on four GPUs. Each proper run
+has a45-minute Slurm ceiling and2640-second process ceiling. This extends
+evaluation only; no new fitting or dataset expansion occurs. The full
+builder requires the audited matching eight-request pilot and freezes
+its checkpoint and runtime identities. Pilot config regeneration remains
+byte-identical after this extension. Expected total evaluation duration
+is roughly40--60minutes based on the pilot, with output lengths variable.
+
+Before any final confirmation generation, the quality inference protocol
+was amended to use a conservative paired exact interval; see
+2026-09-06-paired-quality-inference.md. The1pp margin,256 primary requests,
+256 reserve and no optional reserve extension remain unchanged. The
+previous protocol is archived and the local exposure audit found no
+held-out/reserve ID matches. Sparse concordant pilot results must not
+be treated as proof of noninferiority through a degenerate bootstrap.
+
+Large-data scaling remains paused. All current jobs are quality evaluation
+of frozen models; future fitting stays within512 or2048 distinct examples.

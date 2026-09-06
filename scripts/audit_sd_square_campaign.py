@@ -31,12 +31,13 @@ def audit_shard(args, run, index):
             [
                 sys.executable,
                 "scripts/build_sd_square_quality_campaign.py",
+                *(["--full"] if getattr(args, "quality_full", False) else []),
                 "--shard-index",
                 str(index),
                 "--output",
                 str(config_path),
             ]
-            if getattr(args, "quality", False)
+            if getattr(args, "quality", False) or getattr(args, "quality_full", False)
             else [
                 sys.executable,
                 "scripts/build_sd_square_epoch_campaign.py",
@@ -97,6 +98,7 @@ def main():
     fitting.add_argument("--fits", type=Path, nargs=2)
     fitting.add_argument("--epoch-run", type=Path)
     fitting.add_argument("--quality", action="store_true")
+    fitting.add_argument("--quality-full", action="store_true")
     parser.add_argument("--runs", type=Path, nargs=2, required=True)
     parser.add_argument("--ledger", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -110,7 +112,7 @@ def main():
         raise ValueError("SD-square shards differ in weights or declaration")
     rows = [row for _, _, shard_rows in shards for row in shard_rows]
     quality_inputs, quality = [], None
-    if args.quality:
+    if args.quality or args.quality_full:
         scorer = Path("reports/ar-revision-20260905/scorer-provenance.json")
         rows = []
         for run in args.runs:
@@ -159,6 +161,11 @@ def main():
             ),
             "scope": "Capped exposed development outcomes. No untouched confirmation or final quality-margin claim from this eight-request pilot.",
         }
+        if args.quality_full:
+            quality["scope"] = (
+                "128 capped exposed development outcomes. No untouched confirmation or final "
+                "quality-margin claim. Conservative paired intervals supplement descriptive bootstrap intervals."
+            )
     summaries = {
         ref: summarize(rows, reference=ref)
         for ref in ("native_ar", "sd2_independent", "sd2_zero_guidance")
