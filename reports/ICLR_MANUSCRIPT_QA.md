@@ -16,7 +16,7 @@ Generated 2026-09-06 from the compiled anonymous manuscript and recorded result 
 | nine-page main-text limit | PASS | main-text boundary is on page 9 |
 | required sections and order | PASS | all main sections and policy statements are present before references and appendix |
 | citation resolution | PASS | 46 unique citation keys resolve |
-| generated result assets | PASS | registered core assets match validated evidence; 18 autoresearch tables/raster plots reproduce from 18 isolated builders |
+| generated result assets | PASS | registered core assets match validated evidence; 19 autoresearch tables/raster plots reproduce from 19 isolated builders |
 | prompt separation audits | PASS | exact-overlap and unique-token similarity artifacts reproduce from the fixed manifests |
 | language constraints | PASS | no semicolon, em dash, banned phrase, or placeholder appears in manuscript source |
 | paragraph overlap | PASS | no exact or at least 0.90 Jaccard duplicate among paragraphs of 35 or more words |
