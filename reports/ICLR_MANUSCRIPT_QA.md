@@ -2,10 +2,10 @@
 
 Generated 2026-09-06 from the compiled anonymous manuscript and recorded result artifacts.
 
-- Overall: **PASS**
+- Overall: **FAIL**
 - Main-text boundary: page 9 of the allowed 9
-- Complete PDF: 37 pages including references and appendix
-- Resolved citation keys: 42
+- Complete PDF: 45 pages including references and appendix
+- Resolved citation keys: 46
 
 | Check | Status | Evidence |
 |---|---|---|
@@ -15,16 +15,16 @@ Generated 2026-09-06 from the compiled anonymous manuscript and recorded result 
 | reader-facing scientific detail | PASS | main prose omits internal engineering records, while appendix retains reproducibility settings |
 | nine-page main-text limit | PASS | main-text boundary is on page 9 |
 | required sections and order | PASS | all main sections and policy statements are present before references and appendix |
-| citation resolution | PASS | 42 unique citation keys resolve |
-| generated result assets | PASS | all generated tables, macros, and figures match validated JSON/raw artifacts |
+| citation resolution | PASS | 46 unique citation keys resolve |
+| generated result assets | PASS | registered core assets match validated evidence; 17 autoresearch tables/raster plots reproduce from 17 isolated builders |
 | prompt separation audits | PASS | exact-overlap and unique-token similarity artifacts reproduce from the fixed manifests |
-| language constraints | PASS | no semicolon, em dash, banned phrase, or placeholder appears in manuscript source |
+| language constraints | FAIL | no semicolon, em dash, banned phrase, or placeholder appears in manuscript source |
 | paragraph overlap | PASS | no exact or at least 0.90 Jaccard duplicate among paragraphs of 35 or more words |
 | fit and evaluation exact-overlap audit | PASS | 0 normalized exact matches across 4,096 fit and 1,250 evaluation records |
 | compiled LaTeX log | PASS | no undefined citation, undefined reference, or overfull box |
-| PDF parse and page format | PASS | 37 pages, US Letter, unencrypted, and identity scan clean |
-| embedded fonts and PDF parser | PASS | 33 font records are embedded and Ghostscript parses every page |
-| recorded visual review | PASS | manual color and grayscale review covers all 37 rendered pages |
+| PDF parse and page format | PASS | 45 pages, US Letter, unencrypted, and identity scan clean |
+| embedded fonts and PDF parser | PASS | 35 font records are embedded and Ghostscript parses every page |
+| recorded visual review | FAIL | current 45-page PDF lacks a complete matching visual review (recorded 37 pages, matching PDF hash: False) |
 
 ## Scientific review remains separate
 
