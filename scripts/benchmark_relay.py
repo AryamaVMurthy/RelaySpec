@@ -143,7 +143,10 @@ def main() -> None:
     rank = int(os.environ["RANK"])
     local_rank = int(os.environ["LOCAL_RANK"])
     world_size = int(os.environ["WORLD_SIZE"])
-    if world_size != 4:
+    expected_workers = (
+        1 if getattr(config.benchmark, "research_single_gpu", False) else 4
+    )
+    if world_size != expected_workers:
         raise RuntimeError("relay probe requires exactly four GPUs")
     torch.cuda.set_device(local_rank)
     dist.init_process_group(

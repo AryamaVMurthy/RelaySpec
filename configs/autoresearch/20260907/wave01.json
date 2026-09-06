@@ -1,0 +1,56 @@
+{
+  "lanes": [
+    {
+      "family": "dflash",
+      "transform": "svd",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full.yaml",
+      "hypothesis": "Post-fit compression retains decoding better than fitting a narrow map from scratch.",
+      "ranks": [
+        256,
+        512,
+        1024
+      ],
+      "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt"
+    },
+    {
+      "family": "dflash",
+      "transform": "drop_taps",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full.yaml",
+      "hypothesis": "A small subset of target layers carries most of the transferable predictive signal.",
+      "ranks": [
+        256,
+        512,
+        1024
+      ],
+      "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt"
+    },
+    {
+      "family": "dflash",
+      "transform": "data_interpolation",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full.yaml",
+      "hypothesis": "Tiny-data and small-data maps lie in a connected useful alignment region.",
+      "ranks": [
+        256,
+        512,
+        1024
+      ],
+      "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt"
+    },
+    {
+      "family": "eagle3",
+      "transform": "svd",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-small03-27802/eagle3-dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/eagle3-full.yaml",
+      "hypothesis": "Post-fit compressibility transfers from diffusion to autoregressive drafting.",
+      "ranks": [
+        256,
+        512,
+        1024
+      ],
+      "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt"
+    }
+  ]
+}
