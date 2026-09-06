@@ -1065,6 +1065,52 @@ throughput increases while remaining below the wider or dense connectors.
 This comparison does not treat additional updates as additional data.
 
 \clearpage
+\subsection{Input-only task complexity}
+
+We stratify the same 128 development requests using the benchmark's
+original difficulty levels and subjects, together with shared tokenized
+input length. Group definitions are fixed before computing subgroup
+outcomes. They do not use candidate success, generated output length or
+latency. This is a retrospective analysis of exposed development data,
+not a new confirmatory test. All twelve methods and all requests remain
+in the analysis.
+
+\begin{table}[H]
+\caption{Throughput retained from dense $N=2048$ within each MATH
+difficulty group, in percent with descriptive paired 95\% intervals.
+All fits use 8,192 updates except the continued width-512 fits, which use
+32,768 updates on the same 2,048 examples. Unspecified $N$ is 2,048.
+Intervals do not adjust for multiple subgroup comparisons or model selection.}
+\label{tab:task-difficulty}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/task_difficulty_table.tex}
+\end{table}
+
+Dense $N=512$ retains 97.4--97.9\% of dense $N=2048$ throughput across
+the three difficulty groups. The width-1024 linear map stays near the
+95\% boundary, while MLP-4096 retains 95.4--96.8\%. The smaller width-512
+maps remain slower in every group. These results describe the tested
+capacities and workloads. They do not establish an optimal size across settings.
+
+For levels 1--2, level 3 and levels 4--5, respectively, AR answers
+38/42, 19/21 and 47/65 questions correctly. Every mapper answers
+38/42, 18/21 and 49/65 correctly. All eleven AR cap hits occur in the
+highest difficulty group, as do eight of the nine mapper cap hits.
+Difficulty therefore coincides with changes in capped answer quality
+and output length. It is not a controlled intervention on decoding cost.
+
+Input-length bins of at most 64, 65--128, 129--256 and more than 256
+tokens contain 52, 57, 15 and 4 requests. In the final four-request
+group, dense $N=512$ retains 94.5\% [91.3, 96.4]\% and linear-1024 retains
+90.8\% [88.2, 94.4]\% of dense $N=2048$ throughput. The small sample and
+multiple comparisons make this a signal for replication, not evidence
+of a causal length effect or a new tuning rule. All seven original
+subject strata, input assignments, method outcomes and conservative
+paired accuracy intervals are retained in the accompanying artifacts.
+No additional generation or fitting is used for this analysis.
+
+\clearpage
 \subsection{Matched warm-training budgets on 512 examples}
 
 We compare feature regression, connector cross-entropy (CE) and rank-32

@@ -1,0 +1,103 @@
+{
+  "status": "pass",
+  "files": {
+    "train-math-2048.json": {
+      "sha256": "073e18674835060f620a43f5f9c47b66aaf7b3e4c5f9134b42360fbd9d1438f9",
+      "records": 2048,
+      "domain_counts": {
+        "math": 2048
+      },
+      "source_counts": {
+        "cn_k12": 959,
+        "orca_math": 532,
+        "synthetic_math": 557
+      },
+      "total_characters": 2278377
+    },
+    "train-mixed-2048.json": {
+      "sha256": "e6d9dbcf4f6e42a773adf7a1719a1489f9b9e65f36ac016967ed6dd55cb36fa5",
+      "records": 2048,
+      "domain_counts": {
+        "math": 1024,
+        "general_instruction": 1024
+      },
+      "source_counts": {
+        "cn_k12": 481,
+        "dolly:open_qa": 253,
+        "dolly:closed_qa": 122,
+        "orca_math": 266,
+        "dolly:general_qa": 148,
+        "synthetic_math": 277,
+        "dolly:brainstorming": 122,
+        "dolly:information_extraction": 103,
+        "dolly:summarization": 80,
+        "dolly:classification": 147,
+        "dolly:creative_writing": 49
+      },
+      "total_characters": 1931058
+    },
+    "validation.json": {
+      "sha256": "3c0808e7936430df376fbc518f32320e2b7e21ca6be70df5c670fc9c12e05265",
+      "records": 2048,
+      "domain_counts": {
+        "math": 1024,
+        "general_instruction": 1024
+      },
+      "source_counts": {
+        "cn_k12": 482,
+        "synthetic_math": 274,
+        "orca_math": 268,
+        "dolly:open_qa": 253,
+        "dolly:general_qa": 150,
+        "dolly:classification": 148,
+        "dolly:closed_qa": 120,
+        "dolly:brainstorming": 122,
+        "dolly:information_extraction": 101,
+        "dolly:summarization": 82,
+        "dolly:creative_writing": 48
+      },
+      "total_characters": 1921720
+    }
+  },
+  "seed": 1729,
+  "general_source": {
+    "dataset": "databricks/databricks-dolly-15k",
+    "revision": "bdd27f4d94b9c1f951818a7da7fd7aeea5dbff1a",
+    "files": {
+      "README.md": {
+        "path": "/home/aryamavmurthy/.cache/huggingface/hub/datasets--databricks--databricks-dolly-15k/snapshots/bdd27f4d94b9c1f951818a7da7fd7aeea5dbff1a/README.md",
+        "sha256": "db06c60090a11b20e79d1933b2f316f781605f07761ff2ae2795d6523e3e960b",
+        "bytes": 8199
+      },
+      "databricks-dolly-15k.jsonl": {
+        "path": "/home/aryamavmurthy/.cache/huggingface/hub/datasets--databricks--databricks-dolly-15k/snapshots/bdd27f4d94b9c1f951818a7da7fd7aeea5dbff1a/databricks-dolly-15k.jsonl",
+        "sha256": "2df9083338b4abd6bceb5635764dab5d833b393b55759dffb0959b6fcbf794ec",
+        "bytes": 13085339
+      }
+    },
+    "source_url": "https://huggingface.co/datasets/databricks/databricks-dolly-15k",
+    "license": "CC-BY-SA-3.0",
+    "scope": "Immutable input to matched-count composition study. Downloading the source is not fitting on all its records."
+  },
+  "input_sha256": {
+    "reports/mapper-scaling-20260905/composition-data/source.json": "e0ccdf779636580e8ce9abbc9c08740443570b344e3b0bca9639816761bc8fa4",
+    "/home/aryamavmurthy/.cache/huggingface/hub/datasets--databricks--databricks-dolly-15k/snapshots/bdd27f4d94b9c1f951818a7da7fd7aeea5dbff1a/databricks-dolly-15k.jsonl": "2df9083338b4abd6bceb5635764dab5d833b393b55759dffb0959b6fcbf794ec",
+    "reports/mapper-scaling-20260905/data/manifest-gate.json": "ea62bbc97140cb27761aed6d96f79c8b5fc5f972d27370ddc31bb72671a4009d",
+    "data/scaling/manifests-pinned/train-2048.json": "0af33b767faa1652dda114fc94f58bceb5bc4bf08e5feaf507b944831bf17d66",
+    "data/scaling/manifests-pinned/validation.json": "dbf0ae502016859540fdf42c31bc1dd69d51cd0fd47b9ef9d681ea63a684dcbe",
+    "configs/eval_manifest.json": "ddba7687f3d680390e68b021b227ce8dbbf9ef681542abe354ea0f59e0c50e35",
+    "configs/eval_manifest_full_v4.json": "9f6e5bf446aa45f1e939751e068c071e8e541f5d56f4029bb013f0a1bc9628ea",
+    "configs/train_math_4096.json": "b43f68a18df3f0ed28295faf0ca1593dc0f46bb57416a38d23fc31b7b912c507",
+    "configs/submission/confirmation-gsm8k-20260906/gsm8k-confirmation-256.json": "32547a43396eba226f43639c2dd52d36176beb7b4805bbb9e4d6560f1a6983f0",
+    "configs/submission/confirmation-gsm8k-20260906/gsm8k-reserve-256.json": "1eb17ff4d3b294ad2091f11201f7c027e4fa76fb96b63cf45c5ce7a9de348bab",
+    "data/scaling/math-reference/data/test-00000-of-00001.parquet": "7dca8d6e41af88ecf82f2b5f36eb5530e083aaaa86ee325f62bd5c31535178c6"
+  },
+  "exclusions": {
+    "duplicate_instruction_context": 11,
+    "near": 14
+  },
+  "reference_unique_texts": 25578,
+  "builder_sha256": "ec7dbcea2251770650846a49f00829b3b857ff5cdaf3acd292110f5886e76630",
+  "helper_sha256": "a0411478fa88c5f3e03f9449add095a9f36e512e53d16e6632f27853e95632b5",
+  "scope": "Matched2048 distinct fitting records, common2048 validation records. General-instruction source may contain math. Exact normalized and5-shingle Jaccard>=0.6 exclusion for texts with>=10 shingles. Does not prove semantic/template independence or absence from pretraining. Confirmation/reserve text used only for deterministic overlap exclusion, without generation, outcome inspection or prompt-specific tuning. Equal record/update counts do not equalize non-padding tokens; report actual token costs after extraction."
+}

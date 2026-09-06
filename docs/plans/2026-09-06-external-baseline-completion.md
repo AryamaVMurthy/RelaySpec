@@ -248,3 +248,11 @@ Guard-policy pilot jobs27928/27929 use source759b0a3 and four GPUs each,
 with ten-minute ceilings and afterok sequencing. They cover development
 indices24--31 at2048 scored tokens with runtime-local AR. Collector487770
 is active. Do not use39 partial rows from27921 in the final128 comparison.
+
+Guard-policy quality pilots27928/27929 passed in5m31s/5m14s. The combined
+source-bound audit covers eight requests and all warmup/actual-verifier
+traces with unchanged checkpoint identities. SD-square scores4/8 versus
+AR5/8 and reaches19.540 versus12.371tokens/s. Retain this negative small
+quality result. Its role is compatibility before the full128 development
+comparison, not evidence for or against a final1pp margin by itself.
+The guarded full configuration now binds this new pilot plus diagnosis.

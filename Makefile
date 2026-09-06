@@ -68,6 +68,9 @@ paper-timed-budget-assets:
 paper-external-baseline-assets:
 	$(PYTHON) scripts/build_external_baseline_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
 
+paper-task-complexity-assets:
+	$(PYTHON) scripts/build_task_complexity_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
+
 paper:
 	cd $(PAPER_DIR) && pdflatex -interaction=nonstopmode -halt-on-error $(PAPER_NAME).tex
 	cd $(PAPER_DIR) && bibtex $(PAPER_NAME)

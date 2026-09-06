@@ -203,6 +203,10 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
             "build_eagle_capacity_paper_assets.py",
         ),
         ("small_quality_evidence_registry.json", "build_small_quality_paper_assets.py"),
+        (
+            "task_complexity_evidence_registry.json",
+            "build_task_complexity_paper_assets.py",
+        ),
         ("checkpoint_evidence_registry.json", "build_checkpoint_paper_assets.py"),
         ("timed_budget_evidence_registry.json", "build_timed_budget_paper_assets.py"),
         (
