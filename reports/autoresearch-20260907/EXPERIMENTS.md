@@ -92,6 +92,10 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 27 / 1 | 28464 | dflash / existing | pass | 178.9 | 8 | — |
 | 27 / 2 | 28464 | dflash / existing | pass | 86.7 | 8 | — |
 | 27 / 3 | 28464 | dflash / existing | pass | 151.6 | 8 | — |
+| 28 / 0 | 28488 | dflash / existing | pass | 107.2 | 16 | — |
+| 28 / 1 | 28488 | dflash / existing | pass | 112.2 | 16 | — |
+| 28 / 2 | 28488 | dflash / existing | pass | 164.2 | 16 | — |
+| 28 / 3 | 28488 | dflash / existing | pass | 174.4 | 16 | — |
 
 ## Four-GPU pipeline stages
 

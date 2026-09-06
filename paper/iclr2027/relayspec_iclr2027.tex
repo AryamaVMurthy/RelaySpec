@@ -931,6 +931,29 @@ screens, this supports the numerical diagnosis across the two tested
 verifier sizes, without extending the agreement claim beyond these
 requests and execution settings.
 
+\paragraph{Is output-head precision sufficient?}
+We next promote only the verifier's output projection to FP32, leaving
+the transformer, input embeddings and mapper in BF16. We copy the
+output head before promotion to preserve input-embedding precision if
+the weights are tied. On the same sixteen GSM8K questions, agreement
+with each runtime's own AR rises from 7/16 to 9/16 for Qwen3-0.6B and
+from 12/16 to 16/16 for Qwen3-8B (Table~\ref{tab:head-precision}).
+Head-only FP32 does not reproduce full-FP32 AR: those matches are 7/16
+and 13/16, respectively. Thus the output projection is a useful
+intervention in the tested 8B setting, but does not explain all
+precision sensitivity or provide full-FP32 equivalence. These sixteen
+requests were already exposed during diagnosis.
+
+\begin{table}[H]
+\centering\small
+\input{generated/head_precision_table.tex}
+\caption{Output-head precision with a BF16 transformer. Own AR uses the
+same runtime as RelaySpec. FP32 AR runs the entire model in FP32 and
+is a distinct reference. Rates concern the same questions but can time
+different outputs across precision settings.}
+\label{tab:head-precision}
+\end{table}
+
 \begin{table}[H]
 \centering\small
 \input{generated/downscale_table.tex}

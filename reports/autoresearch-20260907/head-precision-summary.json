@@ -1,0 +1,365 @@
+{
+  "input_sha256": {
+    "reports/autoresearch-20260907/run-28488/lane0-status.json": "bb5555bc3d3921fef261d52fe379a1be06afb1cfff859337b89c3784b3fd2008",
+    "reports/autoresearch-20260907/run-28488/lane0/benchmark-rank0.jsonl": "dca9d0fb518f020311b27d533d9feacbf675550e856e7f687052834d47e72860",
+    "reports/autoresearch-20260907/run-28488/lane0/mapper-campaign.json": "bf9aee12e3fcfdc48ea989d6478fb5fd242b930a566be485f38b128d9196d543",
+    "reports/autoresearch-20260907/run-28459/lane1/benchmark-rank0.jsonl": "7d3607b15540f5d174b2e82a940bd8d7f7a00fba964f5f510d802ec1e45c6105",
+    "reports/autoresearch-20260907/run-28459/lane3/benchmark-rank0.jsonl": "1e737ff1c6d767cb5b11aee650616961c0fddf139ddeef977bb9cebc242a31d7",
+    "reports/autoresearch-20260907/run-28488/lane1-status.json": "630f84da88e5ac28df91405ffd85294a422cb58badbbd59a64765b0dc92df0d2",
+    "reports/autoresearch-20260907/run-28488/lane1/benchmark-rank0.jsonl": "235d19e64e38a5a1d128f41383a85744bda7bea887223864205acbee62c1b3ab",
+    "reports/autoresearch-20260907/run-28488/lane1/mapper-campaign.json": "56837aa8da02c0f381e4ca77aaae46ca086e6075b8c78d6afe6450c9f0305fa9",
+    "reports/autoresearch-20260907/run-28488/lane2-status.json": "e8b06284ffd04af7438e5a14a0736feae32b26d24944a557b156730c28357830",
+    "reports/autoresearch-20260907/run-28488/lane2/benchmark-rank0.jsonl": "a31c4b87c217aabb1742f2b24b8d8f80565fd4e00f9d082b5aaddea05acfd2c2",
+    "reports/autoresearch-20260907/run-28488/lane2/mapper-campaign.json": "98c79f229bcd6d815ea28f42e6e7f764f123a8b661cb52a251fdfd17fb2d38e0",
+    "reports/autoresearch-20260907/run-28464/lane1/benchmark-rank0.jsonl": "78346b17a594ce984e1c320c92da210934064e0f6ddb5a156c21a7875707a71a",
+    "reports/autoresearch-20260907/run-28464/lane3/benchmark-rank0.jsonl": "1fa0733b68108ba991b92676a9ea6069d0002bbd0d44809a42a7e9667aa339b9",
+    "reports/autoresearch-20260907/run-28488/lane3-status.json": "f89b01a714fc0f94c1bf209422b504521f283a1bc8ce06b0b067330d2ba5bf7c",
+    "reports/autoresearch-20260907/run-28488/lane3/benchmark-rank0.jsonl": "8afbdceea594025de534558b8e2844b78684965c868fa87c974fb7e69506c591",
+    "reports/autoresearch-20260907/run-28488/lane3/mapper-campaign.json": "b4203e738183f75ffd7d81d94a3a6622b6ac1d1979cc3617e954a1134064821f"
+  },
+  "results": [
+    {
+      "target": "0.6B",
+      "head_precision": "BF16",
+      "full_fp32_ar_matches": 5,
+      "runtime": {
+        "variants": {
+          "relay_base": {
+            "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt",
+            "sha256": "d669e6334a5cc018fb6a70febda5e710cb8033152ecd1152d5bc219b6ef7a643",
+            "parameters": 13107200,
+            "resident_parameter_bytes": 26214400,
+            "target_layer_ids": [
+              1,
+              7,
+              13,
+              19,
+              25
+            ]
+          }
+        },
+        "adapted_drafter_variants": [],
+        "methods": [
+          "native_ar",
+          "relay_base"
+        ],
+        "runtime_precision": "bfloat16",
+        "target_head_precision": "bfloat16",
+        "target_head_diagnostic": null,
+        "matmul_allow_tf32": false,
+        "target_parameter_dtypes": [
+          "torch.bfloat16"
+        ],
+        "drafter_parameter_dtypes": [
+          "torch.bfloat16"
+        ],
+        "mapper_parameter_dtypes": {
+          "relay_base": [
+            "torch.bfloat16"
+          ]
+        },
+        "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+      },
+      "requests": 16,
+      "clusters": 16,
+      "reference": "native_ar",
+      "methods": {
+        "native_ar": {
+          "tokens_per_second": 51.81903353523876,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 223.75,
+          "token_matches": 16,
+          "progress_per_cycle": 1.0,
+          "request_seconds": 69.08658374659717
+        },
+        "relay_base": {
+          "tokens_per_second": 168.07483140521998,
+          "throughput_ratio": 3.2434960658022156,
+          "throughput_ci95": [
+            2.9907616757964646,
+            3.478246353229575
+          ],
+          "request_time_ratio": 3.3025358121649404,
+          "request_time_ci95": [
+            3.0520689441947897,
+            3.5316097870765817
+          ],
+          "mean_output_tokens": 219.75,
+          "token_matches": 7,
+          "progress_per_cycle": 4.608355091383812,
+          "request_seconds": 20.91925346944481
+        }
+      }
+    },
+    {
+      "target": "0.6B",
+      "head_precision": "FP32",
+      "full_fp32_ar_matches": 7,
+      "runtime": {
+        "variants": {
+          "relay_base": {
+            "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt",
+            "sha256": "d669e6334a5cc018fb6a70febda5e710cb8033152ecd1152d5bc219b6ef7a643",
+            "parameters": 13107200,
+            "resident_parameter_bytes": 26214400,
+            "target_layer_ids": [
+              1,
+              7,
+              13,
+              19,
+              25
+            ]
+          }
+        },
+        "adapted_drafter_variants": [],
+        "methods": [
+          "native_ar",
+          "relay_base"
+        ],
+        "runtime_precision": "bfloat16",
+        "target_head_precision": "float32",
+        "target_head_diagnostic": {
+          "originally_tied": false,
+          "output_head_dtype": "torch.float32",
+          "input_embedding_dtype": "torch.bfloat16",
+          "parameters": 155582464,
+          "copied_head": true
+        },
+        "matmul_allow_tf32": false,
+        "target_parameter_dtypes": [
+          "torch.bfloat16",
+          "torch.float32"
+        ],
+        "drafter_parameter_dtypes": [
+          "torch.bfloat16"
+        ],
+        "mapper_parameter_dtypes": {
+          "relay_base": [
+            "torch.bfloat16"
+          ]
+        },
+        "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+      },
+      "requests": 16,
+      "clusters": 16,
+      "reference": "native_ar",
+      "methods": {
+        "native_ar": {
+          "tokens_per_second": 50.02928106881391,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 226.5625,
+          "token_matches": 16,
+          "progress_per_cycle": 1.0,
+          "request_seconds": 72.45756729971617
+        },
+        "relay_base": {
+          "tokens_per_second": 161.50715546001538,
+          "throughput_ratio": 3.228252575484079,
+          "throughput_ci95": [
+            2.995949586197055,
+            3.4510879503039944
+          ],
+          "request_time_ratio": 3.2779875591399965,
+          "request_time_ci95": [
+            3.044022792757369,
+            3.523729233217595
+          ],
+          "mean_output_tokens": 223.125,
+          "token_matches": 9,
+          "progress_per_cycle": 4.5424588086185045,
+          "request_seconds": 22.104283799882978
+        }
+      }
+    },
+    {
+      "target": "8B",
+      "head_precision": "BF16",
+      "full_fp32_ar_matches": 9,
+      "runtime": {
+        "variants": {
+          "relay_base": {
+            "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+            "sha256": "b4562dc664748ec2da6e0f1ccac13820bfd0fa9c413a7a3235ebec5f1d84b613",
+            "parameters": 52428800,
+            "resident_parameter_bytes": 104857600,
+            "target_layer_ids": [
+              1,
+              9,
+              17,
+              25,
+              33
+            ]
+          }
+        },
+        "adapted_drafter_variants": [],
+        "methods": [
+          "native_ar",
+          "relay_base"
+        ],
+        "runtime_precision": "bfloat16",
+        "target_head_precision": "bfloat16",
+        "target_head_diagnostic": null,
+        "matmul_allow_tf32": false,
+        "target_parameter_dtypes": [
+          "torch.bfloat16"
+        ],
+        "drafter_parameter_dtypes": [
+          "torch.bfloat16"
+        ],
+        "mapper_parameter_dtypes": {
+          "relay_base": [
+            "torch.bfloat16"
+          ]
+        },
+        "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+      },
+      "requests": 16,
+      "clusters": 16,
+      "reference": "native_ar",
+      "methods": {
+        "native_ar": {
+          "tokens_per_second": 38.32325902096665,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 271.3125,
+          "token_matches": 16,
+          "progress_per_cycle": 1.0,
+          "request_seconds": 113.2732473933138
+        },
+        "relay_base": {
+          "tokens_per_second": 164.62378736434076,
+          "throughput_ratio": 4.295662518531503,
+          "throughput_ci95": [
+            3.8968226166003554,
+            4.758446939405268
+          ],
+          "request_time_ratio": 4.296652302521948,
+          "request_time_ci95": [
+            3.878579840955703,
+            4.867823603361219
+          ],
+          "mean_output_tokens": 271.25,
+          "token_matches": 12,
+          "progress_per_cycle": 5.934336525307797,
+          "request_seconds": 26.363140281755477
+        }
+      }
+    },
+    {
+      "target": "8B",
+      "head_precision": "FP32",
+      "full_fp32_ar_matches": 13,
+      "runtime": {
+        "variants": {
+          "relay_base": {
+            "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+            "sha256": "b4562dc664748ec2da6e0f1ccac13820bfd0fa9c413a7a3235ebec5f1d84b613",
+            "parameters": 52428800,
+            "resident_parameter_bytes": 104857600,
+            "target_layer_ids": [
+              1,
+              9,
+              17,
+              25,
+              33
+            ]
+          }
+        },
+        "adapted_drafter_variants": [],
+        "methods": [
+          "native_ar",
+          "relay_base"
+        ],
+        "runtime_precision": "bfloat16",
+        "target_head_precision": "float32",
+        "target_head_diagnostic": {
+          "originally_tied": false,
+          "output_head_dtype": "torch.float32",
+          "input_embedding_dtype": "torch.bfloat16",
+          "parameters": 622329856,
+          "copied_head": true
+        },
+        "matmul_allow_tf32": false,
+        "target_parameter_dtypes": [
+          "torch.bfloat16",
+          "torch.float32"
+        ],
+        "drafter_parameter_dtypes": [
+          "torch.bfloat16"
+        ],
+        "mapper_parameter_dtypes": {
+          "relay_base": [
+            "torch.bfloat16"
+          ]
+        },
+        "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+      },
+      "requests": 16,
+      "clusters": 16,
+      "reference": "native_ar",
+      "methods": {
+        "native_ar": {
+          "tokens_per_second": 36.14143626771505,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 276.1875,
+          "token_matches": 16,
+          "progress_per_cycle": 1.0,
+          "request_seconds": 122.26962888985872
+        },
+        "relay_base": {
+          "tokens_per_second": 154.82397153198414,
+          "throughput_ratio": 4.283835605899469,
+          "throughput_ci95": [
+            3.901710200334748,
+            4.722497360327469
+          ],
+          "request_time_ratio": 4.283835605899469,
+          "request_time_ci95": [
+            3.901710200334748,
+            4.722497360327469
+          ],
+          "mean_output_tokens": 276.1875,
+          "token_matches": 16,
+          "progress_per_cycle": 5.914323962516733,
+          "request_seconds": 28.542091746348888
+        }
+      }
+    }
+  ],
+  "scope": "Sixteen exposed GSM8K questions per target. Same frozen mapper per target. Head-only promotion leaves embeddings/transformer/mapper BF16. Own AR reference uses the same head precision; full-FP32 AR is a separate execution policy. Cross-mode timings do not isolate kernel overhead."
+}

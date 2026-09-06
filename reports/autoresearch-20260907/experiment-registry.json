@@ -1,7 +1,7 @@
 {
-  "ledger_sha256": "c807bb09762cc9642c31c3e68b5a543030d6020a46f60d6ad5189b8facffc220",
+  "ledger_sha256": "d02ac95143f79891bebbc025038c82d96ccfcd3021eda3ce9a6fbf3b7b193cac",
   "input_sha256": {
-    "reports/autoresearch-20260907/jobs.json": "c807bb09762cc9642c31c3e68b5a543030d6020a46f60d6ad5189b8facffc220",
+    "reports/autoresearch-20260907/jobs.json": "d02ac95143f79891bebbc025038c82d96ccfcd3021eda3ce9a6fbf3b7b193cac",
     "reports/autoresearch-20260907/run-28391/lane0-spec.json": "7fdea513452813b344401685df68196078f856e9a55424c4f6095dd9bb218899",
     "reports/autoresearch-20260907/run-28391/lane0-status.json": "0365096180cbfe28907df3238cfe80a9b4103228addca34c0736d5302a8836ef",
     "reports/autoresearch-20260907/run-28391/lane0/research-result.json": "7472d4f0cd8da2ad29fb0132c6f1f7ac972e0d0b24ec4b3c2bf496733f27763e",
@@ -268,7 +268,19 @@
     "reports/autoresearch-20260907/run-28464/lane2/research-result.json": "7dff37f64dd364413087abe2745732ee00ade4ae47a6ac3973b729493142379b",
     "reports/autoresearch-20260907/run-28464/lane3-spec.json": "0b40a39bb34e69323c4f1bf591a84cf5dc1fdf68d04b9a20f303772330c22a0e",
     "reports/autoresearch-20260907/run-28464/lane3-status.json": "bfc284feb89e10069e4eca470908d38268ed0c46d102f55d1654ad772c564c9f",
-    "reports/autoresearch-20260907/run-28464/lane3/research-result.json": "61ca6c413ca3cda4b29837b3df70f8b8a5c2eede7545ceda6ea1d6b6c5b0b30b"
+    "reports/autoresearch-20260907/run-28464/lane3/research-result.json": "61ca6c413ca3cda4b29837b3df70f8b8a5c2eede7545ceda6ea1d6b6c5b0b30b",
+    "reports/autoresearch-20260907/run-28488/lane0-spec.json": "46b91e51192c8f9c7d7bb8d3b91b72f58fbed93682c76e8c5a765e0fb4a6865b",
+    "reports/autoresearch-20260907/run-28488/lane0-status.json": "bb5555bc3d3921fef261d52fe379a1be06afb1cfff859337b89c3784b3fd2008",
+    "reports/autoresearch-20260907/run-28488/lane0/research-result.json": "29f63885435fbda00db97cdaf8a51d9d44d1aea0f334090d0324caa34f501086",
+    "reports/autoresearch-20260907/run-28488/lane1-spec.json": "95673bcc572dcc62f0aee2b8a91c0c331fed8381dc68b82c1f1e1dbd6a9ff546",
+    "reports/autoresearch-20260907/run-28488/lane1-status.json": "630f84da88e5ac28df91405ffd85294a422cb58badbbd59a64765b0dc92df0d2",
+    "reports/autoresearch-20260907/run-28488/lane1/research-result.json": "242b14b3f77aaf8dea8fe8ba2d598d93848be29a314f2a3910052df68ff65560",
+    "reports/autoresearch-20260907/run-28488/lane2-spec.json": "451650db816b43c92abff7a81d23d7513d659add3a3cd154dc461a9bb50a4cf5",
+    "reports/autoresearch-20260907/run-28488/lane2-status.json": "e8b06284ffd04af7438e5a14a0736feae32b26d24944a557b156730c28357830",
+    "reports/autoresearch-20260907/run-28488/lane2/research-result.json": "f7db41581e772c37bb1945cdc0af0974a13d00da5f31655ba744caccc2296d67",
+    "reports/autoresearch-20260907/run-28488/lane3-spec.json": "f6e8a3f071cf4d08796dff7f4d998900c3b6ee66aa8267b7607032127a517bad",
+    "reports/autoresearch-20260907/run-28488/lane3-status.json": "f89b01a714fc0f94c1bf209422b504521f283a1bc8ce06b0b067330d2ba5bf7c",
+    "reports/autoresearch-20260907/run-28488/lane3/research-result.json": "582eb187ae5ccc591bb212ee60b064ccaa0604b1bb47756a2b61b0d4cabe7d3a"
   },
   "lanes": [
     {
@@ -8335,6 +8347,222 @@
             "token_matches": 8,
             "progress_per_cycle": 6.15987460815047,
             "request_seconds": 20.873259409330785
+          }
+        }
+      },
+      "duplicate_control": null
+    },
+    {
+      "job": 28488,
+      "wave": 28,
+      "lane": 0,
+      "family": "dflash",
+      "transform": "existing",
+      "hypothesis": "Does promoting only the verifier output projection to FP32 improve within-runtime AR agreement while retaining BF16 transformer execution?",
+      "status": "pass",
+      "elapsed_seconds": 107.20798718510196,
+      "exit_code": 0,
+      "scope": "Same sixteen exposed GSM8K requests and frozen mapper per target. Head-only FP32 copies tied output weights to keep input embeddings BF16. Every arm compares relay with AR under its own target runtime. No universal exactness or accuracy-improvement claim.",
+      "summary": {
+        "requests": 16,
+        "clusters": 16,
+        "reference": "relay_base",
+        "methods": {
+          "native_ar": {
+            "tokens_per_second": 51.81903353523876,
+            "throughput_ratio": 0.30830929950663266,
+            "throughput_ci95": [
+              0.2875011998743687,
+              0.33436298455576324
+            ],
+            "request_time_ratio": 0.30279762487858114,
+            "request_time_ci95": [
+              0.2831569908374984,
+              0.327646596036048
+            ],
+            "mean_output_tokens": 223.75,
+            "token_matches": 7,
+            "progress_per_cycle": 1.0,
+            "request_seconds": 69.08658374659717
+          },
+          "relay_base": {
+            "tokens_per_second": 168.07483140521998,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 219.75,
+            "token_matches": 16,
+            "progress_per_cycle": 4.608355091383812,
+            "request_seconds": 20.91925346944481
+          }
+        }
+      },
+      "duplicate_control": null
+    },
+    {
+      "job": 28488,
+      "wave": 28,
+      "lane": 1,
+      "family": "dflash",
+      "transform": "existing",
+      "hypothesis": "Does promoting only the verifier output projection to FP32 improve within-runtime AR agreement while retaining BF16 transformer execution?",
+      "status": "pass",
+      "elapsed_seconds": 112.24037133576348,
+      "exit_code": 0,
+      "scope": "Same sixteen exposed GSM8K requests and frozen mapper per target. Head-only FP32 copies tied output weights to keep input embeddings BF16. Every arm compares relay with AR under its own target runtime. No universal exactness or accuracy-improvement claim.",
+      "summary": {
+        "requests": 16,
+        "clusters": 16,
+        "reference": "relay_base",
+        "methods": {
+          "native_ar": {
+            "tokens_per_second": 50.02928106881391,
+            "throughput_ratio": 0.30976510561601556,
+            "throughput_ci95": [
+              0.28976369608665914,
+              0.3337839877973858
+            ],
+            "request_time_ratio": 0.30506522125494495,
+            "request_time_ci95": [
+              0.28379024999413777,
+              0.32851265187181394
+            ],
+            "mean_output_tokens": 226.5625,
+            "token_matches": 9,
+            "progress_per_cycle": 1.0,
+            "request_seconds": 72.45756729971617
+          },
+          "relay_base": {
+            "tokens_per_second": 161.50715546001538,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 223.125,
+            "token_matches": 16,
+            "progress_per_cycle": 4.5424588086185045,
+            "request_seconds": 22.104283799882978
+          }
+        }
+      },
+      "duplicate_control": null
+    },
+    {
+      "job": 28488,
+      "wave": 28,
+      "lane": 2,
+      "family": "dflash",
+      "transform": "existing",
+      "hypothesis": "Does promoting only the verifier output projection to FP32 improve within-runtime AR agreement while retaining BF16 transformer execution?",
+      "status": "pass",
+      "elapsed_seconds": 164.20257580513135,
+      "exit_code": 0,
+      "scope": "Same sixteen exposed GSM8K requests and frozen mapper per target. Head-only FP32 copies tied output weights to keep input embeddings BF16. Every arm compares relay with AR under its own target runtime. No universal exactness or accuracy-improvement claim.",
+      "summary": {
+        "requests": 16,
+        "clusters": 16,
+        "reference": "relay_base",
+        "methods": {
+          "native_ar": {
+            "tokens_per_second": 38.32325902096665,
+            "throughput_ratio": 0.23279296166446886,
+            "throughput_ci95": [
+              0.21015260080992057,
+              0.2566193278731181
+            ],
+            "request_time_ratio": 0.23273933508956343,
+            "request_time_ci95": [
+              0.20543061623938533,
+              0.257826328558994
+            ],
+            "mean_output_tokens": 271.3125,
+            "token_matches": 12,
+            "progress_per_cycle": 1.0,
+            "request_seconds": 113.2732473933138
+          },
+          "relay_base": {
+            "tokens_per_second": 164.62378736434076,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 271.25,
+            "token_matches": 16,
+            "progress_per_cycle": 5.934336525307797,
+            "request_seconds": 26.363140281755477
+          }
+        }
+      },
+      "duplicate_control": null
+    },
+    {
+      "job": 28488,
+      "wave": 28,
+      "lane": 3,
+      "family": "dflash",
+      "transform": "existing",
+      "hypothesis": "Does promoting only the verifier output projection to FP32 improve within-runtime AR agreement while retaining BF16 transformer execution?",
+      "status": "pass",
+      "elapsed_seconds": 174.37139469990507,
+      "exit_code": 0,
+      "scope": "Same sixteen exposed GSM8K requests and frozen mapper per target. Head-only FP32 copies tied output weights to keep input embeddings BF16. Every arm compares relay with AR under its own target runtime. No universal exactness or accuracy-improvement claim.",
+      "summary": {
+        "requests": 16,
+        "clusters": 16,
+        "reference": "relay_base",
+        "methods": {
+          "native_ar": {
+            "tokens_per_second": 36.14143626771505,
+            "throughput_ratio": 0.23343566186873596,
+            "throughput_ci95": [
+              0.21175236823322768,
+              0.25629786648823333
+            ],
+            "request_time_ratio": 0.23343566186873593,
+            "request_time_ci95": [
+              0.21175236823322768,
+              0.25629786648823333
+            ],
+            "mean_output_tokens": 276.1875,
+            "token_matches": 16,
+            "progress_per_cycle": 1.0,
+            "request_seconds": 122.26962888985872
+          },
+          "relay_base": {
+            "tokens_per_second": 154.82397153198414,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 276.1875,
+            "token_matches": 16,
+            "progress_per_cycle": 5.914323962516733,
+            "request_seconds": 28.542091746348888
           }
         }
       },
