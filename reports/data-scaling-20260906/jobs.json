@@ -1,0 +1,32 @@
+{
+  "max_gpus": 4,
+  "axis": "distinct training examples",
+  "source_commit": "fef4ee64d9b0fabd402f82238a3a034580c4c893",
+  "jobs": [
+    {
+      "id": 28272,
+      "kind": "cached_fit",
+      "remote": "/home/aryama.murthy/relayspec-data-scaling-v1/outputs/rs-records-dense-28272",
+      "local": "/home/aryamavmurthy/work/RelaySpec-scaling/reports/data-scaling-20260906/run-28272",
+      "fits": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-records-dense-28272",
+      "trials": "configs/submission/data-scaling-20260906/dense-fits.json",
+      "command": "cd /home/aryama.murthy/relayspec-data-scaling-v1 && sbatch --parsable --job-name=rs-records-dense --time=00:30:00 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-data-scaling-v1,RELAYSPEC_FEATURE_CACHE=/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723,RELAYSPEC_TRIALS=configs/submission/data-scaling-20260906/dense-fits.json,RELAYSPEC_PILOT_GATE=/home/aryama.murthy/relayspec-matrix-v2-20260905/outputs/rs-capacity-pilot-27725/batch-gate.json,RELAYSPEC_CACHE_ACCESS_GATE=/home/aryama.murthy/relayspec-cache-access-20260906/outputs/rs-cache-access-27730/cache-access-gate.json,RELAYSPEC_BATCH_MODE=fit,RELAYSPEC_FIT_TIMEOUT=1740 slurm/cached_scaling_batch.sbatch"
+    },
+    {
+      "id": 28273,
+      "kind": "data_evaluation_pilot",
+      "remote": "/home/aryama.murthy/relayspec-data-eval-v1/outputs/rs-records-eval-pilot-28273",
+      "local": "/home/aryamavmurthy/work/RelaySpec-scaling/reports/data-scaling-20260906/run-28273",
+      "config": "configs/submission/data-scaling-20260906/eval-pilot.yaml",
+      "command": "cd /home/aryama.murthy/relayspec-data-eval-v1 && sbatch --parsable --kill-on-invalid-dep=yes --dependency=afterok:28272 --job-name=rs-records-eval-pilot --time=00:10:00 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-data-eval-v1,CAMPAIGN_CONFIG=configs/submission/data-scaling-20260906/eval-pilot.yaml,CAMPAIGN_CHECK_DUPLICATE=0,CAMPAIGN_TIMEOUT=540 slurm/mapper_campaign.sbatch"
+    },
+    {
+      "id": 28274,
+      "kind": "data_evaluation_full",
+      "remote": "/home/aryama.murthy/relayspec-data-eval-v1/outputs/rs-records-eval-full-28274",
+      "local": "/home/aryamavmurthy/work/RelaySpec-scaling/reports/data-scaling-20260906/run-28274",
+      "config": "configs/submission/data-scaling-20260906/eval-full.yaml",
+      "command": "cd /home/aryama.murthy/relayspec-data-eval-v1 && sbatch --parsable --kill-on-invalid-dep=yes --dependency=afterok:28273 --job-name=rs-records-eval-full --time=01:00:00 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-data-eval-v1,CAMPAIGN_CONFIG=configs/submission/data-scaling-20260906/eval-full.yaml,CAMPAIGN_CHECK_DUPLICATE=0,CAMPAIGN_TIMEOUT=3540 slurm/mapper_campaign.sbatch"
+    }
+  ]
+}
