@@ -11,12 +11,18 @@ original_path = Path('reports/mapper-scaling-20260905/target14b-eagle3-fit-resul
 original = json.loads(original_path.read_text())
 wave = json.loads(wave_path.read_text())
 inputs = {str(p): digest(p) for p in [wave_path, original_path]}
+ledger = json.loads(Path('reports/autoresearch-20260907/jobs.json').read_text())
+job = next(j for j in ledger['jobs'] if j['id'] == 28527)
+if (root / 'source-commit.txt').read_text().strip() != job['source_commit']:
+    raise ValueError('Source snapshot differs from job ledger')
 results = []
 for lane, spec in enumerate(wave['lanes']):
     status_path = root / f'lane{lane}-status.json'
     status = json.loads(status_path.read_text())
     if status['status'] != 'pass':
         raise ValueError(f'Lane {lane} has not passed')
+    if json.loads((root / f'lane{lane}-spec.json').read_text()) != spec:
+        raise ValueError('Executed lane differs from declared wave')
     trial = spec['trial']
     folder = root / f'lane{lane}/fitting' / trial['name']
     result = audit_fit_artifacts(folder, trial, cache_sha256=original['feature_cache_index_sha256'])
