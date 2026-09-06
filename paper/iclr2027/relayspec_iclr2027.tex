@@ -448,6 +448,10 @@ Linear-1024 at $N=512$ retains 95.00\% [94.14, 95.85]\% with 23.59M
 parameters instead of 52.43M. The latter interval crosses the 95\%
 boundary. These are development comparisons with fixed fitting seeds.
 
+A separately frozen two-layer DFlash interface uses 60\% fewer mapper
+parameters and retains 97.63\% [96.23, 99.03]\% throughput on 64 new
+GSM8K questions, with identical outputs (Appendix~\ref{app:interface-compression}).
+
 EAGLE-3 repeats the dense data-count contrast on the same development
 questions, retaining 98.28\% [97.59, 99.01]\%. Its matched MLP remains
 slower than dense. Table~\ref{tab:eagle-quality} retains all eight maps.
@@ -827,6 +831,76 @@ This uses a different training dataset and budget from Figure~\ref{fig:scaling}.
 \label{fig:historical-scaling}
 \end{figure}
 
+\paragraph{Selecting target features.}
+\label{app:interface-compression}
+The interface also permits a controlled test of target-layer sufficiency.
+We refit DFlash's linear mapper using only target layers 25 and 33,
+keeping the released drafter frozen, the same 512 fitting records and
+8,192 batch-four updates. This reduces the mapper from 52.43M to
+20.97M parameters. It does not remove target-model layers or reduce
+whole-model parameters by 60\%. Initial development screens selected
+this two-layer interface before confirmation.
+
+A separate protocol then fixed both checkpoint hashes, the first 64
+lexicographically ordered IDs from the previously unused GSM8K reserve,
+a 2,048-token cap, and a 95\% throughput-retention criterion. An updated
+exposure audit found no reserve IDs in 964 collected rank files across
+both worktrees. The original fitting-data exact/lexical exclusions remain
+inherited. Four disjoint 16-question shards each compare the same two
+methods on one L40S. The paired bootstrap resamples all 64 requests
+10,000 times with seed 1729. The lower 95\% endpoint exceeds the fixed
+95\% retention threshold (Table~\ref{tab:interface-confirmation}).
+Both maps produce identical token sequences on all 64 questions and
+score 62/64. None reaches the cap. A conservative paired accuracy-difference
+interval is $[-6.62,6.62]$ percentage points, so this sample does not
+establish one-point quality noninferiority.
+
+\begin{table}[H]
+\centering\small
+\input{generated/interface_confirmation_table.tex}
+\caption{Fixed DFlash-8B interface comparison on 64 fresh GSM8K requests.
+Parameter counts concern the mapper. Throughput includes request overhead.
+Intervals resample requests and do not include fitting-seed variation.}
+\label{tab:interface-confirmation}
+\end{table}
+
+The result has a family-dependent boundary. On 16 exposed, 128-token
+MATH requests, two-layer refitting retains 99.3\% of full-map throughput
+with a 14B DFlash verifier, versus 93.7\% with EAGLE-3. A second 8B
+fitting seed retains 97.6\% for DFlash and 94.8\% for EAGLE-3 on 16
+exposed GSM8K requests. These are development screens, not additional
+confirmation tests. They motivate studying which features a frozen
+interface requires rather than asserting that two target layers always
+suffice.
+
+\paragraph{Native interface compression as an application.}
+The same interface abstraction supports a secondary experiment without
+retargeting: compress the released Qwen3-8B DFlash input projection by
+rank-1,536 SVD, leaving the rest of the native drafter unchanged. The
+rank was fixed from development screens before generating any of the
+64 confirmation answers above. We retain both the released native path
+and a full-rank projection repacked into the relay path as controls.
+The compressed projection has 37.75M rather than 83.89M parameters
+(55\% fewer). This is not a whole-drafter parameter reduction.
+
+Table~\ref{tab:native-compression-confirmation} uses the same 64 requests
+and output cap. Relative to the released native path, compression retains
+98.66\% [97.58, 99.75]\% end-to-end throughput. All three methods score
+62/64 with identical outputs and no cap-length outputs. Repacking alone
+retains 99.16\%, so the table distinguishes packaging overhead from
+compression. This is a preselected secondary comparison, not another
+primary significance test. It demonstrates an application of inspecting
+and replacing the feature interface. SVD itself is not a novel method.
+
+\begin{table}[H]
+\centering\small
+\input{generated/native_compression_confirmation_table.tex}
+\caption{Preselected native DFlash projection compression on 64 GSM8K
+requests. Retention is relative to the released native implementation.
+Only projection parameters are counted.}
+\label{tab:native-compression-confirmation}
+\end{table}
+
 \paragraph{Expanded NuminaMath data curve.}
 Table~\ref{tab:expanded-numina-data} reports all eleven completed sizes
 at 8,192 batch-four updates, spanning 2,048 epochs at 16 records to one
@@ -839,7 +913,7 @@ on the evaluated fitting seed and development questions.
 
 \begin{table}[H]
 \centering\small
-\caption{NuminaMath fitting at fixed 8,192 updates; 128 paired MATH
+\caption{NuminaMath fitting at fixed 8,192 updates on 128 paired MATH
 questions with a 2,048-token output cap. All eleven mapper outputs
 score 105/128, versus AR's 104/128.}
 \label{tab:expanded-numina-data}
