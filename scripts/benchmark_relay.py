@@ -181,6 +181,30 @@ def main() -> None:
             .to(device)
             .eval()
         )
+    # Release unused source layers before allocating the target (notably FP32).
+    source_provider = None
+    if load_plan["build_source_provider"]:
+        assert source is not None
+        source_provider = (
+            SourceTapProvider(
+                source,
+                source_layers=source_config.layers,
+                tap_layers=tuple(source_config.tap_layers),
+            )
+            .to(device=device, dtype=runtime_dtype)
+            .eval()
+        )
+    source_embedding = None
+    source_lm_head = None
+    if source is not None:
+        source_embedding = source.model.embed_tokens
+        source_lm_head = source.lm_head
+    if load_plan["unload_source_trunk"]:
+        assert source_embedding is not None and source_lm_head is not None
+        del source
+        source = None
+        gc.collect()
+        torch.cuda.empty_cache()
     target = (
         AutoModelForCausalLM.from_pretrained(
             config.target.id,
@@ -223,29 +247,6 @@ def main() -> None:
             .to(device)
             .eval()
         )
-    source_provider = None
-    if load_plan["build_source_provider"]:
-        assert source is not None
-        source_provider = (
-            SourceTapProvider(
-                source,
-                source_layers=source_config.layers,
-                tap_layers=tuple(source_config.tap_layers),
-            )
-            .to(device=device, dtype=runtime_dtype)
-            .eval()
-        )
-    source_embedding = None
-    source_lm_head = None
-    if source is not None:
-        source_embedding = source.model.embed_tokens
-        source_lm_head = source.lm_head
-    if load_plan["unload_source_trunk"]:
-        assert source_embedding is not None and source_lm_head is not None
-        del source
-        source = None
-        gc.collect()
-        torch.cuda.empty_cache()
     needs_relay = bool(
         set(method_names) & {"relay_f", "relay_p", "relay_p_cross_family"}
     )
@@ -574,6 +575,14 @@ def main() -> None:
                     "variants": variant_provenance,
                     "adapted_drafter_variants": sorted(variant_drafters),
                     "methods": method_names,
+                    "runtime_precision": precision,
+                    "matmul_allow_tf32": torch.backends.cuda.matmul.allow_tf32,
+                    "target_parameter_dtypes": sorted({str(p.dtype) for p in target.parameters()}),
+                    "drafter_parameter_dtypes": sorted({str(p.dtype) for p in draft.parameters()}),
+                    "mapper_parameter_dtypes": {
+                        name: sorted({str(p.dtype) for p in mapper.parameters()})
+                        for name, (mapper, _) in variant_mappers.items()
+                    },
                     "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment.",
                 },
                 indent=2,
