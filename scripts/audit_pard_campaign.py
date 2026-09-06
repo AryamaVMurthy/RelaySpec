@@ -10,6 +10,7 @@ import tempfile
 from pathlib import Path
 
 from relayspec.ar_paper_evidence import load_scored, read_rows, summarize
+from relayspec.paired_accuracy import paired_accuracy_interval
 
 
 def digest(path):
@@ -119,6 +120,14 @@ def main():
             },
             "scope": "Capped exposed development outcomes. Paired bootstrap intervals are descriptive, especially for small samples and sparse discordances. This does not establish the final one-percentage-point noninferiority requirement or untouched confirmation.",
         }
+        paired = {}
+        for row in rows:
+            paired.setdefault(row["problem_id"], {})[row["method"]] = row["correct"]
+        quality["conservative_paired_accuracy"] = paired_accuracy_interval(
+            [g["pard"] for g in paired.values()],
+            [g["native_ar"] for g in paired.values()],
+        )
+        quality_inputs.append(Path("src/relayspec/paired_accuracy.py"))
     result = {
         "status": "complete",
         "input_sha256": {

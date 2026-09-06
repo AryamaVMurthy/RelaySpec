@@ -29,11 +29,13 @@ mkdir -p "$RELAYSPEC_OUTPUT"
 cp SOURCE_COMMIT "$RELAYSPEC_OUTPUT/source-commit.txt"
 cp "$PARD_SETUP_GATE" "$RELAYSPEC_OUTPUT/setup-gate.json"
 cp "${PARD_CAMPAIGN_CONFIG:-configs/submission/baselines/pard-campaign.json}" "$RELAYSPEC_OUTPUT/campaign-config.json"
+export PARD_PROCESS_TIMEOUT_SECONDS="${PARD_PROCESS_TIMEOUT_SECONDS:-540}"
+"$RELAYSPEC_PYTHON" -c 'import json,os; c=json.load(open(os.environ["RELAYSPEC_OUTPUT"]+"/campaign-config.json")); t=int(os.environ["PARD_PROCESS_TIMEOUT_SECONDS"]); assert 0<t<=540 or (c.get("phase")=="quality_full" and t<=3540 and c.get("prerequisites")), "long PARD run requires gated full-quality configuration"'
 tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm vendor/pard SOURCE_COMMIT reports/external-baselines-20260906
 "$RELAYSPEC_PYTHON" scripts/check_allocation.py > "$RELAYSPEC_OUTPUT/allocation.jsonl"
 nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used --format=csv -l 10 > "$RELAYSPEC_OUTPUT/gpu.csv" &
 monitor=$!
 trap 'kill "$monitor" 2>/dev/null || true' EXIT
-timeout --signal=TERM --kill-after=10s 540s "$RELAYSPEC_PYTHON" -m torch.distributed.run \
+timeout --signal=TERM --kill-after=10s "${PARD_PROCESS_TIMEOUT_SECONDS}s" "$RELAYSPEC_PYTHON" -m torch.distributed.run \
   --standalone --nproc_per_node=4 scripts/benchmark_pard.py --config "$RELAYSPEC_OUTPUT/campaign-config.json"
 "$RELAYSPEC_PYTHON" scripts/check_pard_campaign.py --config "$RELAYSPEC_OUTPUT/campaign-config.json"

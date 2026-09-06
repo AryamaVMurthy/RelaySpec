@@ -1,0 +1,22 @@
+{
+  "source_config": "configs/submission/baselines/pard-pilot.yaml",
+  "source_config_sha256": "765b37011e10bdf5772e4058e80877305c626e0f5520e8a78c3bf643c2f7e79a",
+  "verification_protocol": "configs/submission/baselines/external-verification-protocol.json",
+  "verification_protocol_sha256": "488d60999dcb0b80fba7e8c1106aa474fc15a8bfe0af4296fa359e153b65b9f0",
+  "requests": 128,
+  "max_new_tokens": 2048,
+  "warmup_tokens": 16,
+  "max_cache_len": 4096,
+  "draft_k": 12,
+  "methods": [
+    "native_ar",
+    "pard"
+  ],
+  "seed": 1729,
+  "manifest_path": "configs/eval_manifest.json",
+  "scope": "Released PARD parallel proposer with zero new-target fitting. Public BF16 eager runtime with static cache and correct matched AR. Every timed PARD request has a separate same-input verifier-observed replica with identical raw tokens and accepted lengths. Observation is absent from measured generation. Full request time includes cache reset and prefills. 128 exposed development requests at2048-token cap. Full capped quality comparison after the successful eight-request pilot, with4096-position static cache. Prior exact-AR gate failures remain failed. Capped answer quality is scored separately. This is exposed development evaluation, not untouched confirmation. No cross-runtime algorithm-only ranking.",
+  "phase": "quality_full",
+  "prerequisites": {
+    "reports/external-baselines-20260906/pard-quality-pilot.json": "26a2bdf5e3dbe736600d934fd966a3be8b21edb4de7077cb2210a6b8dcb4335c"
+  }
+}
