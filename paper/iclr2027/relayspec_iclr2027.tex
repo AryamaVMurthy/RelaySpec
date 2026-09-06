@@ -85,8 +85,10 @@ and feature regression wins every tested adaptation budget.
 The insight is that a frozen drafter's useful prediction behavior can
 survive a cheap change of conditioning interface. Increasing the
 expressiveness or training work of that interface need not improve
-decoding. Domain-composition and 14B experiments identify the limits
-of this result rather than assuming it holds for every workload.
+decoding. Layer ablations identify a compact late-layer interface, and
+native-interface compression shows that this analysis also applies
+without retargeting. Cross-family, domain-composition and 14B experiments
+identify the limits of these findings.
 
 \begin{figure}[H]
 \centering
@@ -424,7 +426,7 @@ at 16 examples to 192.8 at 512, then ranges from 196.9 to 198.4 at
 2,048--32,768 (Figure~\ref{fig:scaling}). Thus 16 examples already give
 $2.58\times$ AR throughput, and 512 retain 97.2\% of the observed best.
 All eleven mappers score 105/128. These are single-seed development
-results, not a universal minimum-data threshold. Appendix~\ref{app:design}
+results, not a general minimum-data threshold. Appendix~\ref{app:design}
 retains the separate historical MATH-only study.
 
 \begin{figure}[H]
@@ -515,8 +517,9 @@ dense general-domain feature error by 32.9\% but raises math error by
 10.2\%. Code and chat throughput improve by 2.9\% and 4.9\%, while
 MATH throughput falls 1.2\%. A second seed repeats this pattern.
 Matched arms generate identical tokens on all 160 development requests.
-The smaller maps show larger math/chat tradeoffs
-(Appendix~\ref{app:composition}).
+For two-layer maps, a separate 16-conversation extension gives a 7.5\%
+dialogue gain at both fitting seeds, compared with 0.3--1.1\% for native
+interface students (Appendix~\ref{app:composition}).
 
 \subsubsection{Feature fitting wins the matched adaptation comparisons}
 Feature regression achieves the highest throughput at every tested warm
@@ -845,7 +848,7 @@ with established precedents in ASVD and SVD-LLM
 EAGLE-3 illustrates the distinction: weight-only SVD retains 54.2\%
 on GSM8K, output-subspace compression 93.9\%, and direct teacher fitting
 96.1\%. On MATH the latter two are nearly tied. Direct fitting remains
-useful rather than being universally replaced by posthoc compression.
+useful alongside posthoc compression.
 
 \begin{table}[H]
 \centering\small
@@ -934,7 +937,7 @@ map retains 99.7\% on code and 97.8\% on dialogue. EAGLE-3 retains
 85.4\% and 91.9\%, and its spaced-layer map is slightly faster on dialogue.
 Thus late-layer sufficiency transfers well in the tested DFlash screens,
 but is not a family-independent rule. These small exposed screens do not
-establish code test-pass rates, dialogue quality, or a universal optimal
+establish code test-pass rates, dialogue quality, or a generally optimal
 layer choice.
 
 \begin{table}[H]
@@ -1891,7 +1894,7 @@ scored in this experiment. Capped outputs remain in every aggregate.}
 We separately screen two-layer interfaces using 512 math records or
 256 math plus 256 general-instruction records, at 8,192 updates and
 seed 1729. Both use target layers [25,33]. Retargeted maps fit the
-source-drafter interface; native students fit the released native
+source-drafter interface. Native students fit the released native
 projection and normalization. Thus this comparison changes calibration
 composition at fixed interface capacity and record count, but not
 necessarily equal token exposure.
@@ -1901,18 +1904,40 @@ calibration retains 110.8\% [107.8,112.5]\% of math-only throughput.
 All seven other intervals include parity. Every paired output matches
 within these capped screens. This is a workload-specific exploratory
 finding from eight conversations and one fitting seed, not evidence
-that mixed calibration universally improves decoding or answer quality.
+that mixed calibration improves decoding across workloads or answer quality.
 
 \begin{table}[H]
 \caption{Compact-interface calibration composition. Ratios compare
 both checkpoints within the same worker. Paired 95\% bootstrap intervals
 use requests, or whole conversations for dialogue, and exclude fitting-seed
-and selection uncertainty. Code and math screens use 128-token caps;
+and selection uncertainty. Code and math screens use 128-token caps.
 dialogue uses 256 tokens per turn.}
 \label{tab:compact-composition}
 \centering\small
 \input{generated/compact_composition_table.tex}
 \end{table}
+
+We then repeat fitting at seed 1730 and compare both seeds on sixteen
+additional development conversations, disjoint from the initial eight.
+Within each worker, all four compact maps are paired. Mixed/math
+throughput ratios are 107.50\% [104.34,110.44]\% at seed 1729 and
+107.52\% [104.44,110.21]\% at seed 1730 for retargeting. Native students
+give 101.09\% [100.12,102.08]\% and 100.28\% [99.47,101.14]\%, respectively.
+All 32 paired turn outputs match at each seed. Both seeds share the same
+conversations, so they are fitting replications rather than independent
+benchmark samples. This extension remains development evidence, with
+the same 256-token cap and no dialogue-quality scoring.
+
+The fitting diagnostics help delimit the result. At seed 1729, mixed
+calibration lowers general-instruction validation error from 0.445 to
+0.289 for retargeting and from 0.0468 to 0.0298 for native students.
+Both improve substantially in relative terms, but only retargeting shows
+a sizeable dialogue throughput gain. Math errors increase from 0.227 to
+0.251 and from 0.0241 to 0.0267, respectively. These diagnostics use the
+same 64 validation records per domain. The pattern suggests that domain
+coverage matters more for the harder retargeted interface in these tests.
+It also shows why proportional feature-error improvements alone do not
+predict proportional decoding gains.
 
 \section{Frozen-checkpoint GSM8K confirmation}
 \label{app:frozen-confirmation}
@@ -1920,7 +1945,10 @@ We freeze the dense 512- and 2,048-example checkpoints at 8,192 updates
 and seed 1729 before generating confirmation outputs. The fixed test
 contains 256 GSM8K questions, sampled after exact and lexical exclusion
 against fitting data and collected evaluation history. A separate
-256-question reserve remains unused. Operational pilots use eight
+256-question reserve was left unused by this experiment. Subsequently,
+64 reserve questions were consumed by the separately frozen interface
+compression study in Appendix~\ref{app:interface-compression}.
+Operational pilots use eight
 previously exposed GSM8K questions, not confirmation requests.
 The same confirmation questions are evaluated in both drafter families,
 so the second family is not an independent benchmark sample.

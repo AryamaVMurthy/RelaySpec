@@ -68,3 +68,11 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 16 / 1 | 28432 | dflash / existing | pass | 153.9 | 32 | relay_math: 97.6%; relay_mixed: 96.9% |
 | 16 / 2 | 28432 | dflash / existing | pass | 146.3 | 32 | relay_math: 97.0%; relay_mixed: 97.6% |
 | 16 / 3 | 28432 | dflash / existing | pass | 147.7 | 32 | relay_math: 97.0%; relay_mixed: 98.2% |
+| 17 / 0 | 28433 | dflash / fit_reduced_taps | pass | 272.7 | 16 | relay_math_seed1729: 98.5%; relay_mixed_seed1729: 108.9%; relay_reduced: 98.1% |
+| 17 / 1 | 28433 | dflash / fit_reduced_taps | pass | 271.9 | 16 | relay_math_seed1729: 99.0%; relay_mixed_seed1729: 109.7%; relay_reduced: 110.0% |
+| 17 / 2 | 28433 | dflash / fit_reduced_taps | pass | 284.4 | 16 | relay_math_seed1729: 98.2%; relay_mixed_seed1729: 99.3%; relay_reduced: 98.6% |
+| 17 / 3 | 28433 | dflash / fit_reduced_taps | pass | 291.2 | 16 | relay_math_seed1729: 98.2%; relay_mixed_seed1729: 99.3%; relay_reduced: 98.7% |
+| 18 / 0 | 28434 | dflash / existing | pass | 304.1 | 16 | relay_math_seed1729: 98.1%; relay_math_seed1730: 98.0%; relay_mixed_seed1729: 106.8%; relay_mixed_seed1730: 106.3% |
+| 18 / 1 | 28434 | dflash / existing | pass | 276.3 | 16 | relay_math_seed1729: 97.6%; relay_math_seed1730: 97.7%; relay_mixed_seed1729: 103.6%; relay_mixed_seed1730: 104.0% |
+| 18 / 2 | 28434 | dflash / existing | pass | 271.7 | 16 | relay_math_seed1729: 97.1%; relay_math_seed1730: 98.3%; relay_mixed_seed1729: 99.7%; relay_mixed_seed1730: 99.2% |
+| 18 / 3 | 28434 | dflash / existing | pass | 259.9 | 16 | relay_math_seed1729: 97.5%; relay_math_seed1730: 97.4%; relay_mixed_seed1729: 97.0%; relay_mixed_seed1730: 97.0% |

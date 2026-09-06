@@ -1,0 +1,13 @@
+# Current research priorities
+
+The campaign seeks reusable findings and applications, not the largest development speed number. Each new direction needs a controlled comparison and an explicit reason to continue.
+
+1. **Compact conditioning interface:** strongest new confirmed result. Two late layers retain97.63%[96.23,99.03]% throughput with60% fewer mapper parameters on64 separately frozen requests. This supports information sufficiency for this DFlash setting, not a general statement about all layers/families. Profile attribution shows mapper arithmetic is below1% of request time, so parameter reduction should not be sold as a large latency gain.
+2. **Native application:** rank1536 native projection compression retains98.66%[97.58,99.75]% versus released native while reducing projection parameters55%. Native two-layer distillation gives a different parameter/throughput operating point. Neither SVD nor interface distillation is claimed as a new general compression algorithm.
+3. **Depth versus mapper expressiveness:** wave19 compares early-layer MLP and factorized linear maps with exactly matched20,966,400 parameters in DFlash/EAGLE. Early/late dense controls are paired. Promote to larger screens only if nonlinear gains exceed timing noise and improve proposal progress or feature validation. Negative results constrain this fitting approach, not recoverability in principle.
+4. **Calibration composition:** original eight-conversation retargeted gain survives a second fitting seed against paired old-seed controls. Wave18 pairs both seeds on sixteen additional conversations. If extension fails, report workload/sample sensitivity rather than tune on this extension. Other initial workloads have intervals including parity. No dialogue-quality claim is available.
+5. **Compression objective:** EAGLE benefits much more from fitting activation outputs than preserving weights. Direct fitting remains competitive. This is a family-dependent empirical finding with known ASVD/SVD-LLM precedents and unequal total adaptation budgets, not a new decomposition algorithm.
+
+Possible next independent boundary: retarget the4B-trained drafter to a cached0.6B verifier. This probes verifier-size/overhead limits rather than another larger-target success. It requires its own feature extraction and equivalence pilot; the existing8B cache/gate cannot authorize it. No0.6B job is launched yet.
+
+Avoid spending the next allocations on fine quantization rounding sweeps, more interpolation coefficients, or selecting the best exposed question subset. Fake quantization runs execute BF16 and cannot establish integer-kernel efficiency. Every scheduled lane retains a540-second cap, with at most four GPUs allocated across the dependency chain.
