@@ -568,3 +568,7 @@ Numerical positioning uses audited repository experiments. The strongest matched
 ### Competitor table presentation, 6 September 2026
 
 The mechanism table reuses the verified PARD (`an2026pard`) and SD-square (`berdoz2026sd2`) sources above, together with the recorded RelaySpec/CE/LoRA implementation protocols. It adds no new literature claim or citation. PARD's no-new-fit entry is explicitly restricted to retargeting the released checkpoint. SD-square refers to the evaluated frozen-drafter option. Numerical comparison entries come from the raw-replayed quality registries, with separate AR runtimes visible in the table.
+
+## Competitor reassessment, 6 September 2026
+
+See `reports/RELAYSPEC_COMPETITOR_PRIORITIES_2026-09-06.md` for the primary-source ranking and implementation availability. It identifies PARD-2 as the highest-priority new performance baseline, EDA as a close adaptation-efficiency comparison, and TriSpec Section 3.2 as explicit prior work on an adapter into a frozen EAGLE-family drafter. The latter requires narrowing the novelty presentation. SD-square's main recipe updates both drafter and steering, whereas the completed experiment uses its frozen-drafter option. No full-method win should be inferred from that ablation. Existing competitor tables remain measured results, not exhaustive coverage. No new benchmark numbers were added.
