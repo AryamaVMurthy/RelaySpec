@@ -25,3 +25,11 @@ The existing reports/claim-evidence-map.md uses “quality is unchanged,” “c
 - Rebuild all affected tables/figures from audited registries; check citations, references, layout, fonts, anonymity and the actual main-text boundary.
 - Visually inspect every final PDF page in color and grayscale and update the review record with the final PDF hash. The current visual record is stale and must not be treated as passing.
 - Preserve a clear list of unrun work: composition fits/quality, full 14B long-answer capacity comparison, proper lower-rate EAGLE14 fits, generalized EAGLE adaptation, untouched confirmation and autoresearch.
+
+## Additional interpretation checks
+
+- The historical fitting/evaluation lexical check finds 47 MATH questions above 0.80 token-set overlap and four above 0.95. Zero exact overlap does not establish template independence. Mention this limitation in the main discussion and distinguish the separate Numina filtering protocol.
+- SD-square and PARD use public runtimes with different precision, attention and Transformers settings. Their own AR-relative comparisons are useful baselines; absolute cross-runtime tokens/s do not isolate the algorithm. Preserve both baseline results rather than using only the favorable comparison.
+- The eight numerical-divergence traces diagnose selected BF16 cases. They do not prove every output difference has the same cause, or that approximate arithmetic is lossless.
+- The old 468-question complement was computed from exposed saved runs. It is not newly collected untouched confirmation.
+- Current appendix prose discusses a final one-point non-inferiority protocol that was not executed. The final manuscript should phrase this as an unestablished quality claim, not as an outstanding submission promise or a completed test.
