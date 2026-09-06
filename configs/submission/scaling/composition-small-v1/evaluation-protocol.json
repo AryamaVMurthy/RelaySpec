@@ -1,0 +1,30 @@
+{
+  "status": "declared_before_composition_endpoint_results",
+  "target": "DFlash8",
+  "methods": "All eight declared composition8192-update endpoints plus native AR, native drafter and source reuse. No selection on validation or decoding.",
+  "stages": {
+    "pilot": {
+      "per_task": 2,
+      "max_new_tokens": 256,
+      "wall_limit_seconds": 600
+    },
+    "full": {
+      "per_task": 32,
+      "max_new_tokens": 2048,
+      "wall_limit_seconds": 4500
+    }
+  },
+  "tasks": [
+    "math500",
+    "gsm8k",
+    "humaneval",
+    "mtbench"
+  ],
+  "source_manifest_sha256": "9f6e5bf446aa45f1e939751e068c071e8e541f5d56f4029bb013f0a1bc9628ea",
+  "manifests_sha256": {
+    "configs/submission/scaling/composition-small-v1/evaluation-pilot-manifest.json": "336311eb8b3712ce4e170142a020ecee8f4880fb70b11cd53d838adef41dd0a6",
+    "configs/submission/scaling/composition-small-v1/evaluation-full-manifest.json": "76d98f5d1df138fa286cd0bede6d6db5b81a7d3c3afe5047c79b927ef3c3a45d"
+  },
+  "analysis": "Paired math versus mixed throughput for matched mapper architecture/seed per task; task-level aggregate throughput and per-domain fitting validation. Score math outputs with pinned scorer. Report cap counts. HumanEval and MTBench throughput alone does not establish answer quality. Conversations resampled as units. No pooling tasks for a universal quality claim.",
+  "scope": "Development domain-composition experiment, distinct from frozen GSM8K confirmation. Equal records/updates but unequal non-padding tokens. General-instruction pool may contain math. Fixed32 per task is descriptive and cannot establish tight quality noninferiority."
+}

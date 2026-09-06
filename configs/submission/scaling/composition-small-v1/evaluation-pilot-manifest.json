@@ -1,0 +1,65 @@
+{
+  "records": [
+    {
+      "answer": "120^\\circ",
+      "benchmark": "math500",
+      "problem_id": "math500/109",
+      "prompt": "Find the degree measure of the least positive angle $\\theta$ for which\n\\[\\tan \\theta = \\frac{\\cos 5^\\circ \\cos 20^\\circ + \\cos 35^\\circ \\cos 50^\\circ - \\sin 5^\\circ \\sin 20^\\circ - \\sin 35^\\circ \\sin 50^\\circ}{\\sin 5^\\circ \\cos 20^\\circ - \\sin 35^\\circ \\cos 50^\\circ + \\cos 5^\\circ \\sin 20^\\circ - \\cos 35^\\circ \\sin 50^\\circ}.\\]"
+    },
+    {
+      "answer": "\\frac{1}{2}",
+      "benchmark": "math500",
+      "problem_id": "math500/219",
+      "prompt": "The wheel shown is spun twice, so that the numbers indicated by the pointer are randomly determined (with each number on the wheel being equally likely). The two numbers determined in this way are recorded. The first number is divided by 4, determining one of the remainders 1,2,3 marking the columns of the checkerboard shown. The second number is divided by 5, determining one of the remainders 1,2,3,4 marking the rows of the checkerboard. Finally, a checker is placed on the square where this column and row meet. What is the probability that the checker is placed on a shaded square of the checkerboard?\n\n[asy]\nunitsize(1cm);\ndraw(Circle((0,0),2),linewidth(0.7));\ndraw((1.7,1)--(-1.7,-1),linewidth(0.7));\ndraw((1.7,-1)--(-1.7,1),linewidth(0.7));\ndraw((0,2)--(0,-2));\nlabel(\"1\",(0.8,0.5),NW);\nlabel(\"2\",(0.8,-0.5),SW);\nlabel(\"6\",(-0.8,0.5),NE);\nlabel(\"9\",(-0.8,-0.5),SE);\nlabel(\"3\",(-0.7,0),W);\nlabel(\"7\",(0.7,0),E);\ndraw((-2.8,0)--(-2.1,0),Arrow);\nlabel(\"Pointer\",(-2.8,0),W);\nfill((3,0)--(3,1)--(4,1)--(4,0)--cycle,gray(0.7));\nfill((3,-2)--(3,-1)--(4,-1)--(4,-2)--cycle,gray(0.7));\nfill((4,1)--(4,2)--(5,2)--(5,1)--cycle,gray(0.7));\nfill((4,-1)--(4,0)--(5,0)--(5,-1)--cycle,gray(0.7));\nfill((5,0)--(5,1)--(6,1)--(6,0)--cycle,gray(0.7));\nfill((5,-2)--(5,-1)--(6,-1)--(6,-2)--cycle,gray(0.7));\ndraw((3,-2)--(3,2)--(6,2)--(6,-2)--cycle,linewidth(0.7));\ndraw((3,-1)--(6,-1),linewidth(0.7));\ndraw((3,0)--(6,0),linewidth(0.7));\ndraw((3,1)--(6,1),linewidth(0.7));\ndraw((4,-2)--(4,2),linewidth(0.7));\ndraw((5,-2)--(5,2),linewidth(0.7));\nlabel(\"1\",(3.5,-2),S);\nlabel(\"2\",(4.5,-2),S);\nlabel(\"3\",(5.5,-2),S);\nlabel(\"1\",(3,-1.5),W);\nlabel(\"2\",(3,-0.5),W);\nlabel(\"3\",(3,0.5),W);\nlabel(\"4\",(3,1.5),W);\n[/asy]"
+    },
+    {
+      "answer": "15",
+      "benchmark": "gsm8k",
+      "problem_id": "gsm8k/436a58f9ea5a1d12",
+      "prompt": "Joelle has 5 orchids and 4 African daisies on her balcony.  If the orchids have 5 petals and daisies have 10 petals, how many more petals do the daisies have compared to the orchids?"
+    },
+    {
+      "answer": "36",
+      "benchmark": "gsm8k",
+      "problem_id": "gsm8k/1cd8fbe40f4cda30",
+      "prompt": "The school auditorium has 4 rows of seats. There are 18 seats in each row. One-fourth of the seats were occupied by the administrators. One-third of the remaining seats were occupied by the parents and the rest were occupied by the students. How many students were there in the school auditorium?"
+    },
+    {
+      "answer": {
+        "entry_point": "decode_cyclic",
+        "test": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    from random import randint, choice\n    import string\n\n    letters = string.ascii_lowercase\n    for _ in range(100):\n        str = ''.join(choice(letters) for i in range(randint(10, 20)))\n        encoded_str = encode_cyclic(str)\n        assert candidate(encoded_str) == str\n\n"
+      },
+      "benchmark": "humaneval",
+      "problem_id": "HumanEval/38",
+      "prompt": "Write a solution to the following problem and make sure that it passes the tests:\n```python\n\n\ndef encode_cyclic(s: str):\n    \"\"\"\n    returns encoded string by cycling groups of three characters.\n    \"\"\"\n    # split string to groups. Each of length 3.\n    groups = [s[(3 * i):min((3 * i + 3), len(s))] for i in range((len(s) + 2) // 3)]\n    # cycle elements in each group. Unless group has fewer elements than 3.\n    groups = [(group[1:] + group[0]) if len(group) == 3 else group for group in groups]\n    return \"\".join(groups)\n\n\ndef decode_cyclic(s: str):\n    \"\"\"\n    takes as input string encoded with encode_cyclic function. Returns decoded string.\n    \"\"\"\n\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "add",
+        "test": "def check(candidate):\n\n    # Check some simple cases\n    assert candidate([4, 88]) == 88\n    assert candidate([4, 5, 6, 7, 2, 122]) == 122\n    assert candidate([4, 0, 6, 7]) == 0\n    assert candidate([4, 4, 6, 8]) == 12\n\n    # Check some edge cases that are easy to work out by hand.\n    \n"
+      },
+      "benchmark": "humaneval",
+      "problem_id": "HumanEval/85",
+      "prompt": "Write a solution to the following problem and make sure that it passes the tests:\n```python\n\ndef add(lst):\n    \"\"\"Given a non-empty list of integers lst. add the even elements that are at odd indices..\n\n\n    Examples:\n        add([4, 2, 6, 7]) ==> 2 \n    \"\"\"\n\n```"
+    },
+    {
+      "answer": null,
+      "benchmark": "mtbench",
+      "problem_id": "mtbench/2",
+      "turns": [
+        "Imagine you are writing a blog post comparing two popular smartphone models. Develop an outline for the blog post, including key points and subheadings to effectively compare and contrast the features, performance, and user experience of the two models. Please answer in fewer than 200 words.",
+        "Take your previous response and rephrase it as a limerick."
+      ]
+    },
+    {
+      "answer": null,
+      "benchmark": "mtbench",
+      "problem_id": "mtbench/10",
+      "turns": [
+        "Pretend yourself to be Elon Musk in all the following conversations. Speak like Elon Musk as much as possible. Why do we need to go to Mars?",
+        "How do you like dancing? Can you teach me?"
+      ]
+    }
+  ],
+  "scope": "Previously exposed development workloads; fixed membership before composition fitting outcomes."
+}
