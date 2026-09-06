@@ -127,3 +127,31 @@ Freeze that objective/rate before the1/2/4/8-epoch512-example screen.
 Every initial fit uses95,835 supervised non-padding positions capped
 at192 tokens per record. Report this separately from feature regression's
 supervision and retain all six rates and duplicate fitting costs.
+
+PARD27903 passed in1m22s. All32 measured rows and sixteen verification
+replicas reproduce, with strict actual-verifier checks. PARD reaches
+98.5975tokens/s against31.2725 for its eager AR control, ratio3.15285
+[2.83051,3.55756]. Four of sixteen capped sequences exactly match AR.
+Keep this public-runtime development result separate from task quality.
+
+SD-square epoch job27912 passed in7m36s. Training takes48.438,97.005,
+193.810 and388.078seconds for1/2/4/8 epochs. All four use512 distinct
+records. The one-epoch parameter fingerprint exactly reproduces the
+selected earlier fit. Final-epoch mean training KL is0.39231,0.27866,
+0.20265 and0.12539 across the four separately scheduled fits. These
+are training losses, not held-out or decoding improvements. The audit
+rebuilds the selection and raw fitting gate. Curated sd-square-epochs.json
+contains source-bound checkpoints and per-epoch losses.
+
+Immediate next work: compare all four epoch endpoints under the corrected
+SD-square inference precision on the same sixteen development prompts,
+using two disjoint eight-request jobs to stay inside pilot limits. Reuse
+benchmark_sd_square.py and check_sd_square_campaign.py with an epoch
+campaign builder. Include runtime-local AR and the independent drafter.
+Then freeze the epoch endpoint before the predeclared longer-output
+pilots. PARD's next required path is eight2048-token requests and matched
+AR with per-request verification replicas, before the full quality batch.
+The raw/curated public-runtime results are now in the29-page paper,
+whose main text remains nine pages. Every technical audit passes. Only
+the new/adjacent pages26--27 were visually inspected here, so full
+color/grayscale review remains pending and paper completion is not claimed.
