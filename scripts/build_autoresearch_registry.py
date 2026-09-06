@@ -23,6 +23,7 @@ for job in ledger["jobs"]:
             "boundary_extraction": "extraction-complete.json",
             "boundary_capacity_pilot": "batch-gate.json",
             "boundary_full_fit": "batch-gate.json",
+            "boundary_evaluation": "campaign-gate.json",
         }[job["kind"]]
         path = run / gate_name
         gate = json.loads(path.read_text()) if path.exists() else {}
