@@ -180,6 +180,28 @@ def committed_tokens(trace, cap, eos):
     return raw[:end], raw
 
 
+def termination_status(trace, cap, eos, ngram):
+    """Explain the pinned public generate loop's fourfold physical-slot guard."""
+    tokens, raw = committed_tokens(trace, cap, eos)
+    if cap < 1 or ngram < 1 or not tokens:
+        raise ValueError("invalid or empty SD-square generation")
+    cycle_limit = (cap * 4 - 1) // (ngram + 1)
+    if len(tokens) == cap or tokens[-1] == eos:
+        reason = "cap" if len(tokens) == cap else "eos"
+    elif len(trace) == cycle_limit:
+        reason = "public_physical_slot_guard"
+    else:
+        reason = "unexplained_early_stop"
+    return {
+        "reason": reason,
+        "counted_tokens": len(tokens),
+        "raw_tokens": len(raw),
+        "cycles": len(trace),
+        "public_cycle_limit": cycle_limit,
+        "requested_cap": cap,
+    }
+
+
 def finalize_sd_square_trace(model):
     """Materialize and verify captured GPU decisions after the request timer stops."""
     result = []

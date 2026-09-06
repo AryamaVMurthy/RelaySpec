@@ -17,11 +17,12 @@ from relayspec.sd_square_adapter import (
     finalize_sd_square_trace,
     load_inference_steering,
     load_sd_square,
+    termination_status,
 )
 
 
 @torch.no_grad()
-def generate(model, ids, cap, deferred):
+def generate(model, ids, cap, deferred, require_complete=True):
     model._relayspec_trace = []
     model._relayspec_tensor_trace = []
     model._relayspec_capture_tensors = deferred
@@ -33,7 +34,9 @@ def generate(model, ids, cap, deferred):
     elapsed = time.perf_counter() - started
     trace = finalize_sd_square_trace(model) if deferred else model._relayspec_trace
     tokens, raw = committed_tokens(trace, cap, model.eot_id)
-    if not tokens or (len(tokens) < cap and tokens[-1] != model.eot_id):
+    if not tokens or (
+        require_complete and len(tokens) < cap and tokens[-1] != model.eot_id
+    ):
         raise ValueError("SD-square output stopped before EOS or its declared cap")
     return tokens, raw, trace, elapsed
 
@@ -172,6 +175,58 @@ def main():
         fingerprints[name] = identity
 
     methods = list(config["variants"])
+    if config.get("phase") == "termination_diagnostic":
+        diagnostic = config["termination_diagnostic"]
+        if (
+            digest(Path(diagnostic["failure_registry"]))
+            != diagnostic["failure_registry_sha256"]
+        ):
+            raise ValueError("termination diagnosis prerequisite changed")
+        probes = []
+        for name in methods:
+            if config["variants"][name]["kind"] == "ar":
+                continue
+            select(name)
+            for record, ids in prompts:
+                for cap in (16, 64):
+                    immediate = generate(model, ids, cap, False, require_complete=False)
+                    deferred = generate(model, ids, cap, True, require_complete=False)
+                    if immediate[:3] != deferred[:3]:
+                        raise ValueError("termination probe observer changes decisions")
+                    probes.append(
+                        {
+                            "method": name,
+                            "problem_id": record["problem_id"],
+                            "input_ids": ids[0].tolist(),
+                            "trace": immediate[2],
+                            "deferred_trace": deferred[2],
+                            "observer_exact": True,
+                            **termination_status(
+                                immediate[2], cap, model.eot_id, model.NG
+                            ),
+                        }
+                    )
+        if any(
+            p._version != version or p.data_ptr() != pointer
+            for p, version, pointer in frozen
+        ):
+            raise ValueError("termination probe changed inherited weights")
+        (output / f"termination-rank{rank}.json").write_text(
+            json.dumps(
+                {
+                    "status": "complete",
+                    "rank": rank,
+                    "config_sha256": digest(args.config),
+                    "steering_fingerprints": fingerprints,
+                    "probes": probes,
+                    "frozen_parameter_versions_and_storage_unchanged": True,
+                    "scope": "Unmodified public termination diagnosis, not measured campaign quality or completion.",
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+        return
     for name in methods:
         if config["variants"][name]["kind"] == "ar":
             continue

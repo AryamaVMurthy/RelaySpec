@@ -10,7 +10,20 @@ from relayspec.sd_square_adapter import (
     finalize_sd_square_trace,
     load_inference_steering,
     steering_digest,
+    termination_status,
 )
+
+
+def test_public_slot_guard_distinguishes_short_warmup_from_eos_or_cap():
+    trace = [{"tokens": [3], "accepted_draft_tokens": 0} for _ in range(7)]
+    result = termination_status(trace, 16, 2, 8)
+    assert result["reason"] == "public_physical_slot_guard"
+    assert result["counted_tokens"] == 7 and result["public_cycle_limit"] == 7
+    assert termination_status(trace[:6], 16, 2, 8)["reason"] == "unexplained_early_stop"
+    assert termination_status([{"tokens": [3, 2]}], 16, 2, 8)["reason"] == "eos"
+    assert (
+        termination_status([{"tokens": list(range(16))}], 16, 100, 8)["reason"] == "cap"
+    )
 
 
 def test_inference_conversion_checks_training_bytes_before_bf16_rounding():
