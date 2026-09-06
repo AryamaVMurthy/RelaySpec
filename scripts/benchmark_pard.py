@@ -35,6 +35,25 @@ def main():
     protocol = json.loads(protocol_path.read_text())
     setup_path = Path(os.environ["PARD_SETUP_GATE"])
     setup = json.loads(setup_path.read_text())
+    for path, sha in config.get("prerequisites", {}).items():
+        prerequisite = Path(path)
+        if (
+            digest(prerequisite) != sha
+            or json.loads(prerequisite.read_text())["status"] != "complete"
+        ):
+            raise ValueError("PARD longer-output prerequisite did not pass")
+    if config.get("phase") in {"quality_pilot", "quality_full"}:
+        expected_requests = protocol["development"][
+            "quality_pilot_requests"
+            if config["phase"] == "quality_pilot"
+            else "quality_requests"
+        ]
+        if (
+            config["requests"] != expected_requests
+            or config["max_new_tokens"] != protocol["development"]["quality_token_cap"]
+            or not config.get("prerequisites")
+        ):
+            raise ValueError("PARD quality campaign differs from prospective protocol")
     if (
         digest(source_path) != config["source_config_sha256"]
         or digest(protocol_path) != config["verification_protocol_sha256"]

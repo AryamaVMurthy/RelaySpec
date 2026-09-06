@@ -36,6 +36,13 @@ def main():
     ):
         raise ValueError("PARD campaign source/job/config differs from declaration")
     config = json.loads(args.config.read_text())
+    for path, sha in config.get("prerequisites", {}).items():
+        prerequisite = Path(path)
+        if (
+            digest(prerequisite) != sha
+            or json.loads(prerequisite.read_text())["status"] != "complete"
+        ):
+            raise ValueError("PARD longer-output prerequisite changed")
     protocol_path = Path(config["verification_protocol"])
     protocol = json.loads(protocol_path.read_text())
     source_config = Path(config["source_config"])

@@ -28,7 +28,7 @@ export RELAYSPEC_OUTPUT="$PWD/outputs/${SLURM_JOB_NAME}-${SLURM_JOB_ID}"
 mkdir -p "$RELAYSPEC_OUTPUT"
 cp SOURCE_COMMIT "$RELAYSPEC_OUTPUT/source-commit.txt"
 cp "$PARD_SETUP_GATE" "$RELAYSPEC_OUTPUT/setup-gate.json"
-cp configs/submission/baselines/pard-campaign.json "$RELAYSPEC_OUTPUT/campaign-config.json"
+cp "${PARD_CAMPAIGN_CONFIG:-configs/submission/baselines/pard-campaign.json}" "$RELAYSPEC_OUTPUT/campaign-config.json"
 tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm vendor/pard SOURCE_COMMIT reports/external-baselines-20260906
 "$RELAYSPEC_PYTHON" scripts/check_allocation.py > "$RELAYSPEC_OUTPUT/allocation.jsonl"
 nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used --format=csv -l 10 > "$RELAYSPEC_OUTPUT/gpu.csv" &
