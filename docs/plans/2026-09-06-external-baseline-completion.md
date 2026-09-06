@@ -108,3 +108,12 @@ verification are included. Preserve partial artifacts without a completion
 claim. Execute the same fixed comparison in two disjoint eight-request
 shards, each with four GPUs and a ten-minute allocation. Aggregate only
 after both source-bound gates pass and the sixteen prompts are disjoint.
+
+Launched SD-square shards27900/27901 from3e96e78. The second depends on
+the first passing. PARD campaign27903 frome3bb73e depends on the second
+shard and uses the same sixteen development prompts. All jobs request
+four GPUs with ten-minute limits. PARD verifies a separately observed
+replica of every timed request against its actual target argmax decisions
+and checks raw tokens and acceptance against the trace-free timed run.
+Public generation statements remain unchanged, tested by AST equality.
+Auditors rebuild source-bound gates before creating result registries.
