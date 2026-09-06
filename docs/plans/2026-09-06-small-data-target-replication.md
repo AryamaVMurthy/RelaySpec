@@ -87,3 +87,51 @@ success. All runs recheck the exact-cache capacity pilot and source-bound
 trials before fitting. Collectors494794/495278 cover DFlash/EAGLE.
 The32 cells include28 primary fits and four dense seed1730 controls.
 Do not report a fitting or replication result before collecting its gate.
+
+## Endpoint decoding preparation
+
+The completed-cache and capacity-pilot gates do not establish that the 32 proper
+fits have completed. Audit each family with scripts/audit_target14_fits.py after
+all four corresponding jobs finish. It requires all 14 primary cells and both
+dense seed controls, checks immutable job source/trial/campaign hashes, binds
+the exact-cache pilot, reconstructs every update and checkpoint-validation
+record, and derives parameters from the actual interface dimensions. Missing
+or mismatched evidence must prevent a completed registry.
+
+Both 14B interfaces have input width 25,600 and output width 2,560. The eight
+completed resource-pilot trajectories pass the new raw-log audit: width 512
+has 14,417,920 parameters and width 4096 has 115,343,360 for both factored linear
+and MLP. Those 16-update pilots are infrastructure evidence only; do not call
+them proper fitting results or extrapolate validation performance from them.
+
+Use the existing build_capacity_campaign.py with --include-seed-controls and
+--fit-registry to declare each family's complete 16-endpoint comparison. The
+registry must match the matrix and every underlying source hash before the
+builder can write a configuration. The campaign remains 16 common exposed
+MATH requests at a 256-token cap with runtime-local AR/source controls, plus
+pinned native EAGLE where available. Fixed 8192-update endpoints are selected
+regardless of feature-validation minima. The additional dense seeds are not
+excluded for unfavorable fitting or decoding results.
+
+The 14B cache/gradient/export/decoding path has already passed its bounded
+compatibility and exact-cache capacity pilots. Run the complete endpoint
+comparison with a ten-minute allocation/540-second process limit first. Do not
+extend a failed observation timeout without checking the actual job and error.
+Full-answer quality must still have its separate short 2048-token pilot before
+the larger quality evaluation. Code/conversation breadth, wide-model rate
+checks, selected third seeds, EAGLE trainable baselines and untouched final
+confirmation remain required where specified by the overall plan.
+
+Once the fits finish, the exact local command sequence for each FAMILY is:
+
+```
+PYTHONPATH=src ../RelaySpec/.venv/bin/python scripts/audit_target14_fits.py --family FAMILY --raw-root ../RelaySpec --output reports/mapper-scaling-20260905/target14b-FAMILY-fit-results.json
+PYTHONPATH=src ../RelaySpec/.venv/bin/python scripts/build_capacity_campaign.py --raw-root ../RelaySpec --matrix configs/submission/scaling/target14b-small-v1/matrix-FAMILY/matrix.json --template configs/submission/scaling/target14b-small-v1/campaign-FAMILY-pilot.yaml --fit-registry reports/mapper-scaling-20260905/target14b-FAMILY-fit-results.json --include-seed-controls --output configs/submission/scaling/target14b-small-v1/campaign-FAMILY-capacity.yaml
+```
+
+Replace FAMILY with dflash or eagle3; these commands do not submit or restart
+jobs. Deploy the generated, committed configuration with its provenance only
+after audit success. Record actual Slurm IDs and keep the total at four GPUs.
+The registry/campaign integrity and existing mapper tests passed (22 tests),
+including rejection of omitted seed controls and subsequently changed raw
+fitting evidence. The full proper-fit audit is still pending actual job output.

@@ -20,6 +20,8 @@ def main():
     )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--include-endpoints", action="store_true")
+    parser.add_argument("--include-seed-controls", action="store_true")
+    parser.add_argument("--fit-registry", type=Path)
     parser.add_argument(
         "--checkpoint-selection", choices=("endpoint", "validation"), default="endpoint"
     )
@@ -31,11 +33,32 @@ def main():
     args = parser.parse_args()
     if args.include_endpoints and args.checkpoint_selection != "validation":
         raise ValueError("paired endpoints require validation-selected checkpoints")
-    primary = json.loads(args.matrix.read_text())["primary_cells"]
+    matrix = json.loads(args.matrix.read_text())
+    primary = matrix["primary_cells"]
+    if args.include_seed_controls:
+        primary = primary + matrix["dense_seed_controls"]
     gates = {}
-    for p in (args.raw_root / "reports/mapper-scaling-20260905").glob(
-        "*/run-*/batch-gate.json"
-    ):
+    if args.fit_registry:
+        registry = json.loads(args.fit_registry.read_text())
+        if (
+            registry.get("status") != "complete"
+            or registry["matrix_sha256"]
+            != hashlib.sha256(args.matrix.read_bytes()).hexdigest()
+        ):
+            raise ValueError("completed fitting registry must match the matrix")
+        for name, sha in registry["input_sha256"].items():
+            if hashlib.sha256(Path(name).read_bytes()).hexdigest() != sha:
+                raise ValueError("audited fitting source changed")
+        if set(registry["results"]) != {t["name"] for t in primary}:
+            raise ValueError("campaign must include every audited fitting cell")
+        gate_paths = sorted(
+            {Path(r["batch_gate_path"]) for r in registry["results"].values()}
+        )
+    else:
+        gate_paths = (args.raw_root / "reports/mapper-scaling-20260905").glob(
+            "*/run-*/batch-gate.json"
+        )
+    for p in gate_paths:
         g = json.loads(p.read_text())
         if g.get("status") != "pass" or g.get("mode") != "fit":
             continue
@@ -152,6 +175,19 @@ def main():
             {
                 "status": "declared_after_all_primary_fit_gates",
                 "matrix_sha256": hashlib.sha256(args.matrix.read_bytes()).hexdigest(),
+                **(
+                    {
+                        "fit_registry_sha256": hashlib.sha256(
+                            args.fit_registry.read_bytes()
+                        ).hexdigest(),
+                        "primary_cells": len(matrix["primary_cells"]),
+                        "dense_seed_controls": len(matrix["dense_seed_controls"])
+                        if args.include_seed_controls
+                        else 0,
+                    }
+                    if args.fit_registry
+                    else {}
+                ),
                 "config_sha256": hashlib.sha256(args.output.read_bytes()).hexdigest(),
                 "feature_cache_index_sha256": cache_hash,
                 "variants": provenance,
