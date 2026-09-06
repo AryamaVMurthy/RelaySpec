@@ -31,3 +31,13 @@ training positions, fitting cost and matched throughput separately.
 This track does not replace remaining EAGLE trainable baselines,
 composition/complexity analysis, bounded autoresearch, untouched
 confirmation, final manuscript review or anonymous reproduction.
+
+Queued DFlash14B pilot27923 and EAGLE14B pilot27924 from immutable
+sourcee1df8bad6c5a3687776f783c1264f52b720351b2. Each requests four GPUs
+and ten minutes. DFlash starts after SD-square full-quality shard27922
+terminates, and EAGLE follows DFlash. The two pilots are independent,
+so afterany sequences resources without treating one family's failure
+as evidence about the other. Full cache extraction still requires its
+own matching pilot to pass. Existing mapper/caching tests:14 passed.
+Pinned14B target and native EAGLE snapshot directories exist on node07,
+with ample scratch capacity. Collector481273 records both pilot outcomes.
