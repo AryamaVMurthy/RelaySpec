@@ -1,0 +1,30 @@
+{
+  "models": {
+    "target": {
+      "id": "Qwen/Qwen3-8B",
+      "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+    },
+    "proposer": {
+      "id": "amd/PARD2-Qwen3-8B",
+      "revision": "67a1516c8f6fc145cda99916799a0cbb3a4af135",
+      "weights_sha256": {
+        "model.safetensors": "bf1a6c0e69db76420f1f58381b03263711e8f1ae5938b955a0ce49b7aa60502e",
+        "warp_model.bin": "2fa85c78591b18eecb160f131ddafc109ed5d2fb52467415818b83dd54ba0f1c"
+      }
+    }
+  },
+  "requests": 4,
+  "max_new_tokens": 128,
+  "warmup_tokens": 16,
+  "max_cache_len": 4096,
+  "draft_k": 15,
+  "methods": [
+    "native_ar",
+    "pard2_td",
+    "pard2_ti"
+  ],
+  "seed": 1729,
+  "manifest_path": "configs/eval_manifest.json",
+  "phase": "pilot",
+  "scope": "Released PARD-2 TD/TI, same Qwen3-8B target and pretokenized development questions. BF16 eager, static cache, no compile, four independent GPU workers. Timer includes both prefills and cache reset. Every timed speculative output has an identical verifier-observed replica. Raw EOS/cap overshoot retained separately. Cross-runtime comparison to RelaySpec does not isolate algorithm effects."
+}

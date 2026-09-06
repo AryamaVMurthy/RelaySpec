@@ -22,14 +22,20 @@ def test_trim_retains_eos_and_excludes_overshoot():
         trim_pard_tokens([1], max_new_tokens=0, eos_token_id=9)
 
 
+@pytest.mark.parametrize("version", [1, 2])
 @pytest.mark.parametrize("mode", ["none", "detailed", "deferred"])
-def test_instrumentation_preserves_every_upstream_statement(mode):
-    path = Path("vendor/pard/pard/pard_infer.py")
+def test_instrumentation_preserves_every_upstream_statement(mode, version):
+    path = Path("vendor/pard/pard") / (
+        "pard_infer.py" if version == 1 else "pard2_infer.py"
+    )
     if not path.exists():
         pytest.skip("optional pinned PARD source is not installed")
     source = path.read_bytes()
     tree = instrument_source(
-        source, trace_targets=mode == "detailed", trace_decisions=mode == "deferred"
+        source,
+        trace_targets=mode == "detailed",
+        trace_decisions=mode == "deferred",
+        version=version,
     )
     original = ast.parse(source)
     cls = next(
@@ -79,3 +85,10 @@ def test_verifier_check_covers_full_blocks_including_raw_overshoot():
         verify_pard_decisions([0, 1, 2, 20, 99], [3, 2], trace)
     with pytest.raises(ValueError, match="full raw output"):
         verify_pard_decisions([0, 1, 2, 20, 21, 22], [3, 2], trace)
+
+
+def test_pard2_verifier_length_is_explicit():
+    trace = [{"output_start": 0, "argmax_ids": list(range(16))}]
+    verify_pard_decisions(list(range(16)), [16], trace, draft_k=15)
+    with pytest.raises(ValueError, match="actual verifier"):
+        verify_pard_decisions(list(range(16)), [16], trace)

@@ -7,15 +7,19 @@ import types
 PARD_COMMIT = "6f279bf3f1680e0b5d71c562ca5b91bdeef4c038"
 PARD_SOURCE_SHA256 = "9c4ae104e90ccb6a0a3948d011ab5e892cb7733894f812b74ab63270907c5340"
 
+PARD2_SOURCE_SHA256 = "6172caec7133b554fc4f2d3c621f1467bd63d349d3f825d716adc8f19d77fca7"
 
-def instrument_source(source, *, trace_targets=False, trace_decisions=False):
+
+def instrument_source(source, *, trace_targets=False, trace_decisions=False, version=1):
     """Add request timing and raw-token capture to the exact reviewed source.
 
     All upstream statements remain in their original order. Timings include
     both model prefills and cache reset, and end before output detokenization.
     The upstream aggregate TPS excludes its first block's time and is unused.
     """
-    if hashlib.sha256(source).hexdigest() != PARD_SOURCE_SHA256:
+    if version not in (1, 2) or hashlib.sha256(source).hexdigest() != (
+        PARD_SOURCE_SHA256 if version == 1 else PARD2_SOURCE_SHA256
+    ):
         raise ValueError("PARD source differs from the reviewed pinned implementation")
     tree = ast.parse(source)
     cls = next(
@@ -77,10 +81,15 @@ def instrument_source(source, *, trace_targets=False, trace_decisions=False):
     return ast.fix_missing_locations(tree)
 
 
-def load_instrumented_pard(source_path, *, trace_targets=False, trace_decisions=False):
+def load_instrumented_pard(
+    source_path, *, trace_targets=False, trace_decisions=False, version=1
+):
     source = source_path.read_bytes()
     tree = instrument_source(
-        source, trace_targets=trace_targets, trace_decisions=trace_decisions
+        source,
+        trace_targets=trace_targets,
+        trace_decisions=trace_decisions,
+        version=version,
     )
     module = types.ModuleType("relayspec_external_pard")
     module.__file__ = str(source_path)
@@ -140,23 +149,24 @@ def load_instrumented_pard(source_path, *, trace_targets=False, trace_decisions=
                 "request_seconds": seconds,
                 "accepted_lengths": list(profile["accept_length"]),
                 "draft_calls": len(profile["draft"]),
-                "target_calls": len(profile["accept_length"]),
+                "target_calls": len(profile["accept_length"])
+                + int(version == 2 and self.v2),
                 "target_trace": self._target_trace,
             }
 
     return CapturedPard
 
 
-def verify_pard_decisions(raw, accepted_lengths, trace):
+def verify_pard_decisions(raw, accepted_lengths, trace, *, draft_k=12):
     """Check every accepted prefix and bonus against the actual greedy target."""
     offset = 0
     if not trace or len(trace) != len(accepted_lengths):
         raise ValueError("PARD decision trace lacks accepted blocks")
     for length, decision in zip(accepted_lengths, trace, strict=True):
         if (
-            not 1 <= length <= 13
+            not 1 <= length <= draft_k + 1
             or decision["output_start"] != offset
-            or len(decision["argmax_ids"]) != 13
+            or len(decision["argmax_ids"]) != draft_k + 1
             or raw[offset : offset + length] != decision["argmax_ids"][:length]
         ):
             raise ValueError("PARD committed output differs from its actual verifier")
