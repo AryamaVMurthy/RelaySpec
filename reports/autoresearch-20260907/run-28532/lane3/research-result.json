@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Does initializing selected late-layer columns from the released native projection improve small-data generalization compared with random initialization?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 181.25421888356186,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.766066838046273,
+        "request_seconds": 14.47690440621227
+      },
+      "relay_reduced": {
+        "tokens_per_second": 182.3247313638487,
+        "throughput_ratio": 1.0059061382784946,
+        "throughput_ci95": [
+          0.9831612767366128,
+          1.0346131086976522
+        ],
+        "request_time_ratio": 1.0059061382784946,
+        "request_time_ci95": [
+          0.9831612767366129,
+          1.0346131086976522
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.813471502590674,
+        "request_seconds": 14.391903832089156
+      }
+    }
+  },
+  "scope": "Four matched native cells:16/128 records xrandom/released-column initialization. Same teacher, record prefixes, layers25/33, normalization, seed1729 and8192 updates. All updated weights remain trainable; no extra parameters or regularization. Eight exposed GSM8K questions512token cap. Each compares with the original512-record native two-layer map. Development mechanism test, no confirmation or new minimum-data claim."
+}
