@@ -71,6 +71,9 @@ paper-external-baseline-assets:
 paper-task-complexity-assets:
 	$(PYTHON) scripts/build_task_complexity_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
 
+paper-target14-assets:
+	$(PYTHON) scripts/build_target14_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
+
 paper:
 	cd $(PAPER_DIR) && pdflatex -interaction=nonstopmode -halt-on-error $(PAPER_NAME).tex
 	cd $(PAPER_DIR) && bibtex $(PAPER_NAME)

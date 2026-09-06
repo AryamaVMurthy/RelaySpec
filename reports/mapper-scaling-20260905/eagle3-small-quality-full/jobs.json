@@ -1,0 +1,32 @@
+{
+  "max_gpus": 4,
+  "source_commit": "d0388569b88ead28342a16719807aeaf30c8ed6d",
+  "large_data_scaling": "paused",
+  "pilot_result": "reports/mapper-scaling-20260905/eagle3-small-quality-pilot-results.json",
+  "jobs": [
+    {
+      "id": 27967,
+      "kind": "mapper_campaign",
+      "family": "eagle3",
+      "stage": "full0",
+      "remote": "/home/aryama.murthy/relayspec-eagle-quality-d038856/outputs/rs-eagle8-quality-full0-27967",
+      "local": "reports/mapper-scaling-20260905/eagle3-small-quality-full/run-27967",
+      "dependency": "afterany:27966",
+      "config": "configs/submission/scaling/eagle3-small-quality-v1/campaign-full0.yaml",
+      "time_limit_seconds": 2700,
+      "process_timeout_seconds": 2640
+    },
+    {
+      "id": 27968,
+      "kind": "mapper_campaign",
+      "family": "eagle3",
+      "stage": "full1",
+      "remote": "/home/aryama.murthy/relayspec-eagle-quality-d038856/outputs/rs-eagle8-quality-full1-27968",
+      "local": "reports/mapper-scaling-20260905/eagle3-small-quality-full/run-27968",
+      "dependency": "afterok:27967",
+      "config": "configs/submission/scaling/eagle3-small-quality-v1/campaign-full1.yaml",
+      "time_limit_seconds": 2700,
+      "process_timeout_seconds": 2640
+    }
+  ]
+}

@@ -193,6 +193,7 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
             if actual.read_bytes() != (expected / relative).read_bytes():
                 return False, f"stale generated asset {relative}"
     for registry_name, builder_name in [
+        ("target14_evidence_registry.json", "build_target14_paper_assets.py"),
         ("scaling_evidence_registry.json", "build_scaling_paper_assets.py"),
         ("capacity_evidence_registry.json", "build_capacity_paper_assets.py"),
         (

@@ -1111,6 +1111,86 @@ paired accuracy intervals are retained in the accompanying artifacts.
 No additional generation or fitting is used for this analysis.
 
 \clearpage
+\subsection{Capacity replication with a 14B target}
+\label{app:target14-capacity}
+
+We repeat the fixed-data capacity comparison with Qwen3-14B for both
+DFlash and EAGLE-3. Each family has fourteen primary fits: dense,
+factored linear and GELU MLP widths 512, 1,024 and 4,096 at each of
+$N=512$ and $N=2048$. Two additional dense fits use seed 1730.
+All receive 8,192 batch-four updates at learning rate $6\times10^{-4}$,
+with no L2 penalty or weight decay. Validation uses the same 1,024
+records within each family. Training diagnostics use a 256-record prefix.
+The five target taps give 25,600 input dimensions and the output has
+2,560 dimensions. Dense therefore has 65.54M parameters, versus
+14.42M, 28.84M and 115.34M at the three matched factorized/MLP widths.
+Width 4,096 does not increase the maximum rank of a linear function
+beyond the output dimension.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/target14_dflash_fitting.pdf}
+\caption{DFlash with Qwen3-14B. Validation error across the saved
+training trajectory, with all capacities and both dense seeds retained.
+The decoding endpoint remains fixed at 8,192 updates.}
+\label{fig:target14-dflash-fitting}
+\end{figure}
+
+\begin{table}[H]
+\caption{DFlash-14B fixed endpoints. Throughput retention uses dense
+$N=2048$, seed 1729. Intervals are paired 95\% request-bootstrap
+intervals on sixteen exposed questions capped at 256 output tokens.
+They exclude fitting-seed and selection uncertainty.}
+\label{tab:target14-dflash}
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\input{generated/target14_dflash_table.tex}
+\end{table}
+
+With DFlash, the wide MLP at $N=2048$ has lower training error than
+dense, but higher validation error and lower measured throughput.
+The width-1024 linear map nearly matches dense throughput with fewer
+parameters. These comparisons use fixed endpoints, not checkpoints
+chosen after inspecting decoding. Every method reaches the output cap
+on these sixteen questions, so the short scores do not establish
+full-answer quality. The runtime includes AR and source-reuse controls.
+No native 14B DFlash checkpoint is substituted from another target.
+
+\clearpage
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/target14_eagle3_fitting.pdf}
+\caption{EAGLE-3 with Qwen3-14B under the same data-count and update
+budgets. The width-4096 linear trajectory retains its intermediate
+validation spike. Curves show optimization behavior, not a ranking
+of decoding performance or a selected stopping rule.}
+\label{fig:target14-eagle-fitting}
+\end{figure}
+
+\begin{table}[H]
+\caption{EAGLE-3-14B fixed endpoints under its own runtime.
+Retention and intervals use the same within-family protocol as
+Table~\ref{tab:target14-dflash}. Absolute throughput across the two
+tables is not an algorithm-only comparison.}
+\label{tab:target14-eagle}
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\input{generated/target14_eagle3_table.tex}
+\end{table}
+
+EAGLE-3 differs from DFlash in its fitting dynamics. At $N=512$,
+both dense seeds have their lowest saved validation error at 384
+updates, followed by substantial increases. At $N=2048$, the wide
+linear endpoint has lower validation error than dense, but nearly
+equal decoding throughput. Its intermediate spike also shows that
+the shared learning rate does not produce uniformly smooth training.
+These observations motivate matched learning-rate checks before
+attributing a difference to the mapper function class. Lower feature
+error alone does not establish a decoding gain. Full-answer quality,
+broader workloads and additional fitting seeds remain separate from
+this capped comparison.
+
+\clearpage
 \subsection{Matched warm-training budgets on 512 examples}
 
 We compare feature regression, connector cross-entropy (CE) and rank-32
