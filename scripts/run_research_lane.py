@@ -16,6 +16,15 @@ from relayspec.ar_paper_evidence import summarize
 
 
 def prepare(spec, root):
+    storage = root / "weights"
+    if os.environ.get("RELAYSPEC_CACHE_DIR"):
+        storage = (
+            Path(os.environ["RELAYSPEC_CACHE_DIR"])
+            / "relayspec/autoresearch"
+            / os.environ["SLURM_JOB_ID"]
+            / root.name
+        )
+    storage.mkdir(parents=True, exist_ok=True)
     if spec["transform"] == "native_svd":
         from relayspec.dflash import import_official_dflash
 
@@ -37,7 +46,7 @@ def prepare(spec, root):
             "steps": 0,
             "origin": "Released native drafter fc; no fitting",
         }
-        native_path = root / "native-fc.pt"
+        native_path = storage / "native-fc.pt"
         torch.save(native, native_path)
         spec = {**spec, "checkpoint": str(native_path)}
         del draft
@@ -52,7 +61,7 @@ def prepare(spec, root):
     variants = {"relay_base": str(source)}
 
     def save(name, checkpoint):
-        path = root / (name + ".pt")
+        path = storage / (name + ".pt")
         torch.save(checkpoint, path)
         variants[name] = str(path)
 
@@ -113,7 +122,7 @@ def prepare(spec, root):
         validate_cache_access_gate([trial], access, cache_hash)
         trials_path = root / "trials.json"
         trials_path.write_text(json.dumps({"trials": [trial]}, indent=2) + "\n")
-        fit_root = root / "fitting"
+        fit_root = storage / "fitting"
         env = {
             **os.environ,
             "RELAYSPEC_OUTPUT": str(fit_root),
@@ -147,9 +156,22 @@ def prepare(spec, root):
         cp = torch.load(path, weights_only=True, map_location="cpu")
         if cp["target_layer_ids"] != trial["target_layer_ids"]:
             raise ValueError("Exported mapper lost selected taps")
+        import shutil
+
+        diagnostics = root / "fitting" / trial["name"]
+        diagnostics.mkdir(parents=True, exist_ok=True)
+        for artifact in (fit_root / trial["name"]).iterdir():
+            if artifact.suffix != ".pt":
+                shutil.copy2(artifact, diagnostics / artifact.name)
         variants["relay_reduced"] = str(path)
         provenance["fit_trial"] = trial
         provenance["cache_sha256"] = cache_hash
+    elif spec["transform"] == "existing":
+        for name, candidate in spec["candidates"].items():
+            if not Path(candidate).is_file():
+                raise FileNotFoundError(candidate)
+            variants[name] = candidate
+        provenance["candidates"] = spec["candidates"]
     elif spec["transform"] == "joint_drop":
         taps = list(base["target_layer_ids"])
         width = weight.shape[1] // len(taps)
@@ -208,7 +230,7 @@ def main():
     family = config["proposer"]["family"]
     config["resources"]["gpu_count"] = 1
     config["benchmark"].update(
-        max_prompts=8,
+        max_prompts=spec.get("requests", 8),
         research_single_gpu=True,
         methods=[
             "native_ar",
@@ -219,7 +241,7 @@ def main():
     config["benchmark"].pop("isolate_methods", None)
     if family == "dflash":
         config["benchmark"]["unload_source_trunk"] = True
-    config["generation"]["max_new_tokens"] = 128
+    config["generation"]["max_new_tokens"] = spec.get("max_new_tokens", 128)
     config["relay_probe"]["variants"] = variants
     cfg = a.output / "config.yaml"
     cfg.write_text(yaml.safe_dump(config, sort_keys=False))
@@ -260,8 +282,27 @@ def main():
         "status": "pass",
         "hypothesis": spec["hypothesis"],
         "summary": summarize(rows, reference="relay_base"),
-        "scope": "Eight exposed development questions,128-token cap; exploratory screen, no full-answer quality or confirmatory significance claim.",
+        "scope": "Exposed development questions at the recorded output cap; exploratory screen, no full-answer quality or confirmatory significance claim.",
     }
+    if spec.get("duplicate_control"):
+        expected = {r["problem_id"]: r for r in rows if r["method"] == "relay_base"}
+        differences = []
+        for row in rows:
+            if row["method"] == spec["duplicate_control"]:
+                for field in [
+                    "output_hash",
+                    "acceptance_lengths",
+                    "target_calls",
+                    "draft_calls",
+                ]:
+                    if row[field] != expected[row["problem_id"]][field]:
+                        differences.append(
+                            {"problem_id": row["problem_id"], "field": field}
+                        )
+        report["duplicate_control"] = {
+            "status": "pass" if not differences else "failed",
+            "differences": differences,
+        }
     (a.output / "research-result.json").write_text(json.dumps(report, indent=2) + "\n")
 
 

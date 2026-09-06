@@ -103,17 +103,17 @@ Each runtime uses one request per GPU.}
 \label{sec:related}
 
 \paragraph{Retargeting an inherited drafter.}
-DFlash generates parallel blocks conditioned on target features, while
-EAGLE-3 combines multi-layer features with direct token prediction and
-training-time simulation \citep{chen2026dflash,li2025eagle3}. Their
-conditioning interface ties a released drafter to the model that supplied
-its training features. RelaySpec addresses a subsequent deployment:
-retain that drafter when moving to a larger target. It learns the context
-already consumed by the frozen drafter from states the new verifier
-already computes. The source transformer is needed during fitting and
-removed from generation. This separates the reusable proposal model
-from the model that supplies its conditioning, without changing the
-inherited proposal procedure or the target's verification scores.
+DFlash and EAGLE-3 condition their proposals on target features
+\citep{chen2026dflash,li2025eagle3}, tying an inherited drafter to its
+training interface. TriSpec already supports adapter-only finetuning
+into a fixed EAGLE-family drafter, mapping proxy features to the
+expected feature space \citep{jiang2026trispec}. Adapter-only tuning
+is therefore not our novelty claim. TriSpec uses a proxy to approve
+some tokens without full-target verification. RelaySpec instead removes
+the source transformer from generation, retargets its inherited drafter
+to a larger verifier, and retains target-controlled acceptance. Our
+contribution is this deployment setting and its measured data,
+capacity and source-removal behavior across two drafting families.
 
 \paragraph{Target-independent drafting and dynamic steering.}
 PARD adapts an autoregressive draft model for parallel token prediction
