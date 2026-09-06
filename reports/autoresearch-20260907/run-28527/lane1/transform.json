@@ -1,0 +1,53 @@
+{
+  "parent_sha256": "9329e480cb8a1e0a05813a062f32c7682f81e0ceb74d999bb45f297ba799258a",
+  "shape": [
+    2560,
+    25600
+  ],
+  "transform": "fit_reduced_taps",
+  "fit_trial": {
+    "name": "eagle314-dense-n512-s1729-lr6e-05",
+    "study": "target14_eagle_optimization_check",
+    "architecture": "dense",
+    "seed": 1729,
+    "steps": 8192,
+    "distinct_examples": 512,
+    "learning_rate": 6e-05,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      128,
+      256,
+      384,
+      512,
+      1024,
+      2048,
+      4096,
+      8192
+    ],
+    "validation_records": 1024,
+    "diagnostic_train_records": 256,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": false,
+    "budget_panels": {
+      "fixed_exposure": {
+        "checkpoint_step": 8192,
+        "presentations": 32768
+      },
+      "fixed_passes": {
+        "checkpoint_step": 512,
+        "presentations": 2048
+      }
+    },
+    "cache_backend": "buffer",
+    "device_cache": false,
+    "target_layer_ids": [
+      1,
+      10,
+      19,
+      28,
+      37
+    ]
+  },
+  "cache_sha256": "c35ea12d2164a5a3576667f05824ecf91d8b5829dd84ae80d764d375127ffdb2"
+}

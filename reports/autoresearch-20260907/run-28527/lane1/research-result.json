@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Does the previously declared lower learning rate resolve late 14B EAGLE mapper instability at the fixed 8192-update endpoint?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 57.95788712148072,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 3.9923076923076923,
+        "request_seconds": 17.66800086852163
+      },
+      "relay_reduced": {
+        "tokens_per_second": 58.12064735824456,
+        "throughput_ratio": 1.0028082500043989,
+        "throughput_ci95": [
+          0.9399915909406066,
+          1.0778520664826017
+        ],
+        "request_time_ratio": 1.0028082500043987,
+        "request_time_ci95": [
+          0.9399915909406066,
+          1.0778520664826017
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.038610038610039,
+        "request_seconds": 17.618523649405688
+      }
+    }
+  },
+  "scope": "Resume all four original declared rate checks; same cached features, fitting seed, records and validation. Eight exposed capped development requests are a decoding screen only. Every lane includes original dense512 as a runtime anchor; matched original architecture/data comparisons use recorded fitting trajectories. No checkpoint selection from decoding."
+}
