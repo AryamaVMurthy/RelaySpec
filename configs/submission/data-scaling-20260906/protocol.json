@@ -1,0 +1,27 @@
+{
+  "axis": "distinct training records",
+  "sizes": [
+    4096,
+    8192,
+    16384,
+    32768
+  ],
+  "family": "DFlash 4B to Qwen3-8B",
+  "architecture": "dense",
+  "seed": 1729,
+  "batch_size": 4,
+  "fixed_updates": 8192,
+  "fixed_update_epochs": [
+    8,
+    4,
+    2,
+    1
+  ],
+  "other_panel": "one epoch per dataset",
+  "feature_cache_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+  "dataset": "Pinned NuminaMath nested training subsets, common1024-record validation",
+  "scope": "Separate expanded-data curve; do not append to historical MATH-only curve. Single fitting seed,128 development questions. No context-length scaling.",
+  "reuse": "Existing32768-record frozen-feature cache; only dense mapper trained",
+  "reason_for_updates": "1024updates x4 can only expose4096 records;8192updates genuinely expose all32768 records at the largest size.",
+  "gpu_count": 4
+}

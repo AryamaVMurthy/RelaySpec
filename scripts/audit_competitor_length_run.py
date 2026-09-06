@@ -87,13 +87,19 @@ def audit(run):
     if not pard:
         for method in bench["methods"]:
             rs = [r for r in rows if r["method"] == method]
+            has_ttft = all(r["time_to_first_token_seconds"] > 0 for r in rs)
             memory[method] = {
                 "mean_prefill_seconds": sum(
                     r["time_to_first_token_seconds"] for r in rs
                 )
-                / len(rs),
+                / len(rs) if has_ttft else None,
                 "decode_tokens_per_second": sum(r["output_tokens"] for r in rs)
-                / sum(r["decode_seconds"] for r in rs),
+                / sum(r["decode_seconds"] for r in rs) if has_ttft else None,
+                "timing_scope": "Measured TTFT and decode" if has_ttft else "API does not expose TTFT; zero placeholders are excluded",
+                "mean_profiled_prefill_gpu_seconds": sum(
+                    sum(v for k, v in r.get("profile_regions_ms", {}).items() if k.startswith("prefill_"))
+                    for r in rs
+                ) / len(rs) / 1000,
                 "max_peak_allocated_gib": max(
                     r["peak_allocated_memory_bytes"] for r in rs
                 )

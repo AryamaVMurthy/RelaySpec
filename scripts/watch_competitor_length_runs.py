@@ -49,7 +49,7 @@ def plot():
                 [a["sequence_metrics"][method]["max_peak_allocated_gib"] for _, a in available],
             ]
             for ax, ys in zip(axes, metrics, strict=True):
-                ax.plot(xs, ys, marker="o", label=method)
+                ax.plot(xs, [float("nan") if y is None else y for y in ys], marker="o", label=method)
         for ax, title in zip(
             axes,
             [
