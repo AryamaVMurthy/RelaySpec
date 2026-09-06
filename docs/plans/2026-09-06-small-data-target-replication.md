@@ -41,3 +41,22 @@ as evidence about the other. Full cache extraction still requires its
 own matching pilot to pass. Existing mapper/caching tests:14 passed.
 Pinned14B target and native EAGLE snapshot directories exist on node07,
 with ample scratch capacity. Collector481273 records both pilot outcomes.
+
+Both compatibility pilots passed: DFlash27923 in2m31s and EAGLE27924
+in2m37s. DFlash dense map has65,536,000 parameters. Both gates bind
+the correct14B target/source proposer,64 training and16 validation
+records, four finite16-update fits, and eight exactly matching duplicate
+map requests. Native14B EAGLE remains separate from source reuse.
+
+Prepared32 proper fitting cells across both families:14 primary cells
+per family plus dense512/2048 seed1730 reference-variability controls.
+These extra seeds are scientific controls, not duplicated GPU padding.
+The original seed1729 grid and all anchors remain unchanged. Matrices
+use the existing trial validator and four-GPU batching. Host-buffer
+cache access stays enabled until any optimized access has an exact pilot
+on the new cache. Capacity pilots at widths512/4096 precede proper fits.
+
+Queued bounded extraction27926 (DFlash) and27927 (EAGLE), using the passed
+matching pilots. Each extracts2048 training and1024 validation records,
+with at most ten minutes and four GPUs. They follow termination
+diagnosis27925 sequentially. Collector486037 handles both cache outputs.

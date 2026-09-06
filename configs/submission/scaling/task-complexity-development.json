@@ -1,0 +1,46 @@
+{
+  "status": "declared_before_stratified_analysis",
+  "analysis_type": "retrospective exposed-development subgroup analysis",
+  "run": "reports/mapper-scaling-20260905/small-data-quality-full/run-27806",
+  "manifest": "configs/eval_manifest.json",
+  "manifest_sha256": "ddba7687f3d680390e68b021b227ce8dbbf9ef681542abe354ea0f59e0c50e35",
+  "difficulty": {
+    "level_1_2": [
+      1,
+      2
+    ],
+    "level_3": [
+      3
+    ],
+    "level_4_5": [
+      4,
+      5
+    ]
+  },
+  "subject": "all original MATH subject labels, no pooling after outcomes",
+  "input_token_bins": {
+    "input_le64": [
+      0,
+      64
+    ],
+    "input_65_128": [
+      65,
+      128
+    ],
+    "input_129_256": [
+      129,
+      256
+    ],
+    "input_gt256": [
+      257,
+      null
+    ]
+  },
+  "references": [
+    "native_ar",
+    "relay_dense_n2048"
+  ],
+  "methods": "all twelve methods from the audited fixed campaign, with no selection by subgroup outcomes",
+  "uncertainty": "10000 paired request bootstrap samples for descriptive throughput only. Conservative exact paired intervals for accuracy differences. No multiplicity-adjusted confirmatory subgroup claim.",
+  "scope": "Labels use original benchmark metadata and shared input tokens only. No candidate success, output length or timing enters assignment. Levels, subjects and input length are observational correlates, not causal interventions. Empty groups remain explicit. No additional generation, fitting, distinct examples or held-out/reserve access."
+}

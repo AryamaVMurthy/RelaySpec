@@ -213,3 +213,16 @@ nine pages and42 citation keys resolve. All technical audits pass.
 Page27 was visually inspected in color after rebuilding: tables, text,
 line numbers and boundaries are legible with no clipping. Full color/
 grayscale review of all30 pages remains pending, so overall QA staysFAIL.
+
+SD-square replacement full job27921 failed after9m46s in an unscored
+16-token warmup on global request26, math500:test/prealgebra/1044.json.
+Preserve39 partial rows and the traceback without a full-quality claim.
+Dependent27922 was cancelled. Public source has PAD_FACTOR4 and stops
+when the next nine-slot speculative cycle would exhaust its physical
+buffer, so cap16 permits only seven cycles. Low acceptance can therefore
+stop warmup before16 tokens without EOS. This is a hypothesis until the
+bounded GPU reproduction27925 verifies it with the frozen checkpoint.
+Diagnostic caps16/64 use immediate and deferred observers on requests
+24--27. Actual verifier equality remains strict, and normal scored
+requests retain their original EOS/cap completion requirement. Unit tests
+cover the physical guard, ordinary cap/EOS and unexplained early stops.
