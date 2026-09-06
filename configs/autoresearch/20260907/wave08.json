@@ -1,0 +1,61 @@
+{
+  "lanes": [
+    {
+      "family": "dflash",
+      "transform": "activation_svd",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full.yaml",
+      "hypothesis": "Does preserving the observed feature distribution outperform weight-only SVD at matched rank, and does the effect depend on drafter family or verifier size?",
+      "ranks": [
+        512,
+        1024
+      ],
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+      "pilot_gate": "/home/aryama.murthy/relayspec-matrix-v2-20260905/outputs/rs-capacity-pilot-27725/batch-gate.json",
+      "requests": 8
+    },
+    {
+      "family": "eagle3",
+      "transform": "activation_svd",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-small03-27802/eagle3-dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/eagle3-full.yaml",
+      "hypothesis": "Does preserving the observed feature distribution outperform weight-only SVD at matched rank, and does the effect depend on drafter family or verifier size?",
+      "ranks": [
+        512,
+        1024
+      ],
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-eagle3-8b-27783",
+      "pilot_gate": "/home/aryama.murthy/relayspec-eagle-capacity-20260906/outputs/rs-eagle-capacity-27793/batch-gate.json",
+      "requests": 8
+    },
+    {
+      "family": "dflash",
+      "transform": "activation_svd",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28400/lane3/native-fc.pt",
+      "config": "configs/autoresearch/20260907/native-fc-config.yaml",
+      "hypothesis": "Does preserving the observed feature distribution outperform weight-only SVD at matched rank, and does the effect depend on drafter family or verifier size?",
+      "ranks": [
+        512,
+        1024
+      ],
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+      "pilot_gate": "/home/aryama.murthy/relayspec-matrix-v2-20260905/outputs/rs-capacity-pilot-27725/batch-gate.json",
+      "requests": 8
+    },
+    {
+      "family": "dflash",
+      "transform": "activation_svd",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-dflash14-fit2-27938/dflash14-dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/scaling/target14b-small-v1/campaign-dflash-capacity.yaml",
+      "hypothesis": "Does preserving the observed feature distribution outperform weight-only SVD at matched rank, and does the effect depend on drafter family or verifier size?",
+      "ranks": [
+        512,
+        1024
+      ],
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash14-small-27926",
+      "pilot_gate": "/home/aryama.murthy/relayspec-target14-capacity-759b0a3/outputs/rs-dflash14-cap-pilot-27931/batch-gate.json",
+      "requests": 8,
+      "include_native": false
+    }
+  ]
+}

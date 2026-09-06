@@ -51,3 +51,43 @@ def test_svd_export_loads_as_deployed_factorized_mapper(tmp_path, monkeypatch):
     torch.testing.assert_close(
         product, state["relay"]["projection.weight"], atol=2e-5, rtol=1e-5
     )
+
+
+def test_activation_compression_preserves_frequent_feature_direction(
+    tmp_path, monkeypatch
+):
+    import json
+
+    from relayspec import research_compression
+
+    entries = [dict(split="train", index=i) for i in range(512)] + [
+        dict(split="validation", index=i) for i in range(128)
+    ]
+    (tmp_path / "cache-index.json").write_text(
+        json.dumps(
+            dict(
+                status="pass",
+                metadata=dict(target_layer_ids=[1], rms_norm_eps=1e-6),
+                entries=entries,
+            )
+        )
+    )
+    monkeypatch.setattr(torch.Tensor, "cuda", lambda self: self)
+    x = torch.tensor([[0.01, 100.0], [-0.01, 100.0], [0.01, -100.0], [-0.01, -100.0]])
+    monkeypatch.setattr(
+        research_compression,
+        "load_cached_record",
+        lambda root, entry: (x, torch.empty(0)),
+    )
+    base = dict(
+        target_layer_ids=[1],
+        relay_architecture="scale_preserving_linear",
+        relay={"projection.weight": torch.diag(torch.tensor([10.0, 1.0]))},
+    )
+    states, diagnostics = research_compression.activation_compression(
+        base, tmp_path, [1]
+    )
+    compressed = states[1]["projection.1.weight"] @ states[1]["projection.0.weight"]
+    # Weight SVD keeps the first axis, but almost all observed output energy is on the second.
+    torch.testing.assert_close(compressed[1, 1], torch.tensor(1.0))
+    assert diagnostics["heldout_relative_projection_mse"]["1"] < 0.00001

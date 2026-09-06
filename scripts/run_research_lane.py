@@ -88,6 +88,31 @@ def prepare(spec, root):
                 (w - (u[:, :rank] * s[:rank]) @ v[:, :rank].T).norm() / w.norm()
             )
             save(f"relay_svd{rank}", cp)
+    elif spec["transform"] == "activation_svd":
+        from relayspec.research_compression import activation_compression
+
+        states, diagnostics = activation_compression(
+            base, spec["feature_cache"], spec["ranks"]
+        )
+        provenance["activation_compression"] = diagnostics
+        w = weight.float().cuda()
+        torch.manual_seed(1729)
+        u, singular, v = torch.svd_lowrank(
+            w, q=min(max(spec["ranks"]) + 32, min(w.shape)), niter=4
+        )
+        for rank in spec["ranks"]:
+            cp = copy.deepcopy(base)
+            cp["factorized_rank"] = rank
+            cp["relay"] = {
+                "projection.0.weight": v[:, :rank].T.contiguous().cpu(),
+                "projection.1.weight": (u[:, :rank] * singular[:rank]).cpu(),
+            }
+            save(f"relay_weight{rank}", cp)
+        for rank, state in states.items():
+            cp = copy.deepcopy(base)
+            cp["factorized_rank"] = rank
+            cp["relay"] = state
+            save(f"relay_activation{rank}", cp)
     elif spec["transform"] == "drop_taps":
         taps = base["target_layer_ids"]
         width = weight.shape[1] // len(taps)
