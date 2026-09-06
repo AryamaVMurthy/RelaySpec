@@ -1,6 +1,7 @@
 """Run one shared-reference mapper campaign and verify duplicate-map isolation."""
 
 import argparse
+import copy
 import json
 import os
 import shutil
@@ -23,21 +24,37 @@ def main():
     family = config["proposer"]["family"]
     if family not in {"dflash", "eagle3"}:
         raise ValueError("mapper campaign requires a supported proposer family")
-    subprocess.run(
-        [
-            python,
-            "-m",
-            "torch.distributed.run",
-            "--standalone",
-            "--nproc_per_node=4",
-            "scripts/benchmark_relay.py"
-            if family == "dflash"
-            else "scripts/benchmark_eagle3.py",
-            "--config",
-            str(args.config),
-        ],
-        check=True,
-    )
+    configs = [(args.config, output)]
+    if config["benchmark"].get("isolate_methods", False):
+        configs = []
+        for method in config["benchmark"]["methods"]:
+            child = copy.deepcopy(config)
+            child["benchmark"]["methods"] = [method]
+            child["benchmark"].pop("isolate_methods", None)
+            if family == "dflash":
+                child["benchmark"]["unload_source_trunk"] = method.startswith("relay_")
+            probe = child.get("relay_probe", {})
+            for key in ("variants", "drafter_updates"):
+                if key in probe:
+                    probe[key] = {k: v for k, v in probe[key].items() if k == method}
+            child_output = output / "isolated" / method
+            child_output.mkdir(parents=True, exist_ok=True)
+            child_path = child_output / "config.yaml"
+            child_path.write_text(yaml.safe_dump(child, sort_keys=False))
+            configs.append((child_path, child_output))
+    for child_path, child_output in configs:
+        subprocess.run(
+            [python, "-m", "torch.distributed.run", "--standalone",
+             "--nproc_per_node=4",
+             "scripts/benchmark_relay.py" if family == "dflash"
+             else "scripts/benchmark_eagle3.py", "--config", str(child_path)],
+            env={**os.environ, "RELAYSPEC_OUTPUT": str(child_output)}, check=True,
+        )
+    if config["benchmark"].get("isolate_methods", False):
+        for rank in range(4):
+            with (output / f"benchmark-rank{rank}.jsonl").open("w") as merged:
+                for _, child_output in configs:
+                    merged.write((child_output / f"benchmark-rank{rank}.jsonl").read_text())
     subprocess.run(
         [
             python,
