@@ -106,3 +106,21 @@ labels, nonfinite values, coverage drift and incorrect averaging fail explicitly
 Eighteen focused evidence/domain/campaign tests pass. The unchanged legacy branch
 also re-audits the eight collected 14B fits successfully. No GPU rerun is needed
 for this local evidence check, and no composition result is yet claimed.
+
+Prepared scripts/audit_composition_caches.py for both the compatibility and full
+cache stages. Each collected run must include a byte-identical copy of its
+scratch cache-index.json, retrieved as a small read-only artifact after the job
+finishes. The copied index hash must match the original GPU gate. The new
+manifest-entry audit verifies each record hash, ordered prefix, domain label,
+feature dimensions, tensor-file identity and actual token/byte totals, including
+per-domain counts. It does not claim to inspect remote tensor contents; fitting
+consumers independently hash those bytes before training.
+
+The compatibility audit also reconstructs all four 16-update fit logs, domain
+validation and recorded gradient tolerances, and checks all eight duplicate-map
+outputs directly from raw decoding. Full extraction requires the matching
+source-bound pilot registry for each arm and the same version-2 manifests.
+Twenty-eight focused input/domain/fit-evidence tests pass, including reordered
+records, missing/duplicate entries, changed labels and inconsistent totals.
+CLI/lint checks pass; actual composition GPU outputs are still pending, so no
+pilot or proper-cache completion is claimed yet.
