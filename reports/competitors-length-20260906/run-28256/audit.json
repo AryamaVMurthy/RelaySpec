@@ -1,0 +1,114 @@
+{
+  "status": "pass",
+  "records": 16,
+  "summary": {
+    "requests": 4,
+    "clusters": 4,
+    "reference": "native_ar",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 5.137088860623989,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 32.0,
+        "token_matches": 4,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 24.91683587199077
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 4.594854040959041,
+        "throughput_ratio": 0.8944470624557029,
+        "throughput_ci95": [
+          0.8437429523602441,
+          0.9565848965367115
+        ],
+        "request_time_ratio": 0.8944470624557029,
+        "request_time_ci95": [
+          0.8437429523602441,
+          0.9565848965367115
+        ],
+        "mean_output_tokens": 32.0,
+        "token_matches": 3,
+        "progress_per_cycle": 2.3833333333333333,
+        "request_seconds": 27.85725049348548
+      },
+      "optimized_source_reuse": {
+        "tokens_per_second": 1.954209378662735,
+        "throughput_ratio": 0.3804118308409721,
+        "throughput_ci95": [
+          0.3549367474511607,
+          0.3985704593834071
+        ],
+        "request_time_ratio": 0.38041183084097213,
+        "request_time_ci95": [
+          0.3549367474511607,
+          0.3985704593834072
+        ],
+        "mean_output_tokens": 32.0,
+        "token_matches": 3,
+        "progress_per_cycle": 2.641509433962264,
+        "request_seconds": 65.49963448010385
+      },
+      "relay_dense_n512": {
+        "tokens_per_second": 4.548780541429257,
+        "throughput_ratio": 0.8854782669413913,
+        "throughput_ci95": [
+          0.8345385505195886,
+          0.9429769091327058
+        ],
+        "request_time_ratio": 0.8854782669413914,
+        "request_time_ci95": [
+          0.8345385505195885,
+          0.9429769091327058
+        ],
+        "mean_output_tokens": 32.0,
+        "token_matches": 3,
+        "progress_per_cycle": 2.35,
+        "request_seconds": 28.139409855939448
+      }
+    }
+  },
+  "sequence_metrics": {
+    "native_ar": {
+      "mean_prefill_seconds": 4.811170812929049,
+      "decode_tokens_per_second": 22.590490491042438,
+      "max_peak_allocated_gib": 24.03153944015503,
+      "max_incremental_peak_gib": 7.765869140625
+    },
+    "native_target_dflash": {
+      "mean_prefill_seconds": 4.8624743381515145,
+      "decode_tokens_per_second": 15.76242994435362,
+      "max_peak_allocated_gib": 34.4882287979126,
+      "max_incremental_peak_gib": 16.269336223602295
+    },
+    "optimized_source_reuse": {
+      "mean_prefill_seconds": 13.174328723340295,
+      "decode_tokens_per_second": 10.008624980191234,
+      "max_peak_allocated_gib": 36.55572748184204,
+      "max_incremental_peak_gib": 12.797608375549316
+    },
+    "relay_dense_n512": {
+      "mean_prefill_seconds": 4.99347272713203,
+      "decode_tokens_per_second": 15.693524058282437,
+      "max_peak_allocated_gib": 33.49483633041382,
+      "max_incremental_peak_gib": 16.40702247619629
+    }
+  },
+  "input_sha256": {
+    "/home/aryamavmurthy/work/RelaySpec-scaling/reports/competitors-length-20260906/run-28256/config.yaml": "7351e4e8bc766b39677a74cf86ebe7590764e3b83010772630bef318710eeaff",
+    "configs/submission/competitors-length-20260906/context-32768.json": "8a2432ad64f4b2e7a7d72c7db59f7b50fa5715b4864a4fd43464ed3623051c8c",
+    "/home/aryamavmurthy/work/RelaySpec-scaling/reports/competitors-length-20260906/run-28256/benchmark-rank0.jsonl": "2a30dde2e72406c44b1e45be1970ff77f1ef30501c4c91c89d2fd031d5e7e6b9",
+    "/home/aryamavmurthy/work/RelaySpec-scaling/reports/competitors-length-20260906/run-28256/benchmark-rank1.jsonl": "98481fffae951eefc08cc789430b27b3c08eb52202ba547eebed4b8770e4c583",
+    "/home/aryamavmurthy/work/RelaySpec-scaling/reports/competitors-length-20260906/run-28256/benchmark-rank2.jsonl": "46272be272f31a63bc7228134a275194a7d6cff0acc8e1e67d2cb195c00e1a51",
+    "/home/aryamavmurthy/work/RelaySpec-scaling/reports/competitors-length-20260906/run-28256/benchmark-rank3.jsonl": "3d7e3967a25c85c4be0b55452473caed63eb7b5644a125ec4ec76800554c798c"
+  },
+  "scope": "Paired development measurements. PARD uses verifier-observed replicas. Context memory follows the config: isolate_methods uses fresh per-method processes; otherwise controls co-reside. DFlash AR retains the benchmark source drafter. Incremental peak is also recorded. No task-quality claim from throughput."
+}

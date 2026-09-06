@@ -52,3 +52,7 @@ Files: create manifest/config builder in `scripts/`, configs under `configs/subm
 - Context pilots28232/28233 failed at32K with CUDA OOM while baseline models co-resided. Their eight dependent sweeps were canceled automatically without GPU allocation.
 - Revision b9dd3e6 isolates each method in a fresh four-worker process and unloads the unneeded DFlash source trunk for RelaySpec. Replacement pilots28256/28257 use15-minute safety limits, then full16-request cells have30-minute limits. No retraining or hidden truncation.
 - Method order is sequential across processes, so isolated memory is interpretable but timing does not have within-request method-order rotation. DFlash AR still loads the small source drafter; report this memory overhead explicitly.
+
+- DFlash replacement32K pilot28256 passed and full4K28258 passed64 rows. Full sweeps28258–28261 submitted.
+- EAGLE isolated32K source reuse still OOM in28257. Preserve this measured boundary; replacement28266 tests32K without the failed cell and28267 tests all methods at16K. Fulls28268–28271 are gated on those pilots.
+- PARD-2 audited quality/speed summaries and current exact job ledger are in reports/competitors-length-20260906/.

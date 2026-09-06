@@ -37,37 +37,26 @@ def plot():
         return
     for family, rows in series.items():
         rows.sort()
-        fig, axes = plt.subplots(1, 3, figsize=(13, 3.7))
-        for method in rows[0][1]["summary"]["methods"]:
-            xs = [n for n, _ in rows]
-            axes[0].plot(
-                xs,
-                [a["summary"]["methods"][method]["tokens_per_second"] for _, a in rows],
-                marker="o",
-                label=method,
-            )
-            axes[1].plot(
-                xs,
-                [
-                    a["sequence_metrics"][method]["mean_prefill_seconds"]
-                    for _, a in rows
-                ],
-                marker="o",
-            )
-            axes[2].plot(
-                xs,
-                [
-                    a["sequence_metrics"][method]["max_incremental_peak_gib"]
-                    for _, a in rows
-                ],
-                marker="o",
-            )
+        fig, axes = plt.subplots(1, 4, figsize=(16, 3.7))
+        methods = sorted({m for _, a in rows for m in a["summary"]["methods"]})
+        for method in methods:
+            available = [(n, a) for n, a in rows if method in a["summary"]["methods"]]
+            xs = [n for n, _ in available]
+            metrics = [
+                [a["summary"]["methods"][method]["tokens_per_second"] for _, a in available],
+                [a["sequence_metrics"][method]["decode_tokens_per_second"] for _, a in available],
+                [a["sequence_metrics"][method]["mean_prefill_seconds"] for _, a in available],
+                [a["sequence_metrics"][method]["max_peak_allocated_gib"] for _, a in available],
+            ]
+            for ax, ys in zip(axes, metrics, strict=True):
+                ax.plot(xs, ys, marker="o", label=method)
         for ax, title in zip(
             axes,
             [
                 "End-to-end tokens/s",
+                "Decode tokens/s",
                 "Mean time to first token (s)",
-                "Incremental peak allocated GiB",
+                "Peak allocated GiB",
             ],
             strict=True,
         ):
@@ -78,7 +67,7 @@ def plot():
             ax.grid(alpha=0.25)
         axes[0].legend(fontsize=6)
         fig.suptitle(
-            f"{family}: completed cells only ({len(rows)}/4), fixed 256-token output cap"
+            f"{family}: completed cells only ({len(rows)}/4), fixed 256-token output cap; absent cells are unmeasured/OOM"
         )
         fig.tight_layout()
         fig.savefig(BASE / f"{family}.png", dpi=180)
