@@ -1,0 +1,162 @@
+{
+  "status": "declared_before_rate_check",
+  "input_sha256": {
+    "reports/mapper-scaling-20260905/target14b-eagle3-fit-results.json": "79977470c59b10ab133f67b2a3e2598ccc0393ae8b0ef75816e77b7037b254d2"
+  },
+  "large_data_scaling": "paused",
+  "reference_learning_rate": 0.0006,
+  "trials": [
+    {
+      "name": "eagle314-dense-n512-s1729-lr0.0002",
+      "study": "target14_eagle_optimization_check",
+      "architecture": "dense",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 512,
+      "learning_rate": 0.0002,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        256,
+        384,
+        512,
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 512,
+          "presentations": 2048
+        }
+      },
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle314-dense-n512-s1729-lr6e-05",
+      "study": "target14_eagle_optimization_check",
+      "architecture": "dense",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 512,
+      "learning_rate": 6e-05,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        256,
+        384,
+        512,
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 512,
+          "presentations": 2048
+        }
+      },
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle314-factorized4096-n2048-s1729-lr0.0002",
+      "study": "target14_eagle_optimization_check",
+      "architecture": "factorized",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0002,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        1024,
+        1536,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "width": 4096,
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "eagle314-mlp4096-n2048-s1729-lr0.0002",
+      "study": "target14_eagle_optimization_check",
+      "architecture": "mlp",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0002,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        128,
+        512,
+        1024,
+        1536,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": false,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "width": 4096,
+      "cache_backend": "buffer",
+      "device_cache": false
+    }
+  ],
+  "pilot": "Four independent 16-update fits and capped decoding, 540-second process and ten-minute Slurm limit. Exact original EAGLE14 cache. Full fixed8192-update fits only after pilot passes.",
+  "question": "Check whether lower learning rates reduce late dense512 degradation and the wide linear2048 spike. Include matched MLP4096 lower-rate control. No new data or architecture.",
+  "selection": "Retain all four checks and original references. Fixed8192 endpoints. Report full train/validation trajectories and paired decoding separately. Do not select a horizon from generation or claim an optimal architecture from feature loss.",
+  "scope": "Targeted development optimization check, one fitting seed. Does not replace required final confirmation or establish full-answer quality."
+}
