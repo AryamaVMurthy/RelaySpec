@@ -42,3 +42,12 @@ Neither generated configs nor local checks establish a successful quality run.
 Only the bounded pilot is eligible for initial submission. EAGLE trainable
 baselines, target14B replication, composition, final confirmation, manuscript
 integration and full visual review remain in the overall goal.
+
+Queued pilot27946 from source d0388569b88ead28342a16719807aeaf30c8ed6d,
+at /home/aryama.murthy/relayspec-eagle-quality-d038856, afterany:27945.
+The held allocation was verified as four GPUs and ten minutes before release.
+Collector ledger: reports/mapper-scaling-20260905/eagle3-small-quality-pilot/jobs.json.
+The original272-row EAGLE capacity campaign's saved scores and analysis were
+reproduced exactly by a fresh pinned-scorer replay from copied raw text. This
+validates the replay mechanism, not the new2048-token quality outcome.
+Full quality is declared but not submitted.
