@@ -63,8 +63,8 @@ def main():
     )
     config.update(
         worker_objectives=[variant["objective"]] * 4,
-        learning_rate=fit["learning_rate"],
-        learning_rate_end=fit["learning_rate_end"],
+        learning_rate=variant["learning_rate"],
+        learning_rate_end=fit.get("learning_rate_end", config["learning_rate_end"]),
         worker_updates=[128, 256, 512, 1024],
         convergence_screen={
             "registry": str(registry_path),
