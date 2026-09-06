@@ -74,6 +74,7 @@ for length in [4096, 8192, 16384, 32768]:
             manifest_path=str(ROOT / f"context-{length}.json"),
             benchmarks=["context_scaling"],
             max_prompts=16,
+            isolate_methods=True,
         )
         c["benchmark"]["methods"] = [
             m for m in c["benchmark"]["methods"] if "n2048" not in m

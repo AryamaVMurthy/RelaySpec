@@ -114,7 +114,7 @@ def audit(run):
             str(p): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in [config_path, manifest_path, *files]
         },
-        "scope": "Paired development measurements. PARD uses verifier-observed replicas. Context memory includes co-resident controls; incremental peak is also recorded. No task-quality claim from throughput.",
+        "scope": "Paired development measurements. PARD uses verifier-observed replicas. Context memory follows the config: isolate_methods uses fresh per-method processes; otherwise controls co-reside. DFlash AR retains the benchmark source drafter. Incremental peak is also recorded. No task-quality claim from throughput.",
     }
     (run / "audit.json").write_text(json.dumps(result, indent=2) + "\n")
     if pard:

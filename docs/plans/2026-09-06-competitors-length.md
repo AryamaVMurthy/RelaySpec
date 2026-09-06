@@ -45,3 +45,10 @@ Files: create manifest/config builder in `scripts/`, configs under `configs/subm
 2. Score math competitor outputs with the existing pinned scorer and report paired uncertainty.
 3. Determine EDA feasibility from the actual code and document required model/architecture changes before training.
 4. Update the paper only with completed audited comparisons, and separately correct TriSpec/PARD-2/EDA positioning.
+
+## Execution update
+
+- PARD-2 setup28190/pilot28196/full28201 completed; 384 paired rows and verifier replicas passed audit. Pinned math scoring completed.
+- Context pilots28232/28233 failed at32K with CUDA OOM while baseline models co-resided. Their eight dependent sweeps were canceled automatically without GPU allocation.
+- Revision b9dd3e6 isolates each method in a fresh four-worker process and unloads the unneeded DFlash source trunk for RelaySpec. Replacement pilots28256/28257 use15-minute safety limits, then full16-request cells have30-minute limits. No retraining or hidden truncation.
+- Method order is sequential across processes, so isolated memory is interpretable but timing does not have within-request method-order rotation. DFlash AR still loads the small source drafter; report this memory overhead explicitly.
