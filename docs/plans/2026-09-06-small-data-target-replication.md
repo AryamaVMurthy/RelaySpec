@@ -135,3 +135,13 @@ after audit success. Record actual Slurm IDs and keep the total at four GPUs.
 The registry/campaign integrity and existing mapper tests passed (22 tests),
 including rejection of omitted seed controls and subsequently changed raw
 fitting evidence. The full proper-fit audit is still pending actual job output.
+
+Prepared scripts/audit_target14_capacity.py for the forthcoming endpoint runs.
+It binds all 16 declared endpoints, the complete fit registry and raw input
+hashes, campaign source/config, exact common 16-request membership, correct
+answer references and mapper hashes. Saved raw output is independently rescored
+with the pinned scorer. It computes paired comparisons against AR, source reuse,
+available native EAGLE and the seed-1729 dense2048 reference. The 256-token scores
+remain short-output diagnostics, not full-answer quality or noninferiority.
+The script passes formatting, lint and CLI import checks; validation against
+actual 14B capacity output remains pending. No new decoding result is claimed.
