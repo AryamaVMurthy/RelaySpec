@@ -36,6 +36,7 @@ from relayspec.mapper_campaign import campaign_model_methods, restore_mapper
 from relayspec.profiling import CudaRegionRecorder
 from relayspec.proposers import RelayContextProvider, SourceContextProvider
 from relayspec.relay import TargetFeatureRelay
+from relayspec.sequence_scaling import validate_exact_input
 from relayspec.source import SourceTapProvider
 
 
@@ -498,18 +499,29 @@ def main() -> None:
                             *histories[method],
                             {"role": "user", "content": user_content},
                         ]
-                        encoded = tokenizer.apply_chat_template(
-                            messages,
-                            tokenize=True,
-                            add_generation_prompt=True,
-                            enable_thinking=False,
-                            return_tensors="pt",
-                        )
-                        input_ids = (
-                            encoded["input_ids"]
-                            if hasattr(encoded, "keys")
-                            else encoded
-                        ).to(device)
+                        if "input_ids" in record:
+                            exact_ids = validate_exact_input(
+                                record,
+                                vocab_size=target.config.vocab_size,
+                                max_positions=target.config.max_position_embeddings,
+                                output_cap=int(config.generation.max_new_tokens),
+                            )
+                            input_ids = torch.tensor(
+                                [exact_ids], dtype=torch.long, device=device
+                            )
+                        else:
+                            encoded = tokenizer.apply_chat_template(
+                                messages,
+                                tokenize=True,
+                                add_generation_prompt=True,
+                                enable_thinking=False,
+                                return_tensors="pt",
+                            )
+                            input_ids = (
+                                encoded["input_ids"]
+                                if hasattr(encoded, "keys")
+                                else encoded
+                            ).to(device)
                         row = run_method(
                             method,
                             available[method],
