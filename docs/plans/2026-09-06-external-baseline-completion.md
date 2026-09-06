@@ -196,3 +196,20 @@ be treated as proof of noninferiority through a degenerate bootstrap.
 
 Large-data scaling remains paused. All current jobs are quality evaluation
 of frozen models; future fitting stays within512 or2048 distinct examples.
+
+Full SD-square initial deployment27919 failed before inference in7seconds
+because the vendor archive was extracted at the project root. Its
+27920 dependent job was cancelled without allocation. Preserve the
+failed raw packaging artifacts and ledger. A clean replacement directory
+extracts vendor files under vendor/sd-square and verifies every pinned
+Python source hash before submission. Replacement jobs27921/27922 use
+the same immutable source26f10fb and unchanged experiment configs.
+Collector478038 covers the replacement jobs. No numerical retry or
+protocol change was involved.
+
+The30-page manuscript now contains raw-audited SD-square epoch costs
+and common decoding, plus PARD full capped quality. Main text remains
+nine pages and42 citation keys resolve. All technical audits pass.
+Page27 was visually inspected in color after rebuilding: tables, text,
+line numbers and boundaries are legible with no clipping. Full color/
+grayscale review of all30 pages remains pending, so overall QA staysFAIL.

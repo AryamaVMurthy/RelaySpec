@@ -1138,8 +1138,8 @@ We evaluate SD$^2$'s public frozen-drafter option and the released PARD
 parallel drafter on sixteen exposed MATH development requests with a
 256-token cap. Each system has a correct cached AR control using its
 own target runtime and identical pretokenized inputs. These are short
-development comparisons. Full-answer quality and final confirmation
-remain separate requirements.
+development comparisons. Below we separately evaluate capped answer
+quality. Untouched confirmation remains a separate requirement.
 
 SD$^2$ trains 402,665,472 steering parameters with merged guidance from
 target layers 3, 16 and 33 into all drafter layers. Inherited target and
@@ -1192,6 +1192,66 @@ The sequence differences in these tables require separate task-quality
 evidence. Absolute speeds across these public runtimes do not isolate
 algorithm effects, and shared model residency does not measure isolated
 serving memory.
+
+\clearpage
+\subsection{Additional epochs and capped answer quality}
+
+After the six-rate screen, we fix KL and the selected learning rate
+and fit for 1, 2, 4 and 8 epochs on the same 512 examples. These are
+four fresh fits, each with its own learning-rate decay horizon, rather
+than checkpoints from one training trajectory. The one-epoch fit exactly
+reproduces the selected earlier training fingerprint. All four endpoints
+are evaluated together on the same sixteen development requests, with
+the public SD$^2$ runtime and matched controls.
+
+\begin{table}[H]
+\caption{SD$^2$ epoch budget at fixed 512 distinct examples. Training KL
+is the mean over updates in each final epoch. It is not held-out loss.
+Independent-drafter throughput is 18.75 tokens/s. Intervals resample
+paired requests and do not adjust for model selection.}
+\label{tab:sd-square-epochs}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/sd_square_epoch_table.tex}
+\end{table}
+
+Training KL decreases from 0.3923 to 0.1254, while every fitted endpoint
+has a throughput point below the independent drafter. Additional epochs
+do not establish a decoding improvement in this fixed-pool setting.
+The highest-throughput fitted endpoint remains one epoch. We freeze
+this checkpoint before longer quality evaluation. This result concerns
+the tested frozen-drafter configuration, supervision and pool, and does
+not establish a general failure of SD$^2$ or its other training options.
+
+\begin{table}[H]
+\caption{PARD capped answer quality on 128 exposed MATH development
+requests, after an eight-request pilot passed. Both methods use the
+same 2048-token cap and public BF16 eager runtime. Cap hits include
+all outputs reaching the cap. None ends in EOS exactly at the cap.}
+\label{tab:pard-quality}
+\centering\footnotesize
+\input{generated/pard_quality_table.tex}
+\end{table}
+
+PARD has five beneficial and three adverse correctness discordances
+against AR, a difference of $+1.56$ percentage points. A conservative
+paired 95\% interval is $[-6.34,9.30]$ points: form exact 97.5\%
+Clopper--Pearson intervals for each discordance probability and combine
+their opposite endpoints using a Bonferroni bound. This construction
+requires IID request pairs and a fixed candidate. It does not establish
+the final one-point noninferiority margin. The descriptive paired
+bootstrap interval is $[-2.34,5.47]$ points. Sparse or absent discordances
+can make such intervals misleadingly narrow. The conservative method
+was fixed for final confirmation before generating that set, without
+changing its margin, sample count or reserve rules.
+
+PARD matches AR's full capped token sequence on 28 of 128 requests.
+Its mean output length is 664.5 tokens versus AR's 690.4, so the
+3.34-fold token-throughput ratio differs from the 3.47-fold request-time
+ratio. Every measured PARD request retains a separate, exactly matching
+verifier-observed replica. These are development outcomes under the
+specified runtime and scorer, not untouched confirmation or an isolated
+algorithm ranking across runtimes.
 
 \clearpage
 \section{Acceptance and numerical agreement}

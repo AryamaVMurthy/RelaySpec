@@ -43,6 +43,41 @@ def main():
                     "reports/mapper-scaling-20260905/pard-campaign/jobs.json",
                 ],
             ),
+            (
+                "sd-square-epochs",
+                "audit_sd_square_epochs.py",
+                [
+                    "--raw-root",
+                    str(args.raw_root),
+                    "--run",
+                    str(base / "sd-square-epochs/run-27912"),
+                ],
+            ),
+            (
+                "sd-square-epoch-decoding",
+                "audit_sd_square_campaign.py",
+                [
+                    "--epoch-run",
+                    str(base / "sd-square-epochs/run-27912"),
+                    "--runs",
+                    str(base / "sd-square-epoch-decoding/run-27913"),
+                    str(base / "sd-square-epoch-decoding/run-27914"),
+                    "--ledger",
+                    "reports/mapper-scaling-20260905/sd-square-epoch-decoding/jobs.json",
+                ],
+            ),
+            (
+                "pard-quality-full",
+                "audit_pard_campaign.py",
+                [
+                    "--run",
+                    str(base / "pard-quality-full/run-27916"),
+                    "--ledger",
+                    "reports/mapper-scaling-20260905/pard-quality-full/jobs.json",
+                    "--config",
+                    "configs/submission/baselines/pard-quality-full.json",
+                ],
+            ),
         ]:
             expected = Path(temporary) / f"{name}.json"
             subprocess.run(
@@ -109,11 +144,46 @@ def main():
             + r"\\"
         )
     ptable += [r"\bottomrule", r"\end{tabular}"]
+    etable = [
+        r"\begin{tabular}{rrrrr}",
+        r"\toprule",
+        r"Epochs & Fit seconds & Final-epoch training KL & Tok/s & Independent ratio [95\% CI] \\",
+        r"\midrule",
+    ]
+    for fit in results["sd-square-epochs"]["records"]:
+        row = results["sd-square-epoch-decoding"]["comparisons"]["sd2_independent"][
+            "methods"
+        ][f"sd2_epoch{fit['epochs']}"]
+        lo, hi = row["throughput_ci95"]
+        etable.append(
+            f"{fit['epochs']} & {fit['training_seconds']:.2f} & {fit['epoch_mean_training_losses'][-1]:.4f} & "
+            f"{row['tokens_per_second']:.2f} & {row['throughput_ratio']:.4f} [{lo:.4f}, {hi:.4f}] "
+            + r"\\"
+        )
+    etable += [r"\bottomrule", r"\end{tabular}"]
+    full = results["pard-quality-full"]
+    qtable = [
+        r"\begin{tabular}{lrrrr}",
+        r"\toprule",
+        r"Setting & Tok/s & AR ratio [95\% CI] & Correct & Cap hits \\",
+        r"\midrule",
+    ]
+    for name, label in [("native_ar", "Matched eager AR"), ("pard", "Released PARD")]:
+        row = full["comparison"]["methods"][name]
+        counts = full["capped_quality"]["methods"][name]
+        lo, hi = row["throughput_ci95"]
+        qtable.append(
+            f"{label} & {row['tokens_per_second']:.2f} & {row['throughput_ratio']:.3f} [{lo:.3f}, {hi:.3f}] & "
+            f"{counts['correct_count']}/128 & {counts['cap_count']} " + r"\\"
+        )
+    qtable += [r"\bottomrule", r"\end{tabular}"]
     generated = args.output / "generated"
     generated.mkdir(parents=True, exist_ok=True)
     for name, rows in [
         ("sd_square_development_table.tex", table),
         ("pard_development_table.tex", ptable),
+        ("sd_square_epoch_table.tex", etable),
+        ("pard_quality_table.tex", qtable),
     ]:
         (generated / name).write_text("\n".join(rows) + "\n")
     (generated / "external_baseline_evidence_registry.json").write_text(

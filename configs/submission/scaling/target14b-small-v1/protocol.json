@@ -1,0 +1,74 @@
+{
+  "status": "declared_before_target14b_small_fits",
+  "large_data_scaling": "paused",
+  "max_gpus_total": 4,
+  "families": [
+    "dflash",
+    "eagle3"
+  ],
+  "target": "Qwen/Qwen3-14B",
+  "pilot": {
+    "distinct_training_examples": 64,
+    "validation_examples": 16,
+    "updates": 16,
+    "purpose": "new-interface compatibility only, not scientific data scaling",
+    "max_seconds": 600,
+    "methods": "dense, factor512, MLP512, L2 MLP512, duplicate dense, runtime-local AR/source controls and pinned EAGLE native control"
+  },
+  "proper_fits": {
+    "distinct_examples": [
+      512,
+      2048
+    ],
+    "validation_examples": 1024,
+    "architectures": [
+      {
+        "kind": "dense"
+      },
+      {
+        "kind": "factorized",
+        "width": 512
+      },
+      {
+        "kind": "factorized",
+        "width": 1024
+      },
+      {
+        "kind": "factorized",
+        "width": 4096
+      },
+      {
+        "kind": "mlp",
+        "width": 512
+      },
+      {
+        "kind": "mlp",
+        "width": 1024
+      },
+      {
+        "kind": "mlp",
+        "width": 4096
+      }
+    ],
+    "initial_seed": 1729,
+    "batch_size": 4,
+    "updates": 8192,
+    "learning_rate": 0.0006,
+    "weight_decay": 0.0,
+    "l2_weight": 0.0,
+    "followup": "matched rate checks for wide models and selected seeds after initial capacity decoding; report all tested settings",
+    "new_full_cache_requires": "successful matching target/family end-to-end pilot",
+    "normalization": {
+      "dflash": true,
+      "eagle3": false
+    }
+  },
+  "scope": "Replicate the frozen small/intermediate/large capacity anchors on14B, not search larger distinct-data pools. DFlash14B has no native-target comparator in the frozen local inventory, so use runtime-local AR, source reuse and matched dense reference without substituting an8B drafter. EAGLE14B includes its pinned native-target proposer. Hold exact data IDs/order and supervision settings across capacities within family. Across-family losses are not pooled. Preserve task-quality and untouched confirmation requirements.",
+  "input_sha256": {
+    "configs/submission/scaling/campaign-pilot.yaml": "06264f2cb0d766a9912a6f7748e7a71babd7d01b06b2d71fc22f2dc8b0f39c50",
+    "configs/protocol_active/train_dflash_qwen3_14b_relative_4gpu.yaml": "37980d84567fb15da5eb2ddca9b60d5090150865e67029d2cee4454f306e63da",
+    "configs/protocol_active/eagle3_qwen3_14b_math500_native_full_4gpu.yaml": "cc2438aa4d1e79ee606147eb70c7f06a7c3944b2d5d5069572404f6c936fee51",
+    "configs/submission/scaling/campaign-eagle3-8b-pilot.yaml": "85c164e2c0c9d3bcdcde59cfda4462c600dadb5203a68c52e943aa8e9efcaa11",
+    "configs/protocol_active/train_eagle3_qwen3_14b_scale_linear_4gpu.yaml": "ba13b7d13f9443ff6f9ca0821ee908202008d83274bb97edb74f08cecfcad050"
+  }
+}
