@@ -48,3 +48,11 @@ mapper campaign validation. Actual GPU cache equivalence, duplicate fitting and
 longer generation are not established by these CPU tests. The pilot declaration
 and pinned source/model/cache/checkpoint identities are in
 reports/mapper-scaling-20260905/eagle3-adaptation-pilot/declaration.json.
+
+Queued pilot27952 from immutable source844e066a3196ffab90250a27b90e5d641a3a97bd
+at /home/aryama.murthy/relayspec-eagle-adaptation-844e066, afterany:27946.
+Held submission was verified as four GPUs and ten minutes; the actual scratch
+cache-index SHA matches the declaration. CUBLAS_WORKSPACE_CONFIG=:4096:8 is
+explicit in submission. Ledger and collection use eagle3-adaptation-pilot/jobs.json.
+This is a bounded infrastructure pilot; proper calibration, rate and time-budget
+runs remain unsubmitted until it passes.
