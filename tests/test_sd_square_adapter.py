@@ -7,6 +7,7 @@ from relayspec.sd_square_adapter import (
     capture_sd_square_step,
     collate_sd_square_records,
     committed_tokens,
+    finalize_sd_square_trace,
 )
 
 
@@ -106,3 +107,31 @@ def test_collation_preserves_records_and_excludes_padding_from_public_loss_mask(
     assert records[1].tolist() == [[4, 5]]
     with pytest.raises(ValueError, match="capped at192"):
         collate_sd_square_records([torch.ones(1, 193, dtype=torch.long)], 9)
+
+
+def test_deferred_observer_preserves_decisions_after_source_buffers_change():
+    model = SimpleNamespace(
+        greedy_sample=True,
+        _relayspec_trace=[],
+        _relayspec_tensor_trace=[],
+        _relayspec_capture_tensors=True,
+        NG=2,
+    )
+    ids = torch.tensor([[7, 3, 2, 4]])
+    logits = torch.nn.functional.one_hot(torch.tensor([[3, 2, 4]]), 8).float()
+    capture_sd_square_step(
+        model,
+        ids,
+        0,
+        torch.tensor([2]),
+        torch.tensor([[4]]),
+        logits,
+        torch.tensor([False]),
+        torch.ones_like(ids),
+        torch.arange(4)[None],
+    )
+    ids.zero_()
+    logits.zero_()
+    trace = finalize_sd_square_trace(model)
+    assert committed_tokens(trace, 64, 2) == ([3, 2], [3, 2, 4])
+    assert trace[0]["verifier_argmax"] == [3, 2, 4]

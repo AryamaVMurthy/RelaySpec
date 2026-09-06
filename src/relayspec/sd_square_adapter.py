@@ -86,6 +86,21 @@ def capture_sd_square_step(
 ):
     if ids.shape[0] != 1:
         raise ValueError("acceptance observer currently requires batch one")
+    if getattr(model, "_relayspec_capture_tensors", False):
+        if not model.greedy_sample:
+            raise ValueError(
+                "deferred observation currently verifies greedy decoding only"
+            )
+        model._relayspec_tensor_trace.append(
+            {
+                "ended": ended.detach().clone(),
+                "accepted": accepted.detach().clone(),
+                "proposed": ids[0, curr + 1 : curr + model.NG + 1].detach().clone(),
+                "next_token": next_token.detach().clone(),
+                "argmax": logits[0].argmax(-1).detach(),
+            }
+        )
+        return
     if bool(ended[0]):
         return
     count = int(accepted[0])
@@ -125,6 +140,32 @@ def committed_tokens(trace, cap, eos):
     if eos in raw[:end]:
         end = raw.index(eos) + 1
     return raw[:end], raw
+
+
+def finalize_sd_square_trace(model):
+    """Materialize and verify captured GPU decisions after the request timer stops."""
+    result = []
+    for block in model._relayspec_tensor_trace:
+        if bool(block["ended"][0]):
+            continue
+        count = int(block["accepted"][0])
+        tokens = block["proposed"][:count].cpu().tolist() + [
+            int(block["next_token"][0, 0])
+        ]
+        target = block["argmax"][: count + 1].cpu().tolist()
+        if tokens != target:
+            raise ValueError(
+                "SD-square committed a token differing from its greedy verifier"
+            )
+        result.append(
+            {
+                "accepted_draft_tokens": count,
+                "tokens": tokens,
+                "verifier_argmax": target,
+            }
+        )
+    model._relayspec_trace = result
+    return result
 
 
 def collate_sd_square_records(records, pad_token_id):
