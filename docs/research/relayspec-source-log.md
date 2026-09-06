@@ -548,3 +548,19 @@ Presentation changes follow the recurring review questions: compare with AR,
 include absolute throughput, expose the native-drafter reference, account for
 additional training work, preserve workload scope, distinguish accepted progress
 from proposal acceptance, and separate observed output agreement from task quality.
+
+## Expanded positioning revision, 6 September 2026
+
+Rechecked primary sources for the expanded main related-work section. Existing bibliography entries are retained. No claim of priority for linear maps or cross-target drafter reuse is made.
+
+- `chen2026dflash`: https://arxiv.org/abs/2602.06036 . The camera-ready metadata states ICML 2026 acceptance. Parallel block drafting consumes target context features. RelaySpec changes the conditioning provider for an inherited checkpoint.
+- `li2025eagle3`: https://proceedings.neurips.cc/paper_files/paper/2025/hash/c7b5a35ea98b62512a869c19ea7b03cb-Abstract-Conference.html and https://arxiv.org/abs/2503.01840 . NeurIPS 2025. Multi-layer feature fusion and direct token prediction distinguish the inherited drafter from our interface-regression objective.
+- `an2026pard`: https://arxiv.org/abs/2504.18583 . The primary abstract verifies target-independent reuse, parallel prediction and conditional drop-token adaptation. OpenReview's forum returned a browser challenge this turn; the previously verified ICLR 2026 venue entry is retained. Target-independent deployment is a genuine alternative with no new target-specific fit, not an omitted advantage.
+- `berdoz2026sd2`: https://ojs.aaai.org/index.php/AAAI/article/view/40255 . AAAI 2026. Verifier-state steering is injected into a pretrained drafter. Public-runtime measurements concern our declared frozen-drafter option, not every SD² variant.
+- `ramakrishnan2025omnidraft`: https://proceedings.neurips.cc/paper_files/paper/2025/hash/3c2fe1417eed1c6ff9acf169617981ea-Abstract-Conference.html . NeurIPS 2025. Online n-gram cache and hybrid distillation address cross-vocabulary use. Our offline shared-vocabulary experiments do not establish this capability.
+- `smith2025stitching`: https://proceedings.mlr.press/v267/smith25a.html . ICML 2025. Functional alignment does not establish informational equivalence. Used to explain why the experiments evaluate decoding and quality rather than feature agreement alone.
+- `huo2026repspec`: https://openreview.net/pdf/12b1b9334e46f7b5f40d2b264cb87aba202dc964.pdf . ICLR 2026. Training-time re-parameterization differs from fitting the inherited input boundary.
+- `zou2026vsd`: https://arxiv.org/abs/2602.05774 . Primary abstract verifies sequence-acceptance training. Venue remains the previously verified institutional ICML entry.
+- `lei2026draftopd`: https://arxiv.org/abs/2605.29343 . Preprint, labeled as such in the related work. On-policy drafter distillation is positioned as an alternative objective, not a baseline we claim to have reproduced.
+
+Numerical positioning uses audited repository experiments. The strongest matched claim is that feature regression wins all three measured warm-budget comparisons against connector CE and both LoRA fits. The larger cross-runtime speedups are descriptive deployment measurements and do not establish algorithm-only superiority. Dense linear mapping leads the completed 8B long-output mapper comparisons, but this does not imply dominance at every fixed parameter/data count, on all 14B screens, or over native target-specific drafters.

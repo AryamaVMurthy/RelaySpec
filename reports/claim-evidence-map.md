@@ -34,3 +34,10 @@ Updated after the authorized post-window confirmation and composition studies on
 - Production serving throughput, algorithm-only cross-runtime superiority, or 195×/130× training-compute savings. Published drafter recipe counts describe inherited training context only.
 
 Paths beginning `generated/` or `figures/` refer to `paper/iclr2027/`. Unqualified scaling result filenames refer to `reports/mapper-scaling-20260905/`. Numerical interpretation is conditional on each registry's recorded protocol and raw source identity.
+
+## Explicit positioning in the revised main paper
+
+- **Practical contribution:** replace the inherited drafter's source-conditioning interface with target-derived features, preserve the frozen target and drafter, and remove source-transformer execution. The novelty claim concerns this speculative-decoder interface and the demonstrated data, capacity and deployment consequences. Linear connectors and cross-target reuse have precedents, acknowledged in related work.
+- **Simplicity tested against alternatives:** dense mapping achieves the highest mapper throughput across each completed 8B longer-output capacity comparison. This does not assert dominance at every individual data size or parameter count, over native controls, or on all 14B settings. The MLP, factored-linear, regularization and fitting-trajectory results make the architecture choice an empirical finding.
+- **Strongest controlled baseline claim:** feature regression wins every tested warm optimizer budget against connector CE and both LoRA seeds. Main Table 4 exposes all 12 throughput values, with the full paired evidence in Appendix C.7. The scope remains the recorded short development evaluation and warm fitting protocol.
+- **Public baseline context:** RelaySpec records 193.68 tokens/s (5.14× its AR), PARD 105.63 (3.34×), and the tested frozen SD-square configuration 19.92 (1.60×). Main text reports the measured comparison alongside runtime differences, without claiming an algorithm-only or universal ranking.

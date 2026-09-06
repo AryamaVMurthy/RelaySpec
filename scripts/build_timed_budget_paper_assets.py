@@ -95,6 +95,28 @@ def main():
     controls += [r"\bottomrule", r"\end{tabular}"]
     generated = args.output / "generated"
     generated.mkdir(parents=True, exist_ok=True)
+    compact = [
+        r"\begin{tabular}{lrrr}",
+        r"\toprule",
+        r"Adaptation & 22.9 s & 91.4 s & 365.6 s \\",
+        r"\midrule",
+    ]
+    for method, label in labels.items():
+        values = []
+        for multiplier in (0.25, 1, 4):
+            name = f"relay_budget{round(multiplier * 100):03d}_" + method.removeprefix(
+                "relay_"
+            )
+            row = result["matched_budget_against_feature"][str(multiplier)]["methods"][
+                name
+            ]
+            value = f"{row['tokens_per_second']:.2f}"
+            values.append(
+                r"\textbf{" + value + "}" if method == "relay_feature" else value
+            )
+        compact.append(label + " & " + " & ".join(values) + r" \\")
+    compact += [r"\bottomrule", r"\end{tabular}"]
+    (generated / "timed_budget_main_table.tex").write_text("\n".join(compact) + "\n")
     (generated / "timed_budget_table.tex").write_text("\n".join(table) + "\n")
     (generated / "timed_budget_controls_table.tex").write_text(
         "\n".join(controls) + "\n"
