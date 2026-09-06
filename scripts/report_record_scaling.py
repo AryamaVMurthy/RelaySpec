@@ -1,5 +1,6 @@
 """Plot completed, scored distinct-record scaling cells without mixing datasets."""
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -14,6 +15,12 @@ BASE = ROOT / "reports/data-scaling-20260906"
 
 
 def main():
+    global BASE
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--base", type=Path, default=BASE)
+    parser.add_argument("--fixed-only", action="store_true")
+    args = parser.parse_args()
+    BASE = args.base.resolve()
     ledger = json.loads((BASE / "jobs.json").read_text())
     fit = next(j for j in ledger["jobs"] if j["kind"] == "cached_fit")
     full = next(j for j in ledger["jobs"] if j["kind"] == "data_evaluation_full")
@@ -23,13 +30,20 @@ def main():
         raise ValueError("Fitting gate failed")
     analysis = json.loads((eval_path / "analysis.json").read_text())
     methods = analysis["tasks"]["math500"]["methods"]
-    fixed = [(n, f"relay_n{n}_fixed") for n in [512, 2048, 4096, 8192, 16384, 32768]]
+    fixed = [
+        (n, f"relay_n{n}_fixed")
+        for n in [16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768]
+        if f"relay_n{n}_fixed" in methods
+    ]
     epochs = [
         (n, f"relay_n{n}_epoch1" if n != 32768 else "relay_n32768_fixed")
         for n in [4096, 8192, 16384, 32768]
     ]
-    panels = {"fixed_8192_updates": fixed, "one_epoch": epochs}
-    fig, axes = plt.subplots(1, 2, figsize=(10, 3.8))
+    panels = {"fixed_8192_updates": fixed}
+    if not args.fixed_only:
+        panels["one_epoch"] = epochs
+    fig, axes = plt.subplots(1, len(panels), figsize=(10, 3.8), squeeze=False)
+    axes = axes[0]
     summary = {}
     for ax, (label, points) in zip(axes, panels.items(), strict=True):
         xs = [n for n, _ in points]
