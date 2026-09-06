@@ -243,3 +243,8 @@ uses fixed development indices24--31, including the failing request.
 The original eight-request pilot/config and result reproduce unchanged.
 A guarded full batch requires both the audited diagnosis and the matching
 new pilot; it cannot be promoted solely from the earlier pilot.
+
+Guard-policy pilot jobs27928/27929 use source759b0a3 and four GPUs each,
+with ten-minute ceilings and afterok sequencing. They cover development
+indices24--31 at2048 scored tokens with runtime-local AR. Collector487770
+is active. Do not use39 partial rows from27921 in the final128 comparison.

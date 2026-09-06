@@ -60,3 +60,14 @@ Queued bounded extraction27926 (DFlash) and27927 (EAGLE), using the passed
 matching pilots. Each extracts2048 training and1024 validation records,
 with at most ten minutes and four GPUs. They follow termination
 diagnosis27925 sequentially. Collector486037 handles both cache outputs.
+
+Extraction27926/27927 both passed in1m59s, producing32,589,626,496bytes
+each and exactly2048 train/1024 validation entries. DFlash index SHA is
+6db523b44d7cac89e9b59cb250dea29a6c06729d2381a9d486d9d23b8da91c07.
+EAGLE index SHA is
+c35ea12d2164a5a3576667f05824ecf91d8b5829dd84ae80d764d375127ffdb2.
+Source-bound pilot and extraction gate links match. Actual shards and
+index are revalidated by fitting before use. Capacity pilots27931/27932
+use source759b0a3, widths512/4096 and only16 updates. They run sequentially
+after the guarded SD-square pilots27928/27929; collector488196 covers
+both. No proper fit is launched before its exact cache capacity pilot.
