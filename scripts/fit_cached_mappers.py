@@ -104,7 +104,10 @@ def main():
         raise ValueError("timed feature fitting requires a bounded fresh trajectory")
     if n < 4 or n % 4 or n > len(entries) or steps <= 0:
         raise ValueError("trial data/update budget is invalid")
-    entries = entries[:n]
+    from relayspec.calibration_subset import training_window
+
+    offset = trial.get("training_record_offset", 0)
+    entries = training_window(index["entries"], n, offset)
     l2 = float(trial.get("l2_weight", 0))
     decay = float(trial.get("weight_decay", 0))
     if any(not math.isfinite(x) or x < 0 for x in [l2, decay]) or (l2 and decay):
@@ -159,6 +162,9 @@ def main():
     )
     output = Path(os.environ["RELAYSPEC_OUTPUT"]) / trial["name"]
     output.mkdir(parents=True, exist_ok=False)
+    (output / "training-selection.json").write_text(
+        json.dumps({"offset": offset, "count": n, "entries": entries}, indent=2) + "\n"
+    )
     (output / "initialization.json").write_text(json.dumps(initialization_record, indent=2) + "\n")
     (output / "trial.json").write_text(json.dumps(trial, indent=2) + "\n")
     objective = trial.get("feature_objective", "relative_interface_mse")
