@@ -443,16 +443,19 @@ The NuminaMath capacity study crosses 512/2,048 examples with dense,
 factored linear and GELU MLP maps over seven widths, using 8,192
 updates per cell. This holds parameter count equal between each
 factored map and MLP. Validation error decreases with capacity and
-then flattens (Figure~\ref{fig:numina-capacity}). The measured 128-question,
-2,048-token decoding comparison gives dense $N=512$ 193.68 tokens/s
-versus 198.09 for dense $N=2048$, retaining 97.78\% [97.09, 98.47]\%.
+then flattens (Figure~\ref{fig:numina-capacity}). On 128 questions at a
+2,048-token cap, dense $N=512$ retains 97.78\% [97.09,98.47]\% of
+$N=2048$ throughput.
 Linear-1024 at $N=512$ retains 95.00\% [94.14, 95.85]\% with 23.59M
 parameters instead of 52.43M. The latter interval crosses the 95\%
 boundary. These are development comparisons with fixed fitting seeds.
 
-A separately frozen two-layer DFlash interface uses 60\% fewer mapper
-parameters and retains 97.63\% [96.23, 99.03]\% throughput on 64 new
-GSM8K questions, with identical outputs (Appendix~\ref{app:interface-compression}).
+Two-layer conditioning also transfers to native drafting. Frozen
+retargeted and native two-layer interfaces each cut projection parameters
+by 60\%, retaining 97.63\% [96.23,99.03]\% and 97.05\%
+[95.93,98.21]\% throughput on disjoint 64-question GSM8K sets.
+Outputs match their respective full-interface references
+(Appendix~\ref{app:interface-compression}).
 
 EAGLE-3 repeats the dense data-count contrast on the same development
 questions, retaining 98.28\% [97.59, 99.01]\%. Its matched MLP remains
@@ -1220,6 +1223,28 @@ exposed GSM8K requests with a 512-token cap. Retention is relative to
 each worker's paired full mapper. Errors use the common fitting and
 validation sets.}
 \label{tab:downscale-depth}
+\end{table}
+
+
+A matched-capacity nonlinear follow-up does not recover that deficit
+(Table~\ref{tab:downscale-nonlinearity}). Width-1,137 MLP and factorized
+maps each have 5,239,296 parameters, versus 5,242,880 for late dense.
+MLPs lower training error from about 0.332 to 0.303--0.304 and validation
+error from 0.351 to 0.345, yet retain only 81.1--83.1\% throughput at
+two fitting seeds. Factorized maps retain 83.1--84.2\%; their paired
+late-dense controls retain 82.8--84.3\%. The same eight questions are
+reused across seeds. This closes the tested fitting intervention,
+without establishing that later features are unrecoverable in principle.
+
+\begin{table}[H]
+\centering\small
+\input{generated/downscale_nonlinearity_table.tex}
+\caption{Matched-size nonlinear follow-up for 0.6B late-layer mapping.
+Both architectures use layers [19,25], 512 records and 8,192 updates.
+Retention is relative to each worker's full mapper on the same eight
+exposed questions; fitting seeds do not add independent evaluation
+samples. Better feature regression does not close the decoding deficit.}
+\label{tab:downscale-nonlinearity}
 \end{table}
 
 \paragraph{Expanded NuminaMath data curve.}

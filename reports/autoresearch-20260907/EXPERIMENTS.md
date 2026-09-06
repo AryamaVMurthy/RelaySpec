@@ -124,6 +124,10 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 35 / 1 | 28525 | dflash / fit_reduced_taps | pass | 79.5 | 8 | relay_reduced: 79.9% |
 | 35 / 2 | 28525 | dflash / fit_reduced_taps | pass | 80.2 | 8 | relay_reduced: 82.2% |
 | 35 / 3 | 28525 | dflash / fit_reduced_taps | pass | 86.7 | 8 | relay_reduced: 60.7% |
+| 36 / 0 | 28526 | dflash / fit_reduced_taps | pass | 93.4 | 8 | relay_late_dense: 83.1%; relay_reduced: 81.1% |
+| 36 / 1 | 28526 | dflash / fit_reduced_taps | pass | 96.0 | 8 | relay_late_dense: 84.3%; relay_reduced: 84.2% |
+| 36 / 2 | 28526 | dflash / fit_reduced_taps | pass | 93.6 | 8 | relay_late_dense: 82.9%; relay_reduced: 83.1% |
+| 36 / 3 | 28526 | dflash / fit_reduced_taps | pass | 96.2 | 8 | relay_late_dense: 82.8%; relay_reduced: 83.1% |
 
 ## Four-GPU pipeline stages
 
