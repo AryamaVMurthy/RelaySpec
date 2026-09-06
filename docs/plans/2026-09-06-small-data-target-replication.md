@@ -165,3 +165,13 @@ with afterany resource sequencing, has a ten-minute allocation and 540-second
 process limit, and was released only after verifying its held four-GPU request
 and deployed config/source hashes. Collection/scoring is tracked by
 reports/mapper-scaling-20260905/target14b-capacity-dflash/jobs.json.
+
+The DFlash14 fitting report and validation-trajectory figure now regenerate from
+the audited registry with scripts/summarize_target14_fitting.py. Two complete
+builds reproduce the Markdown, PNG and PDF hashes; the plotted page was inspected
+in color and grayscale. The 512-example dense and wide maps show small late
+validation increases, while every 2048-example fit has its best saved validation
+at the fixed endpoint. Wide MLP512-data loss rises from 0.27389 at4096 updates to
+0.27839 at8192; the 2048-data endpoint reaches0.21467. This does not select a
+decoding checkpoint or establish a unique optimum. Preserve full trajectories,
+including step0, and separate training-seed from request uncertainty.
