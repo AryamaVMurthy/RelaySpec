@@ -238,6 +238,10 @@ def prepare(spec, root):
     else:
         raise ValueError("Unknown research transform")
     (root / "transform.json").write_text(json.dumps(provenance, indent=2) + "\n")
+    for name, candidate in spec.get("controls", {}).items():
+        if name in variants or not Path(candidate).is_file():
+            raise ValueError(f"Duplicate or missing control: {name}")
+        variants[name] = candidate
     return variants
 
 
