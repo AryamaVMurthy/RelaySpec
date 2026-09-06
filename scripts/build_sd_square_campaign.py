@@ -118,6 +118,12 @@ def main():
         "verification_protocol": str(protocol_path),
         "verification_protocol_sha256": digest(protocol_path),
         "seed": 1729,
+        "inference_precision": {
+            "target": "float16",
+            "drafter": "bfloat16",
+            "steering": "bfloat16",
+            "autocast": "bfloat16",
+        },
         "manifest_path": "configs/eval_manifest.json",
         "requests": 16,
         "max_new_tokens": 256,
@@ -126,7 +132,9 @@ def main():
         "variants": variants,
         "fitting_input_sha256": evidence,
         "original_exact_ar_gates": protocol["original_exact_ar_gates"],
-        "scope": "Six predeclared512-example SD-square objective/rate fits, zero-guidance and "
+        "scope": "Public eval.py inference storage uses FP16 target and BF16 drafter/steering with BF16 autocast. "
+        "Training and converted inference steering fingerprints are separately verified. "
+        "Six predeclared512-example SD-square objective/rate fits, zero-guidance and "
         "independent-drafter controls, and correct runtime-local AR. Sixteen paired exposed "
         "development requests with256-token cap. Immediate/deferred observer equality is "
         "checked before measurements. GPU decision capture is timed, CPU materialization and "

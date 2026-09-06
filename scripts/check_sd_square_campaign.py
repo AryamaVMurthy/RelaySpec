@@ -19,6 +19,7 @@ def main():
     output = Path(os.environ["RELAYSPEC_OUTPUT"])
     config_sha = hashlib.sha256(args.config.read_bytes()).hexdigest()
     groups, inputs, records = {}, {}, []
+    fingerprints = None
     for rank in range(4):
         worker_path = output / f"campaign-rank{rank}.json"
         worker = json.loads(worker_path.read_text())
@@ -27,10 +28,31 @@ def main():
             or worker["rank"] != rank
             or worker["config_sha256"] != config_sha
             or not worker["frozen_parameter_versions_and_storage_unchanged"]
+            or worker["inference_precision"] != config["inference_precision"]
             or set(worker["observer_equality"])
             != set(config["variants"]) - {"native_ar"}
         ):
             raise ValueError("SD-square campaign worker is incomplete")
+        identities = worker["steering_fingerprints"]
+        expected_names = {
+            n
+            for n, v in config["variants"].items()
+            if v["kind"] in {"steering", "zero_guidance"}
+        }
+        if set(identities) != expected_names or (
+            fingerprints is not None and identities != fingerprints
+        ):
+            raise ValueError("SD-square inference identities differ across workers")
+        fingerprints = identities
+        for name, identity in identities.items():
+            if (
+                identity["training_sha256"]
+                != config["variants"][name].get("trainable_sha256")
+                or len(identity["inference_sha256"]) != 64
+            ):
+                raise ValueError(
+                    "SD-square inference identity lacks training provenance"
+                )
         for probe in worker["observer_equality"].values():
             if (
                 probe["status"] != "pass"
@@ -101,6 +123,12 @@ def main():
                 "checkpoint_sha256"
             ) or row["steering_trainable_sha256"] != value.get("trainable_sha256"):
                 raise ValueError("SD-square decoded another steering checkpoint")
+            if row["steering_inference_sha256"] != identities.get(
+                row["method"], {}
+            ).get("inference_sha256"):
+                raise ValueError(
+                    "SD-square row differs from verified inference weights"
+                )
         for p in (worker_path, path):
             inputs[p.name] = hashlib.sha256(p.read_bytes()).hexdigest()
         records.extend(rows)
@@ -121,6 +149,8 @@ def main():
                 "requests": len(groups),
                 "methods": list(config["variants"]),
                 "input_sha256": inputs,
+                "inference_precision": config["inference_precision"],
+                "steering_fingerprints": fingerprints,
                 "ar_exact_counts": {
                     m: sum(
                         g[m]["output_ids"] == g["native_ar"]["output_ids"]

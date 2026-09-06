@@ -9,12 +9,13 @@ import time
 from pathlib import Path
 
 import torch
-from pilot_sd_square import cached_ar, digest, tensor_digest
+from pilot_sd_square import cached_ar, digest
 
 from relayspec.benchmarking import benchmark_turns
 from relayspec.sd_square_adapter import (
     committed_tokens,
     finalize_sd_square_trace,
+    load_inference_steering,
     load_sd_square,
 )
 
@@ -80,6 +81,11 @@ def main():
         greedy_sample=True,
         **settings,
     ).to(device)
+    # Public eval.py casts these modules after loading the FP32 training state.
+    # The inherited verifier stays FP16, including for runtime-local AR.
+    model.d_base.to(torch.bfloat16)
+    model.latent_mod_prep.to(torch.bfloat16)
+    model.guidance_embd_layer.to(torch.bfloat16)
     named = [(n, p) for n, p in model.named_parameters() if p.requires_grad]
     initial = {n: p.detach().cpu().clone() for n, p in named}
     named_ids = {id(p) for _, p in named}
@@ -89,6 +95,22 @@ def main():
         if id(p) not in named_ids
     ]
     guidance = model.v_base.get_decoder().guidance_embd_layer
+    if (
+        config["inference_precision"]
+        != {
+            "target": "float16",
+            "drafter": "bfloat16",
+            "steering": "bfloat16",
+            "autocast": "bfloat16",
+        }
+        or any(p.dtype != torch.bfloat16 for p in model.d_base.parameters())
+        or any(
+            p.dtype != torch.float16
+            for p in model.v_base.parameters()
+            if id(p) not in named_ids
+        )
+    ):
+        raise ValueError("SD-square public inference precision differs")
     model.eval().requires_grad_(False)
     records = [
         r
@@ -108,7 +130,7 @@ def main():
         prompts.append((record, ids))
     if len(prompts) != 4:
         raise ValueError("SD-square worker lacks four declared prompts")
-    validated = {}
+    validated, fingerprints = {}, {}
 
     def select(name):
         value = config["variants"][name]
@@ -129,16 +151,10 @@ def main():
             if value["kind"] == "steering"
             else initial
         )
-        if set(saved) != {n for n, _ in named}:
-            raise ValueError("SD-square campaign steering names changed")
-        with torch.no_grad():
-            for key, parameter in named:
-                parameter.copy_(saved[key])
-        if (
-            value["kind"] == "steering"
-            and tensor_digest(named) != value["trainable_sha256"]
-        ):
-            raise ValueError("SD-square campaign loaded different steering weights")
+        identity = load_inference_steering(named, saved, value.get("trainable_sha256"))
+        if name in fingerprints and fingerprints[name] != identity:
+            raise ValueError("SD-square steering identity changed between requests")
+        fingerprints[name] = identity
 
     methods = list(config["variants"])
     for name in methods:
@@ -213,6 +229,9 @@ def main():
                     "verifier_trace": trace,
                     "steering_checkpoint_sha256": value.get("checkpoint_sha256"),
                     "steering_trainable_sha256": value.get("trainable_sha256"),
+                    "steering_inference_sha256": fingerprints.get(name, {}).get(
+                        "inference_sha256"
+                    ),
                 }
                 stream.write(json.dumps(row, sort_keys=True) + "\n")
                 stream.flush()
@@ -228,6 +247,8 @@ def main():
                 "rank": rank,
                 "config_sha256": digest(args.config),
                 "observer_equality": validated,
+                "steering_fingerprints": fingerprints,
+                "inference_precision": config["inference_precision"],
                 "frozen_parameter_versions_and_storage_unchanged": True,
                 "scope": config["scope"],
             },

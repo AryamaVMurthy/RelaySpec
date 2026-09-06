@@ -7,6 +7,44 @@ import types
 from pathlib import Path
 
 
+def steering_digest(named):
+    """Fingerprint names, shapes, storage dtypes and tensor bytes in declared order."""
+    import torch
+
+    result = hashlib.sha256()
+    for name, value in named:
+        result.update(name.encode())
+        result.update(str((tuple(value.shape), value.dtype)).encode())
+        result.update(
+            value.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()
+        )
+    return result.hexdigest()
+
+
+def load_inference_steering(named, saved, training_sha=None):
+    """Verify training bytes before casting, then verify actual inference bytes."""
+    import torch
+
+    if set(saved) != {n for n, _ in named}:
+        raise ValueError("SD-square campaign steering names changed")
+    original_sha = steering_digest([(n, saved[n]) for n, _ in named])
+    if training_sha is not None and original_sha != training_sha:
+        raise ValueError("SD-square training checkpoint fingerprint changed")
+    if any(p.dtype != torch.bfloat16 for _, p in named):
+        raise ValueError("SD-square inference steering must use BF16 storage")
+    converted = [(n, saved[n].to(dtype=torch.bfloat16)) for n, _ in named]
+    expected_sha = steering_digest(converted)
+    with torch.no_grad():
+        for (_, parameter), (name, value) in zip(named, converted, strict=True):
+            if parameter.shape != value.shape:
+                raise ValueError(f"SD-square steering shape changed: {name}")
+            parameter.copy_(value)
+    actual_sha = steering_digest(named)
+    if actual_sha != expected_sha:
+        raise ValueError("SD-square inference weights differ from BF16 conversion")
+    return {"training_sha256": training_sha, "inference_sha256": actual_sha}
+
+
 def load_sd_square(source, config, model_paths):
     source = Path(source).resolve()
     actual = {

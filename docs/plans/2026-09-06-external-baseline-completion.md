@@ -89,3 +89,14 @@ The work above completes a missing baseline track, not the entire paper.
 The remaining small-data transfer/family, composition/complexity,
 mechanism/serving, anonymous reproduction and final visual-review work
 must still be checked against the original execution plan.
+
+## Current execution checkpoint
+
+Full-pool pilot27888 and rate screen27890 passed in2m04s each. Every fit
+visited512 examples in128 batch4 updates. Training took47--48seconds.
+The first common decoding job27895 was cancelled at3m47s because its
+drafter and steering retained FP32 training storage. Preserve partial
+artifacts and exclude its timings. The corrected campaign follows public
+eval.py with BF16 drafter/steering and FP16 inherited target, under BF16
+autocast. Verify original FP32 training fingerprints before conversion
+and separately fingerprint the actual BF16 inference tensors.

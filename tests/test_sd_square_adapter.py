@@ -8,7 +8,24 @@ from relayspec.sd_square_adapter import (
     collate_sd_square_records,
     committed_tokens,
     finalize_sd_square_trace,
+    load_inference_steering,
+    steering_digest,
 )
+
+
+def test_inference_conversion_checks_training_bytes_before_bf16_rounding():
+    saved = {"weight": torch.tensor([1.0001, 2.0001], dtype=torch.float32)}
+    named = [("weight", torch.nn.Parameter(torch.zeros(2, dtype=torch.bfloat16)))]
+    training_sha = steering_digest(list(saved.items()))
+    identity = load_inference_steering(named, saved, training_sha)
+    assert identity["training_sha256"] == training_sha
+    assert identity["inference_sha256"] == steering_digest(named) != training_sha
+    assert torch.equal(named[0][1], saved["weight"].bfloat16())
+    # This change vanishes under BF16 rounding but still must fail provenance.
+    saved["weight"][0] += 0.0001
+    assert torch.equal(named[0][1], saved["weight"].bfloat16())
+    with pytest.raises(ValueError, match="training checkpoint fingerprint"):
+        load_inference_steering(named, saved, training_sha)
 
 
 def test_observer_keeps_eos_before_public_mask_clears_finished_block():
