@@ -8,7 +8,7 @@ PARD_COMMIT = "6f279bf3f1680e0b5d71c562ca5b91bdeef4c038"
 PARD_SOURCE_SHA256 = "9c4ae104e90ccb6a0a3948d011ab5e892cb7733894f812b74ab63270907c5340"
 
 
-def instrument_source(source, *, trace_targets=False):
+def instrument_source(source, *, trace_targets=False, trace_decisions=False):
     """Add request timing and raw-token capture to the exact reviewed source.
 
     All upstream statements remain in their original order. Timings include
@@ -51,7 +51,9 @@ def instrument_source(source, *, trace_targets=False):
     loop.body[:0] = ast.parse(
         "torch.cuda.synchronize()\n_relayspec_request_started = time.perf_counter()\n"
     ).body
-    if trace_targets:
+    if trace_targets or trace_decisions:
+        if trace_targets and trace_decisions:
+            raise ValueError("choose detailed or deferred PARD observation")
         while_loop = next(n for n in loop.body if isinstance(n, ast.While))
         boundaries = [
             i
@@ -65,16 +67,21 @@ def instrument_source(source, *, trace_targets=False):
         if len(boundaries) != 1:
             raise ValueError("PARD verification boundary is ambiguous")
         index = boundaries[0]
-        while_loop.body[index:index] = ast.parse(
+        observation = (
             "self._record_target_trace(all_token, input_token_lenght, target_input, "
             "target_output.logits[:, -draft_tmp_new_token.shape[1] - 1:])\n"
-        ).body
+            if trace_targets
+            else "self._record_target_decisions(all_token, input_token_lenght, new_token_ids)\n"
+        )
+        while_loop.body[index:index] = ast.parse(observation).body
     return ast.fix_missing_locations(tree)
 
 
-def load_instrumented_pard(source_path, *, trace_targets=False):
+def load_instrumented_pard(source_path, *, trace_targets=False, trace_decisions=False):
     source = source_path.read_bytes()
-    tree = instrument_source(source, trace_targets=trace_targets)
+    tree = instrument_source(
+        source, trace_targets=trace_targets, trace_decisions=trace_decisions
+    )
     module = types.ModuleType("relayspec_external_pard")
     module.__file__ = str(source_path)
     exec(compile(tree, str(source_path), "exec"), module.__dict__)
@@ -112,11 +119,22 @@ def load_instrumented_pard(source_path, *, trace_targets=False):
                 }
             )
 
+        def _record_target_decisions(self, all_token, input_length, argmax_ids):
+            self._target_trace.append(
+                {
+                    "output_start": all_token.shape[1] - input_length,
+                    "argmax_ids": argmax_ids[0].detach().clone(),
+                }
+            )
+
         def _record_request(self, all_token, input_length, seconds, profile):
             if self.captured_request is not None:
                 raise ValueError(
                     "capture interface expects exactly one request per call"
                 )
+            if trace_decisions:
+                for entry in self._target_trace:
+                    entry["argmax_ids"] = entry["argmax_ids"].cpu().tolist()
             self.captured_request = {
                 "token_ids": all_token[:, input_length:].detach(),
                 "request_seconds": seconds,
@@ -127,6 +145,24 @@ def load_instrumented_pard(source_path, *, trace_targets=False):
             }
 
     return CapturedPard
+
+
+def verify_pard_decisions(raw, accepted_lengths, trace):
+    """Check every accepted prefix and bonus against the actual greedy target."""
+    offset = 0
+    if not trace or len(trace) != len(accepted_lengths):
+        raise ValueError("PARD decision trace lacks accepted blocks")
+    for length, decision in zip(accepted_lengths, trace, strict=True):
+        if (
+            not 1 <= length <= 13
+            or decision["output_start"] != offset
+            or len(decision["argmax_ids"]) != 13
+            or raw[offset : offset + length] != decision["argmax_ids"][:length]
+        ):
+            raise ValueError("PARD committed output differs from its actual verifier")
+        offset += length
+    if offset != len(raw):
+        raise ValueError("PARD trace does not cover the full raw output")
 
 
 def trim_pard_tokens(token_ids, *, max_new_tokens, eos_token_id):
