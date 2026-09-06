@@ -32,7 +32,13 @@ def main():
     parser.add_argument("--single-trial", action="store_true")
     args = parser.parse_args()
     rank = int(os.environ["LOCAL_RANK"])
-    if int(os.environ["WORLD_SIZE"]) != 4 or torch.cuda.device_count() != 4:
+    expected_devices = (
+        1 if os.environ.get("RELAYSPEC_RESEARCH_SINGLE_GPU") == "1" else 4
+    )
+    if (
+        int(os.environ["WORLD_SIZE"]) != expected_devices
+        or torch.cuda.device_count() != expected_devices
+    ):
         raise ValueError("cached fitting campaign requires four GPU workers")
     torch.cuda.set_device(rank)
     device = torch.device(f"cuda:{rank}")
@@ -50,7 +56,20 @@ def main():
     index = json.loads(index_path.read_text())
     if index["status"] != "pass":
         raise ValueError("feature cache has not passed its completion gate")
-    metadata = index["metadata"]
+    metadata = copy.deepcopy(index["metadata"])
+    all_taps = list(metadata["target_layer_ids"])
+    selected_taps = list(trial.get("target_layer_ids", all_taps))
+    if (
+        not selected_taps
+        or sorted(set(selected_taps)) != selected_taps
+        or not set(selected_taps).issubset(all_taps)
+    ):
+        raise ValueError(
+            "Selected taps must be a sorted, nonempty subset of cached taps"
+        )
+    if selected_taps != all_taps and trial.get("resume_from"):
+        raise ValueError("Reduced-tap continuation is not yet validated")
+    metadata["target_layer_ids"] = selected_taps
     entries = [e for e in index["entries"] if e["split"] == "train"]
     n = int(trial["distinct_examples"])
     steps = int(trial["steps"])
@@ -104,7 +123,17 @@ def main():
     reader = MappedFeatureReader(root) if backend == "mmap" else None
 
     def read_entry(entry):
-        return reader(entry) if reader is not None else load_cached_record(root, entry)
+        x, y = reader(entry) if reader is not None else load_cached_record(root, entry)
+        if selected_taps != all_taps:
+            h = metadata["target_hidden_size"]
+            x = torch.cat(
+                [
+                    x[..., all_taps.index(layer) * h : (all_taps.index(layer) + 1) * h]
+                    for layer in selected_taps
+                ],
+                dim=-1,
+            )
+        return x, y
 
     # Small fitting sets fit comfortably in host memory. Larger sets stream
     # through the shared OS page cache instead of duplicating hundreds of GB.

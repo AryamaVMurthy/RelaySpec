@@ -315,8 +315,8 @@ def relay_dflash_generate(
     mask_token_id = draft.mask_token_id if mask_token_id is None else mask_token_id
     if block_size < 2 or mask_token_id is None:
         raise ValueError("a valid speculative block and mask token are required")
-    if len(relay_target_layer_ids) != len(draft.target_layer_ids):
-        raise ValueError("relay and trained DFlash must use the same number of taps")
+    if not relay_target_layer_ids:
+        raise ValueError("relay must condition on at least one target tap")
 
     draft.eval()
     relay.eval()

@@ -31,7 +31,7 @@ def prepare(spec, root):
             local_files_only=True,
         )
         native = {
-            "target_layer_ids": list(draft.config.target_layer_ids),
+            "target_layer_ids": list(draft.target_layer_ids),
             "relay": {"projection.weight": draft.fc.weight.detach().float().cpu()},
             "relay_architecture": "scale_preserving_linear",
             "steps": 0,
@@ -90,6 +90,66 @@ def prepare(spec, root):
             cp = copy.deepcopy(base)
             cp["relay"]["projection.weight"][:, i * width : (i + 1) * width] = 0
             save(f"relay_drop{layer}", cp)
+    elif spec["transform"] == "fit_reduced_taps":
+        from relayspec.scaling_matrix import validate_cache_access_gate, validate_trial
+
+        cache = Path(spec["feature_cache"])
+        cache_hash = hashlib.sha256(
+            (cache / "cache-index.json").read_bytes()
+        ).hexdigest()
+        pilot = json.loads(Path(spec["pilot_gate"]).read_text())
+        if (
+            pilot["status"] != "pass"
+            or pilot["feature_cache_index_sha256"] != cache_hash
+        ):
+            raise ValueError("Reduced-tap fit requires a passed exact-cache pilot")
+        trial = copy.deepcopy(spec["trial"])
+        validate_trial(trial)
+        access = (
+            json.loads(Path(spec["access_gate"]).read_text())
+            if spec.get("access_gate")
+            else None
+        )
+        validate_cache_access_gate([trial], access, cache_hash)
+        trials_path = root / "trials.json"
+        trials_path.write_text(json.dumps({"trials": [trial]}, indent=2) + "\n")
+        fit_root = root / "fitting"
+        env = {
+            **os.environ,
+            "RELAYSPEC_OUTPUT": str(fit_root),
+            "RELAYSPEC_FEATURE_CACHE": str(cache),
+            "RELAYSPEC_RESEARCH_SINGLE_GPU": "1",
+            "LOCAL_RANK": "0",
+            "RANK": "0",
+            "WORLD_SIZE": "1",
+        }
+        subprocess.run(
+            [
+                os.environ["RELAYSPEC_PYTHON"],
+                "scripts/fit_cached_mappers.py",
+                "--single-trial",
+                "--equivalence-pilot",
+                "--trials",
+                str(trials_path),
+            ],
+            env=env,
+            check=True,
+        )
+        complete = json.loads(
+            (fit_root / trial["name"] / "fit-complete.json").read_text()
+        )
+        if (
+            complete["status"] != "pass"
+            or complete["distinct_records_seen"] != trial["distinct_examples"]
+        ):
+            raise ValueError("Reduced-tap fitting did not complete")
+        path = fit_root / trial["name"] / f"step-{trial['steps']:06d}.pt"
+        cp = torch.load(path, weights_only=True, map_location="cpu")
+        if cp["target_layer_ids"] != trial["target_layer_ids"]:
+            raise ValueError("Exported mapper lost selected taps")
+        variants["relay_reduced"] = str(path)
+        provenance["fit_trial"] = trial
+        provenance["cache_sha256"] = cache_hash
     elif spec["transform"] == "joint_drop":
         taps = list(base["target_layer_ids"])
         width = weight.shape[1] // len(taps)
