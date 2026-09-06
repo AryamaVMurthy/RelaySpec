@@ -13,6 +13,7 @@ def main():
     parser.add_argument("--shard-index", type=int, choices=(0, 1), required=True)
     parser.add_argument("--check-files", action="store_true")
     parser.add_argument("--full", action="store_true")
+    parser.add_argument("--guarded-warmup", action="store_true")
     args = parser.parse_args()
     registry_path = Path(
         "reports/external-baselines-20260906/sd-square-epoch-decoding.json"
@@ -77,7 +78,9 @@ def main():
     }
     if args.full:
         pilot_path = Path(
-            "reports/external-baselines-20260906/sd-square-quality-pilot.json"
+            "reports/external-baselines-20260906/sd-square-quality-guarded-pilot.json"
+            if args.guarded_warmup
+            else "reports/external-baselines-20260906/sd-square-quality-pilot.json"
         )
         pilot = json.loads(pilot_path.read_text())
         if (
@@ -87,6 +90,11 @@ def main():
             or pilot["variants"] != result["variants"]
             or pilot["steering_fingerprints"]["sd2_selected"] != identity
             or protocol["development"]["quality_requests"] != 128
+            or (
+                args.guarded_warmup
+                and pilot.get("warmup_policy")
+                != "record_public_physical_slot_guard_only_for_untimed_warmup"
+            )
         ):
             raise ValueError(
                 "SD-square full quality requires the matching eight-request pilot"
@@ -105,6 +113,23 @@ def main():
             "time includes GPU observation and excludes CPU materialization/detokenization. "
             "Capped answer scoring is separate. No untouched confirmation, final quality-margin "
             "claim, isolated memory or algorithm-only cross-runtime ranking.",
+        )
+    if args.guarded_warmup:
+        diagnosis = Path(
+            "reports/external-baselines-20260906/sd-square-termination.json"
+        )
+        if json.loads(diagnosis.read_text())["status"] != "complete":
+            raise ValueError(
+                "guarded warmup requires audited public termination reproduction"
+            )
+        result["prerequisites"][str(diagnosis)] = digest(diagnosis)
+        result["warmup_policy"] = (
+            "record_public_physical_slot_guard_only_for_untimed_warmup"
+        )
+        if not args.full:
+            result["request_offset"] = 24 + 4 * args.shard_index
+        result["scope"] += (
+            " Untimed16-token warmup records the public physical-slot guard as a known termination reason. Actual verifier equality stays strict, and scored generation still requires EOS or cap. Guard-policy pilot uses development indices24--31 including failed index26."
         )
     args.output.write_text(json.dumps(result, indent=2) + "\n")
 

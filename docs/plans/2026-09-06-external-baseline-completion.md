@@ -226,3 +226,20 @@ Diagnostic caps16/64 use immediate and deferred observers on requests
 24--27. Actual verifier equality remains strict, and normal scored
 requests retain their original EOS/cap completion requirement. Unit tests
 cover the physical guard, ordinary cap/EOS and unexplained early stops.
+
+Diagnosis27925 passed in1m01s and its gate reproduces from all four raw
+worker traces. Failed request26 yields15 tokens in seven cycles atcap16,
+exactly the public physical-slot guard. Atcap64 it reaches64 counted
+(71 raw) tokens in20cycles. Every immediate/deferred trace is identical,
+with actual verifier agreement and unchanged inherited weights.
+
+Implement a prospective warmup-only policy: retain the public16-token
+warmup request and record cap, EOS or its explained physical-slot guard.
+Unexpected stops still fail. Measured2048-token generation keeps the
+strict EOS/cap check and every warmup trace is recorded and reverified.
+This changes the harness's treatment of an unscored public return, not
+public generation statements or the checkpoint. New eight-request pilot
+uses fixed development indices24--31, including the failing request.
+The original eight-request pilot/config and result reproduce unchanged.
+A guarded full batch requires both the audited diagnosis and the matching
+new pilot; it cannot be promoted solely from the earlier pilot.

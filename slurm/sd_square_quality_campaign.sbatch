@@ -31,6 +31,9 @@ mkdir -p "$RELAYSPEC_OUTPUT" "$TMP_PATH"
 cp SOURCE_COMMIT "$RELAYSPEC_OUTPUT/source-commit.txt"
 cp "$SD_SQUARE_SETUP_GATE" "$RELAYSPEC_OUTPUT/setup-gate.json"
 quality_args=()
+if [[ "${SD_SQUARE_GUARDED_WARMUP:-0}" == 1 ]]; then
+  quality_args+=(--guarded-warmup)
+fi
 if [[ "${SD_SQUARE_QUALITY_PHASE:-quality_pilot}" == quality_full ]]; then
   quality_args+=(--full)
 elif [[ "${SD_SQUARE_QUALITY_PHASE:-quality_pilot}" != quality_pilot ]]; then
@@ -39,7 +42,7 @@ elif [[ "${SD_SQUARE_QUALITY_PHASE:-quality_pilot}" != quality_pilot ]]; then
 fi
 "$RELAYSPEC_PYTHON" scripts/build_sd_square_quality_campaign.py "${quality_args[@]}" --shard-index "$SD_SQUARE_SHARD_INDEX" --check-files --output "$RELAYSPEC_OUTPUT/campaign-config.json"
 export SD_SQUARE_PROCESS_TIMEOUT_SECONDS="${SD_SQUARE_PROCESS_TIMEOUT_SECONDS:-540}"
-"$RELAYSPEC_PYTHON" -c 'import json,os,sys; c=json.load(open(sys.argv[1])); t=int(os.environ["SD_SQUARE_PROCESS_TIMEOUT_SECONDS"]); assert 0<t<=540 or (c["phase"]=="quality_full" and 540<t<=2640 and len(c["prerequisites"])==2), "unapproved duration or missing pilot"' "$RELAYSPEC_OUTPUT/campaign-config.json"
+"$RELAYSPEC_PYTHON" -c 'import json,os,sys; c=json.load(open(sys.argv[1])); t=int(os.environ["SD_SQUARE_PROCESS_TIMEOUT_SECONDS"]); assert 0<t<=540 or (c["phase"]=="quality_full" and 540<t<=2640 and len(c["prerequisites"])==(3 if c.get("warmup_policy") else 2)), "unapproved duration or missing pilot"' "$RELAYSPEC_OUTPUT/campaign-config.json"
 tar -czf "$RELAYSPEC_OUTPUT/source-snapshot.tar.gz" src scripts configs slurm vendor/sd-square SOURCE_COMMIT reports/external-baselines-20260906 reports/mapper-scaling-20260905/sd-square-epochs/jobs.json
 "$RELAYSPEC_PYTHON" scripts/check_allocation.py > "$RELAYSPEC_OUTPUT/allocation.jsonl"
 nvidia-smi --query-gpu=timestamp,index,name,utilization.gpu,memory.used --format=csv -l 10 > "$RELAYSPEC_OUTPUT/gpu.csv" &

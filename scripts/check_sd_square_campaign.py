@@ -8,7 +8,7 @@ import os
 import struct
 from pathlib import Path
 
-from relayspec.sd_square_adapter import committed_tokens
+from relayspec.sd_square_adapter import committed_tokens, termination_status
 
 
 def main():
@@ -86,6 +86,26 @@ def main():
                 raise ValueError("duplicate SD-square request/method")
             group[row["method"]] = row
             if value["kind"] != "ar":
+                if config.get("warmup_policy"):
+                    warmup = row["warmup"]
+                    status = termination_status(
+                        warmup["trace"], config["warmup_tokens"], 151645, 8
+                    )
+                    if (
+                        config["warmup_policy"]
+                        != "record_public_physical_slot_guard_only_for_untimed_warmup"
+                        or any(warmup[k] != v for k, v in status.items())
+                        or status["reason"] == "unexplained_early_stop"
+                        or any(
+                            b["tokens"] != b["verifier_argmax"]
+                            or len(b["tokens"]) != b["accepted_draft_tokens"] + 1
+                            or not 0 <= b["accepted_draft_tokens"] <= 8
+                            for b in warmup["trace"]
+                        )
+                    ):
+                        raise ValueError(
+                            "warmup termination or actual verifier proof differs"
+                        )
                 tokens, raw = committed_tokens(
                     row["verifier_trace"], config["max_new_tokens"], 151645
                 )

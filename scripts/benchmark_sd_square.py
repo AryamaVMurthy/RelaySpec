@@ -59,6 +59,13 @@ def main():
             or json.loads(prerequisite.read_text())["status"] != "complete"
         ):
             raise ValueError("SD-square longer-output prerequisite did not pass")
+    if config.get("warmup_policy") and (
+        config["warmup_policy"]
+        != "record_public_physical_slot_guard_only_for_untimed_warmup"
+        or "reports/external-baselines-20260906/sd-square-termination.json"
+        not in config.get("prerequisites", {})
+    ):
+        raise ValueError("guarded warmup requires the audited termination diagnosis")
     if (
         digest(source_path) != config["source_config_sha256"]
         or setup["status"] != "pass"
@@ -265,7 +272,24 @@ def main():
                         seconds = time.perf_counter() - started
                     raw, trace = tokens, []
                 else:
-                    generate(model, ids, config["warmup_tokens"], True)
+                    warmup = generate(
+                        model,
+                        ids,
+                        config["warmup_tokens"],
+                        True,
+                        require_complete=not config.get("warmup_policy"),
+                    )
+                    if config.get("warmup_policy"):
+                        if (
+                            config["warmup_policy"]
+                            != "record_public_physical_slot_guard_only_for_untimed_warmup"
+                        ):
+                            raise ValueError("undeclared warmup policy")
+                        warmup_status = termination_status(
+                            warmup[2], config["warmup_tokens"], model.eot_id, model.NG
+                        )
+                        if warmup_status["reason"] == "unexplained_early_stop":
+                            raise ValueError("unexplained SD-square warmup termination")
                     tokens, raw, trace, seconds = generate(
                         model, ids, config["max_new_tokens"], True
                     )
@@ -303,6 +327,8 @@ def main():
                         "inference_sha256"
                     ),
                 }
+                if config.get("warmup_policy") and value["kind"] != "ar":
+                    row["warmup"] = {"trace": warmup[2], **warmup_status}
                 stream.write(json.dumps(row, sort_keys=True) + "\n")
                 stream.flush()
     if any(

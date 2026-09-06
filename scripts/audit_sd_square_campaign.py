@@ -32,6 +32,11 @@ def audit_shard(args, run, index):
                 sys.executable,
                 "scripts/build_sd_square_quality_campaign.py",
                 *(["--full"] if getattr(args, "quality_full", False) else []),
+                *(
+                    ["--guarded-warmup"]
+                    if getattr(args, "guarded_warmup", False)
+                    else []
+                ),
                 "--shard-index",
                 str(index),
                 "--output",
@@ -101,6 +106,7 @@ def main():
     fitting.add_argument("--quality-full", action="store_true")
     parser.add_argument("--runs", type=Path, nargs=2, required=True)
     parser.add_argument("--ledger", type=Path, required=True)
+    parser.add_argument("--guarded-warmup", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     shards = [audit_shard(args, run, i) for i, run in enumerate(args.runs)]
@@ -219,6 +225,8 @@ def main():
     }
     if quality is not None:
         result["capped_quality"] = quality
+    if config.get("warmup_policy"):
+        result["warmup_policy"] = config["warmup_policy"]
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(summaries["native_ar"]))
 
