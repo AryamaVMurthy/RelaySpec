@@ -138,6 +138,37 @@ def prepare(spec, root):
         ):
             raise ValueError("Reduced-tap fit requires a passed exact-cache pilot")
         trial = copy.deepcopy(spec["trial"])
+        if spec.get("native_teacher"):
+            from relayspec.dflash import import_official_dflash
+
+            config = yaml.safe_load(Path(spec["config"]).read_text())
+            klass, _ = import_official_dflash(
+                os.environ["DFLASH_SOURCE"], config["proposer"]["source_commit"]
+            )
+            draft = klass.from_pretrained(
+                config["proposer"]["id"],
+                revision=config["proposer"]["revision"],
+                cache_dir=os.environ["TRANSFORMERS_CACHE"],
+                dtype=torch.bfloat16,
+                local_files_only=True,
+            )
+            teacher_path = storage / "native-teacher.pt"
+            torch.save(
+                {
+                    "weight": draft.fc.weight.detach().cpu(),
+                    "norm_weight": draft.hidden_norm.weight.detach().cpu(),
+                    "eps": draft.hidden_norm.variance_epsilon,
+                    "target_layer_ids": list(draft.target_layer_ids),
+                    "target": config["target"],
+                    "proposer": config["proposer"],
+                },
+                teacher_path,
+            )
+            trial["native_teacher"] = str(teacher_path)
+            trial["native_teacher_sha256"] = hashlib.sha256(
+                teacher_path.read_bytes()
+            ).hexdigest()
+            del draft
         validate_trial(trial)
         access = (
             json.loads(Path(spec["access_gate"]).read_text())

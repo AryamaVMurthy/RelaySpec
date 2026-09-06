@@ -70,6 +70,27 @@ def main():
     if selected_taps != all_taps and trial.get("resume_from"):
         raise ValueError("Reduced-tap continuation is not yet validated")
     metadata["target_layer_ids"] = selected_taps
+    native_teacher = None
+    if trial.get("native_teacher"):
+        teacher_path = Path(trial["native_teacher"])
+        if (
+            hashlib.sha256(teacher_path.read_bytes()).hexdigest()
+            != trial["native_teacher_sha256"]
+        ):
+            raise ValueError("Native teacher hash changed")
+        native_teacher = torch.load(
+            teacher_path, weights_only=True, map_location=device
+        )
+        if (
+            native_teacher["target_layer_ids"] != all_taps
+            or native_teacher["target"] != metadata["config"]["target"]
+            or metadata["family"] != "dflash"
+            or trial.get("resume_from")
+        ):
+            raise ValueError("Native teacher does not match the cached target")
+        metadata["draft_hidden_size"] = native_teacher["weight"].shape[0]
+        metadata["native_teacher_sha256"] = trial["native_teacher_sha256"]
+        metadata["native_teacher_proposer"] = native_teacher["proposer"]
     entries = [e for e in index["entries"] if e["split"] == "train"]
     n = int(trial["distinct_examples"])
     steps = int(trial["steps"])
@@ -107,7 +128,18 @@ def main():
         normalize_input=trial.get("normalize_input", metadata["family"] == "dflash"),
         **opts,
     ).to(device)
-    norm = restore_output_norm(root, metadata, device)
+    if native_teacher is None:
+        norm = restore_output_norm(root, metadata, device)
+    else:
+        from transformers.models.qwen3.modeling_qwen3 import Qwen3RMSNorm
+
+        norm = Qwen3RMSNorm(metadata["draft_hidden_size"], eps=native_teacher["eps"])
+        norm.load_state_dict({"weight": native_teacher["norm_weight"]})
+        norm = (
+            norm.to(device=device, dtype=native_teacher["weight"].dtype)
+            .requires_grad_(False)
+            .eval()
+        )
     optimizer = torch.optim.AdamW(
         relay.parameters(), lr=float(trial["learning_rate"]), weight_decay=decay
     )
@@ -124,6 +156,12 @@ def main():
 
     def read_entry(entry):
         x, y = reader(entry) if reader is not None else load_cached_record(root, entry)
+        if native_teacher is not None:
+            with torch.no_grad():
+                native_x = x.to(device=device, dtype=native_teacher["weight"].dtype)
+                y = norm(
+                    torch.nn.functional.linear(native_x, native_teacher["weight"])
+                ).cpu()
         if selected_taps != all_taps:
             h = metadata["target_hidden_size"]
             x = torch.cat(
@@ -374,6 +412,7 @@ def main():
                     if relay.normalize_input
                     else "scale_preserving_linear",
                     "feature_objective": objective,
+                    "native_teacher_sha256": trial.get("native_teacher_sha256"),
                     **opts,
                     "data_accounting": {
                         "distinct_records": n,
