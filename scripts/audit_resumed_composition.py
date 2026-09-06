@@ -3,6 +3,7 @@
 import argparse
 import json
 from pathlib import Path
+
 from relayspec.cached_fit_evidence import audit_fit_artifacts, digest
 
 
@@ -13,6 +14,13 @@ def main():
     parser.add_argument("--stage", choices=["pilot", "fits"], required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    ledger_path = Path("reports/mapper-scaling-20260905/resumed-composition/jobs.json")
+    ledger = json.loads(ledger_path.read_text())
+    job = next(j for j in ledger["jobs"] if f"run-{j['id']}" == args.run.name)
+    assert job["arm"] == args.arm
+    assert (args.run / "source-commit.txt").read_text().strip() == ledger[
+        "source_commit"
+    ]
     source = (
         Path("configs/submission/scaling/composition-small-v1")
         / f"{args.arm}-{args.stage}.json"
@@ -30,6 +38,9 @@ def main():
     assert gate["feature_cache_index_sha256"] == cache and gate[
         "trials_sha256"
     ] == digest(source)
+    assert gate["campaign_config_sha256"] == digest(
+        Path("configs/submission/scaling/campaign-pilot.yaml")
+    )
     assert gate["trials"] == [t["name"] for t in trials]
     results = {}
     for t in trials:
@@ -57,9 +68,9 @@ def main():
             and cg["requests"] == 8
         )
         rows = [
-            json.loads(l)
+            json.loads(line)
             for p in (args.run / "evaluation").glob("benchmark-rank*.jsonl")
-            for l in p.read_text().splitlines()
+            for line in p.read_text().splitlines()
         ]
         pairs = {}
         for r in rows:

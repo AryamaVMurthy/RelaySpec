@@ -1,0 +1,535 @@
+{
+  "status": "all_endpoints_bound_after_fit_audit",
+  "input_sha256": {
+    "configs/submission/scaling/composition-small-v1/evaluation-protocol.json": "cbbea00e58425940dbe25bc449b662f2ad7f90a64d781ea613cfc99a35352f97",
+    "reports/mapper-scaling-20260905/resumed-composition/math-fits-audit.json": "644248d23cebe98dbf5ef78ae35e22b7edc91694c70b9d33ba1c1f234e64ce16",
+    "reports/mapper-scaling-20260905/resumed-composition/run-28137/batch-gate.json": "b5dcf7d28238739ac868df441db90d1f33a9e410b7a9eb21f60ed57cc9ba2b80",
+    "reports/mapper-scaling-20260905/resumed-composition/mixed-fits-audit.json": "35fbd51c26e130164968bbd58307654f7928fe2cff8aa3da9093dc9e2e66047f",
+    "reports/mapper-scaling-20260905/resumed-composition/run-28138/batch-gate.json": "00ebabc03d48537faa1802aea024a3eb94674ab2758c9eb83c2b7af4fc342771"
+  },
+  "methods": [
+    "native_ar",
+    "native_target_dflash",
+    "optimized_source_reuse",
+    "relay_composition_math_dense_n2048_s1729",
+    "relay_composition_math_factorized512_n2048_s1729",
+    "relay_composition_math_mlp512_n2048_s1729",
+    "relay_composition_math_dense_n2048_s1730",
+    "relay_composition_mixed_dense_n2048_s1729",
+    "relay_composition_mixed_factorized512_n2048_s1729",
+    "relay_composition_mixed_mlp512_n2048_s1729",
+    "relay_composition_mixed_dense_n2048_s1730"
+  ],
+  "variants": {
+    "relay_composition_math_dense_n2048_s1729": {
+      "trial": {
+        "name": "composition-math-dense-n2048-s1729",
+        "study": "matched_count_composition",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          2048,
+          8192
+        ],
+        "validation_records": 2048,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "report_domain_diagnostics": true,
+        "validation_required_domains": [
+          "general_instruction",
+          "math"
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-math-full-28137/composition-math-dense-n2048-s1729/step-008192.pt",
+      "checkpoint_sha256": "bdf6bb61b6a8373592a9c89b3449098a7b86a6a68cfd631bfbe3b9dba1f5bf7e"
+    },
+    "relay_composition_math_factorized512_n2048_s1729": {
+      "trial": {
+        "name": "composition-math-factorized512-n2048-s1729",
+        "study": "matched_count_composition",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          2048,
+          8192
+        ],
+        "validation_records": 2048,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 512,
+        "report_domain_diagnostics": true,
+        "validation_required_domains": [
+          "general_instruction",
+          "math"
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-math-full-28137/composition-math-factorized512-n2048-s1729/step-008192.pt",
+      "checkpoint_sha256": "f52acfd6f6e36ad36f30b36a0fe93b95e2bec31810cafc7dc3b04775f446a0aa"
+    },
+    "relay_composition_math_mlp512_n2048_s1729": {
+      "trial": {
+        "name": "composition-math-mlp512-n2048-s1729",
+        "study": "matched_count_composition",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          2048,
+          8192
+        ],
+        "validation_records": 2048,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 512,
+        "report_domain_diagnostics": true,
+        "validation_required_domains": [
+          "general_instruction",
+          "math"
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-math-full-28137/composition-math-mlp512-n2048-s1729/step-008192.pt",
+      "checkpoint_sha256": "2aec5a31478238ba3669504c1251afd7e2e6a69152509ec75b02f97f77ad5fa7"
+    },
+    "relay_composition_math_dense_n2048_s1730": {
+      "trial": {
+        "name": "composition-math-dense-n2048-s1730",
+        "study": "matched_count_composition",
+        "architecture": "dense",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          2048,
+          8192
+        ],
+        "validation_records": 2048,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "report_domain_diagnostics": true,
+        "validation_required_domains": [
+          "general_instruction",
+          "math"
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-math-full-28137/composition-math-dense-n2048-s1730/step-008192.pt",
+      "checkpoint_sha256": "78abb5016642bf0b52722d619750d68d2290aa5285b40526271f7c2ed170250a"
+    },
+    "relay_composition_mixed_dense_n2048_s1729": {
+      "trial": {
+        "name": "composition-mixed-dense-n2048-s1729",
+        "study": "matched_count_composition",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          2048,
+          8192
+        ],
+        "validation_records": 2048,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "report_domain_diagnostics": true,
+        "validation_required_domains": [
+          "general_instruction",
+          "math"
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-mixed-full-28138/composition-mixed-dense-n2048-s1729/step-008192.pt",
+      "checkpoint_sha256": "cb34c8403d258354cce6ccd192e41ae44553399cab752e2b8674be9c3e253e3e"
+    },
+    "relay_composition_mixed_factorized512_n2048_s1729": {
+      "trial": {
+        "name": "composition-mixed-factorized512-n2048-s1729",
+        "study": "matched_count_composition",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          2048,
+          8192
+        ],
+        "validation_records": 2048,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 512,
+        "report_domain_diagnostics": true,
+        "validation_required_domains": [
+          "general_instruction",
+          "math"
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-mixed-full-28138/composition-mixed-factorized512-n2048-s1729/step-008192.pt",
+      "checkpoint_sha256": "ed0b670d54f94435b2f34081e9f4db2bf4ddfa889d9c7653982091f1f104a96f"
+    },
+    "relay_composition_mixed_mlp512_n2048_s1729": {
+      "trial": {
+        "name": "composition-mixed-mlp512-n2048-s1729",
+        "study": "matched_count_composition",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          2048,
+          8192
+        ],
+        "validation_records": 2048,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "width": 512,
+        "report_domain_diagnostics": true,
+        "validation_required_domains": [
+          "general_instruction",
+          "math"
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-mixed-full-28138/composition-mixed-mlp512-n2048-s1729/step-008192.pt",
+      "checkpoint_sha256": "bd1194d8e5e74ee030137ae7d89b3a2c7225230a453297d2d04e85e422165f01"
+    },
+    "relay_composition_mixed_dense_n2048_s1730": {
+      "trial": {
+        "name": "composition-mixed-dense-n2048-s1730",
+        "study": "matched_count_composition",
+        "architecture": "dense",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 2048,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          2048,
+          8192
+        ],
+        "validation_records": 2048,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_exposure": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          },
+          "fixed_passes": {
+            "checkpoint_step": 2048,
+            "presentations": 8192
+          }
+        },
+        "report_domain_diagnostics": true,
+        "validation_required_domains": [
+          "general_instruction",
+          "math"
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-mixed-full-28138/composition-mixed-dense-n2048-s1730/step-008192.pt",
+      "checkpoint_sha256": "41229f9e01563291af83206126343c32c4f8dd2417af6ecebe37c53124ddfb87"
+    }
+  },
+  "stages": {
+    "pilot": {
+      "config": "configs/submission/scaling/composition-small-v1/evaluation-pilot.yaml",
+      "config_sha256": "e990f58552e756e4c28b86cff760cca2b5fd426814860151562df946033ae32e",
+      "manifest": "configs/submission/scaling/composition-small-v1/evaluation-pilot-manifest.json",
+      "manifest_sha256": "336311eb8b3712ce4e170142a020ecee8f4880fb70b11cd53d838adef41dd0a6",
+      "requests": 8,
+      "problem_ids": [
+        "math500/109",
+        "math500/219",
+        "gsm8k/436a58f9ea5a1d12",
+        "gsm8k/1cd8fbe40f4cda30",
+        "HumanEval/38",
+        "HumanEval/85",
+        "mtbench/2",
+        "mtbench/10"
+      ]
+    },
+    "full": {
+      "config": "configs/submission/scaling/composition-small-v1/evaluation-full.yaml",
+      "config_sha256": "fa85f2332b51ac2178d843b55c81ce33b967b539efb52aba615ff6263eec396d",
+      "manifest": "configs/submission/scaling/composition-small-v1/evaluation-full-manifest.json",
+      "manifest_sha256": "76d98f5d1df138fa286cd0bede6d6db5b81a7d3c3afe5047c79b927ef3c3a45d",
+      "requests": 128,
+      "problem_ids": [
+        "math500/109",
+        "math500/219",
+        "math500/360",
+        "math500/192",
+        "math500/428",
+        "math500/337",
+        "math500/391",
+        "math500/265",
+        "math500/248",
+        "math500/126",
+        "math500/59",
+        "math500/41",
+        "math500/216",
+        "math500/397",
+        "math500/174",
+        "math500/446",
+        "math500/459",
+        "math500/268",
+        "math500/150",
+        "math500/155",
+        "math500/400",
+        "math500/396",
+        "math500/27",
+        "math500/327",
+        "math500/267",
+        "math500/252",
+        "math500/363",
+        "math500/414",
+        "math500/220",
+        "math500/12",
+        "math500/187",
+        "math500/144",
+        "gsm8k/436a58f9ea5a1d12",
+        "gsm8k/1cd8fbe40f4cda30",
+        "gsm8k/13d10b8bfcf30de5",
+        "gsm8k/051ae2b51a5de494",
+        "gsm8k/8f8aee5f7ffafad8",
+        "gsm8k/df3944682f8208a1",
+        "gsm8k/f8718355d40182ca",
+        "gsm8k/6dbed0240798dcb4",
+        "gsm8k/5b7f6f1902a383b9",
+        "gsm8k/a9af7c4405652723",
+        "gsm8k/1996a72dbf80558f",
+        "gsm8k/5c57a1aa62adbafa",
+        "gsm8k/193eb8e07d070e8f",
+        "gsm8k/8b33d0a0eefe84b0",
+        "gsm8k/76a1374ec79f5b38",
+        "gsm8k/38359054b5633c61",
+        "gsm8k/08b78a955d65a516",
+        "gsm8k/b59a44d33edf98f2",
+        "gsm8k/1695cf1a111991fc",
+        "gsm8k/df342f8950153543",
+        "gsm8k/ff998bb1e3fe4cff",
+        "gsm8k/0dd2f0349ad536b7",
+        "gsm8k/fc77826e4c9d29a9",
+        "gsm8k/a9798075c6e641a8",
+        "gsm8k/ea246ed4733776fc",
+        "gsm8k/1b7fa8e51258ba2c",
+        "gsm8k/fb9167f06dd28b30",
+        "gsm8k/6315aebb3eed1425",
+        "gsm8k/bc996f49c8d114e0",
+        "gsm8k/df1e0d9376f2be33",
+        "gsm8k/ed74c4c4caddf358",
+        "gsm8k/4f749fa93e284743",
+        "HumanEval/38",
+        "HumanEval/85",
+        "HumanEval/88",
+        "HumanEval/151",
+        "HumanEval/52",
+        "HumanEval/75",
+        "HumanEval/146",
+        "HumanEval/26",
+        "HumanEval/48",
+        "HumanEval/21",
+        "HumanEval/17",
+        "HumanEval/45",
+        "HumanEval/77",
+        "HumanEval/72",
+        "HumanEval/49",
+        "HumanEval/126",
+        "HumanEval/97",
+        "HumanEval/98",
+        "HumanEval/42",
+        "HumanEval/3",
+        "HumanEval/25",
+        "HumanEval/113",
+        "HumanEval/154",
+        "HumanEval/125",
+        "HumanEval/10",
+        "HumanEval/132",
+        "HumanEval/68",
+        "HumanEval/78",
+        "HumanEval/9",
+        "HumanEval/129",
+        "HumanEval/61",
+        "HumanEval/84",
+        "mtbench/2",
+        "mtbench/10",
+        "mtbench/51",
+        "mtbench/55",
+        "mtbench/75",
+        "mtbench/31",
+        "mtbench/53",
+        "mtbench/1",
+        "mtbench/59",
+        "mtbench/40",
+        "mtbench/16",
+        "mtbench/44",
+        "mtbench/15",
+        "mtbench/72",
+        "mtbench/13",
+        "mtbench/32",
+        "mtbench/11",
+        "mtbench/4",
+        "mtbench/20",
+        "mtbench/33",
+        "mtbench/73",
+        "mtbench/17",
+        "mtbench/9",
+        "mtbench/78",
+        "mtbench/79",
+        "mtbench/60",
+        "mtbench/57",
+        "mtbench/12",
+        "mtbench/8",
+        "mtbench/42",
+        "mtbench/74",
+        "mtbench/27"
+      ]
+    }
+  },
+  "declaration": {
+    "status": "declared_before_composition_endpoint_results",
+    "target": "DFlash8",
+    "methods": "All eight declared composition8192-update endpoints plus native AR, native drafter and source reuse. No selection on validation or decoding.",
+    "stages": {
+      "pilot": {
+        "per_task": 2,
+        "max_new_tokens": 256,
+        "wall_limit_seconds": 600
+      },
+      "full": {
+        "per_task": 32,
+        "max_new_tokens": 2048,
+        "wall_limit_seconds": 4500
+      }
+    },
+    "tasks": [
+      "math500",
+      "gsm8k",
+      "humaneval",
+      "mtbench"
+    ],
+    "source_manifest_sha256": "9f6e5bf446aa45f1e939751e068c071e8e541f5d56f4029bb013f0a1bc9628ea",
+    "manifests_sha256": {
+      "configs/submission/scaling/composition-small-v1/evaluation-pilot-manifest.json": "336311eb8b3712ce4e170142a020ecee8f4880fb70b11cd53d838adef41dd0a6",
+      "configs/submission/scaling/composition-small-v1/evaluation-full-manifest.json": "76d98f5d1df138fa286cd0bede6d6db5b81a7d3c3afe5047c79b927ef3c3a45d"
+    },
+    "analysis": "Paired math versus mixed throughput for matched mapper architecture/seed per task; task-level aggregate throughput and per-domain fitting validation. Score math outputs with pinned scorer. Report cap counts. HumanEval and MTBench throughput alone does not establish answer quality. Conversations resampled as units. No pooling tasks for a universal quality claim.",
+    "scope": "Development domain-composition experiment, distinct from frozen GSM8K confirmation. Equal records/updates but unequal non-padding tokens. General-instruction pool may contain math. Fixed32 per task is descriptive and cannot establish tight quality noninferiority."
+  }
+}
