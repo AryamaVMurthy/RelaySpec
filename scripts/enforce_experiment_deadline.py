@@ -22,30 +22,35 @@ def main():
         ids = sorted({int(value) for value in budget["job_ids"]})
         if not ids or any(value <= 0 for value in ids):
             raise ValueError("deadline requires explicit positive job IDs")
-        result = subprocess.run(
-            [
-                "ssh",
-                "-o",
-                "BatchMode=yes",
-                "-o",
-                "ConnectTimeout=10",
-                "turing",
-                "scancel " + " ".join(map(str, ids)),
-            ],
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
         record = {
             "checked_utc": datetime.now(timezone.utc).isoformat(),
             "job_ids": ids,
-            "returncode": result.returncode,
-            "stdout": result.stdout,
-            "stderr": result.stderr,
         }
+        try:
+            result = subprocess.run(
+                [
+                    "ssh",
+                    "-o",
+                    "BatchMode=yes",
+                    "-o",
+                    "ConnectTimeout=10",
+                    "turing",
+                    "scancel " + " ".join(map(str, ids)),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            record.update(
+                returncode=result.returncode, stdout=result.stdout, stderr=result.stderr
+            )
+        except (subprocess.TimeoutExpired, OSError) as error:
+            record.update(
+                returncode=None, error_type=type(error).__name__, error=str(error)
+            )
         with (args.budget.parent / "deadline-actions.jsonl").open("a") as stream:
             stream.write(json.dumps(record) + "\n")
-        if result.returncode == 0:
+        if record["returncode"] == 0:
             break
         time.sleep(10)
 
