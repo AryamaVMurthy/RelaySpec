@@ -86,3 +86,14 @@ paper on page24. All technical audits pass and main text remains9pages,
 with42 resolved citation keys. The new page was visually inspected in
 color without clipping or overlap. Full31-page color/grayscale review
 remains pending, and the paper is not declared submission-ready.
+
+Compatibility pilots 27944 (math) and 27945 (mixed) are queued from source
+ce00aabae4bf5c936042b0fe5bdbedafeb62c2f7 at
+/home/aryama.murthy/relayspec-composition-ce00aab. Job 27944 follows completion
+of the existing 14B fit chain (afterany:27943); 27945 requires 27944 success.
+Both held submissions were checked for exactly four requested GPUs before
+release. Each uses 64 training and 16 validation examples for infrastructure
+checks only, with a 540-second process timeout. Jobs and raw collection are
+tracked in composition-pilots/jobs.json. Proper extraction/fitting is not yet
+submitted. Eight focused local tests, Ruff, shell syntax, and the version 2
+byte-for-byte rebuild checks pass; see composition-data/implementation-checks.json.

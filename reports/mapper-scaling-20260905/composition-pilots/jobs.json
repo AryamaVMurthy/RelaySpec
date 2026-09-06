@@ -1,0 +1,26 @@
+{
+  "max_gpus": 4,
+  "source_commit": "ce00aabae4bf5c936042b0fe5bdbedafeb62c2f7",
+  "large_data_scaling": "paused",
+  "scope": "Infrastructure pilots:64 fitting records,16 validation records,16 updates. Proper comparison pools remain2048 per arm. No full composition fits launched.",
+  "jobs": [
+    {
+      "id": 27944,
+      "kind": "cache_pilot",
+      "arm": "math",
+      "remote": "/home/aryama.murthy/relayspec-composition-ce00aab/outputs/rs-comp-math-pilot-27944",
+      "local": "reports/mapper-scaling-20260905/composition-pilots/run-27944",
+      "dependency": "afterany:27943",
+      "training_manifest": "train-math-2048.json"
+    },
+    {
+      "id": 27945,
+      "kind": "cache_pilot",
+      "arm": "mixed",
+      "remote": "/home/aryama.murthy/relayspec-composition-ce00aab/outputs/rs-comp-mixed-pilot-27945",
+      "local": "reports/mapper-scaling-20260905/composition-pilots/run-27945",
+      "dependency": "afterok:27944",
+      "training_manifest": "train-mixed-2048.json"
+    }
+  ]
+}

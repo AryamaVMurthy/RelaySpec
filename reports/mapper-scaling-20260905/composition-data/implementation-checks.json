@@ -1,0 +1,33 @@
+{
+  "status": "local_checks_pass_gpu_pilots_pending",
+  "source_commit": "ce00aabae4bf5c936042b0fe5bdbedafeb62c2f7",
+  "tests": {
+    "command": "PYTHONPATH=src /home/aryamavmurthy/work/RelaySpec/.venv/bin/python -m pytest -q tests/test_cache_data_inputs.py tests/test_domain_diagnostics.py tests/test_feature_cache.py",
+    "passed": 8
+  },
+  "ruff": "pass for changed Python files",
+  "shell_syntax": "bash -n passed for both modified Slurm scripts",
+  "data_checks": {
+    "v2_rebuild_byte_identical": true,
+    "training_files_byte_identical_to_v1": true,
+    "validation_membership_unchanged": true,
+    "both_domains_present_in_validation_pilot": true,
+    "pilot_and_full_input_bindings_equal_per_arm": true,
+    "manifest_gate_sha256": "f8ca68ff7a666e64ad8ed1aabc2c648c24f5d25f6a11ef52633585a860f890fd"
+  },
+  "source_sha256": {
+    "src/relayspec/cache_data_inputs.py": "050291f4d61cc115282600dbbd66438252c16cb8f06d93e375c9bf2e3a209b15",
+    "src/relayspec/feature_cache.py": "c18516010039625c06861475578e6510b10fb1996cdaf8c2833f7a235c05724a",
+    "src/relayspec/fitting_validation.py": "e8f26d24b140e95c79ee56f228366678baec29ee4b28b396d7654ad8b704a1af",
+    "scripts/fit_cached_mappers.py": "50fa21c19efdd552faa9753b19d00a856e1eeac2390dd9191be418a143d875ad",
+    "scripts/run_cached_fit_pilot.py": "009bc5fa4f2b007249fc0765c3d1d1e7086f80f7091a932659459b3b4d680e8c",
+    "scripts/extract_scaling_cache.py": "28da95fc31a871fc86ae1c34a394a65940eec9009646af0b0325225d783e6ba2",
+    "scripts/build_composition_manifests.py": "fb1c65f55d00223728acf994ddd2b52f21fd0ea0471dd51af0a0b753e0d4e05f",
+    "scripts/build_composition_matrix.py": "798a9b8574cca31509909b7a5a9bf1b10b1a98f5e643355e0f9a5bc054baf129"
+  },
+  "gpu_pilot_jobs": [
+    27944,
+    27945
+  ],
+  "scope": "Local integrity/diagnostic checks only. No composition GPU pilot result, proper fit, or performance/quality gain is claimed."
+}
