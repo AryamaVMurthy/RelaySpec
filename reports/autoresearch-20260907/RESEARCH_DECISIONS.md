@@ -19,3 +19,7 @@ Smaller-verifier compactness boundary (waves35–36) is closed after a targeted 
 ## Completed 14B learning-rate follow-up
 
 Waves 37 and 38 close the four previously deferred EAGLE-3/14B rate checks. All fixed 8192-update fits pass within 8m38s and all matched 512-token decoding lanes within 4m15s. Lower rates reduce every validation endpoint and avoid the saved wide-linear spike. Dense rates 0.0002 and 0.00006 gain 6.94% and 3.72% versus their original matched map; MLP gains 4.43%, linear 1.69% with an interval crossing equality. Eight exposed MATH questions and four capped outputs per method make this a development finding, not quality confirmation. Keep both dense rates: lower feature error does not select the faster map. This closes the targeted optimization confound, not a justification for an unbounded rate sweep.
+
+## Native code execution follow-up
+
+Wave39/job28529 completes in2m07s. On32 additional-to-autoresearch but historically exposed MBPP tasks, all five native variants produce identical token sequences and extracted code, pass28/32 published base tests, and have zero1024-token cap outputs. Two layers retain95.43%[93.54,97.30]% throughput, one layer71.56%, SVD97.68%. The point estimate supports applicability but the interval would not establish a95% retention floor on code. No such threshold was declared for this functional development check. Keep all four shared test failures and the distinction between base tests and EvalPlus extended tests. No optional extension of this32-task protocol.

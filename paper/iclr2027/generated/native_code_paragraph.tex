@@ -1,0 +1,12 @@
+\paragraph{Executable-code development check.}
+A separate fixed set of 32 MBPP tasks compares all five frozen native
+variants at a 1,024-token cap. These tasks exclude the earlier autoresearch
+MBPP IDs but appear in historical evaluations, so they are development
+examples. Every variant produces the same tokens and extracted code,
+passes 28/32 published base-test suites and has no cap-length outputs.
+The four failures are shared. Tests execute in an isolated Python process
+using the first Python code block, without EvalPlus extended tests.
+Two layers retain 95.4\% [93.5,97.3]\% of released-native throughput, versus 71.6\% for one layer and 97.7\% for rank-1,536 SVD.
+This supports observed functional agreement alongside a workload-dependent
+efficiency penalty. The conservative paired accuracy interval is
+$[-12.80,+12.80]$ percentage points, not tight quality noninferiority.

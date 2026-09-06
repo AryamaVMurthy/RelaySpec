@@ -13,7 +13,7 @@ BUILDERS = [
     "crossdomain_depth", "downscale", "downscale_depth", "downscale_nonlinearity",
     "early_nonlinearity", "head_extension", "head_precision", "interface_confirmation",
     "interface_profile", "layer_depth", "native_student", "precision_breadth",
-    "research_screen", "small_record_paper", "rate_check",
+    "research_screen", "small_record_paper", "rate_check", "native_code",
 ]
 
 
