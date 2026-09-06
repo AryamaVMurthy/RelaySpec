@@ -96,6 +96,22 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 28 / 1 | 28488 | dflash / existing | pass | 112.2 | 16 | — |
 | 28 / 2 | 28488 | dflash / existing | pass | 164.2 | 16 | — |
 | 28 / 3 | 28488 | dflash / existing | pass | 174.4 | 16 | — |
+| 29 / 0 | 28502 | dflash / existing | pass | 385.9 | 32 | — |
+| 29 / 1 | 28502 | dflash / existing | pass | 391.1 | 32 | — |
+| 29 / 2 | 28502 | dflash / existing | pass | 297.1 | 16 | — |
+| 29 / 3 | 28502 | dflash / existing | pass | 312.8 | 16 | — |
+| 30 / 0 | 28520 | dflash / existing | pass | 27.6 | 2 | relay_selected: 100.2% |
+| 30 / 1 | 28520 | dflash / existing | pass | 30.0 | 2 | relay_selected: 100.3% |
+| 30 / 2 | 28520 | dflash / existing | pass | 35.5 | 2 | relay_selected: 99.6% |
+| 30 / 3 | 28520 | dflash / existing | pass | 37.9 | 2 | relay_selected: 100.5% |
+| 31 / 0 | 28521 | dflash / existing | pass | 49.5 | 2 | relay_selected: 100.0% |
+| 31 / 1 | 28521 | dflash / existing | pass | 53.2 | 2 | relay_selected: 99.9% |
+| 31 / 2 | 28521 | dflash / existing | pass | 77.0 | 2 | relay_selected: 100.2% |
+| 31 / 3 | 28521 | dflash / existing | pass | 77.5 | 2 | relay_selected: 100.0% |
+| 32 / 0 | 28522 | dflash / existing | pass | 51.0 | 2 | relay_selected: 99.9% |
+| 32 / 1 | 28522 | dflash / existing | pass | 48.4 | 2 | relay_selected: 99.9% |
+| 32 / 2 | 28522 | dflash / existing | pass | 74.1 | 2 | relay_selected: 99.9% |
+| 32 / 3 | 28522 | dflash / existing | pass | 74.8 | 2 | relay_selected: 99.8% |
 
 ## Four-GPU pipeline stages
 

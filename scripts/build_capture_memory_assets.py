@@ -8,7 +8,7 @@ from pathlib import Path
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--jobs", nargs="+", type=int, default=[28520, 28521])
+    parser.add_argument("--jobs", nargs="+", type=int, default=[28520, 28521, 28522])
     args = parser.parse_args()
     root = Path("reports/autoresearch-20260907")
     ledger = {j["id"]: j for j in json.loads((root / "jobs.json").read_text())["jobs"]}

@@ -954,6 +954,31 @@ different outputs across precision settings.}
 \label{tab:head-precision}
 \end{table}
 
+
+The initial 8B agreement does not generalize to a broader development
+screen (Table~\ref{tab:head-extension}). On 32 additional GSM8K requests,
+FP32-head agreement with own-runtime AR rises from 15/32 to 20/32;
+on sixteen MATH requests it rises from 3/16 to 5/16. Released native
+DFlash and RelaySpec have identical output strings on every request
+within each precision setting, including their disagreements with AR.
+This points to a shared execution issue in these samples, rather than
+an effect unique to retargeting. Head promotion is only a partial
+mitigation. Native DFlash also uses the target output head for proposal
+logits, so its intervention changes that projection too. The MATH
+screen is heavily truncated at 512 tokens and does not measure
+full-answer accuracy.
+
+\begin{table}[H]
+\centering\small
+\input{generated/head_precision_extension_table.tex}
+\caption{Broader 8B head-precision diagnostic. Matches compare complete
+recorded token sequences with each runtime's own AR, including capped
+sequences. MATH AR reaches the cap on 11/16 requests in both settings;
+native and RelaySpec reach it on 11/16 in BF16 and 10/16 with the FP32
+head. One GSM8K request is capped for every method in both settings.}
+\label{tab:head-extension}
+\end{table}
+
 \begin{table}[H]
 \centering\small
 \input{generated/downscale_table.tex}
@@ -2175,6 +2200,49 @@ GPU peak counters are reset before the measured request. Allocated memory
 counts live tensor allocations and differs from reserved allocator
 memory. The mixed-arm processes used for timing are not the basis of
 this source-removal measurement.
+\subsection{Selective feature capture during generation}
+\label{app:capture-memory}
+
+A small conditioning interface also makes it unnecessary to retain
+all verifier-layer outputs. We implement selective forward hooks for
+the requested target taps, preserving the final normalization for the
+last layer. The transformer, mapper weights, verifier decisions and
+KV-cache policy are unchanged. This is an implementation consequence
+of the interface, not a new compression algorithm. Even the five-tap
+mapper benefits: reducing the tap count is not required for the basic
+capture optimization.
+
+On Qwen3-8B/DFlash, we compare the same frozen checkpoint with full
+hidden-state return and selective capture. Each method has two
+repetitions in reversed order on one constructed archive prompt per
+length, with a 64-token output cap. Every pair matches output token
+hashes, output lengths, acceptance trajectories and target/draft calls.
+At 31,526 input tokens, the two-tap mapper reduces peak allocated memory
+from 32.73 to 25.03 GiB (23.5\%), and the five-tap mapper from 32.98 to
+25.87 GiB. A stricter control immediately releases prefill outputs and
+concatenated features after conditioning in both methods: savings
+remain 7.70 and 7.11 GiB, respectively. In that control, paired request
+time ratios range from 0.994 to 1.002 across the two lengths and maps,
+so these runs show memory savings without a material runtime change.
+
+\begin{table}[H]
+\centering\small
+\input{generated/capture_memory_table.tex}
+\caption{Selective-capture memory diagnostic on L40S. Values are mean
+peak allocated GiB over two order-reversed repetitions; these repeats
+are not independent prompts. Both frozen mapper copies are resident
+for both methods. Release-prefill rows control buffer lifetime after
+conditioning. Allocator-reserved memory is not the reported quantity.}
+\label{tab:capture-memory}
+\end{table}
+
+The synthetic inputs isolate sequence-length-dependent allocation and
+do not establish document understanding, long-context quality or
+concurrent-request capacity. Absolute values include model weights
+and the resident comparison maps. These results are distinct from the
+training-record scaling experiment and from the isolated
+source-removal experiment above.
+
 \section{Additional related work}
 \label{app:additionalrelated}
 \paragraph{Improving drafting.}
