@@ -1,12 +1,10 @@
-> Revision in progress: the checks below describe the previously audited draft. New held-out and composition results are being integrated. Final checks and PDF visual review will be regenerated after the remaining decoding results.
-
 # RelaySpec ICLR 2027 manuscript QA
 
 Generated 2026-09-06 from the compiled anonymous manuscript and recorded result artifacts.
 
 - Overall: **PASS**
 - Main-text boundary: page 9 of the allowed 9
-- Complete PDF: 32 pages including references and appendix
+- Complete PDF: 36 pages including references and appendix
 - Resolved citation keys: 42
 
 | Check | Status | Evidence |
@@ -24,9 +22,9 @@ Generated 2026-09-06 from the compiled anonymous manuscript and recorded result 
 | paragraph overlap | PASS | no exact or at least 0.90 Jaccard duplicate among paragraphs of 35 or more words |
 | fit and evaluation exact-overlap audit | PASS | 0 normalized exact matches across 4,096 fit and 1,250 evaluation records |
 | compiled LaTeX log | PASS | no undefined citation, undefined reference, or overfull box |
-| PDF parse and page format | PASS | 32 pages, US Letter, unencrypted, and identity scan clean |
-| embedded fonts and PDF parser | PASS | 32 font records are embedded and Ghostscript parses every page |
-| recorded visual review | PASS | manual color and grayscale review covers all 32 rendered pages |
+| PDF parse and page format | PASS | 36 pages, US Letter, unencrypted, and identity scan clean |
+| embedded fonts and PDF parser | PASS | 33 font records are embedded and Ghostscript parses every page |
+| recorded visual review | PASS | manual color and grayscale review covers all 36 rendered pages |
 
 ## Scientific review remains separate
 

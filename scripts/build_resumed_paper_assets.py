@@ -211,6 +211,34 @@ def main():
     plt.close(fig)
     lines.extend([r"\bottomrule", r"\end{tabular}"])
     (output / "composition_decoding_table.tex").write_text("\n".join(lines) + "\n")
+    method_names = {
+        "native_ar": "AR",
+        "native_target_dflash": "Native DFlash",
+        "optimized_source_reuse": "Source reuse",
+    }
+    for method, name in zip(methods, names, strict=True):
+        method_names[method] = f"{name}, math"
+        method_names[method.replace("_math_", "_mixed_")] = f"{name}, mixed"
+    quality = [
+        r"\begin{tabular}{lrrrr}",
+        r"\toprule",
+        r"Method & MATH correct / cap & GSM8K correct / cap & Code cap & Chat cap \\",
+        r"\midrule",
+    ]
+    for method, name in method_names.items():
+        cells = []
+        for task in tasks:
+            result = decode["tasks"][task]
+            cap = result["cap_counts"][method]
+            if task in ["math500", "gsm8k"]:
+                metrics = result["against_ar"]["methods"][method]
+                count = round(metrics["accuracy"] * result["against_ar"]["requests"])
+                cells.append(f"{count} / {cap}")
+            else:
+                cells.append(str(cap))
+        quality.append(name + " & " + " & ".join(cells) + r" \\")
+    quality.extend([r"\bottomrule", r"\end{tabular}"])
+    (output / "composition_quality_table.tex").write_text("\n".join(quality) + "\n")
     (output / "resumed_paper_findings.json").write_text(
         json.dumps(summary, indent=2) + "\n"
     )

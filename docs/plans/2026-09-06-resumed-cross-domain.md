@@ -9,3 +9,7 @@ User explicitly authorized both held-out confirmation and math-only versus mixed
 5. Audit all raw results, regenerate paper assets, revise findings and limitations, rebuild and review the paper. Keep frozen-confirmation results separate from composition development comparisons.
 
 The older timebox completion record remains a historical record, not an active scheduling limit. Current jobs are recorded under reports/mapper-scaling-20260905/resumed-composition and resumed-confirmation.
+
+## Completion
+
+Both authorized studies are complete. All ten resumed jobs completed and passed their applicable raw-evidence audits. No jobs remain queued on Turing. See `reports/mapper-scaling-20260905/resumed-completion.md` for findings and the job inventory. The manuscript incorporates both studies; large-data scaling and unrelated 14B/adaptation extensions remain outside this completed scope.

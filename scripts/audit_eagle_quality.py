@@ -187,10 +187,9 @@ def main():
                     }
                     for method in protocol["methods"]
                 },
-                "scope": protocol.get(
-                    "scope",
-                    "Source-bound exposed development outcomes at2048-token cap, with pinned scorer replay. Cap-length output is not asserted to exclude EOS at the cap. All candidates and negative outcomes are retained. Conservative paired intervals are individual comparisons under IID request-pair assumptions, not simultaneous selection guarantees. No untouched-confirmation or uncapped-quality claim.",
-                ),
+                "scope": protocol["scope"]
+                if "full" in protocol["stages"]
+                else "Source-bound exposed development outcomes at2048-token cap, with pinned scorer replay. Cap-length output is not asserted to exclude EOS at the cap. All candidates and negative outcomes are retained. Conservative paired intervals are individual comparisons under IID request-pair assumptions, not simultaneous selection guarantees. No untouched-confirmation or uncapped-quality claim.",
             },
             indent=2,
         )

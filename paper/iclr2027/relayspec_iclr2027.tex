@@ -498,6 +498,15 @@ On the 8B capped long-output development set, dense $N=512$ retains
 97.4--97.9\% of dense $N=2048$ throughput across MATH difficulty groups.
 Very long inputs have too few examples for a reliable generalization claim.
 
+\paragraph{Training composition changes the speed tradeoff.}
+Replacing half of 2,048 math records with general instructions reduces
+dense general-domain feature error by 32.9\% but raises math error by
+10.2\%. Code and chat throughput improve by 2.9\% and 4.9\%, while
+MATH throughput falls 1.2\%. A second seed repeats this pattern.
+Matched arms generate identical tokens on all 160 development requests.
+The smaller maps show larger math/chat tradeoffs
+(Appendix~\ref{app:composition}).
+
 \subsubsection{Is feature fitting a useful adaptation budget?}
 We compare DFlash feature regression with connector cross-entropy and
 rank-32 drafter LoRA on the same 512 records, with equal three-rate
@@ -1503,6 +1512,73 @@ At width 512, the linear and MLP maps show general-error reductions of
 The matched linear map retains lower validation error than the MLP
 in both domains and both training arms. All three architectures improve
 in both validation domains between 2,048 and 8,192 updates.
+
+\paragraph{Fixed cross-domain decoding protocol.}
+Before observing endpoint results, we declare 32 development inputs from
+each of MATH-500, GSM8K, HumanEval and MT-Bench. The 128 initial inputs
+expand to 160 timed requests because MT-Bench includes two turns.
+All eight fixed endpoints run alongside AR, native DFlash and source
+reuse, producing 1,760 measured outputs capped at 2,048 tokens. A separate
+eight-input operational pilot completes in 2m58s before this full run.
+Methods rotate within requests in the same runtime. Ratios compare
+mixed and math-only fits of the same architecture and seed. Paired
+bootstrap intervals resample whole conversations for MT-Bench and
+individual requests elsewhere. They describe this development sample,
+without multiplicity adjustment or fitting-seed uncertainty.
+
+The feature-domain tradeoff carries through to decoding, but depends on
+mapper capacity and task. Mixed dense training changes throughput by
+$-1.2\%$ on MATH, $+1.6\%$ on GSM8K, $+2.9\%$ on HumanEval and
+$+4.9\%$ on MT-Bench. The second dense seed gives
+$-1.7\%$, $+1.2\%$, $+2.4\%$ and $+4.7\%$, respectively. The first
+seed's MATH interval includes no change. Linear-512 and MLP-512 gain
+11.6\% and 10.8\% on chat, but lose 6.2\% and 7.8\% on MATH and
+2.6\% and 4.1\% on GSM8K. Dense remains faster than either smaller
+map on every task in both arms. General-domain feature improvement
+therefore supports useful workload-specific gains, not a uniform
+advantage from mixed training.
+
+Every matched math/mixed pair produces identical generated token sequences
+on all 160 requests, including conversation turns. Thus these measured
+throughput gains do not arise from shorter outputs. All eight maps score
+22/32 on MATH and 30/32 on GSM8K. AR scores 22/32 and 31/32.
+Four MATH outputs per method reach the cap, and none elsewhere does.
+The conservative paired accuracy-difference interval between matched
+arms is $[-12.80,12.80]$ percentage points on each math benchmark.
+Equal observed outcomes on this small sample do not establish tight
+population quality noninferiority. Code and conversation outputs remain
+unscored for task quality. The full decoding allocation took 52m30s.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.92\linewidth]{figures/composition_throughput.pdf}
+\caption{Effect of training composition on measured DFlash-8B throughput.
+Values above one favor mixed training. Marker shapes distinguish the
+four matched comparisons. Bars show paired 95\% intervals. Code and
+conversation throughput does not establish output quality.}
+\label{fig:composition-throughput}
+\end{figure}
+
+\begin{table}[H]
+\caption{All predeclared composition decoding comparisons. Throughput
+includes prompt processing. Ratios are mixed divided by math-only
+throughput, with paired 95\% intervals. MT-Bench has 64 timed turns
+from 32 conversations. Each other task has 32 requests.}
+\label{tab:composition-decoding}
+\centering\small
+\input{generated/composition_decoding_table.tex}
+\end{table}
+
+\begin{table}[H]
+\caption{Composition evaluation: correct-answer and output-cap counts.
+MATH and GSM8K columns show correct answers followed by capped outputs,
+each out of 32. Code cap counts are out of 32 and chat cap counts out
+of 64 turns. HumanEval execution and MT-Bench answer quality are not
+scored in this experiment. Capped outputs remain in every aggregate.}
+\label{tab:composition-quality}
+\centering\small
+\input{generated/composition_quality_table.tex}
+\end{table}
 
 \section{Frozen-checkpoint GSM8K confirmation}
 \label{app:frozen-confirmation}

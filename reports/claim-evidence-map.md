@@ -1,6 +1,6 @@
 # RelaySpec claim–evidence map
 
-Updated after the 2026-09-06 experiment window. “Observed” means measured in the stated completed experiment, not a universal claim. Generated paper assets replay the corresponding raw-evidence audits. The frozen input hashes and unrun studies are listed in `reports/mapper-scaling-20260905/timebox-90min/rewrite-evidence-inventory.json`.
+Updated after the authorized post-window confirmation and composition studies on 2026-09-06. “Observed” means measured in the stated completed experiment, not a universal claim. Generated paper assets replay the corresponding raw-evidence audits. The timebox inventory is historical. Current resumption protocols and job ledgers are under `reports/mapper-scaling-20260905/resumed-*` and `docs/plans/2026-09-06-resumed-cross-domain.md`.
 
 | Claim suitable for the paper | Evidence | Scope and limits |
 |---|---|---|
@@ -11,6 +11,9 @@ Updated after the 2026-09-06 experiment window. “Observed” means measured in
 | DFlash throughput largely plateaus after 512–1,024 examples in the fixed-update sweep. | `reports/mapper-scaling-20260905/historical-data-summary.json` | 1,024 updates, four records/update, one fitting seed and 128 exposed questions. 512 is the smallest tested setting within 5% of the observed best, not a confirmed minimum. |
 | Dense N512 retains 97.78% of dense N2048 throughput for DFlash-8B. | `reports/mapper-scaling-20260905/small-data-quality-results.json` | 128 exposed questions, 2,048-token cap; paired 95% interval [97.09,98.47]%, conditional on fitted checkpoints. |
 | Dense N512 retains 98.28% of dense N2048 throughput for EAGLE-3-8B. | `reports/mapper-scaling-20260905/eagle3-small-quality-results.json` | Complete 1,408-row comparison, same 128 exposed questions; interval [97.59,99.01]%. Cross-family replication uses the same benchmark sample. |
+| Frozen dense N512 retains 97.48% (DFlash8) and 98.90% (EAGLE8) throughput on 256 held-out GSM8K questions. | `resumed-confirmation/dflash-full-audit.json`, `resumed-confirmation/eagle3-full-audit.json` under the scaling reports | Both paired lower bounds exceed the predeclared 95% speed threshold. Checkpoints frozen before generation, questions excluded from recorded development history. Same benchmark sample across families. Accuracy noninferiority remains inconclusive, so the joint criterion is not established. |
+| Replacing half the math fitting records with general instructions lowers general-domain feature error but increases math error. | `resumed-composition/math-fits-audit.json`, `resumed-composition/mixed-fits-audit.json`, `resumed-composition/common-validation-identity.json` | Eight fits with 2,048 records and 8,192 updates each. Identical common validation tensors. Dense general error falls 32.9%, math error rises 10.2%; second dense seed agrees. Record matching does not match token exposure. Downstream decoding is audited separately. |
+| Mixed training improves code/chat throughput while reducing MATH throughput in the matched DFlash8 comparison. | `resumed-composition-evaluation/full-audit.json`; `generated/composition_decoding_table.tex` and `figures/composition_throughput.pdf` | Dense seed 1729 changes HumanEval +2.9%, chat +4.9%, MATH −1.2%; second seed repeats the pattern. All matched pairs generate identical tokens on all 160 requests. Development sample, 32 initial inputs/task; code/chat quality unscored. |
 | Increasing capacity improves feature fitting initially, with diminishing returns; tested MLPs do not beat dense in the completed 8B longer-output comparisons. | `focused-results.json`, `eagle3-capacity-results.json`, and both small-data quality registries under `reports/mapper-scaling-20260905/` | Match linear/MLP parameter counts, data and update counts. Nonlinear capacity, optimizer behavior, runtime cost and generalization remain distinct explanations. No universal linear superiority. |
 | Better training-feature fit need not improve validation error or decoding. | `target14b-dflash-fit-results.json` and `target14b-dflash-capacity-results.json` | MLP4096 N2048 has lower training error than dense but worse validation error and lower short-evaluation throughput. Sixteen questions and 256-token cap do not establish full-answer quality. |
 | The shared EAGLE14 fitting recipe exhibits late degradation and an intermediate wide-linear spike. | `target14b-eagle3-fit-results.json`; `target14b-eagle3-capacity-results.json` | Both dense N512 seeds degrade. Four lower-rate 16-update pilots passed, but proper endpoint fits/decoding did not run. Optimization sensitivity is unresolved. |
@@ -23,10 +26,10 @@ Updated after the 2026-09-06 experiment window. “Observed” means measured in
 ## Claims not established
 
 - Universal minimal training data or globally optimal mapper architecture.
-- Tight accuracy non-inferiority, bitwise BF16 losslessness, or untouched final confirmation.
+- Tight accuracy non-inferiority, bitwise BF16 losslessness, or global non-exposure beyond the recorded history and lexical checks.
 - Semantic/template independence from zero exact text overlap. Historical MATH has 47 questions above 0.80 token-set overlap and four above 0.95.
 - Full-answer quality for the new 14B capacity grids or short adaptation screens.
-- Mixed-domain fitting benefits: composition caches exist, but the corresponding fits and decoding do not.
+- A universal benefit from mixed-domain training. Completed decoding shows code/chat gains and math tradeoffs, with unequal token exposure and only 32 inputs per task.
 - Proper lower-rate EAGLE14 endpoint improvements, generalized EAGLE matched-time adaptation, or autoresearch outcomes.
 - Production serving throughput, algorithm-only cross-runtime superiority, or 195×/130× training-compute savings. Published drafter recipe counts describe inherited training context only.
 
