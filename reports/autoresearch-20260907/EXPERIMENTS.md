@@ -44,3 +44,11 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 10 / 1 | 28425 | eagle3 / existing | pass | 353.8 | 32 | relay_activation1024: 97.2%; relay_weight1024: 59.3% |
 | 10 / 2 | 28425 | dflash / existing | pass | 353.4 | 32 | relay_activation1024: 96.6%; relay_trained1024: 97.3%; relay_weight1024: 92.7% |
 | 10 / 3 | 28425 | dflash / quantization_noise | pass | 388.6 | 32 | relay_fakeq2: 23.0%; relay_fakeq4: 90.3%; relay_fakeq8: 100.3% |
+| 11 / 0 | 28427 | dflash / existing | pass | 183.4 | 8 | relay_early: 40.5%; relay_last2: 99.7%; relay_spaced: 84.8% |
+| 11 / 1 | 28427 | dflash / existing | pass | 267.1 | 16 | relay_early: 65.8%; relay_last2: 97.8%; relay_spaced: 91.3% |
+| 11 / 2 | 28427 | eagle3 / existing | pass | 251.4 | 8 | relay_early: 52.0%; relay_last2: 85.4%; relay_spaced: 84.9% |
+| 11 / 3 | 28427 | eagle3 / existing | pass | 379.3 | 16 | relay_early: 69.6%; relay_last2: 91.9%; relay_spaced: 93.0% |
+| 12 / 0 | 28428 | eagle3 / existing | pass | 416.4 | 32 | relay_activation1024: 93.9%; relay_reduced: 96.1%; relay_weight1024: 54.1% |
+| 12 / 1 | 28428 | eagle3 / existing | pass | 399.7 | 32 | relay_activation1024: 96.7%; relay_trained1024: 96.5%; relay_weight1024: 59.4% |
+| 12 / 2 | 28428 | dflash / fit_reduced_taps | pass | 182.7 | 8 | relay_reduced: 97.3% |
+| 12 / 3 | 28428 | dflash / fit_reduced_taps | pass | 143.9 | 8 | relay_reduced: 84.2% |

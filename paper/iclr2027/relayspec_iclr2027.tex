@@ -865,6 +865,15 @@ Intervals resample requests and do not include fitting-seed variation.}
 \label{tab:interface-confirmation}
 \end{table}
 
+The recorded profiles explain why reducing mapper size need not improve
+end-to-end speed. In this fixed comparison, full-map computation occupies
+0.74\% of total request time, including its prefill application, while
+full-target verification occupies 81.9\%. The two-layer map reduces its
+own share to 0.58\%, but modestly lower progress per verification cycle
+raises total verification time. Preserving acceptance therefore matters
+more than mapper arithmetic in this setting. These are recorded region
+attributions, not isolated kernel or memory measurements.
+
 The result has a family-dependent boundary. On 16 exposed, 128-token
 MATH requests, two-layer refitting retains 99.3\% of full-map throughput
 with a 14B DFlash verifier, versus 93.7\% with EAGLE-3. A second 8B
@@ -892,6 +901,27 @@ baseline. Late-arm rows are the matching subset of the earlier 32-request
 screen. Paired 95\% request intervals exclude fitting-seed variation.}
 \label{fig:layer-depth}
 \end{figure}
+
+\paragraph{Cross-domain limits of layer sufficiency.}
+Without changing the Numina-fitted maps, we repeat the depth screen on
+code and dialogue (Table~\ref{tab:crossdomain-depth}). DFlash's late-layer
+map retains 99.7\% on code and 97.8\% on dialogue. EAGLE-3 retains
+85.4\% and 91.9\%, and its spaced-layer map is slightly faster on dialogue.
+Thus late-layer sufficiency transfers well in the tested DFlash screens,
+but is not a family-independent rule. These small exposed screens do not
+establish code test-pass rates, dialogue quality, or a universal optimal
+layer choice.
+
+\begin{table}[H]
+\centering\small
+\input{generated/crossdomain_depth_table.tex}
+\caption{Throughput retained relative to each arm's paired full mapper.
+Code uses eight MBPP requests with a 512-token cap. Dialogue uses eight
+two-turn MT-Bench conversations with a 256-token per-turn cap. Early,
+spaced and late denote layers $[1,9]$, $[9,25]$ and $[25,33]$. All compact
+maps have equal parameter count and the same fitting data and budget.}
+\label{tab:crossdomain-depth}
+\end{table}
 
 \paragraph{Native interface compression as an application.}
 The same interface abstraction supports a secondary experiment without

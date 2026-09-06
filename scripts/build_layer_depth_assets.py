@@ -59,7 +59,7 @@ for family, lanes, late_lane, color, offset in [
             position + offset,
             v * 100,
             yerr=[[100 * (v - lo)], [100 * (hi - v)]],
-            fmt="o",
+            fmt="o" if family == "DFlash" else "s",
             color=color,
             capsize=4,
             label=family if position == 0 else None,

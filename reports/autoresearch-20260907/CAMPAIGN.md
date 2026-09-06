@@ -143,3 +143,15 @@ Native-teacher implementation is in scripts/run_research_lane.py and scripts/fit
 Wave11 code lanes passed: DFlash early40.5%,spaced84.8%,late99.7% of full-map throughput; EAGLE early52.0%,spaced84.9%,late85.4%. These are eight exposed MBPP requests with512-token caps, not code test-pass evidence. The EAGLE result is a useful boundary: late-layer compression loses more on code than on the mathematical screen. Dialogue lanes remained live at this update.
 
 scripts/build_autoresearch_registry.py now records every collected terminal lane, including failures and negative arms, in EXPERIMENTS.md and experiment-registry.json. Missing lanes are not assumed complete, and per-shard fixed-confirmation summaries are explicitly not substitutes for the64-request aggregate analyses.
+
+## Completed cross-domain and native teacher evidence
+
+Wave11 completed all four lanes. MT-Bench has16 turns clustered into8 conversations. DFlash early65.8%,spaced91.3%,late97.8%; EAGLE early69.6%,spaced93.0%,late91.9%. The paper now includes the code/dialogue table and explicitly states the EAGLE boundary and lack of quality-score confirmation. scripts/build_crossdomain_depth_assets.py retains per-method intervals in crossdomain-depth-summary.json.
+
+Fixed64-request profile attribution (scripts/build_interface_profile_assets.py): full mapper prefill+decode is0.7446% of total request time, target verification81.9376%; two-tap mapper0.5819%, verification82.0440%. Target calls rise3391→3478. This explains why reducing mapper computation does not compensate for a modest acceptance loss. Added to appendix with measurement scope; not an isolated kernel/memory claim.
+
+Wave12 job28428 completed all four lanes. EAGLE evaluation-only retry passed416.4seconds with all192 rows, and MATH passed399.7seconds. GSM8K32: direct-trained rank102496.07%, activation-aware93.86%, weight-only54.15%. MATH32: direct-trained96.48%, activation-aware96.73%, weight-only59.41%. Direct fitting remains useful; activation-aware compression is a strong posthoc alternative on some workloads, not universally superior. The posthoc path inherits dense fitting cost, so these are not equal-total-adaptation-budget comparisons.
+
+Native teacher integration succeeded, including the actual batch-equivalence pilots. Eight-question native two-tap retains97.29% versus repacked native (98.2% versus released native), one-tap84.21% versus repacked (85.2% versus released). These are initial exposed screens. Wave13 job28429 now compares both students with released/repacked native and frozen rank1536 SVD across32 GSM8K,32 MATH,8MBPP and8two-turn MT-Bench cases, excluding all64 fixed-confirmation requests. FourGPU lanes, each540-second cap.
+
+Paper depth plot now uses distinct circle/square markers to preserve family distinction in grayscale. Paper still compiles; full current-PDF visual-review record remains outstanding.
