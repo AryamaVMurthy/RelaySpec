@@ -35,7 +35,7 @@ for i, cell in enumerate(result["results"]):
     cell["initialization"] = record
     result["input_sha256"][str(p)] = digest(p)
 result["scope"] = (
-    "Native compact late-layer mapper, matched16/128-record random versus released-column initialization. Seed1729,8192 updates, unchanged teacher/width/normalization and record prefixes. Eight exposed GSM8K questions512token cap, each compared with original512-record compact reference. Untrained cropping and cross-domain controls pending wave43. No fresh confirmation, minimum-data threshold, or standalone novelty claim."
+    "Native compact late-layer mapper, matched16/128-record random versus released-column initialization. Seed1729,8192 updates, unchanged teacher/width/normalization and record prefixes. Eight exposed GSM8K questions512token cap, each compared with original512-record compact reference. Untrained cropping and cross-domain controls are reported separately in wave43. No fresh confirmation, minimum-data threshold, or standalone novelty claim."
 )
 output.write_text(json.dumps(result, indent=2) + "\n")
 lines = [

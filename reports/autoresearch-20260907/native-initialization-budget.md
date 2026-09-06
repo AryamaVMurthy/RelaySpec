@@ -9,4 +9,4 @@
 
 Native-column initialized compact maps with16/128 calibration records and128/1024 updates. All non-budget fitting settings match wave42. Eight exposed GSM8K questions512token cap, same512-record compact reference. Development screen, not fresh confirmation or a minimum-data guarantee. Timing excludes original drafter training and cached feature extraction.
 
-Matched short random-initialization controls and a second inherited fitting seed are running in wave45. Do not interpret the earlier long-fit contrast as a budget-independent initialization effect.
+Wave45 completes matched short random-initialization controls. Random128-update retention is51.7/72.4% at16/128 records. The inherited seed1730 executions have identical checkpoint tensor storage to seed1729, so they are deterministic repeats rather than independent fitting-seed replication.

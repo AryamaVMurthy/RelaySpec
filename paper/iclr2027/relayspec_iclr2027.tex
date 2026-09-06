@@ -456,6 +456,9 @@ by 60\%, retaining 97.63\% [96.23,99.03]\% and 97.05\%
 [95.93,98.21]\% throughput on disjoint 64-question GSM8K sets.
 Outputs match their respective full-interface references
 (Appendix~\ref{app:interface-compression}).
+A matched development intervention also shows that inheriting native
+projection columns substantially reduces the calibration needed relative
+to random initialization (Table~\ref{tab:native-initialization}).
 
 EAGLE-3 repeats the dense data-count contrast on the same development
 questions, retaining 98.28\% [97.59, 99.01]\%. Its matched MLP remains
@@ -1174,6 +1177,22 @@ with a 256-token per-turn cap. All are exposed development workloads.}
 \input{generated/native_code_paragraph.tex}
 
 \input{generated/compact_interface_data_paragraph.tex}
+
+\input{generated/native_initialization_paragraph.tex}
+\begin{table}[H]
+\centering\small
+\input{generated/native_initialization_table.tex}
+\caption{Native initialization controls. Values are throughput percentages
+relative to each worker's full repacked-native projection. Crop uses no
+fitting. Rnd and Inh denote random and inherited-column initialization,
+with 16 or 128 records. Ref512 is the original 512-record compact map.
+All compact maps retain two layers and 33.55M projection weights instead
+of 83.89M. Each row pairs all seven methods. Short and long budgets are
+separate campaigns on the same exposed requests, with a 512-token cap.
+Full paired request intervals are retained in the accompanying artifacts.}
+\label{tab:native-initialization}
+\end{table}
+
 
 \paragraph{Frozen native-student confirmation.}
 We freeze the two-layer student's checkpoint and a new

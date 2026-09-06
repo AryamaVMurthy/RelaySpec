@@ -1,0 +1,131 @@
+{
+  "status": "pass",
+  "hypothesis": "Does the inherited native interface retain cross-domain performance after only128 calibration updates?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 162.8598689159819,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.140243902439025,
+        "request_seconds": 12.329618176445365
+      },
+      "relay_cropped": {
+        "tokens_per_second": 147.8684628246829,
+        "throughput_ratio": 0.9079490472939472,
+        "throughput_ci95": [
+          0.8416740004855628,
+          0.9701815336248123
+        ],
+        "request_time_ratio": 0.9079490472939472,
+        "request_time_ci95": [
+          0.841674000485563,
+          0.9701815336248123
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.532967032967033,
+        "request_seconds": 13.579636669252068
+      },
+      "relay_n128_native_columns": {
+        "tokens_per_second": 155.01494114563994,
+        "throughput_ratio": 0.9518301971961607,
+        "throughput_ci95": [
+          0.9009663626572285,
+          1.001446405958655
+        ],
+        "request_time_ratio": 0.9518301971961607,
+        "request_time_ci95": [
+          0.9009663626572285,
+          1.0014464059586552
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.804034582132565,
+        "request_seconds": 12.953590054996312
+      },
+      "relay_n128_random": {
+        "tokens_per_second": 91.5301531515689,
+        "throughput_ratio": 0.5620178486008027,
+        "throughput_ci95": [
+          0.5275629147382274,
+          0.5898434334171802
+        ],
+        "request_time_ratio": 0.5620178486008027,
+        "request_time_ci95": [
+          0.5275629147382274,
+          0.58984343341718
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 3.396290050590219,
+        "request_seconds": 21.938125643413514
+      },
+      "relay_n16_native_columns": {
+        "tokens_per_second": 153.74982494012886,
+        "throughput_ratio": 0.9440620698242558,
+        "throughput_ci95": [
+          0.890125289913289,
+          0.9908389114333049
+        ],
+        "request_time_ratio": 0.9440620698242559,
+        "request_time_ci95": [
+          0.890125289913289,
+          0.9908389114333049
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.7542857142857144,
+        "request_seconds": 13.060177471954376
+      },
+      "relay_n16_random": {
+        "tokens_per_second": 59.93138561861957,
+        "throughput_ratio": 0.36799357642574115,
+        "throughput_ci95": [
+          0.33017997602989857,
+          0.41016306963338417
+        ],
+        "request_time_ratio": 0.36799357642574115,
+        "request_time_ci95": [
+          0.3301799760298985,
+          0.41016306963338417
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 2.2167216721672167,
+        "request_seconds": 33.50498206028715
+      },
+      "relay_two": {
+        "tokens_per_second": 159.90662510134499,
+        "throughput_ratio": 0.9818663502906264,
+        "throughput_ci95": [
+          0.9524139693540634,
+          1.0120765872662074
+        ],
+        "request_time_ratio": 0.9818663502906264,
+        "request_time_ci95": [
+          0.9524139693540634,
+          1.0120765872662074
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.994047619047619,
+        "request_seconds": 12.557328370399773
+      }
+    }
+  },
+  "scope": "Matched128-update16/128-record random/inherited fits, untrained cropped and full native controls plus512-record compact reference. Eight exposed requests per domain,512token cap. No untouched confirmation. All lanes540second cap."
+}

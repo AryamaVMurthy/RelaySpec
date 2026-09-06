@@ -1,0 +1,51 @@
+protocol_version: 1
+run_name: confirmation-dflash-full
+seed: 1729
+resources:
+  gpu_count: 1
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target: &id001
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-8B-DFlash-b16
+  revision: 9b41424b7109f9c5413454f481b09a82b85333f4
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 512
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full-manifest.json
+  benchmarks:
+  - gsm8k
+  methods:
+  - relay_base
+  - relay_reduced
+  max_prompts: 8
+  warmups: 1
+  block_size: 16
+  profile_regions: true
+  research_single_gpu: true
+  unload_source_trunk: true
+source_trunk:
+  model: *id001
+  layers: 36
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants:
+    relay_base: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28428/lane2/fitting/native-dflash-taps-25-33/step-008192.pt
+    relay_reduced: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28538/lane1/fitting/native-late2-n16-offset32-inherited-u128/step-000128.pt
+native_target_proposer:
+  id: z-lab/Qwen3-8B-DFlash-b16
+  revision: 9b41424b7109f9c5413454f481b09a82b85333f4

@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Is the16-record short inherited native fit sensitive to which disjoint calibration records are used?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 180.9151648508304,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.766066838046273,
+        "request_seconds": 14.504035646561533
+      },
+      "relay_reduced": {
+        "tokens_per_second": 181.00267003452814,
+        "throughput_ratio": 1.0004836807559494,
+        "throughput_ci95": [
+          0.9615962437399685,
+          1.0303077787769899
+        ],
+        "request_time_ratio": 1.0004836807559494,
+        "request_time_ci95": [
+          0.9615962437399684,
+          1.0303077787769899
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.766066838046273,
+        "request_seconds": 14.497023715171963
+      }
+    }
+  },
+  "scope": "Four disjoint16-record training windows at offsets16/32/48/64,128 updates, fixed inherited initialization and unchanged validation prefix. Record selection logged explicitly. Eight exposed GSM8K requests512token cap, original512-record compact reference. Data-selection robustness screen, not random-seed replication or fresh confirmation. All lanes540second cap."
+}
