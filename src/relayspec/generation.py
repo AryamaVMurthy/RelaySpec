@@ -302,6 +302,7 @@ def relay_dflash_generate(
     return_stats: bool = False,
     profile_recorder: Any | None = None,
     selective_capture: bool = False,
+    release_capture_buffers: bool = False,
 ) -> Any:
     """Run verified DFlash while relaying cached target taps to the proposer.
 
@@ -370,6 +371,8 @@ def relay_dflash_generate(
                 relay_target_layer_ids,
             )
         conditioned_context = draft.hidden_norm(relay(relay_features))
+    if release_capture_buffers:
+        del target_prefill, relay_features
     torch.cuda.synchronize()
     time_to_first_token = time.perf_counter() - prefill_started
 
