@@ -832,6 +832,31 @@ This uses a different training dataset and budget from Figure~\ref{fig:scaling}.
 \label{fig:historical-scaling}
 \end{figure}
 
+\paragraph{Compression should account for the feature distribution.}
+At matched rank 1,024, approximating the mapper's weight matrix alone
+can be much weaker than preserving its observed projection outputs
+(Table~\ref{tab:compression-objective}). For the latter, we sample up to
+eight feature positions from each of 512 fitting records, approximate
+the dominant uncentered output subspace $U_k$ of $XW^\top$, and deploy
+$U_k(U_k^\top W)$, using normalized inputs in $X$ where the mapper
+requires them. This is an application of data-aware compression,
+with established precedents in ASVD and SVD-LLM
+\citep{yuan2023asvd,wang2025svdllm}, not a new general factorization method.
+EAGLE-3 illustrates the distinction: weight-only SVD retains 54.2\%
+on GSM8K, output-subspace compression 93.9\%, and direct teacher fitting
+96.1\%. On MATH the latter two are nearly tied. Direct fitting remains
+useful rather than being universally replaced by posthoc compression.
+
+\begin{table}[H]
+\centering\small
+\input{generated/compression_objective_table.tex}
+\caption{Rank-1,024 throughput retained relative to the paired full map
+on 32 exposed questions with a 128-token cap. Posthoc arms inherit a
+trained dense map, while direct fitting starts from the original teacher
+pairs. The deployment rank is matched, not total adaptation compute.}
+\label{tab:compression-objective}
+\end{table}
+
 \paragraph{Selecting target features.}
 \label{app:interface-compression}
 The interface also permits a controlled test of target-layer sufficiency.
@@ -951,6 +976,37 @@ LLM compression already has established precedents
 requests. Retention is relative to the released native implementation.
 Only projection parameters are counted.}
 \label{tab:native-compression-confirmation}
+\end{table}
+
+\paragraph{Distilling a native interface from fewer layers.}
+The layer result also suggests an alternative to weight decomposition:
+fit a smaller interface directly to the released native projection's
+outputs. Using cached target features from 512 fitting records, we apply
+the frozen native projection and its output normalization to construct
+supervision, then fit a one-layer or two-layer input map for 8,192 updates.
+The native drafter remains frozen. Teacher hashes, target identities and
+layer lists are checked, and the fitting path passes its batched versus
+individual-example gradient check.
+
+The two-layer native map has 33.55M parameters (60\% fewer than the
+83.89M native projection), while one layer has 16.78M (80\% fewer).
+Table~\ref{tab:native-student} shows the tradeoff on development workloads:
+two layers retain 97.1--97.9\% throughput relative to released native,
+while one layer loses substantially more, especially on code. Rank-1,536
+SVD retains slightly more throughput with slightly more parameters
+(37.75M). Thus the student provides another compact-interface operating
+point, not a uniform improvement over decomposition. These students were
+selected after the fixed native-SVD comparison and are not evaluated as
+new candidates on its confirmation questions.
+
+\begin{table}[H]
+\centering\small
+\input{generated/native_student_table.tex}
+\caption{Native interface students versus released-native throughput.
+GSM8K/MATH use 32 questions and a 128-token cap, code eight MBPP
+requests and a 512-token cap, and dialogue eight two-turn conversations
+with a 256-token per-turn cap. All are exposed development workloads.}
+\label{tab:native-student}
 \end{table}
 
 \paragraph{Expanded NuminaMath data curve.}

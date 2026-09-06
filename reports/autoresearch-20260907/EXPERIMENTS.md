@@ -52,3 +52,11 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 12 / 1 | 28428 | eagle3 / existing | pass | 399.7 | 32 | relay_activation1024: 96.7%; relay_trained1024: 96.5%; relay_weight1024: 59.4% |
 | 12 / 2 | 28428 | dflash / fit_reduced_taps | pass | 182.7 | 8 | relay_reduced: 97.3% |
 | 12 / 3 | 28428 | dflash / fit_reduced_taps | pass | 143.9 | 8 | relay_reduced: 84.2% |
+| 13 / 0 | 28429 | dflash / existing | pass | 180.6 | 32 | relay_one: 84.3%; relay_svd1536: 98.3%; relay_two: 97.2% |
+| 13 / 1 | 28429 | dflash / existing | pass | 146.3 | 32 | relay_one: 88.9%; relay_svd1536: 98.3%; relay_two: 97.3% |
+| 13 / 2 | 28429 | dflash / existing | pass | 95.3 | 8 | relay_one: 72.1%; relay_svd1536: 99.4%; relay_two: 97.9% |
+| 13 / 3 | 28429 | dflash / existing | pass | 180.9 | 16 | relay_one: 87.3%; relay_svd1536: 99.5%; relay_two: 98.2% |
+| 14 / 0 | 28430 | dflash / fit_reduced_taps | pass | 338.4 | 32 | relay_reduced: 98.3% |
+| 14 / 1 | 28430 | dflash / fit_reduced_taps | pass | 324.2 | 32 | relay_reduced: 100.4% |
+| 14 / 2 | 28430 | dflash / fit_reduced_taps | pass | 331.2 | 32 | relay_reduced: 97.0% |
+| 14 / 3 | 28430 | dflash / fit_reduced_taps | pass | 339.4 | 32 | relay_reduced: 97.7% |

@@ -155,3 +155,13 @@ Wave12 job28428 completed all four lanes. EAGLE evaluation-only retry passed416.
 Native teacher integration succeeded, including the actual batch-equivalence pilots. Eight-question native two-tap retains97.29% versus repacked native (98.2% versus released native), one-tap84.21% versus repacked (85.2% versus released). These are initial exposed screens. Wave13 job28429 now compares both students with released/repacked native and frozen rank1536 SVD across32 GSM8K,32 MATH,8MBPP and8two-turn MT-Bench cases, excluding all64 fixed-confirmation requests. FourGPU lanes, each540-second cap.
 
 Paper depth plot now uses distinct circle/square markers to preserve family distinction in grayscale. Paper still compiles; full current-PDF visual-review record remains outstanding.
+
+## Native operating points and calibration composition
+
+Wave13 job28429 passed all four workload screens in95–181seconds. Relative to released native (recomputed paired reference, not dividing CI endpoints), two-layer students retain97.7% GSM8K,97.1% MATH,97.2% code and97.9% dialogue. One layer retains84.7%,88.8%,71.6%,87.0%. Rank1536 SVD retains98.8%,98.1%,98.6%,99.2%, with37.75M parameters versus33.55M two-layer and16.78M one-layer, compared with83.89M native. This is a parameter/throughput tradeoff, not student superiority. Added native-student table and method/scope to appendix through scripts/build_native_student_assets.py.
+
+Added the completed32-request matched-rank comparison table through scripts/build_compression_objective_assets.py. EAGLE direct versus posthoc paths have equal deployed rank but different total adaptation budgets, since posthoc compression inherits dense fitting. Inputs X in the output-subspace method include mapper input normalization where required, and its subspace concerns linear projection outputs. No new-general-compression-method claim.
+
+Wave14 job28430 fits four compact interfaces on512 records: retargeted/native DFlash × math-only/mixed math+general-instruction calibration, all8192updates and taps[25,33], evaluating32 exposed MBPP requests at128-token cap. Existing exact-cache pilots28132/28133 authorize the verified composition caches27959/27966. Cache-index prefixes were inspected: math512; mixed256math+256general_instruction; validation64+64. All four fit-complete records pass. Code decoding was still running at this update.
+
+Wave15 job28431 is dependency-chained after28430 and reuses those exact four completed checkpoints for MATH32 and MT-Bench8two-turn screens. It was declared before interpreting code outcomes, so code gains will be checked for math/dialogue tradeoffs. No new data extraction or large-data scaling. FourGPU total,540seconds per lane.
