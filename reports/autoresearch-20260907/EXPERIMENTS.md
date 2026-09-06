@@ -80,6 +80,10 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 19 / 1 | 28435 | dflash / fit_reduced_taps | pass | 145.1 | 8 | relay_early: 55.5%; relay_last2: 97.4%; relay_reduced: 50.0% |
 | 19 / 2 | 28435 | eagle3 / fit_reduced_taps | pass | 180.3 | 8 | relay_early: 56.5%; relay_last2: 92.7%; relay_reduced: 57.9% |
 | 19 / 3 | 28435 | eagle3 / fit_reduced_taps | pass | 180.0 | 8 | relay_early: 56.5%; relay_last2: 92.6%; relay_reduced: 57.4% |
+| 25 / 0 | 28459 | dflash / existing | pass | 70.8 | 8 | — |
+| 25 / 1 | 28459 | dflash / existing | pass | 78.3 | 8 | — |
+| 25 / 2 | 28459 | dflash / existing | pass | 60.8 | 8 | — |
+| 25 / 3 | 28459 | dflash / existing | pass | 65.8 | 8 | — |
 
 ## Four-GPU pipeline stages
 
@@ -91,3 +95,4 @@ These use stage-specific completion gates, not independent lane summaries.
 | 21 | 28448 | boundary_extraction | pass | 00:00:42 | extraction-complete.json |
 | 22 | 28455 | boundary_capacity_pilot | pass | 00:01:25 | batch-gate.json |
 | 23 | 28457 | boundary_full_fit | pass | 00:01:20 | batch-gate.json |
+| 24 | 28458 | boundary_evaluation | pass | 00:01:30 | campaign-gate.json |

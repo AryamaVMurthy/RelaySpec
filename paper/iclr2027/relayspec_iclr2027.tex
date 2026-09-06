@@ -378,6 +378,8 @@ In BF16, AR and block verification can select different tokens on an
 identical prefix. Traces of eight selected DFlash early-divergence prompts show
 changes in the leading target scores shared by native drafting, source
 reuse and RelaySpec. This diagnostic is separate from the timed runs.
+A separate 16-question Qwen3-0.6B diagnostic gives 7/16 exact AR matches
+in BF16 and 16/16 in full FP32 (Appendix~\ref{app:downscale}).
 We report measured quality and agreement rather than claiming bitwise
 identity from the verifier's mathematical contract.
 
@@ -858,6 +860,55 @@ on 32 exposed questions with a 128-token cap. Posthoc arms inherit a
 trained dense map, while direct fitting starts from the original teacher
 pairs. The deployment rank is matched, not total adaptation compute.}
 \label{tab:compression-objective}
+\end{table}
+
+\paragraph{Retargeting toward a smaller verifier.}
+\label{app:downscale}
+As a boundary experiment, we reuse the Qwen3-4B DFlash drafter with
+Qwen3-0.6B, taking target layers [1,7,13,19,25]. The source and target
+tokenizer files are byte-identical at the pinned revisions. We extract
+512 fitting and 128 validation records and fit for 8,192 updates.
+Two dense seeds use 13.11M mapper parameters. Factored linear and GELU
+MLP maps at width 1,024 each use 7.86M. Per-worker fitting takes
+54--61 seconds after cache extraction, which takes 32.8 seconds on
+four GPUs including model loading.
+
+On 16 development GSM8K requests, dense RelaySpec reaches 168.0 tokens/s,
+or 3.26 times AR [3.00,3.50], compared with 102.6 tokens/s for source
+reuse (Table~\ref{tab:downscale}). The second seed repeats the result.
+AR time divided by RelaySpec time is 3.32 [3.07,3.55]. We report both
+ratios because outputs differ from AR on nine questions in this BF16
+run. All methods finish below the 512-token cap. Correctness is 10/16
+for speculative methods and 9/16 for AR, with a conservative paired
+accuracy-difference interval of $[-23.9,33.8]$ percentage points for
+dense RelaySpec. This does not establish accuracy superiority or
+noninferiority.
+
+Source verification occupies 46.8\% of source-reuse request time.
+RelaySpec removes it while reducing progress per cycle from 5.45 to
+4.61. This supports the source-removal mechanism even when the verifier
+is smaller than the drafter's source model. It remains a small,
+single-workload development result rather than a confirmed deployment
+recommendation for small verifiers.
+
+To investigate the output disagreement, we repeat the same sixteen
+questions with the same fitted checkpoint in BF16 and full FP32.
+All source, draft, target and mapper computations change precision
+together, and FP32 disables TF32. Within-precision AR agreement is
+7/16 in BF16 and 16/16 in FP32. The BF16 and FP32 AR outputs themselves
+match on only 5/16 questions. This intervention supports a numerical
+explanation in this sample, but also changes kernel dispatch and does
+not isolate target precision alone. It is not a proof of agreement on
+other prompts. The four diagnostic workers complete in 61--78 seconds.
+
+\begin{table}[H]
+\centering\small
+\input{generated/downscale_table.tex}
+\caption{Downward retargeting to Qwen3-0.6B on 16 GSM8K requests.
+Timing includes prompt processing. Correctness and exact AR-output
+matches are separate. The duplicate row repeats the same checkpoint
+and passes the trajectory-equivalence check. All models run in BF16.}
+\label{tab:downscale}
 \end{table}
 
 \paragraph{Selecting target features.}

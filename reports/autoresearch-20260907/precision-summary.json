@@ -1,0 +1,109 @@
+{
+  "input_sha256": {
+    "reports/autoresearch-20260907/run-28459/lane0/benchmark-rank0.jsonl": "ef6f047082d195c41d2bbc4755195ef0b36f6c88db2cfebf54e9d28dae7e6df0",
+    "reports/autoresearch-20260907/run-28459/lane0/config.yaml": "8e758cacc4c81c771a39f1bfcf5de48950c022b9348b8072a3606865b03cf0c6",
+    "configs/autoresearch/20260907/downscale-precision-shard0.json": "bbd730d4c8206ea805f73903d776c0805c8d06dee5a7e61b6e2f5e81293fbdb3",
+    "reports/autoresearch-20260907/run-28459/lane0-status.json": "da1018e1cda94d5c893c3083454a95e412d3d70f2217363655589d16e3faceac",
+    "reports/autoresearch-20260907/run-28459/lane2/benchmark-rank0.jsonl": "1c0d888ca58418c65a5faeb378dffcc994433b28ac0eeb162b49f6725080ac38",
+    "reports/autoresearch-20260907/run-28459/lane2/config.yaml": "ff313049a848c458985927952978301a8c63ce39d5ce2f5219fd772f326e31c6",
+    "configs/autoresearch/20260907/downscale-precision-shard1.json": "29039c8bf4543ab3c02128259e715391c5e68112a7b10c4d339e86b9fda0b3f5",
+    "reports/autoresearch-20260907/run-28459/lane2-status.json": "7c33978f3fe6a1de514e841dbf4bd8c33771d6967a32ab909507295bfe232cd1",
+    "reports/autoresearch-20260907/run-28459/lane1/benchmark-rank0.jsonl": "7d3607b15540f5d174b2e82a940bd8d7f7a00fba964f5f510d802ec1e45c6105",
+    "reports/autoresearch-20260907/run-28459/lane1/config.yaml": "4a3c1ce5f5f8fb8a3a6da385414c5f8014070d036c34f5cccb8d50fd98cd9cb0",
+    "reports/autoresearch-20260907/run-28459/lane1-status.json": "8dbdc48e3561873ff574f22ed1a2c97a4c1a1b05d43ec8eceaba56de2ba17c3d",
+    "reports/autoresearch-20260907/run-28459/lane3/benchmark-rank0.jsonl": "1e737ff1c6d767cb5b11aee650616961c0fddf139ddeef977bb9cebc242a31d7",
+    "reports/autoresearch-20260907/run-28459/lane3/config.yaml": "410c0fffb8720c09871f0bc397635df35bd5120174e91897da469993cf3c9063",
+    "reports/autoresearch-20260907/run-28459/lane3-status.json": "25c865ef2e6e72a83d8114a63afe7735c661683f6056cc07f09173a7f8500e74"
+  },
+  "results": [
+    {
+      "precision": "bfloat16",
+      "requests": 16,
+      "clusters": 16,
+      "reference": "native_ar",
+      "methods": {
+        "native_ar": {
+          "tokens_per_second": 49.434859113995714,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 223.75,
+          "token_matches": 16,
+          "progress_per_cycle": 1.0,
+          "request_seconds": 72.41853348352015
+        },
+        "relay_base": {
+          "tokens_per_second": 162.6729541373023,
+          "throughput_ratio": 3.290652730741722,
+          "throughput_ci95": [
+            3.0221597038034362,
+            3.5415877505045374
+          ],
+          "request_time_ratio": 3.3505508464321285,
+          "request_time_ci95": [
+            3.0875244790658023,
+            3.5948562087840332
+          ],
+          "mean_output_tokens": 219.75,
+          "token_matches": 7,
+          "progress_per_cycle": 4.608355091383812,
+          "request_seconds": 21.61391866672784
+        }
+      }
+    },
+    {
+      "precision": "float32",
+      "requests": 16,
+      "clusters": 16,
+      "reference": "native_ar",
+      "methods": {
+        "native_ar": {
+          "tokens_per_second": 49.566463857898526,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 235.375,
+          "token_matches": 16,
+          "progress_per_cycle": 1.0,
+          "request_seconds": 75.9787910389714
+        },
+        "relay_base": {
+          "tokens_per_second": 166.93463928954048,
+          "throughput_ratio": 3.3678948687589116,
+          "throughput_ci95": [
+            3.1202631186618586,
+            3.6340370931691925
+          ],
+          "request_time_ratio": 3.367894868758911,
+          "request_time_ci95": [
+            3.120263118661858,
+            3.6340370931691925
+          ],
+          "mean_output_tokens": 235.375,
+          "token_matches": 16,
+          "progress_per_cycle": 4.378910776361529,
+          "request_seconds": 22.559727663639933
+        }
+      }
+    }
+  ],
+  "cross_precision_output_matches": {
+    "native_ar": 5,
+    "relay_base": 5
+  },
+  "scope": "Same sixteen exposed questions and fitted checkpoint. All model/mapper execution changes precision together; FP32 disables TF32. Kernel dispatch can also change. Tests within-precision AR agreement, not a proof of agreement for all prompts or attribution to target precision alone."
+}

@@ -1,7 +1,7 @@
 {
-  "ledger_sha256": "d7eacd48af8da0e0581b5c7ec7b7bf8c484201c77fc8d69be72dbfec034050fe",
+  "ledger_sha256": "13e16ce54e750f4ffd2037fa7fcc62c3e34abb80ec8f77045f89fefaa60443f2",
   "input_sha256": {
-    "reports/autoresearch-20260907/jobs.json": "d7eacd48af8da0e0581b5c7ec7b7bf8c484201c77fc8d69be72dbfec034050fe",
+    "reports/autoresearch-20260907/jobs.json": "13e16ce54e750f4ffd2037fa7fcc62c3e34abb80ec8f77045f89fefaa60443f2",
     "reports/autoresearch-20260907/run-28391/lane0-spec.json": "7fdea513452813b344401685df68196078f856e9a55424c4f6095dd9bb218899",
     "reports/autoresearch-20260907/run-28391/lane0-status.json": "0365096180cbfe28907df3238cfe80a9b4103228addca34c0736d5302a8836ef",
     "reports/autoresearch-20260907/run-28391/lane0/research-result.json": "7472d4f0cd8da2ad29fb0132c6f1f7ac972e0d0b24ec4b3c2bf496733f27763e",
@@ -231,7 +231,20 @@
     "reports/autoresearch-20260907/run-28440/pilot-gate.json": "ce35b42d31a64ec51af4136accb5bf0465e1db4f5c28e0e7b2a6fc148f9dd792",
     "reports/autoresearch-20260907/run-28448/extraction-complete.json": "d6dc4510ae320d0625ef1b6c3695b3148f4a66c5dcd97e46211f17e8ade79323",
     "reports/autoresearch-20260907/run-28455/batch-gate.json": "79ba32ed2c6558af25333f076f800b6d5600da3face93010c222d5e7e60b163f",
-    "reports/autoresearch-20260907/run-28457/batch-gate.json": "584cfaefa625b30f55229750e56463fbbce55869dc446aa855a6fa01cf6fa8e1"
+    "reports/autoresearch-20260907/run-28457/batch-gate.json": "584cfaefa625b30f55229750e56463fbbce55869dc446aa855a6fa01cf6fa8e1",
+    "reports/autoresearch-20260907/run-28458/campaign-gate.json": "fba3f940c2a3b93d67b593f7f4d2d6f8cc77d818217712f126b78ebb0f72f252",
+    "reports/autoresearch-20260907/run-28459/lane0-spec.json": "1e067c811553837491c77d22c7c0befa0590a6d0dec6f49adf2ceca68afa2da6",
+    "reports/autoresearch-20260907/run-28459/lane0-status.json": "da1018e1cda94d5c893c3083454a95e412d3d70f2217363655589d16e3faceac",
+    "reports/autoresearch-20260907/run-28459/lane0/research-result.json": "0876b092f779b460ca15cdaecff81dd7f316c172725bedfabdc7c18e6c391859",
+    "reports/autoresearch-20260907/run-28459/lane1-spec.json": "e54411248b6f6bd47d62ede8d863c45345797300d57f53643202f24eb066518c",
+    "reports/autoresearch-20260907/run-28459/lane1-status.json": "8dbdc48e3561873ff574f22ed1a2c97a4c1a1b05d43ec8eceaba56de2ba17c3d",
+    "reports/autoresearch-20260907/run-28459/lane1/research-result.json": "ad5ccbca6c17b0c8cbd4b6241d53e8edeecaf07c198afcd79ec5dd110e3f94a7",
+    "reports/autoresearch-20260907/run-28459/lane2-spec.json": "af23e33c097f9f15bb84e0b05a5404e05612d9ca875e4be838c4f5e59a094c08",
+    "reports/autoresearch-20260907/run-28459/lane2-status.json": "7c33978f3fe6a1de514e841dbf4bd8c33771d6967a32ab909507295bfe232cd1",
+    "reports/autoresearch-20260907/run-28459/lane2/research-result.json": "77a0d57f2d05288ae04ac2118ac23ef92df752ee5609387c3f2c20c616ba5701",
+    "reports/autoresearch-20260907/run-28459/lane3-spec.json": "77c21b3e0b6dc313ce4a9f111f128b314481209c6436145f15a7d48d1e3be65c",
+    "reports/autoresearch-20260907/run-28459/lane3-status.json": "25c865ef2e6e72a83d8114a63afe7735c661683f6056cc07f09173a7f8500e74",
+    "reports/autoresearch-20260907/run-28459/lane3/research-result.json": "a14d22f005b342956fae4f18ce45c845ada707c0c225fb8e9b14d0198876afc6"
   },
   "lanes": [
     {
@@ -7654,6 +7667,222 @@
         }
       },
       "duplicate_control": null
+    },
+    {
+      "job": 28459,
+      "wave": 25,
+      "lane": 0,
+      "family": "dflash",
+      "transform": "existing",
+      "hypothesis": "Does full-runtime FP32 without TF32 improve greedy AR/speculative output agreement relative to BF16 on the same sixteen questions?",
+      "status": "pass",
+      "elapsed_seconds": 70.7687766449526,
+      "exit_code": 0,
+      "scope": "Numerical diagnostic, all source/draft/target/mapper weights run in the stated precision. Same BF16-fitted mapper checkpoint is cast for FP32 execution. Not a matched-precision production speed comparison across lanes.",
+      "summary": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "relay_base",
+        "methods": {
+          "native_ar": {
+            "tokens_per_second": 47.52009566426227,
+            "throughput_ratio": 0.2818642682433705,
+            "throughput_ci95": [
+              0.261502012984061,
+              0.31198986834468356
+            ],
+            "request_time_ratio": 0.2941940378613409,
+            "request_time_ci95": [
+              0.26516090552014276,
+              0.33591957413035745
+            ],
+            "mean_output_tokens": 245.75,
+            "token_matches": 3,
+            "progress_per_cycle": 1.0,
+            "request_seconds": 41.371970584616065
+          },
+          "relay_base": {
+            "tokens_per_second": 168.59212400499067,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 256.5,
+            "token_matches": 8,
+            "progress_per_cycle": 4.949519230769231,
+            "request_seconds": 12.17138708056882
+          }
+        }
+      },
+      "duplicate_control": null
+    },
+    {
+      "job": 28459,
+      "wave": 25,
+      "lane": 1,
+      "family": "dflash",
+      "transform": "existing",
+      "hypothesis": "Does full-runtime FP32 without TF32 improve greedy AR/speculative output agreement relative to BF16 on the same sixteen questions?",
+      "status": "pass",
+      "elapsed_seconds": 78.31516501121223,
+      "exit_code": 0,
+      "scope": "Numerical diagnostic, all source/draft/target/mapper weights run in the stated precision. Same BF16-fitted mapper checkpoint is cast for FP32 execution. Not a matched-precision production speed comparison across lanes.",
+      "summary": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "relay_base",
+        "methods": {
+          "native_ar": {
+            "tokens_per_second": 49.84634804535304,
+            "throughput_ratio": 0.2928531223670653,
+            "throughput_ci95": [
+              0.2619669468548531,
+              0.32602841140171984
+            ],
+            "request_time_ratio": 0.29285312236706523,
+            "request_time_ci95": [
+              0.2619669468548531,
+              0.32602841140171984
+            ],
+            "mean_output_tokens": 277.625,
+            "token_matches": 8,
+            "progress_per_cycle": 1.0,
+            "request_seconds": 44.556925172917545
+          },
+          "relay_base": {
+            "tokens_per_second": 170.209378826001,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 277.625,
+            "token_matches": 8,
+            "progress_per_cycle": 4.4186507936507935,
+            "request_seconds": 13.048634659964591
+          }
+        }
+      },
+      "duplicate_control": null
+    },
+    {
+      "job": 28459,
+      "wave": 25,
+      "lane": 2,
+      "family": "dflash",
+      "transform": "existing",
+      "hypothesis": "Does full-runtime FP32 without TF32 improve greedy AR/speculative output agreement relative to BF16 on the same sixteen questions?",
+      "status": "pass",
+      "elapsed_seconds": 60.82952855573967,
+      "exit_code": 0,
+      "scope": "Numerical diagnostic, all source/draft/target/mapper weights run in the stated precision. Same BF16-fitted mapper checkpoint is cast for FP32 execution. Not a matched-precision production speed comparison across lanes.",
+      "summary": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "relay_base",
+        "methods": {
+          "native_ar": {
+            "tokens_per_second": 51.98643100222127,
+            "throughput_ratio": 0.3353029486271523,
+            "throughput_ci95": [
+              0.30909376343513506,
+              0.3731123209826897
+            ],
+            "request_time_ratio": 0.30414096455399686,
+            "request_time_ci95": [
+              0.2819196122086661,
+              0.3323960021253475
+            ],
+            "mean_output_tokens": 201.75,
+            "token_matches": 4,
+            "progress_per_cycle": 1.0,
+            "request_seconds": 31.046562898904085
+          },
+          "relay_base": {
+            "tokens_per_second": 155.04316682889885,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 183.0,
+            "token_matches": 8,
+            "progress_per_cycle": 4.202857142857143,
+            "request_seconds": 9.44253158615902
+          }
+        }
+      },
+      "duplicate_control": null
+    },
+    {
+      "job": 28459,
+      "wave": 25,
+      "lane": 3,
+      "family": "dflash",
+      "transform": "existing",
+      "hypothesis": "Does full-runtime FP32 without TF32 improve greedy AR/speculative output agreement relative to BF16 on the same sixteen questions?",
+      "status": "pass",
+      "elapsed_seconds": 65.81802518991753,
+      "exit_code": 0,
+      "scope": "Numerical diagnostic, all source/draft/target/mapper weights run in the stated precision. Same BF16-fitted mapper checkpoint is cast for FP32 execution. Not a matched-precision production speed comparison across lanes.",
+      "summary": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "relay_base",
+        "methods": {
+          "native_ar": {
+            "tokens_per_second": 49.169581672395786,
+            "throughput_ratio": 0.3026902681151889,
+            "throughput_ci95": [
+              0.2772747928291114,
+              0.33689935361095513
+            ],
+            "request_time_ratio": 0.3026902681151889,
+            "request_time_ci95": [
+              0.2772747928291114,
+              0.3368993536109551
+            ],
+            "mean_output_tokens": 193.125,
+            "token_matches": 8,
+            "progress_per_cycle": 1.0,
+            "request_seconds": 31.42186586605385
+          },
+          "relay_base": {
+            "tokens_per_second": 162.44189804504808,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 193.125,
+            "token_matches": 8,
+            "progress_per_cycle": 4.323119777158774,
+            "request_seconds": 9.511093003675342
+          }
+        }
+      },
+      "duplicate_control": null
     }
   ],
   "pipelines": [
@@ -7821,6 +8050,43 @@
         "fit_wall_seconds": 66.32341447798535,
         "total_wall_seconds": 68.59743876894936,
         "scope": "Declared cached fitting/checkpoint completion. Pilot additionally checks BF16 batch equivalence, streaming, width extremes and duplicate-map decoding. This is not full task-quality evidence."
+      }
+    },
+    {
+      "job": 28458,
+      "wave": 24,
+      "kind": "boundary_evaluation",
+      "status": "pass",
+      "slurm_state": "COMPLETED",
+      "elapsed": "00:01:30",
+      "gate": "campaign-gate.json",
+      "details": {
+        "status": "pass",
+        "duplicate_map_equivalence": {
+          "methods": [
+            "relay_dense_a",
+            "relay_dense_b"
+          ],
+          "requests": 16,
+          "status": "pass",
+          "checked_fields": [
+            "output_hash",
+            "output_tokens",
+            "mapper_checkpoint_sha256",
+            "accepted_draft_lengths",
+            "proposal_lengths"
+          ]
+        },
+        "methods": [
+          "native_ar",
+          "optimized_source_reuse",
+          "relay_dense_a",
+          "relay_dense_b",
+          "relay_dense_s1730",
+          "relay_factor1024",
+          "relay_mlp1024"
+        ],
+        "scope": "Paired artifact completeness and optional identical-checkpoint isolation; not a task-quality or optimality claim."
       }
     }
   ],
