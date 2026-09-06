@@ -1,5 +1,5 @@
 {
-  "purpose": "Evidence inventory for the rewrite after the90-minute experiment window. Registry status is recorded, not a new independent scientific validation. Pending EAGLE full-quality and rate-check results must be added only after their actual audits.",
+  "purpose": "Frozen completed-result inventory for the paper rewrite after the 90-minute experiment window. Source hashes were checked on consolidation; registry status alone is not a new independent scientific validation. EAGLE full-quality and rate-pilot audits completed during this window.",
   "sources": [
     {
       "path": "reports/mapper-scaling-20260905/historical-data-summary.json",
@@ -70,6 +70,48 @@
       "registry_status": "complete",
       "use": "Prepared matched-composition features",
       "boundary": "Infrastructure only; no composition training/decoding result exists."
+    },
+    {
+      "path": "reports/mapper-scaling-20260905/eagle3-small-quality-results.json",
+      "sha256": "16ddd2fd5967794f97a2e2db4785ddc7e950519c7b913b6d5988f2ac6f2bf8c2",
+      "registry_status": "complete",
+      "use": "EAGLE8 long-output quality and speed",
+      "boundary": "Audited 128 exposed requests and 1408 rows; no untouched confirmation or tight accuracy non-inferiority."
+    },
+    {
+      "path": "reports/mapper-scaling-20260905/target14b-eagle-rate-pilot-results.json",
+      "sha256": "836723f57930301e05a6d85ac208611acddc69f7aa99be7dc08f041d15ab6344",
+      "registry_status": "complete",
+      "use": "Numerical and execution validation of four lower-rate checks",
+      "boundary": "16-update pilot only. Proper 8192-update fits and paired endpoint decoding did not run within timebox."
+    },
+    {
+      "path": "reports/external-baselines-20260906/timed-budget-results.json",
+      "sha256": "171253e09ffd4921c77c26b46003134b4fc210a0921109e05e3c5e5a6e9863bf",
+      "registry_status": "complete",
+      "use": "Matched warm-optimizer-budget DFlash adaptation fits",
+      "boundary": "Preparation/export costs are separate; not total adaptation cost."
+    },
+    {
+      "path": "reports/external-baselines-20260906/timed-budget-decoding.json",
+      "sha256": "ecb10490f018f2fbcefa482cdb122344fc901426679abf722b5b8e9d4fa2061f",
+      "registry_status": "complete",
+      "use": "Matched-budget DFlash CE/LoRA versus feature fitting",
+      "boundary": "16 development requests with 256-token cap; not full-answer quality or general LoRA failure."
+    },
+    {
+      "path": "reports/external-baselines-20260906/pard-quality-full.json",
+      "sha256": "2f80cb13ae85b98419a9e9bfe03d7da9f91e2316025031d142278893b41f7df9",
+      "registry_status": "complete",
+      "use": "PARD public-runtime long-output baseline",
+      "boundary": "Compare with its own AR runtime; no algorithm-only cross-runtime ranking."
+    },
+    {
+      "path": "reports/external-baselines-20260906/sd-square-quality-guarded-full.json",
+      "sha256": "3753b5759c5dcd50bedb6563ee0dfd21ecb0caadd2c5607ac8f9095a70c128be",
+      "registry_status": "complete",
+      "use": "SD-square public-runtime long-output baseline",
+      "boundary": "Guarded completed shards only. Capped exposed development questions; no tight quality non-inferiority."
     }
   ],
   "not_completed": [
@@ -77,7 +119,8 @@
     "composition fitting/quality",
     "full14B long-answer capacity comparison",
     "generalized EAGLE matched-time adaptation",
-    "autoresearch"
+    "autoresearch",
+    "EAGLE14 lower-rate proper endpoint fitting and decoding"
   ],
   "main_text_priorities": [
     "Retarget existing frozen feature-conditioned drafters",
@@ -86,5 +129,6 @@
     "Capacity and fitting-loss versus decoding tradeoffs",
     "Measured DFlash low-cost adaptation baseline",
     "Negative workload and optimization boundaries"
-  ]
+  ],
+  "gpu_queue_empty_verified_utc": "2026-09-06T06:06:11Z"
 }
