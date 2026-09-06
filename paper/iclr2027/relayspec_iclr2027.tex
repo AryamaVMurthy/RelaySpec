@@ -1130,6 +1130,70 @@ or corrections for selecting among multiple comparisons. Absolute
 throughput is interpreted within this common campaign and its deterministic
 training/runtime configuration.
 
+\clearpage
+\section{External baselines in their public runtimes}
+\label{app:externalbaselines}
+
+We evaluate SD$^2$'s public frozen-drafter option and the released PARD
+parallel drafter on sixteen exposed MATH development requests with a
+256-token cap. Each system has a correct cached AR control using its
+own target runtime and identical pretokenized inputs. These are short
+development comparisons. Full-answer quality and final confirmation
+remain separate requirements.
+
+SD$^2$ trains 402,665,472 steering parameters with merged guidance from
+target layers 3, 16 and 33 into all drafter layers. Inherited target and
+drafter weights remain frozen. Each of six objective/rate settings sees
+512 distinct records once, using 128 batch-four updates and 95,835
+non-padding supervised positions. Records are capped at 192 tokens.
+Training takes 47.0--48.6 seconds per fit. The initial TVD and KL settings
+also have exact fitting replicas, whose costs remain in the experiment
+record. This supervision differs from the feature-regression and
+last-15-position adaptation objectives in the preceding study.
+
+\begin{table}[H]
+\caption{One-epoch SD$^2$ development comparison. Intervals resample
+paired requests 10,000 times and do not adjust for rate selection.
+Exact AR counts identical capped token sequences.}
+\label{tab:sd-square-development}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/sd_square_development_table.tex}
+\end{table}
+
+The public SD$^2$ evaluation configuration uses FP16 target storage,
+BF16 drafter and steering storage, and BF16 autocast under
+Transformers 4.52.4. We verify original FP32 training weights before
+conversion and separately fingerprint the BF16 inference tensors.
+The best fitted point, KL at $4\times10^{-6}$, retains 99.11\%
+[96.19, 101.62]\% of independent-drafter throughput. This screen does
+not establish a steering gain. We freeze this rate before checking
+additional epochs on the same small pool.
+
+\begin{table}[H]
+\caption{Released PARD with zero new-target fitting, Transformers
+4.51.3, BF16 weights, eager attention and static caches. The released
+checkpoint carries inherited proposer training.}
+\label{tab:pard-development}
+\centering\footnotesize
+\input{generated/pard_development_table.tex}
+\end{table}
+
+Every SD$^2$ committed token matches its actual verifier decision, and
+immediate versus deferred observation preserves tokens and acceptance.
+Each timed PARD request has a separate verifier-observed replica with
+identical raw output and acceptance counts. PARD's measured generation
+omits that added observer. Both timers include prefills and cache setup,
+preserve raw EOS/cap overshoot and exclude detokenization.
+Earlier failed exact-AR gates remain failed. Controlled cache, query and
+attention replays expose changes in rounded target scores, while
+future-query perturbations preserve earlier logits in the tested calls.
+The sequence differences in these tables require separate task-quality
+evidence. Absolute speeds across these public runtimes do not isolate
+algorithm effects, and shared model residency does not measure isolated
+serving memory.
+
+\clearpage
 \section{Acceptance and numerical agreement}
 \label{app:acceptance}
 

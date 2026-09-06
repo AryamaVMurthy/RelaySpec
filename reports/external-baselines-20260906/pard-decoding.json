@@ -1,0 +1,69 @@
+{
+  "status": "complete",
+  "input_sha256": {
+    "configs/submission/baselines/pard-campaign.json": "ce82f581f1c27765cbf6e458d4944cff0eb4fcc513ab17481739166b3d102f2f",
+    "reports/mapper-scaling-20260905/pard-campaign/jobs.json": "2ef0af8ef42f00686cc2146fbbddb0f23f12cbcef88e3e704edc344670013266",
+    "configs/submission/baselines/external-verification-protocol.json": "488d60999dcb0b80fba7e8c1106aa474fc15a8bfe0af4296fa359e153b65b9f0",
+    "configs/submission/baselines/pard-pilot.yaml": "765b37011e10bdf5772e4058e80877305c626e0f5520e8a78c3bf643c2f7e79a",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/source-commit.txt": "deefffb0bf8d92bec033a534e4e1b470b172c551b4f5184cfb6d79790d05f7be",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/setup-gate.json": "b735aabd14610e63a2d56a205e20d0853a11a857d69022512f6e0a4eef046431",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/campaign-config.json": "ce82f581f1c27765cbf6e458d4944cff0eb4fcc513ab17481739166b3d102f2f",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/completion-gate.json": "6eea7011ab0f7f7c7c999e443f8d80e5ccddaa7193475b73820513859fe69cb4",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/benchmark-rank2.jsonl": "959c2f5d5a8543c4227706440fa2d1f2a586a1db3150ffd04a39c0481a2e3181",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/benchmark-rank0.jsonl": "15eb0b3bc7f77e49f5f7bc05592a3297e8027f717ec82df1d950f0c3bc1acaae",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/benchmark-rank1.jsonl": "0ce8332d7822dbde43bfa3fa15e120094e78a04376f45b509c4d2607777c8c63",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/benchmark-rank3.jsonl": "32e9dc6c9a27de33920e186bcfba4516fb8d8f7181fb1625725771586f47374c",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/campaign-rank3.json": "b3c529dbad2f014c00cbf7813cbdacfdd7478a3f289d5d2ff29fc2b2fd55b3d3",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/campaign-rank1.json": "16c3fdfeb37ce793ebfc29a01e975bc083456cff530330dade3f31ffcd345052",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/campaign-rank0.json": "17d513a3caa519488851516932fed577c90a749fd9cb8b3d60c9f02ccd18c4f2",
+    "/home/aryamavmurthy/work/RelaySpec/reports/mapper-scaling-20260905/pard-campaign/run-27903/campaign-rank2.json": "d772e5ee5a976afed6f20f1f3f572a097076c1e4722f02bcda4f7edbcd268591"
+  },
+  "comparison": {
+    "requests": 16,
+    "clusters": 16,
+    "reference": "native_ar",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 31.27246651450766,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 252.875,
+        "token_matches": 16,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 129.37898576445878
+      },
+      "pard": {
+        "tokens_per_second": 98.59751460613086,
+        "throughput_ratio": 3.15285379106219,
+        "throughput_ci95": [
+          2.830506682824892,
+          3.5575585409919497
+        ],
+        "request_time_ratio": 3.124282742747397,
+        "request_time_ci95": [
+          2.81686709227217,
+          3.5087723332877077
+        ],
+        "mean_output_tokens": 255.1875,
+        "token_matches": 4,
+        "progress_per_cycle": 6.068413391557496,
+        "request_seconds": 41.410780142992735
+      }
+    }
+  },
+  "ar_exact_count": 4,
+  "verification_replica_seconds": 41.405695657245815,
+  "original_exact_ar_gates": {
+    "sd_square_job27869": "failed_preserved",
+    "pard_job27831": "failed_preserved"
+  },
+  "scope": "Released PARD parallel proposer with zero new-target fitting. Public BF16 eager runtime with static cache and correct matched AR. Every timed PARD request has a separate same-input verifier-observed replica with identical raw tokens and accepted lengths. Observation is absent from measured generation. Full request time includes cache reset and prefills. Sixteen exposed development requests at256-token cap. Prior exact-AR gate failures remain failed. No full-answer quality, untouched confirmation or cross-runtime algorithm-only ranking."
+}

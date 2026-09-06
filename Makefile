@@ -65,6 +65,9 @@ paper-checkpoint-assets:
 paper-timed-budget-assets:
 	$(PYTHON) scripts/build_timed_budget_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
 
+paper-external-baseline-assets:
+	$(PYTHON) scripts/build_external_baseline_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
+
 paper:
 	cd $(PAPER_DIR) && pdflatex -interaction=nonstopmode -halt-on-error $(PAPER_NAME).tex
 	cd $(PAPER_DIR) && bibtex $(PAPER_NAME)
