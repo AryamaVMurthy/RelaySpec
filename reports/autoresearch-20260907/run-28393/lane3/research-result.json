@@ -1,0 +1,114 @@
+{
+  "status": "pass",
+  "hypothesis": "The native drafter interface itself can be compressed without updating the pretrained drafter; exact native-FC repacking is the required control.",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.98646921862144,
+        "throughput_ratio": 0.26700591672535096,
+        "throughput_ci95": [
+          0.22767131031002988,
+          0.3154746170596256
+        ],
+        "request_time_ratio": 0.26700591672535096,
+        "request_time_ci95": [
+          0.22767131031002988,
+          0.3154746170596256
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 6,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 26.95696707442403
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 141.09512993350125,
+        "throughput_ratio": 0.991754045277499,
+        "throughput_ci95": [
+          0.9782902112553108,
+          1.0049106937517127
+        ],
+        "request_time_ratio": 0.9917540452774991,
+        "request_time_ci95": [
+          0.9782902112553107,
+          1.0049106937517125
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.556701030927835,
+        "request_seconds": 7.25751484464854
+      },
+      "relay_base": {
+        "tokens_per_second": 142.2682676268005,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.471204188481676,
+        "request_seconds": 7.19766970584169
+      },
+      "relay_svd1024": {
+        "tokens_per_second": 136.616648888335,
+        "throughput_ratio": 0.9602749170089644,
+        "throughput_ci95": [
+          0.9167483395041742,
+          0.9995896655678188
+        ],
+        "request_time_ratio": 0.9602749170089644,
+        "request_time_ci95": [
+          0.9167483395041743,
+          0.9995896655678188
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.28643216080402,
+        "request_seconds": 7.495426130946726
+      },
+      "relay_svd256": {
+        "tokens_per_second": 49.02899232235288,
+        "throughput_ratio": 0.34462352807279695,
+        "throughput_ci95": [
+          0.281021126233329,
+          0.4173495031402357
+        ],
+        "request_time_ratio": 0.344623528072797,
+        "request_time_ci95": [
+          0.2810211262333289,
+          0.4173495031402358
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 1.7880910683012259,
+        "request_seconds": 20.885601589921862
+      },
+      "relay_svd512": {
+        "tokens_per_second": 101.77773675753072,
+        "throughput_ratio": 0.7153930982312589,
+        "throughput_ci95": [
+          0.6756940061537977,
+          0.7611270224449674
+        ],
+        "request_time_ratio": 0.715393098231259,
+        "request_time_ci95": [
+          0.6756940061537977,
+          0.7611270224449673
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 3.7859778597785976,
+        "request_seconds": 10.061139426194131
+      }
+    }
+  },
+  "scope": "Eight exposed development questions,128-token cap; exploratory screen, no full-answer quality or confirmatory significance claim."
+}

@@ -73,3 +73,19 @@ No task-quality claim follows from short-output exact matches. Memory is co-resi
 - DeLS-Spec https://arxiv.org/abs/2607.07409 : independently trained local head on a frozen DFlash backbone; relevant to cheap native enhancements.
 
 Keep every result, including negative findings. Do not label an implementation tweak novel before the relevant primary papers are read.
+
+## Wave2 and wave3 update
+
+Wave2 completed three screens in120–159s; native preparation failed in11s because target_layer_ids belongs to the draft object, not draft.config. Fixed from pinned upstream source; no negative scientific claim follows from that error. Wave3 passed all four lanes in111–170s.
+
+Wave3 DFlash last-two-tap retraining:98.7% of paired base throughput and4.767 versus4.879 progress/cycle on the eight-question screen. Mapper parameters drop from52.43M to20.97M (60% reduction). Last-one-tap reaches82.5%, so one layer is materially weaker. EAGLE last-two reaches93.5%; baseline progress differs slightly across campaigns, so an explicit duplicate-map control is now scheduled before stronger interpretation.
+
+Native FC repacking produced identical capped output hashes to the released native control on all eight questions; acceptance trajectories differ slightly, so comparison is empirical and not claimed bit-identical execution. Native rank1024 retains96.0% of repacked-control throughput; its projection has25.17M rather than83.89M parameters. This is projection compression, not a70% reduction in the whole drafter or model.
+
+Wave4 job28400 broadens to32 exposed questions per lane: DFlash last2 vs full and trained factor1024 on GSM8K; same on MATH; EAGLE last2 with an identical-checkpoint control; native compression1024/1536/2048 with released and repacked controls. All lanes remain capped at540s. New checkpoint artifacts use node07 scratch; prior source paths remain intact.
+
+Next decision: promote structured last-two-tap mapping only if it holds across the expanded screens; verify repeatability before interpreting EAGLE. If native compression remains promising, compare isolated projection latency and end-to-end quality, distinguish inherited native-FC packaging overhead from compression itself. Reserve fresh confirmation questions only after selecting fixed checkpoints and thresholds.
+
+Paper now acknowledges TriSpec adapter-only prior art explicitly in the main related work (arXiv2601.23180, Section3.2 verified on2026-09-07). New citation metadata is recorded in references.bib. Main data-curve page7 rendered and inspected; full visual/audit refresh remains outstanding. Latest PDF compiles to38pages with no final-pass unresolved references.
+
+Persistent collector: user service relayspec-autoresearch-collector-20260907.service,24h lifetime, no job submissions or automatic retries. It rereads jobs.json and writes per-lane collected summaries. Research decisions remain agent-driven under the active user goal.

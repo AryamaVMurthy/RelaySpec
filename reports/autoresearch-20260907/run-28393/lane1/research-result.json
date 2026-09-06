@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "hypothesis": "Retraining a reduced-tap interface recovers useful drafting with fewer mapper parameters; same512 examples and8192 updates as the full-tap base.",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.25107529359152,
+        "throughput_ratio": 0.28757186227092585,
+        "throughput_ci95": [
+          0.24679563838081842,
+          0.33491284909469093
+        ],
+        "request_time_ratio": 0.28757186227092585,
+        "request_time_ci95": [
+          0.24679563838081842,
+          0.33491284909469093
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 6,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 27.489139358513057
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 139.78731512029157,
+        "throughput_ratio": 1.079133909938718,
+        "throughput_ci95": [
+          1.0173677105455292,
+          1.1433262474788315
+        ],
+        "request_time_ratio": 1.079133909938718,
+        "request_time_ci95": [
+          1.0173677105455292,
+          1.1433262474788315
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.556701030927835,
+        "request_seconds": 7.325414320454001
+      },
+      "relay_base": {
+        "tokens_per_second": 129.53657913338097,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.878504672897196,
+        "request_seconds": 7.9051029975526035
+      },
+      "relay_reduced": {
+        "tokens_per_second": 106.88715954379462,
+        "throughput_ratio": 0.8251503958100921,
+        "throughput_ci95": [
+          0.7979436875077766,
+          0.8546783497398164
+        ],
+        "request_time_ratio": 0.8251503958100921,
+        "request_time_ci95": [
+          0.7979436875077766,
+          0.8546783497398164
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 3.9655172413793105,
+        "request_seconds": 9.580196577124298
+      }
+    }
+  },
+  "scope": "Eight exposed development questions,128-token cap; exploratory screen, no full-answer quality or confirmatory significance claim."
+}
