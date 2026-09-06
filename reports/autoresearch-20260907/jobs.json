@@ -134,6 +134,22 @@
       "remote": "/home/aryama.murthy/relayspec-autoresearch-w19/outputs/rs-research-w19-28435",
       "source_commit": "817c20cec77ca7ef1b214f41bb25521e4506ed39",
       "command": "sbatch --dependency=afterany:28434 --job-name=rs-research-w19 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-w19,RESEARCH_WAVE=configs/autoresearch/20260907/wave19.json slurm/research_wave.sbatch"
+    },
+    {
+      "id": 28440,
+      "wave": 20,
+      "kind": "boundary_pipeline_pilot",
+      "remote": "/home/aryama.murthy/relayspec-autoresearch-w20/outputs/rs-research-w20-28440",
+      "source_commit": "84dbf6f6cb6840f8a9614e2d6942a65df275d62a",
+      "command": "sbatch --job-name=rs-research-w20 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-w20,BOUNDARY_TRAINING_CONFIG=configs/autoresearch/20260907/downscale-dflash-06b-train.yaml,BOUNDARY_CAMPAIGN_CONFIG=configs/autoresearch/20260907/downscale-dflash-06b-pilot.yaml slurm/research_boundary_pilot.sbatch"
+    },
+    {
+      "id": 28448,
+      "wave": 21,
+      "kind": "boundary_extraction",
+      "remote": "/home/aryama.murthy/relayspec-autoresearch-w21/outputs/rs-research-w21-28448",
+      "source_commit": "d15495a4caa56c9c403e396ae51d074c96d543e7",
+      "command": "sbatch --job-name=rs-research-w21 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-w21,BOUNDARY_TRAINING_CONFIG=configs/autoresearch/20260907/downscale-dflash-06b-train.yaml,BOUNDARY_PILOT_GATE=/home/aryama.murthy/relayspec-autoresearch-w20/outputs/rs-research-w20-28440/pilot-gate.json slurm/research_boundary_extract.sbatch"
     }
   ]
 }

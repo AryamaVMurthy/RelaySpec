@@ -1,0 +1,339 @@
+{
+  "input_sha256": {
+    "reports/autoresearch-20260907/run-28435/lane0/benchmark-rank0.jsonl": "c310c3eea983c764550741675ec455efeeaa7f080061a9a732b8c718b0bda832",
+    "reports/autoresearch-20260907/run-28435/lane0/fitting/dflash-early-factorized-w1950/validation.jsonl": "1d3f5d07da7c3d29b761780d16e0c3c91e4303274c13cc89728b7b4757812e1d",
+    "reports/autoresearch-20260907/run-28435/lane0/fitting/dflash-early-factorized-w1950/fit-complete.json": "69006649418e999b81456ff0d168a6ef61bba1f749c03d3c33ec15045cfded0a",
+    "reports/autoresearch-20260907/run-28435/lane1/benchmark-rank0.jsonl": "122fbea2d93f16f18905bb6807e8ca1cfdf258a0c5f8411487d9265457bdd4e5",
+    "reports/autoresearch-20260907/run-28435/lane1/fitting/dflash-early-mlp-w1950/validation.jsonl": "b17f3bef6c083b3b4ab779e524683bd580568abc4cc0b6ce2839a9746e645047",
+    "reports/autoresearch-20260907/run-28435/lane1/fitting/dflash-early-mlp-w1950/fit-complete.json": "40ea02650e7c3e605bad7495c444bfbd8228c6eb0420031a0c7fb8189cd5bcf4",
+    "reports/autoresearch-20260907/run-28435/lane2/benchmark-rank0.jsonl": "f0899140379885c4064da2cbd6286e35f3c6abdee63ba095541360d445966963",
+    "reports/autoresearch-20260907/run-28435/lane2/fitting/eagle3-early-factorized-w1950/validation.jsonl": "5de384a070296efeaf17a0b93e616072411e3e66ba58ab815c0fd5f6ba4436d9",
+    "reports/autoresearch-20260907/run-28435/lane2/fitting/eagle3-early-factorized-w1950/fit-complete.json": "6765c57934749b3651ede29502b7273247a4e716fd4bfea1051321ce560165d2",
+    "reports/autoresearch-20260907/run-28435/lane3/benchmark-rank0.jsonl": "7d607a4f84d2305a2272a5d129b405bfd30894e43f0944a65452d463a79f0aa8",
+    "reports/autoresearch-20260907/run-28435/lane3/fitting/eagle3-early-mlp-w1950/validation.jsonl": "4ff885a25296eef310564e3754783d748167508b218f73c80b0ee6448801070d",
+    "reports/autoresearch-20260907/run-28435/lane3/fitting/eagle3-early-mlp-w1950/fit-complete.json": "1d9abeeaeaed01b5d046f03749edf09b1c1cb2e95f876e52d7aad723b8a65369"
+  },
+  "results": [
+    {
+      "family": "DFlash",
+      "architecture": "Factored linear",
+      "training_error": 0.33327900792937726,
+      "validation_error": 0.4092625113262329,
+      "parameters": 20966400,
+      "requests": 8,
+      "clusters": 8,
+      "reference": "relay_base",
+      "methods": {
+        "relay_base": {
+          "tokens_per_second": 127.39351506946322,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.878504672897196,
+          "request_seconds": 8.038085764739662
+        },
+        "relay_early": {
+          "tokens_per_second": 72.10491417402172,
+          "throughput_ratio": 0.5660014494042764,
+          "throughput_ci95": [
+            0.5195752503380302,
+            0.616746748109526
+          ],
+          "request_time_ratio": 0.5660014494042764,
+          "request_time_ci95": [
+            0.5195752503380302,
+            0.616746748109526
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 2.626598465473146,
+          "request_seconds": 14.201528588309884
+        },
+        "relay_last2": {
+          "tokens_per_second": 125.54693784065371,
+          "throughput_ratio": 0.9855049354136854,
+          "throughput_ci95": [
+            0.9333570551921352,
+            1.041496972601041
+          ],
+          "request_time_ratio": 0.9855049354136854,
+          "request_time_ci95": [
+            0.9333570551921351,
+            1.041496972601041
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.767123287671233,
+          "request_seconds": 8.156312034465373
+        },
+        "relay_reduced": {
+          "tokens_per_second": 71.34448182137812,
+          "throughput_ratio": 0.5600322887901827,
+          "throughput_ci95": [
+            0.5230614776696179,
+            0.5975129903968874
+          ],
+          "request_time_ratio": 0.5600322887901827,
+          "request_time_ci95": [
+            0.5230614776696179,
+            0.5975129903968873
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 2.608142493638677,
+          "request_seconds": 14.352897012606263
+        }
+      }
+    },
+    {
+      "family": "DFlash",
+      "architecture": "GELU MLP",
+      "training_error": 0.2713625364121981,
+      "validation_error": 0.43922749867488164,
+      "parameters": 20966400,
+      "requests": 8,
+      "clusters": 8,
+      "reference": "relay_base",
+      "methods": {
+        "relay_base": {
+          "tokens_per_second": 128.83944858510327,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.878504672897196,
+          "request_seconds": 7.947876300662756
+        },
+        "relay_early": {
+          "tokens_per_second": 71.51878035044803,
+          "throughput_ratio": 0.5551000189449522,
+          "throughput_ci95": [
+            0.5104223201583363,
+            0.5994906962037397
+          ],
+          "request_time_ratio": 0.5551000189449522,
+          "request_time_ci95": [
+            0.5104223201583363,
+            0.5994906962037397
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 2.626598465473146,
+          "request_seconds": 14.317917545326054
+        },
+        "relay_last2": {
+          "tokens_per_second": 125.44250179173352,
+          "throughput_ratio": 0.9736342647327776,
+          "throughput_ci95": [
+            0.9244084090043306,
+            1.0282701104838283
+          ],
+          "request_time_ratio": 0.9736342647327775,
+          "request_time_ci95": [
+            0.9244084090043306,
+            1.0282701104838283
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.767123287671233,
+          "request_seconds": 8.163102500140667
+        },
+        "relay_reduced": {
+          "tokens_per_second": 64.39045439325187,
+          "throughput_ratio": 0.49977281880960217,
+          "throughput_ci95": [
+            0.4655562501823596,
+            0.5344170396898014
+          ],
+          "request_time_ratio": 0.4997728188096021,
+          "request_time_ci95": [
+            0.4655562501823596,
+            0.5344170396898014
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 2.325,
+          "request_seconds": 15.902978316415101
+        }
+      }
+    },
+    {
+      "family": "EAGLE-3",
+      "architecture": "Factored linear",
+      "training_error": 0.33303364570019767,
+      "validation_error": 0.4106631993781775,
+      "parameters": 20966400,
+      "requests": 8,
+      "clusters": 8,
+      "reference": "relay_base",
+      "methods": {
+        "relay_base": {
+          "tokens_per_second": 89.66657056806264,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.5064935064935066,
+          "request_seconds": 11.420086588710546
+        },
+        "relay_early": {
+          "tokens_per_second": 50.67550090015731,
+          "throughput_ratio": 0.5651548908262458,
+          "throughput_ci95": [
+            0.5323090760665388,
+            0.6014699646118035
+          ],
+          "request_time_ratio": 0.5651548908262458,
+          "request_time_ci95": [
+            0.5323090760665388,
+            0.6014699646118035
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 2.50363196125908,
+          "request_seconds": 20.207003025338054
+        },
+        "relay_last2": {
+          "tokens_per_second": 83.10374578365393,
+          "throughput_ratio": 0.9268085670854658,
+          "throughput_ci95": [
+            0.8772659842227966,
+            0.9834463442987192
+          ],
+          "request_time_ratio": 0.9268085670854658,
+          "request_time_ci95": [
+            0.8772659842227966,
+            0.9834463442987194
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.164,
+          "request_seconds": 12.321947589050978
+        },
+        "relay_reduced": {
+          "tokens_per_second": 51.89870831513219,
+          "throughput_ratio": 0.5787966238291422,
+          "throughput_ci95": [
+            0.541211197990293,
+            0.6181073860267102
+          ],
+          "request_time_ratio": 0.5787966238291422,
+          "request_time_ci95": [
+            0.541211197990293,
+            0.6181073860267102
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 2.574626865671642,
+          "request_seconds": 19.73074153950438
+        }
+      }
+    },
+    {
+      "family": "EAGLE-3",
+      "architecture": "GELU MLP",
+      "training_error": 0.27213741547893733,
+      "validation_error": 0.3993182689300738,
+      "parameters": 20966400,
+      "requests": 8,
+      "clusters": 8,
+      "reference": "relay_base",
+      "methods": {
+        "relay_base": {
+          "tokens_per_second": 88.65182620487398,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.5064935064935066,
+          "request_seconds": 11.550805480685085
+        },
+        "relay_early": {
+          "tokens_per_second": 50.04951309442349,
+          "throughput_ratio": 0.5645626856998894,
+          "throughput_ci95": [
+            0.5308191581460135,
+            0.6011663716508617
+          ],
+          "request_time_ratio": 0.5645626856998894,
+          "request_time_ci95": [
+            0.5308191581460135,
+            0.6011663716508617
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 2.50363196125908,
+          "request_seconds": 20.4597394997254
+        },
+        "relay_last2": {
+          "tokens_per_second": 82.09163765736534,
+          "throughput_ratio": 0.9260005255577243,
+          "throughput_ci95": [
+            0.8751385355462232,
+            0.9828682280028744
+          ],
+          "request_time_ratio": 0.9260005255577243,
+          "request_time_ci95": [
+            0.8751385355462232,
+            0.9828682280028744
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.164,
+          "request_seconds": 12.473864929750562
+        },
+        "relay_reduced": {
+          "tokens_per_second": 50.84561354191511,
+          "throughput_ratio": 0.5735427652038562,
+          "throughput_ci95": [
+            0.5377434872139067,
+            0.6089734661773475
+          ],
+          "request_time_ratio": 0.5735427652038563,
+          "request_time_ci95": [
+            0.5377434872139067,
+            0.6089734661773475
+          ],
+          "mean_output_tokens": 128.0,
+          "token_matches": 8,
+          "progress_per_cycle": 2.5555555555555554,
+          "request_seconds": 20.13939706236124
+        }
+      }
+    }
+  ],
+  "scope": "Eight exposed GSM8K requests with128-token cap. Width1950, layers[1,9], 512 records,8192 updates,seed1729. Exactly matched parameter count for MLP/factorized maps. Each arm has its own paired full, early-dense and late-dense controls. Negative results do not establish unrecoverability."
+}

@@ -930,6 +930,31 @@ screen. Paired 95\% request intervals exclude fitting-seed variation.}
 \label{fig:layer-depth}
 \end{figure}
 
+\paragraph{Can nonlinearity compensate for early-layer inputs?}
+We fit an early-layer GELU MLP and a factorized linear map at width
+1,950, giving exactly 20,966,400 parameters in each case. Both use
+layers [1,9], 512 records and 8,192 updates at seed 1729. Each decoding
+worker also evaluates the existing early- and late-layer dense maps.
+The MLP lowers training error in both drafter families, but does not
+close the gap to late-layer inputs (Table~\ref{tab:early-nonlinearity}).
+It worsens DFlash validation error. For EAGLE-3 it slightly improves
+validation error, yet throughput remains far below the late-layer
+control. Late-layer dense maps retain 97.4--98.6\% in the DFlash workers
+and 92.6--92.7\% in EAGLE-3, compared with 50.0--57.9\% for the fitted
+early-layer maps. This limits the tested nonlinear fitting approach,
+not the recoverability of later-layer information in principle.
+
+\begin{table}[H]
+\centering\small
+\input{generated/early_nonlinearity_table.tex}
+\caption{Early-layer reconstruction at matched parameter count.
+Retention is relative to each worker's paired full map on eight exposed
+GSM8K requests with a 128-token cap. Progress includes the committed
+target token. Errors use the same fitting and validation diagnostics
+within each family. One fitting seed is tested.}
+\label{tab:early-nonlinearity}
+\end{table}
+
 \paragraph{Cross-domain limits of layer sufficiency.}
 Without changing the Numina-fitted maps, we repeat the depth screen on
 code and dialogue (Table~\ref{tab:crossdomain-depth}). DFlash's late-layer

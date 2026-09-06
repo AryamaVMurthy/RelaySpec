@@ -76,3 +76,7 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 18 / 1 | 28434 | dflash / existing | pass | 276.3 | 16 | relay_math_seed1729: 97.6%; relay_math_seed1730: 97.7%; relay_mixed_seed1729: 103.6%; relay_mixed_seed1730: 104.0% |
 | 18 / 2 | 28434 | dflash / existing | pass | 271.7 | 16 | relay_math_seed1729: 97.1%; relay_math_seed1730: 98.3%; relay_mixed_seed1729: 99.7%; relay_mixed_seed1730: 99.2% |
 | 18 / 3 | 28434 | dflash / existing | pass | 259.9 | 16 | relay_math_seed1729: 97.5%; relay_math_seed1730: 97.4%; relay_mixed_seed1729: 97.0%; relay_mixed_seed1730: 97.0% |
+| 19 / 0 | 28435 | dflash / fit_reduced_taps | pass | 139.1 | 8 | relay_early: 56.6%; relay_last2: 98.6%; relay_reduced: 56.0% |
+| 19 / 1 | 28435 | dflash / fit_reduced_taps | pass | 145.1 | 8 | relay_early: 55.5%; relay_last2: 97.4%; relay_reduced: 50.0% |
+| 19 / 2 | 28435 | eagle3 / fit_reduced_taps | pass | 180.3 | 8 | relay_early: 56.5%; relay_last2: 92.7%; relay_reduced: 57.9% |
+| 19 / 3 | 28435 | eagle3 / fit_reduced_taps | pass | 180.0 | 8 | relay_early: 56.5%; relay_last2: 92.6%; relay_reduced: 57.4% |
