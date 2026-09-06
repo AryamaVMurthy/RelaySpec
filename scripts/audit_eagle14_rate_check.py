@@ -112,7 +112,12 @@ def main():
             if len(matches) != 1 or len(matches[0][1]) != 64:
                 raise ValueError("rate check lacks a unique declared checkpoint")
             checkpoints.update(matches)
-        results[trial["name"]] = {**record, "checkpoint_sha256": checkpoints}
+        results[trial["name"]] = {
+            **record,
+            "checkpoint_sha256": checkpoints,
+            "raw_directory": str(fit_dir),
+            "batch_gate_path": str(gate_path),
+        }
     if args.stage == "pilot":
         evaluation = folder / "evaluation"
         campaign_path = evaluation / "campaign-gate.json"
