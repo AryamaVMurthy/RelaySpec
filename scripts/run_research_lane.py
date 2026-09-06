@@ -234,7 +234,15 @@ def main():
         research_single_gpu=True,
         methods=[
             "native_ar",
-            "native_target_dflash" if family == "dflash" else "native_target_eagle3",
+            *(
+                [
+                    "native_target_dflash"
+                    if family == "dflash"
+                    else "native_target_eagle3"
+                ]
+                if spec.get("include_native", True)
+                else []
+            ),
             *variants,
         ],
     )

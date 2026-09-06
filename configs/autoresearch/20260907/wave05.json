@@ -1,0 +1,195 @@
+{
+  "lanes": [
+    {
+      "family": "dflash",
+      "transform": "fit_reduced_taps",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-dflash14-fit2-27938/dflash14-dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/scaling/target14b-small-v1/campaign-dflash-capacity.yaml",
+      "hypothesis": "Test whether the last-two-layer interface transfers to a 14B verifier with matched 512 records and 8192 updates.",
+      "ranks": [
+        256,
+        512,
+        1024
+      ],
+      "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt",
+      "trial": {
+        "name": "dflash14-last2-n512",
+        "study": "reduced_taps",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          1024,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_updates": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          }
+        },
+        "target_layer_ids": [
+          28,
+          37
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash14-small-27926",
+      "pilot_gate": "/home/aryama.murthy/relayspec-target14-capacity-759b0a3/outputs/rs-dflash14-cap-pilot-27931/batch-gate.json",
+      "requests": 16,
+      "include_native": false
+    },
+    {
+      "family": "eagle3",
+      "transform": "fit_reduced_taps",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit2-27942/eagle314-dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/scaling/target14b-small-v1/campaign-eagle3-capacity.yaml",
+      "hypothesis": "Test whether the last-two-layer interface transfers to a 14B verifier with matched 512 records and 8192 updates.",
+      "ranks": [
+        256,
+        512,
+        1024
+      ],
+      "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt",
+      "trial": {
+        "name": "eagle314-last2-n512",
+        "study": "reduced_taps",
+        "architecture": "dense",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          1024,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_updates": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          }
+        },
+        "target_layer_ids": [
+          28,
+          37
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-eagle14-small-27927",
+      "pilot_gate": "/home/aryama.murthy/relayspec-target14-capacity-759b0a3/outputs/rs-eagle14-cap-pilot-27932/batch-gate.json",
+      "requests": 16,
+      "include_native": true
+    },
+    {
+      "family": "dflash",
+      "transform": "fit_reduced_taps",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full.yaml",
+      "hypothesis": "Repeat the two-layer fit with seed1730 to assess sensitivity to initialization and sampling.",
+      "ranks": [
+        256,
+        512,
+        1024
+      ],
+      "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt",
+      "trial": {
+        "name": "dflash-last2-n512-s1730",
+        "study": "reduced_taps",
+        "architecture": "dense",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          1024,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_updates": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          }
+        },
+        "target_layer_ids": [
+          25,
+          33
+        ],
+        "cache_backend": "mmap",
+        "device_cache": true
+      },
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+      "pilot_gate": "/home/aryama.murthy/relayspec-matrix-v2-20260905/outputs/rs-capacity-pilot-27725/batch-gate.json",
+      "access_gate": "/home/aryama.murthy/relayspec-cache-access-20260906/outputs/rs-cache-access-27730/cache-access-gate.json",
+      "requests": 16
+    },
+    {
+      "family": "eagle3",
+      "transform": "fit_reduced_taps",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-small03-27802/eagle3-dense-n512-s1729/step-008192.pt",
+      "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/eagle3-full.yaml",
+      "hypothesis": "Repeat the two-layer fit with seed1730 to assess sensitivity to initialization and sampling.",
+      "ranks": [
+        256,
+        512,
+        1024
+      ],
+      "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt",
+      "trial": {
+        "name": "eagle3-last2-n512-s1730",
+        "study": "reduced_taps",
+        "architecture": "dense",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          1024,
+          8192
+        ],
+        "validation_records": 1024,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": false,
+        "budget_panels": {
+          "fixed_updates": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          }
+        },
+        "target_layer_ids": [
+          25,
+          33
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false
+      },
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-eagle3-8b-27783",
+      "pilot_gate": "/home/aryama.murthy/relayspec-eagle-capacity-20260906/outputs/rs-eagle-capacity-27793/batch-gate.json",
+      "requests": 16
+    }
+  ]
+}
