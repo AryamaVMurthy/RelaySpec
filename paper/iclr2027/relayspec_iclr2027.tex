@@ -564,11 +564,12 @@ larger verifier by learning one replacement input map. Its value is the
 combination of retained drafting behavior, removed source-transformer
 cost and little additional fitting data. Dense linear mapping is a
 competitive choice after testing nonlinear capacity, longer optimization,
-regularization and token-prediction adaptation. The experiments support
-a practical strategy: first fit the inherited interface cheaply, then
-spend additional adaptation work only when measured decoding warrants it.
-Mixed-domain fitting further shows that data composition can improve
-code/chat speed while trading away math performance.
+regularization and token-prediction adaptation. The interface also exposes
+which target features sustain drafting: late-layer selection cuts mapper
+parameters by 60\% while retaining 97.6\% throughput in a fixed comparison.
+A native DFlash application retains 98.7\% throughput with 55\% fewer
+projection parameters. These findings motivate adapting and inspecting
+the inherited interface before investing in a new drafter.
 
 These conclusions concern shared-vocabulary Qwen3 models, greedy decoding
 and one request per worker. Code workloads can favor source reuse,
