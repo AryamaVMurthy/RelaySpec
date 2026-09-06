@@ -253,9 +253,15 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
                         or (paper / relative).read_bytes() != path.read_bytes()
                     ):
                         return False, f"stale evidence asset {relative}"
+    research = _load_script(
+        root / "scripts/audit_autoresearch_assets.py", "autoresearch_assets_for_audit"
+    )
+    research_pass, research_evidence = research.audit(root)
+    if not research_pass:
+        return False, research_evidence
     return (
         True,
-        "all generated tables, macros, and figures match validated JSON/raw artifacts",
+        "registered core assets match validated evidence; " + research_evidence,
     )
 
 
