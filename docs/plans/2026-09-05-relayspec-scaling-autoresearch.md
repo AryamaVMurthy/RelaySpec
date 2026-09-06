@@ -4,6 +4,21 @@ User-requested extension, 5 September 2026. This supplements the evidence execut
 plan; unfinished correctness, baseline, breadth, stability, and artifact tasks
 remain in scope. TriSpec is excluded from the requested comparison study.
 
+## Scope amendment, 6 September 2026
+
+The user's later instruction pauses large-data scaling. Preserve the original
+larger-data curves, manifests and feature cache as historical evidence. Future
+fit pools use512 or2048 distinct examples, including the remaining target/family
+and composition comparisons. The8192/32768-example targets below describe the
+original plan and are deferred, not current launch requirements. Additional
+epochs or optimizer updates reuse the declared small pool and must be reported
+separately from distinct data. Fixed baselines, target/family replication,
+composition and task-complexity analysis, untouched confirmation, bounded
+autoresearch and the end-to-end paper remain required. The four-GPU ceiling and
+under-ten-minute pilot requirement continue to apply before longer proper runs.
+Current baseline execution is tracked in
+2026-09-06-external-baseline-completion.md.
+
 ## Execution order and evidence
 
 1. Finish and collect the live continuous job 27583, zero-training pilot 27673,
