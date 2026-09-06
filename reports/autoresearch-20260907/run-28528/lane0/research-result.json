@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Do fixed-endpoint lower-rate fitting improvements persist in paired 512-token decoding against the original matched architecture/data model?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 65.79464781663721,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 473.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.3962920046349945,
+        "request_seconds": 57.51227684272453
+      },
+      "relay_lower_rate": {
+        "tokens_per_second": 70.36238891114478,
+        "throughput_ratio": 1.0694242046440827,
+        "throughput_ci95": [
+          1.0421077863603956,
+          1.0981907154477049
+        ],
+        "request_time_ratio": 1.0694242046440827,
+        "request_time_ci95": [
+          1.0421077863603956,
+          1.0981907154477049
+        ],
+        "mean_output_tokens": 473.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.702602230483271,
+        "request_seconds": 53.77873120224103
+      }
+    }
+  },
+  "scope": "Eight exposed MATH development questions. All rates retained. Wide arms include original matched architecture and dense2048 controls; dense512 runtime anchor appears in every lane. No candidate selection or independent quality confirmation."
+}

@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "hypothesis": "Do fixed-endpoint lower-rate fitting improvements persist in paired 512-token decoding against the original matched architecture/data model?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 65.75725946074549,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 473.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.3962920046349945,
+        "request_seconds": 57.544977254699916
+      },
+      "relay_dense2048": {
+        "tokens_per_second": 68.95134307103729,
+        "throughput_ratio": 1.0485738553657113,
+        "throughput_ci95": [
+          1.0171596434782457,
+          1.0732040313455864
+        ],
+        "request_time_ratio": 1.0485738553657113,
+        "request_time_ci95": [
+          1.0171596434782457,
+          1.0732040313455862
+        ],
+        "mean_output_tokens": 473.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.608748481166464,
+        "request_seconds": 54.879279089625925
+      },
+      "relay_lower_rate": {
+        "tokens_per_second": 71.09481595703322,
+        "throughput_ratio": 1.0811706044330216,
+        "throughput_ci95": [
+          1.054288946707023,
+          1.1064004882498115
+        ],
+        "request_time_ratio": 1.0811706044330214,
+        "request_time_ci95": [
+          1.054288946707023,
+          1.1064004882498117
+        ],
+        "mean_output_tokens": 473.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.771356783919598,
+        "request_seconds": 53.224696471355855
+      },
+      "relay_original_matched": {
+        "tokens_per_second": 68.08134636779059,
+        "throughput_ratio": 1.035343427115184,
+        "throughput_ci95": [
+          1.0010818059549402,
+          1.0734166148392625
+        ],
+        "request_time_ratio": 1.035343427115184,
+        "request_time_ci95": [
+          1.0010818059549402,
+          1.0734166148392625
+        ],
+        "mean_output_tokens": 473.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.549819927971188,
+        "request_seconds": 55.58056944934651
+      }
+    }
+  },
+  "scope": "Eight exposed MATH development questions. All rates retained. Wide arms include original matched architecture and dense2048 controls; dense512 runtime anchor appears in every lane. No candidate selection or independent quality confirmation."
+}
