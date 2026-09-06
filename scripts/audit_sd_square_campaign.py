@@ -9,7 +9,8 @@ import sys
 import tempfile
 from pathlib import Path
 
-from relayspec.ar_paper_evidence import read_rows, summarize
+from relayspec.ar_paper_evidence import load_scored, read_rows, summarize
+from relayspec.paired_accuracy import paired_accuracy_interval
 
 
 def digest(path):
@@ -28,6 +29,15 @@ def audit_shard(args, run, index):
         config_path = directory / "campaign-config.json"
         builder = (
             [
+                sys.executable,
+                "scripts/build_sd_square_quality_campaign.py",
+                "--shard-index",
+                str(index),
+                "--output",
+                str(config_path),
+            ]
+            if getattr(args, "quality", False)
+            else [
                 sys.executable,
                 "scripts/build_sd_square_epoch_campaign.py",
                 "--run",
@@ -86,6 +96,7 @@ def main():
     fitting = parser.add_mutually_exclusive_group(required=True)
     fitting.add_argument("--fits", type=Path, nargs=2)
     fitting.add_argument("--epoch-run", type=Path)
+    fitting.add_argument("--quality", action="store_true")
     parser.add_argument("--runs", type=Path, nargs=2, required=True)
     parser.add_argument("--ledger", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -98,14 +109,64 @@ def main():
     } or gate["steering_fingerprints"] != other_gate["steering_fingerprints"]:
         raise ValueError("SD-square shards differ in weights or declaration")
     rows = [row for _, _, shard_rows in shards for row in shard_rows]
+    quality_inputs, quality = [], None
+    if args.quality:
+        scorer = Path("reports/ar-revision-20260905/scorer-provenance.json")
+        rows = []
+        for run in args.runs:
+            analysis_path = run / "analysis.json"
+            analysis = json.loads(analysis_path.read_text())
+            if (
+                analysis["status"] != "complete"
+                or analysis["scorer_provenance_sha256"] != digest(scorer)
+                or analysis["raw_sha256"]
+                != {p.name: digest(p) for p in run.glob("benchmark-rank*.jsonl")}
+            ):
+                raise ValueError(
+                    "SD-square quality analysis differs from raw outputs or pinned scorer"
+                )
+            rows.extend(load_scored(run))
+            quality_inputs.extend([analysis_path, run / "math-scored.jsonl"])
+        quality_inputs.extend([scorer, Path("src/relayspec/paired_accuracy.py")])
+        paired = {}
+        for row in rows:
+            paired.setdefault(row["problem_id"], {})[row["method"]] = row["correct"]
+        quality = {
+            "requests": len(paired),
+            "token_cap": config["max_new_tokens"],
+            "methods": {
+                name: {
+                    "correct_count": sum(
+                        bool(r["correct"]) for r in rows if r["method"] == name
+                    ),
+                    "cap_count": sum(
+                        r["output_tokens"] == config["max_new_tokens"]
+                        for r in rows
+                        if r["method"] == name
+                    ),
+                    "eos_at_cap_count": sum(
+                        r["output_tokens"] == config["max_new_tokens"]
+                        and r["output_ids"][-1] == 151645
+                        for r in rows
+                        if r["method"] == name
+                    ),
+                }
+                for name in config["variants"]
+            },
+            "conservative_paired_accuracy": paired_accuracy_interval(
+                [g["sd2_selected"] for g in paired.values()],
+                [g["native_ar"] for g in paired.values()],
+            ),
+            "scope": "Capped exposed development outcomes. No untouched confirmation or final quality-margin claim from this eight-request pilot.",
+        }
     summaries = {
         ref: summarize(rows, reference=ref)
         for ref in ("native_ar", "sd2_independent", "sd2_zero_guidance")
         if ref in config["variants"]
     }
     acceptance = {}
-    if summaries["native_ar"]["requests"] != 16:
-        raise ValueError("SD-square shards do not cover sixteen disjoint requests")
+    if summaries["native_ar"]["requests"] != config["total_development_requests"]:
+        raise ValueError("SD-square shards do not cover the declared disjoint requests")
     for name in config["variants"]:
         selected = [r for r in rows if r["method"] == name]
         proposed = sum(sum(r["proposal_lengths"]) for r in selected)
@@ -121,6 +182,7 @@ def main():
             str(p): digest(p)
             for p in [
                 args.ledger,
+                *quality_inputs,
                 *[
                     p
                     for run in args.runs
@@ -148,6 +210,8 @@ def main():
         "scope": config["scope"]
         + " Paired request bootstrap intervals are descriptive and do not account for rate selection or fitting-seed variability.",
     }
+    if quality is not None:
+        result["capped_quality"] = quality
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(summaries["native_ar"]))
 
