@@ -307,6 +307,22 @@
       "remote": "/home/aryama.murthy/relayspec-autoresearch-w43/outputs/rs-research-w43-28533",
       "source_commit": "ad961fabadc446d297625f253c4fd97a6a12fd67",
       "command": "sbatch --job-name=rs-research-w43 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-w43,RESEARCH_WAVE=configs/autoresearch/20260907/wave43.json slurm/research_wave.sbatch"
+    },
+    {
+      "id": 28534,
+      "wave": 44,
+      "remote": "/home/aryama.murthy/relayspec-autoresearch-w44/outputs/rs-research-w44-28534",
+      "source_commit": "ee3a277",
+      "command": "sbatch --dependency=afterany:28533 --job-name=rs-research-w44 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-w44,RESEARCH_WAVE=configs/autoresearch/20260907/wave44.json slurm/research_wave.sbatch",
+      "note": "Cancelled before running: snapshot lacked uncommitted wave44 configuration. Replaced by28535."
+    },
+    {
+      "id": 28535,
+      "wave": 44,
+      "remote": "/home/aryama.murthy/relayspec-autoresearch-w44/outputs/rs-research-w44-28535",
+      "source_commit": "214386d2429bbcee89d906e794ed0ff13a9de200",
+      "command": "sbatch --dependency=afterany:28533 --job-name=rs-research-w44 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-w44,RESEARCH_WAVE=configs/autoresearch/20260907/wave44.json slurm/research_wave.sbatch",
+      "note": "Corrected committed snapshot, dependency after28533."
     }
   ]
 }

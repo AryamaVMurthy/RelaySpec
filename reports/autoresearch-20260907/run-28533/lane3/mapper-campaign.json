@@ -1,0 +1,123 @@
+{
+  "variants": {
+    "relay_base": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28400/lane3/native-fc.pt",
+      "sha256": "ece1269540becf19b73b75b0ca48a5dfd6178ffe372c6606870efbbab8ae580a",
+      "parameters": 83886080,
+      "resident_parameter_bytes": 167772160,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ]
+    },
+    "relay_cropped": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28533/lane3/relay_cropped.pt",
+      "sha256": "0a4f3a2a3c16c7a936e9bb48040a8a34a5ebd624b90afc44855d7cc390241de1",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_two": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28428/lane2/fitting/native-dflash-taps-25-33/step-008192.pt",
+      "sha256": "a53b21494b39f7139d3a04b206a5698dbf22fbd0fa7192f8f9cc577bcf4a59e9",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_n16_random": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28532/lane0/fitting/native-late2-n16-s1729-init-random/step-008192.pt",
+      "sha256": "501461950cd4857139e163a1887b8e699a534ae5012d17dba3fcb154a9f3091a",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_n16_native_columns": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28532/lane1/fitting/native-late2-n16-s1729-init-native_columns/step-008192.pt",
+      "sha256": "2ac8116e84f25b48d74d8de7de67b8b94b3a0b608ab98eb9438e3394b0275028",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_n128_random": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28532/lane2/fitting/native-late2-n128-s1729-init-random/step-008192.pt",
+      "sha256": "0b7939c46470dc35d0bee3ac6a5f21a0180fce84a98b5eded3dc26743432689e",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_n128_native_columns": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28532/lane3/fitting/native-late2-n128-s1729-init-native_columns/step-008192.pt",
+      "sha256": "7fa83c82be3ef7e04d5f08be44c4202be9761d82c739e2de38d00716c02a018d",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    }
+  },
+  "adapted_drafter_variants": [],
+  "methods": [
+    "relay_base",
+    "relay_cropped",
+    "relay_two",
+    "relay_n16_random",
+    "relay_n16_native_columns",
+    "relay_n128_random",
+    "relay_n128_native_columns"
+  ],
+  "selective_capture": {},
+  "release_capture_buffers": {},
+  "runtime_precision": "bfloat16",
+  "target_head_precision": "bfloat16",
+  "target_head_diagnostic": null,
+  "matmul_allow_tf32": false,
+  "target_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "drafter_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "mapper_parameter_dtypes": {
+    "relay_base": [
+      "torch.bfloat16"
+    ],
+    "relay_cropped": [
+      "torch.bfloat16"
+    ],
+    "relay_two": [
+      "torch.bfloat16"
+    ],
+    "relay_n16_random": [
+      "torch.bfloat16"
+    ],
+    "relay_n16_native_columns": [
+      "torch.bfloat16"
+    ],
+    "relay_n128_random": [
+      "torch.bfloat16"
+    ],
+    "relay_n128_native_columns": [
+      "torch.bfloat16"
+    ]
+  },
+  "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+}

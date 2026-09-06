@@ -1,0 +1,131 @@
+{
+  "status": "pass",
+  "hypothesis": "Does fitting improve over untrained native column cropping, and does native-column initialization rescue sparse-data compact maps across tasks?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 181.54204875364172,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.795865633074936,
+        "request_seconds": 14.453951676841825
+      },
+      "relay_cropped": {
+        "tokens_per_second": 173.68885130142257,
+        "throughput_ratio": 0.9567417162793167,
+        "throughput_ci95": [
+          0.8851283960170605,
+          1.0070258144867237
+        ],
+        "request_time_ratio": 0.9567417162793168,
+        "request_time_ci95": [
+          0.8851283960170605,
+          1.0070258144867237
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.493827160493828,
+        "request_seconds": 15.10747512197122
+      },
+      "relay_n128_native_columns": {
+        "tokens_per_second": 182.6915790496835,
+        "throughput_ratio": 1.0063320332888923,
+        "throughput_ci95": [
+          0.9766304359840546,
+          1.0409520440778666
+        ],
+        "request_time_ratio": 1.0063320332888925,
+        "request_time_ci95": [
+          0.9766304359840547,
+          1.0409520440778668
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.813471502590674,
+        "request_seconds": 14.363004653248936
+      },
+      "relay_n128_random": {
+        "tokens_per_second": 175.52073135810502,
+        "throughput_ratio": 0.9668323816059395,
+        "throughput_ci95": [
+          0.9340351288911569,
+          1.006465610806528
+        ],
+        "request_time_ratio": 0.9668323816059397,
+        "request_time_ci95": [
+          0.934035128891157,
+          1.006465610806528
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.54726368159204,
+        "request_seconds": 14.949800970498472
+      },
+      "relay_n16_native_columns": {
+        "tokens_per_second": 181.1586997291013,
+        "throughput_ratio": 0.9978883733703995,
+        "throughput_ci95": [
+          0.9589598073954352,
+          1.038037095424008
+        ],
+        "request_time_ratio": 0.9978883733703995,
+        "request_time_ci95": [
+          0.9589598073954351,
+          1.038037095424008
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.758354755784062,
+        "request_seconds": 14.484537612181157
+      },
+      "relay_n16_random": {
+        "tokens_per_second": 120.87743339406984,
+        "throughput_ratio": 0.6658371116991432,
+        "throughput_ci95": [
+          0.6198283833612633,
+          0.7097595808070106
+        ],
+        "request_time_ratio": 0.6658371116991432,
+        "request_time_ci95": [
+          0.6198283833612633,
+          0.7097595808070106
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.48381601362862,
+        "request_seconds": 21.70793940871954
+      },
+      "relay_two": {
+        "tokens_per_second": 181.25048582700404,
+        "throughput_ratio": 0.9983939647666236,
+        "throughput_ci95": [
+          0.9791492343157246,
+          1.0213227543759793
+        ],
+        "request_time_ratio": 0.9983939647666237,
+        "request_time_ci95": [
+          0.9791492343157246,
+          1.0213227543759793
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.766066838046273,
+        "request_seconds": 14.477202574256808
+      }
+    }
+  },
+  "scope": "Eight exposed development requests per domain. Within-worker comparison of full repacked native, untrained cropped native, original512-record compact map, and16/128-record random/native-column fits. Fixed seed1729. No fresh confirmation or quality claim. All lanes540second cap."
+}
