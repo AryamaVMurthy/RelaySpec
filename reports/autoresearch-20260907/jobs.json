@@ -36,6 +36,13 @@
       "remote": "/home/aryama.murthy/relayspec-autoresearch-w05/outputs/rs-research-w05-28413",
       "source_commit": "51fe9b9e5d79faed8e1b8bfe4c920832430fef44",
       "command": "sbatch --parsable --job-name=rs-research-w05 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-w05,RESEARCH_WAVE=configs/autoresearch/20260907/wave05.json slurm/research_wave.sbatch"
+    },
+    {
+      "id": 28414,
+      "wave": 6,
+      "remote": "/home/aryama.murthy/relayspec-autoresearch-w06/outputs/rs-research-w06-28414",
+      "source_commit": "bc38aa9b2b4fabe13b47fbf664ab1ad6baac09c1",
+      "command": "sbatch --dependency=afterany:28413 --job-name=rs-research-w06 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-w06,RESEARCH_WAVE=configs/autoresearch/20260907/wave06.json slurm/research_wave.sbatch"
     }
   ]
 }
