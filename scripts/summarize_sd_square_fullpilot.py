@@ -25,6 +25,8 @@ def main():
             inputs[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
         fit, training, row = [docs[n] for n in ("pilot", "training", "decoding")]
         seen = [name for step in training for name in step["records"]]
+        updates = config.get("worker_updates", [config["updates"]] * 4)[rank]
+        epochs = updates // 128
         if (
             fit["status"] != "pass"
             or fit["phase"] != "complete"
@@ -34,10 +36,10 @@ def main():
             or fit["verification_protocol_sha256"] != protocol["sha256"]
             or fit["causal_gate_sha256"] != protocol["causal_gate_sha256"]
             or fit["training"] != training
-            or [r["step"] for r in training] != list(range(1, 129))
-            or len(seen) != 512
+            or [r["step"] for r in training] != list(range(1, updates + 1))
+            or len(seen) != 512 * epochs
             or len(set(seen)) != 512
-            or seen != fit["ordered_pool_files"]
+            or seen != fit["ordered_pool_files"] * epochs
             or fit["batch_size"] != 4
             or fit["distinct_records_seen"] != 512
             or any(
@@ -74,6 +76,23 @@ def main():
             raise ValueError("prospective SD-square token verification differs")
         fits.append(fit)
         rows.append(row)
+        if "convergence_screen" in config and (
+            fit["updates"] != updates
+            or fit["epochs"] != epochs
+            or fit["objective"] != config["worker_objectives"][rank]
+            or fit["learning_rate"] != config["learning_rate"]
+            or fit["learning_rate_end"] != config["learning_rate_end"]
+            or fit["convergence_selection_sha256"]
+            != config["convergence_screen"]["registry_sha256"]
+            or (
+                rank == 0
+                and fit["trainable_sha256"]
+                != config["convergence_screen"]["reproduction_trainable_sha256"]
+            )
+        ):
+            raise ValueError(
+                "SD-square convergence coverage/selection/reproduction differs"
+            )
         if "followup_screen" in config and (
             fit["learning_rate"] != config["worker_learning_rates"][rank]
             or fit["learning_rate_end"] != config["worker_learning_rates"][rank] / 10
@@ -82,7 +101,7 @@ def main():
         ):
             raise ValueError("SD-square rate screen changed its declared trial")
     for a, b in ((0, 1), (2, 3)):
-        if "followup_screen" in config:
+        if "followup_screen" in config or "convergence_screen" in config:
             continue  # Distinct declared rates, using the prior exact-replica pilot.
         if any(
             fits[a][k] != fits[b][k]

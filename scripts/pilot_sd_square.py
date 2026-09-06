@@ -94,7 +94,34 @@ def main():
         ):
             raise ValueError("prospective SD-square causal prerequisite failed")
         expected = protocol["fitting"]["sd_square_first_complete_pool_pilot"]
-        if (
+        if "convergence_screen" in pilot:
+            selection = pilot["convergence_screen"]
+            registry_path = Path(selection["registry"])
+            registry = json.loads(registry_path.read_text())
+            chosen = selection["selected_method"]
+            variants = registry["variants"]
+            best = max(
+                (n for n, v in variants.items() if v["kind"] == "steering"),
+                key=lambda n: registry["comparisons"]["native_ar"]["methods"][n][
+                    "tokens_per_second"
+                ],
+            )
+            if (
+                digest(registry_path) != selection["registry_sha256"]
+                or registry["status"] != "complete"
+                or chosen != best
+                or pilot["worker_updates"] != [128, 256, 512, 1024]
+                or pilot["worker_objectives"] != [variants[chosen]["objective"]] * 4
+                or pilot["learning_rate"] != variants[chosen]["learning_rate"]
+                or pilot["batch_size"] != 4
+                or pilot["warmup_steps"] != 8
+                or selection["reproduction_trainable_sha256"]
+                != variants[chosen]["trainable_sha256"]
+            ):
+                raise ValueError(
+                    "SD-square convergence differs from its audited development selection"
+                )
+        elif (
             pilot["batch_size"] != expected["batch_size"]
             or pilot["updates"] != expected["updates"]
             or pilot["worker_objectives"] != expected["objectives"]
@@ -127,6 +154,7 @@ def main():
     ):
         raise ValueError("SD-square pilot differs from verified setup")
     rank = int(os.environ["LOCAL_RANK"])
+    updates = pilot.get("worker_updates", [pilot["updates"]] * 4)[rank]
     if int(os.environ["WORLD_SIZE"]) != 4 or torch.cuda.device_count() != 4:
         raise ValueError("SD-square pilot requires four GPU workers")
     if os.environ.get("CUBLAS_WORKSPACE_CONFIG") != ":4096:8":
@@ -158,6 +186,12 @@ def main():
         else pilot["learning_rate_end"]
     )
     gate.update(learning_rate=learning_rate, learning_rate_end=learning_rate_end)
+    if "convergence_screen" in pilot:
+        gate.update(
+            updates=updates,
+            epochs=updates // 128,
+            convergence_selection_sha256=pilot["convergence_screen"]["registry_sha256"],
+        )
     if "followup_screen" in pilot:
         gate["parent_full_pilot_gate_sha256"] = digest(parent_path)
     if prospective:
@@ -228,9 +262,11 @@ def main():
         gate["ordered_pool_files"] = [r["file"] for r in entries]
         records = []
         batch_size = pilot["batch_size"]
-        if batch_size not in (1, 4) or pilot["updates"] * batch_size > len(entries):
+        if batch_size not in (1, 4) or (
+            updates * batch_size > len(entries) and "convergence_screen" not in pilot
+        ):
             raise ValueError("pilot exceeds its declared distinct pool")
-        for entry in entries[: pilot["updates"] * batch_size]:
+        for entry in entries[: min(updates * batch_size, len(entries))]:
             path = cache / entry["file"]
             if digest(path) != entry["sha256"]:
                 raise ValueError("SD-square pilot input record changed")
@@ -259,16 +295,16 @@ def main():
             lr_start=learning_rate,
             lr_end=learning_rate_end,
             warmup_steps=pilot["warmup_steps"],
-            estimated_stepping_batches=pilot["updates"],
+            estimated_stepping_batches=updates,
         )
         optimizer, scheduler = optim["optimizer"], optim["lr_scheduler"]["scheduler"]
         gate["phase"] = "training"
         history = []
-        for step in range(1, pilot["updates"] + 1):
+        for step in range(1, updates + 1):
             torch.cuda.synchronize()
             tick = time.perf_counter()
             optimizer.zero_grad(set_to_none=True)
-            begin = (step - 1) * batch_size
+            begin = ((step - 1) * batch_size) % len(records)
             batch_records = records[begin : begin + batch_size]
             if prospective:
                 batch, lengths = collate_sd_square_records(
@@ -307,9 +343,10 @@ def main():
                     lengths=lengths,
                     loss_tokens=int(batch["loss_mask"].sum()),
                 )
-            (output / f"training-rank{rank}.json").write_text(
-                json.dumps(history, indent=2) + "\n"
-            )
+            if "convergence_screen" not in pilot or step % 16 == 0 or step == updates:
+                (output / f"training-rank{rank}.json").write_text(
+                    json.dumps(history, indent=2) + "\n"
+                )
         if any(
             p.requires_grad
             or p.grad is not None
