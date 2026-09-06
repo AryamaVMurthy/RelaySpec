@@ -120,6 +120,10 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 34 / 1 | 28524 | dflash / existing | pass | 172.5 | 16 | relay_one: 83.9%; relay_svd1536: 98.2%; relay_two: 97.5% |
 | 34 / 2 | 28524 | dflash / existing | pass | 168.2 | 16 | relay_one: 86.8%; relay_svd1536: 98.5%; relay_two: 97.6% |
 | 34 / 3 | 28524 | dflash / existing | pass | 177.9 | 16 | relay_one: 84.9%; relay_svd1536: 99.8%; relay_two: 99.2% |
+| 35 / 0 | 28525 | dflash / fit_reduced_taps | pass | 92.0 | 8 | relay_reduced: 52.5% |
+| 35 / 1 | 28525 | dflash / fit_reduced_taps | pass | 79.5 | 8 | relay_reduced: 79.9% |
+| 35 / 2 | 28525 | dflash / fit_reduced_taps | pass | 80.2 | 8 | relay_reduced: 82.2% |
+| 35 / 3 | 28525 | dflash / fit_reduced_taps | pass | 86.7 | 8 | relay_reduced: 60.7% |
 
 ## Four-GPU pipeline stages
 

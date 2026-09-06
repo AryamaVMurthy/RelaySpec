@@ -1,0 +1,212 @@
+{
+  "lanes": [
+    {
+      "family": "dflash",
+      "transform": "fit_reduced_taps",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt",
+      "checkpoint_sha256": {
+        "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt": "d669e6334a5cc018fb6a70febda5e710cb8033152ecd1152d5bc219b6ef7a643"
+      },
+      "config": "configs/autoresearch/20260907/downscale-dflash-06b-trained-screen.yaml",
+      "trial": {
+        "name": "downscale-late-mlp-1137-s1729",
+        "study": "downscale_late_nonlinearity",
+        "architecture": "mlp",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          1024,
+          8192
+        ],
+        "validation_records": 128,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_updates": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          }
+        },
+        "target_layer_ids": [
+          19,
+          25
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false,
+        "width": 1137
+      },
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/downscale-full-28448",
+      "pilot_gate": "/home/aryama.murthy/relayspec-autoresearch-w22/outputs/rs-research-w22-28455/batch-gate.json",
+      "requests": 8,
+      "max_new_tokens": 512,
+      "include_ar": false,
+      "include_native": false,
+      "hypothesis": "Can parameter-matched nonlinearity recover the late-two-layer throughput deficit for the0.6B verifier, replicated at two fitting seeds?",
+      "scope": "Eight exposed GSM8K requests,512output cap,512records8192updates. MLP and factorized width1137 have5239296 parameters, versus5242880 for paired late dense. Two fitting seeds share evaluation questions, not independent samples.",
+      "controls": {
+        "relay_late_dense": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28525/lane2/fitting/downscale-taps-19-25/step-008192.pt"
+      }
+    },
+    {
+      "family": "dflash",
+      "transform": "fit_reduced_taps",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt",
+      "checkpoint_sha256": {
+        "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt": "d669e6334a5cc018fb6a70febda5e710cb8033152ecd1152d5bc219b6ef7a643"
+      },
+      "config": "configs/autoresearch/20260907/downscale-dflash-06b-trained-screen.yaml",
+      "trial": {
+        "name": "downscale-late-factorized-1137-s1729",
+        "study": "downscale_late_nonlinearity",
+        "architecture": "factorized",
+        "seed": 1729,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          1024,
+          8192
+        ],
+        "validation_records": 128,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_updates": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          }
+        },
+        "target_layer_ids": [
+          19,
+          25
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false,
+        "width": 1137
+      },
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/downscale-full-28448",
+      "pilot_gate": "/home/aryama.murthy/relayspec-autoresearch-w22/outputs/rs-research-w22-28455/batch-gate.json",
+      "requests": 8,
+      "max_new_tokens": 512,
+      "include_ar": false,
+      "include_native": false,
+      "hypothesis": "Can parameter-matched nonlinearity recover the late-two-layer throughput deficit for the0.6B verifier, replicated at two fitting seeds?",
+      "scope": "Eight exposed GSM8K requests,512output cap,512records8192updates. MLP and factorized width1137 have5239296 parameters, versus5242880 for paired late dense. Two fitting seeds share evaluation questions, not independent samples.",
+      "controls": {
+        "relay_late_dense": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28525/lane2/fitting/downscale-taps-19-25/step-008192.pt"
+      }
+    },
+    {
+      "family": "dflash",
+      "transform": "fit_reduced_taps",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt",
+      "checkpoint_sha256": {
+        "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt": "d669e6334a5cc018fb6a70febda5e710cb8033152ecd1152d5bc219b6ef7a643"
+      },
+      "config": "configs/autoresearch/20260907/downscale-dflash-06b-trained-screen.yaml",
+      "trial": {
+        "name": "downscale-late-mlp-1137-s1730",
+        "study": "downscale_late_nonlinearity",
+        "architecture": "mlp",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          1024,
+          8192
+        ],
+        "validation_records": 128,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_updates": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          }
+        },
+        "target_layer_ids": [
+          19,
+          25
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false,
+        "width": 1137
+      },
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/downscale-full-28448",
+      "pilot_gate": "/home/aryama.murthy/relayspec-autoresearch-w22/outputs/rs-research-w22-28455/batch-gate.json",
+      "requests": 8,
+      "max_new_tokens": 512,
+      "include_ar": false,
+      "include_native": false,
+      "hypothesis": "Can parameter-matched nonlinearity recover the late-two-layer throughput deficit for the0.6B verifier, replicated at two fitting seeds?",
+      "scope": "Eight exposed GSM8K requests,512output cap,512records8192updates. MLP and factorized width1137 have5239296 parameters, versus5242880 for paired late dense. Two fitting seeds share evaluation questions, not independent samples.",
+      "controls": {
+        "relay_late_dense": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28525/lane2/fitting/downscale-taps-19-25/step-008192.pt"
+      }
+    },
+    {
+      "family": "dflash",
+      "transform": "fit_reduced_taps",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt",
+      "checkpoint_sha256": {
+        "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt": "d669e6334a5cc018fb6a70febda5e710cb8033152ecd1152d5bc219b6ef7a643"
+      },
+      "config": "configs/autoresearch/20260907/downscale-dflash-06b-trained-screen.yaml",
+      "trial": {
+        "name": "downscale-late-factorized-1137-s1730",
+        "study": "downscale_late_nonlinearity",
+        "architecture": "factorized",
+        "seed": 1730,
+        "steps": 8192,
+        "distinct_examples": 512,
+        "learning_rate": 0.0006,
+        "l2_weight": 0.0,
+        "weight_decay": 0.0,
+        "checkpoint_steps": [
+          1024,
+          8192
+        ],
+        "validation_records": 128,
+        "diagnostic_train_records": 256,
+        "feature_objective": "relative_interface_mse",
+        "normalize_input": true,
+        "budget_panels": {
+          "fixed_updates": {
+            "checkpoint_step": 8192,
+            "presentations": 32768
+          }
+        },
+        "target_layer_ids": [
+          19,
+          25
+        ],
+        "cache_backend": "buffer",
+        "device_cache": false,
+        "width": 1137
+      },
+      "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/downscale-full-28448",
+      "pilot_gate": "/home/aryama.murthy/relayspec-autoresearch-w22/outputs/rs-research-w22-28455/batch-gate.json",
+      "requests": 8,
+      "max_new_tokens": 512,
+      "include_ar": false,
+      "include_native": false,
+      "hypothesis": "Can parameter-matched nonlinearity recover the late-two-layer throughput deficit for the0.6B verifier, replicated at two fitting seeds?",
+      "scope": "Eight exposed GSM8K requests,512output cap,512records8192updates. MLP and factorized width1137 have5239296 parameters, versus5242880 for paired late dense. Two fitting seeds share evaluation questions, not independent samples.",
+      "controls": {
+        "relay_late_dense": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28525/lane2/fitting/downscale-taps-19-25/step-008192.pt"
+      }
+    }
+  ]
+}

@@ -1201,6 +1201,27 @@ whole drafter; fitting-seed variation is outside these intervals.}
 \label{tab:native-student-confirmation}
 \end{table}
 
+\paragraph{A smaller-verifier boundary.}
+Repeating the depth screen with the 0.6B verifier gives a weaker compact
+interface (Table~\ref{tab:downscale-depth}). At matched 5.24M parameters,
+early, spaced and late two-layer maps retain 52.5\%, 79.9\% and 82.2\%
+of the full five-layer mapper's throughput. One layer retains 60.7\%
+with 2.62M parameters. Late features remain more useful in this screen,
+but the near-full retention observed at 8B does not carry over to this
+smaller verifier. This is an eight-question development result with
+one fitting seed, not a general lower bound on the required layers.
+
+\begin{table}[H]
+\centering\small
+\input{generated/downscale_depth_table.tex}
+\caption{Downward-retargeting depth screen, 4B-trained DFlash to a 0.6B
+verifier. All fits use 512 records and 8,192 updates; decoding uses eight
+exposed GSM8K requests with a 512-token cap. Retention is relative to
+each worker's paired full mapper. Errors use the common fitting and
+validation sets.}
+\label{tab:downscale-depth}
+\end{table}
+
 \paragraph{Expanded NuminaMath data curve.}
 Table~\ref{tab:expanded-numina-data} reports all eleven completed sizes
 at 8,192 batch-four updates, spanning 2,048 epochs at 16 records to one

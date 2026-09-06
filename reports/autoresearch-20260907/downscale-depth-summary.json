@@ -1,0 +1,203 @@
+{
+  "input_sha256": {
+    "reports/autoresearch-20260907/run-28525/lane0/benchmark-rank0.jsonl": "f2b05a332d26dae4e77b4fee00823cfb47903c1e30abc244d528217fd148c4f3",
+    "reports/autoresearch-20260907/run-28525/lane0/fitting/downscale-taps-1-7/validation.jsonl": "f58683f1f877492aa917064fd3a56d6f33fd4798f5aac9b43ce3739296e3f14c",
+    "reports/autoresearch-20260907/run-28525/lane0/fitting/downscale-taps-1-7/fit-complete.json": "b13e725d0f2e004b1a098c22d9d505c0129754b411e0962d9f2420df7d279f1a",
+    "reports/autoresearch-20260907/run-28525/lane1/benchmark-rank0.jsonl": "6022984fa450f2c7669c5e4819e601aba050645074f5242de62e68bcbe1ad0bc",
+    "reports/autoresearch-20260907/run-28525/lane1/fitting/downscale-taps-7-19/validation.jsonl": "22180c7c380d655ea70ae6ae9174ce7b383a3ea74dac21913f3abee52b0a20f1",
+    "reports/autoresearch-20260907/run-28525/lane1/fitting/downscale-taps-7-19/fit-complete.json": "ae8a08a6a387d1a38c4bab4207c44501ba912954f7286b5e4114cc6a9f5ed231",
+    "reports/autoresearch-20260907/run-28525/lane2/benchmark-rank0.jsonl": "1d0fcdb3ba11049b0f87aa2926b249827a84797455523a2c6e5411927a32d62b",
+    "reports/autoresearch-20260907/run-28525/lane2/fitting/downscale-taps-19-25/validation.jsonl": "008f3c1683e9b0fd2b9934988e63daf1c01c18f0e39231a55913876b7c4a8540",
+    "reports/autoresearch-20260907/run-28525/lane2/fitting/downscale-taps-19-25/fit-complete.json": "91e8b2095a37a8a98d2bcc863c733faa86c1c5a729f32092eb04348af385bd4e",
+    "reports/autoresearch-20260907/run-28525/lane3/benchmark-rank0.jsonl": "cce7198c9bc369a6e8f83c990a5ab7622e9c301813755ee0dd26eb536d117366",
+    "reports/autoresearch-20260907/run-28525/lane3/fitting/downscale-taps-25/validation.jsonl": "3dab4fc44b4d758702709af8024b006035a608b7c47275a2fe218918c07b32fb",
+    "reports/autoresearch-20260907/run-28525/lane3/fitting/downscale-taps-25/fit-complete.json": "0f732e4a092a74faca5cbc432e852c3c0e12154d371da499bbf76f18038f1f98"
+  },
+  "results": [
+    {
+      "family": "Qwen3-0.6B",
+      "architecture": "Early [1,7]",
+      "training_error": 0.43212643172591925,
+      "validation_error": 0.45859000692144036,
+      "parameters": 5242880,
+      "requests": 8,
+      "clusters": 8,
+      "reference": "relay_base",
+      "methods": {
+        "relay_base": {
+          "tokens_per_second": 159.4409275541597,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 201.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.588068181818182,
+          "request_seconds": 10.08523987326771
+        },
+        "relay_reduced": {
+          "tokens_per_second": 83.64751369751838,
+          "throughput_ratio": 0.5246301246529349,
+          "throughput_ci95": [
+            0.4772144147022307,
+            0.604213611759665
+          ],
+          "request_time_ratio": 0.5246301246529349,
+          "request_time_ci95": [
+            0.47721441470223075,
+            0.6042136117596649
+          ],
+          "mean_output_tokens": 201.0,
+          "token_matches": 8,
+          "progress_per_cycle": 2.3405797101449277,
+          "request_seconds": 19.223524154163897
+        }
+      }
+    },
+    {
+      "family": "Qwen3-0.6B",
+      "architecture": "Spaced [7,19]",
+      "training_error": 0.3550893656210974,
+      "validation_error": 0.37386675481684506,
+      "parameters": 5242880,
+      "requests": 8,
+      "clusters": 8,
+      "reference": "relay_base",
+      "methods": {
+        "relay_base": {
+          "tokens_per_second": 157.3008377406797,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 201.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.588068181818182,
+          "request_seconds": 10.222450325731188
+        },
+        "relay_reduced": {
+          "tokens_per_second": 125.60855159942757,
+          "throughput_ratio": 0.7985243651817109,
+          "throughput_ci95": [
+            0.7363712198919978,
+            0.8715040478183438
+          ],
+          "request_time_ratio": 0.7985243651817109,
+          "request_time_ci95": [
+            0.7363712198919978,
+            0.8715040478183438
+          ],
+          "mean_output_tokens": 201.0,
+          "token_matches": 8,
+          "progress_per_cycle": 3.7041284403669725,
+          "request_seconds": 12.801676155999303
+        }
+      }
+    },
+    {
+      "family": "Qwen3-0.6B",
+      "architecture": "Late [19,25]",
+      "training_error": 0.33171209221472964,
+      "validation_error": 0.350767815252766,
+      "parameters": 5242880,
+      "requests": 8,
+      "clusters": 8,
+      "reference": "relay_base",
+      "methods": {
+        "relay_base": {
+          "tokens_per_second": 170.9622035221871,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 201.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.588068181818182,
+          "request_seconds": 9.405587708111852
+        },
+        "relay_reduced": {
+          "tokens_per_second": 140.521824623123,
+          "throughput_ratio": 0.8219467328337656,
+          "throughput_ci95": [
+            0.7888446843426209,
+            0.8624713572148296
+          ],
+          "request_time_ratio": 0.8219467328337656,
+          "request_time_ci95": [
+            0.7888446843426209,
+            0.8624713572148295
+          ],
+          "mean_output_tokens": 201.0,
+          "token_matches": 8,
+          "progress_per_cycle": 3.762237762237762,
+          "request_seconds": 11.443062345031649
+        }
+      }
+    },
+    {
+      "family": "Qwen3-0.6B",
+      "architecture": "Last [25]",
+      "training_error": 0.41741838422603905,
+      "validation_error": 0.4301188583485782,
+      "parameters": 2621440,
+      "requests": 8,
+      "clusters": 8,
+      "reference": "relay_base",
+      "methods": {
+        "relay_base": {
+          "tokens_per_second": 169.03812091869634,
+          "throughput_ratio": 1.0,
+          "throughput_ci95": [
+            1.0,
+            1.0
+          ],
+          "request_time_ratio": 1.0,
+          "request_time_ci95": [
+            1.0,
+            1.0
+          ],
+          "mean_output_tokens": 201.0,
+          "token_matches": 8,
+          "progress_per_cycle": 4.588068181818182,
+          "request_seconds": 9.51264715474099
+        },
+        "relay_reduced": {
+          "tokens_per_second": 102.53235587021092,
+          "throughput_ratio": 0.6065635095383412,
+          "throughput_ci95": [
+            0.5576303704703218,
+            0.6776675213782809
+          ],
+          "request_time_ratio": 0.6065635095383412,
+          "request_time_ci95": [
+            0.5576303704703218,
+            0.6776675213782809
+          ],
+          "mean_output_tokens": 201.0,
+          "token_matches": 8,
+          "progress_per_cycle": 2.7529812606473594,
+          "request_seconds": 15.68285431805998
+        }
+      }
+    }
+  ],
+  "scope": "Eight exposed GSM8K requests,512-token cap;512 fitting records8192 updates seed1729. Three two-layer maps have5242880 parameters and one-layer2621440. Each arm uses a paired full-five-layer control. Development boundary screen."
+}

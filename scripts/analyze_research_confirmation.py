@@ -30,6 +30,15 @@ def main():
     protocol_path = repo / args.protocol
     protocol = json.loads(protocol_path.read_text())
     specs = json.loads(wave.read_text())["lanes"]
+    if "primary_candidate" in protocol:
+        for spec in specs:
+            paths = {spec["checkpoint"], *spec["candidates"].values()}
+            if paths != set(protocol["checkpoints"]):
+                raise ValueError("Candidate set differs from frozen protocol")
+            if spec["checkpoint_sha256"] != protocol["checkpoints"]:
+                raise ValueError("Checkpoint hashes differ from frozen protocol")
+            if protocol["primary_candidate"] not in spec["candidates"]:
+                raise ValueError("Frozen primary candidate is absent")
     status = json.loads((run / "wave-result.json").read_text())["lanes"]
     if len(status) != 4 or any(s["status"] != "pass" for s in status):
         raise ValueError("All four shards must pass; no partial confirmation")
