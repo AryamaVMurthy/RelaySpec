@@ -19,7 +19,7 @@ if (root / 'source-commit.txt').read_text().strip() != job['source_commit']:
 inputs = {str(p): digest(p) for p in [fit_path, wave_path, root / 'source-commit.txt']}
 results = []
 lines = [r'\begin{tabular}{llrrrr}', r'\toprule',
-         r'Mapper & Records & LR & Original val. & New val. & Throughput ratio \\', r'\midrule']
+         r'Mapper & Records & LR & Original val. & New val. & Ratio (95\% CI) \\', r'\midrule']
 for i, (spec, fit) in enumerate(zip(wave['lanes'], fits)):
     folder = root / f'lane{i}'
     paths = [root / f'lane{i}-status.json', root / f'lane{i}-spec.json',
@@ -42,10 +42,11 @@ for i, (spec, fit) in enumerate(zip(wave['lanes'], fits)):
     reference = 'relay_base' if i < 2 else 'relay_original_matched'
     summary = summarize(rows, reference=reference)
     rate = summary['methods']['relay_lower_rate']['throughput_ratio']
+    low, high = summary['methods']['relay_lower_rate']['throughput_ci95']
     trial = fit['trial']
     architecture = ['Dense','Dense','Linear-4096','MLP-4096'][i]
     lines.append(f"{architecture} & {trial['distinct_examples']:,} & {trial['learning_rate']:g} & "
-                 f"{fit['original_reference']['validation_objective']:.3f} & {fit['validation_objective']:.3f} & {rate:.3f}" + r'\\')
+                 f"{fit['original_reference']['validation_objective']:.3f} & {fit['validation_objective']:.3f} & {rate:.3f} [{low:.3f},{high:.3f}]" + r'\\')
     results.append(dict(architecture=architecture, trial=trial, reference=reference, summary=summary,
                         capped_counts={m:sum(r['output_tokens']>=512 for r in rows if r['method']==m) for m in methods}))
     inputs.update({str(p):digest(p) for p in paths})

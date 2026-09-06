@@ -506,10 +506,11 @@ than assumed from parameter count. All outcomes remain in the appendix.
 The complete 14B grids repeat the small-data/capacity comparison in
 both drafter families. DFlash's wide MLP fits its training features
 better than dense but has worse validation error and lower capped
-decoding throughput. EAGLE-3 shows late degradation in both dense
-512-example seeds and a transient wide-linear loss spike.
-These results delimit the shared optimization recipe rather than prove
-a disadvantage of a function class (Appendix~\ref{app:target14-capacity}).
+decoding throughput. EAGLE-3's late degradation and wide-linear loss
+spike are reduced by lower-rate follow-ups, which improve both dense
+and MLP decoding in a small paired screen. These results delimit the
+optimization recipe rather than prove a function-class disadvantage
+(Appendix~\ref{app:target14-capacity}).
 On the 8B capped long-output development set, dense $N=512$ retains
 97.4--97.9\% of dense $N=2048$ throughput across MATH difficulty groups.
 Very long inputs have too few examples for a reliable generalization claim.
@@ -1689,14 +1690,31 @@ updates, followed by substantial increases. At $N=2048$, the wide
 linear endpoint has lower validation error than dense, but nearly
 equal decoding throughput. Its intermediate spike also shows that
 the shared learning rate does not produce uniformly smooth training.
-These observations motivate matched learning-rate checks before
-attributing a difference to the mapper function class. Four lower-rate
-16-update pilots passed numerical and decoding checks, but their proper
-8,192-update fits were not executed within the experiment timebox.
-The pilots do not establish whether a lower rate resolves the degradation. Lower feature
-error alone does not establish a decoding gain. Full-answer quality,
-broader workloads and additional fitting seeds remain separate from
-this capped comparison.
+We complete all four previously declared lower-rate checks at 8,192
+updates, preserving the original records, feature cache and seed.
+Lower rates improve every endpoint's feature-validation error and avoid
+the wide-linear spike at the saved checkpoints (Table~\ref{tab:rate-check}).
+Paired decoding compares each new map with its original-rate counterpart.
+The best-fitting dense map is not the fastest: rate $0.00006$ gives
+validation error 0.226, versus 0.250 at $0.0002$, but the latter has
+higher throughput. Thus optimization affects the capacity comparison,
+while feature error remains an imperfect decoding surrogate.
+
+\begin{table}[H]
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{generated/rate_check_table.tex}
+\caption{Targeted EAGLE-3/14B learning-rate checks, one fitting seed.
+Original learning rate is 0.0006. Ratios compare the lower-rate map with
+the original map at matched architecture, records and 8,192 updates on
+eight exposed MATH questions, with paired 95\% request intervals.
+All four checks are retained. Four of eight outputs reach the 512-token
+cap for every method, so these are development throughput results,
+not full-answer quality confirmation.}
+\label{tab:rate-check}
+\end{table}
+Full-answer quality, broader workloads and additional fitting seeds
+remain separate from this capped comparison.
 
 \subsection{Matched warm-training budgets on 512 examples}
 \label{app:timed-budget}
