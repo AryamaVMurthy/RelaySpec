@@ -1,0 +1,12 @@
+\paragraph{Calibration data depends on the interface role.}
+We fit native and retargeted two-layer maps on the same 16- or 128-record
+prefixes, at 8,192 batch-four updates and two fitting seeds. Each map is
+compared with its role's original 512-record two-layer reference on the
+same eight exposed GSM8K questions, with a 512-token cap.
+At 128 records, native maps retain 97.2--97.9\% throughput across seeds, versus 87.7--88.9\% for retargeting. At 16 records these ranges fall to 66.7--67.0\% and 46.3--47.1\%, respectively.
+The 16-record fits closely match training features but have much larger
+validation errors. These standard recipes retain different teacher outputs,
+output widths and normalization, so the contrast does not isolate an
+intrinsic difference in sample complexity. The two seeds share questions
+and reference maps. This is a calibration-sensitivity screen, not a
+minimum-data guarantee or independent quality confirmation.

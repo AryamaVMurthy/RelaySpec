@@ -1,0 +1,31 @@
+{
+  "name": "retargeted-late2-n16-s1729",
+  "study": "compact_interface_data",
+  "architecture": "dense",
+  "seed": 1729,
+  "steps": 8192,
+  "distinct_examples": 16,
+  "learning_rate": 0.0006,
+  "l2_weight": 0.0,
+  "weight_decay": 0.0,
+  "checkpoint_steps": [
+    1024,
+    8192
+  ],
+  "validation_records": 128,
+  "diagnostic_train_records": 16,
+  "feature_objective": "relative_interface_mse",
+  "normalize_input": true,
+  "budget_panels": {
+    "fixed_updates": {
+      "checkpoint_step": 8192,
+      "presentations": 32768
+    }
+  },
+  "target_layer_ids": [
+    25,
+    33
+  ],
+  "cache_backend": "buffer",
+  "device_cache": false
+}

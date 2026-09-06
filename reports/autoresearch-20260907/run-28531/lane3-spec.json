@@ -1,0 +1,49 @@
+{
+  "family": "dflash",
+  "transform": "fit_reduced_taps",
+  "checkpoint": "/home/aryama.murthy/relayspec-autoresearch-w03/outputs/rs-research-w03-28393/lane0/fitting/dflash-last2-n512/step-008192.pt",
+  "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full.yaml",
+  "hypothesis": "Replicate the fixed native/retargeted x16/128-record calibration comparison at seed1730, with all original baseline maps and evaluation requests retained.",
+  "trial": {
+    "name": "retargeted-late2-n128-s1730",
+    "study": "compact_interface_data",
+    "architecture": "dense",
+    "seed": 1730,
+    "steps": 8192,
+    "distinct_examples": 128,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      1024,
+      8192
+    ],
+    "validation_records": 128,
+    "diagnostic_train_records": 16,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": true,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 8192,
+        "presentations": 32768
+      }
+    },
+    "target_layer_ids": [
+      25,
+      33
+    ],
+    "cache_backend": "buffer",
+    "device_cache": false
+  },
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+  "pilot_gate": "/home/aryama.murthy/relayspec-matrix-v2-20260905/outputs/rs-capacity-pilot-27725/batch-gate.json",
+  "native_teacher": false,
+  "requests": 8,
+  "checkpoint_sha256": {
+    "/home/aryama.murthy/relayspec-autoresearch-w03/outputs/rs-research-w03-28393/lane0/fitting/dflash-last2-n512/step-008192.pt": "d1f7ef8ff1f31ac794bb462df4653f71df803c9d4d99cc25c263394e8288eed5"
+  },
+  "max_new_tokens": 512,
+  "include_ar": false,
+  "include_native": false,
+  "scope": "Factorial native/retargeted x16/128 records. Same cache record prefixes, target layers25/33, seed1730 and8192 batch-four updates. Each role retains its original normalization and teacher/output width; compare within-role retention, not absolute feature errors across roles. Eight exposed GSM8K requests at512tokens. No cache-extraction or quality-confirmation claim. Same questions and512-record reference maps as wave40, so this adds fitting-seed replication, not independent evaluation tasks."
+}

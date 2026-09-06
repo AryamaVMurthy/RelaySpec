@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "How does calibration-record sensitivity differ between a compact native interface and retargeting, measured relative to each role's own512-record late-two-layer map?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 164.55392996231583,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.963636363636364,
+        "request_seconds": 15.946139971259981
+      },
+      "relay_reduced": {
+        "tokens_per_second": 76.19429669198782,
+        "throughput_ratio": 0.4630354116090507,
+        "throughput_ci95": [
+          0.4298836435037662,
+          0.4990477784718696
+        ],
+        "request_time_ratio": 0.4630354116090507,
+        "request_time_ci95": [
+          0.4298836435037662,
+          0.49904777847186965
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 2.7534102833158447,
+        "request_seconds": 34.4382731243968
+      }
+    }
+  },
+  "scope": "Factorial native/retargeted x16/128 records. Same cache record prefixes, target layers25/33, seed1729 and8192 batch-four updates. Each role retains its original normalization and teacher/output width; compare within-role retention, not absolute feature errors across roles. Eight exposed GSM8K requests at512tokens. No cache-extraction or quality-confirmation claim."
+}

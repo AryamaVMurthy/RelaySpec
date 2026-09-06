@@ -1,0 +1,40 @@
+{
+  "parent_sha256": "d1f7ef8ff1f31ac794bb462df4653f71df803c9d4d99cc25c263394e8288eed5",
+  "shape": [
+    2560,
+    8192
+  ],
+  "transform": "fit_reduced_taps",
+  "fit_trial": {
+    "name": "retargeted-late2-n128-s1730",
+    "study": "compact_interface_data",
+    "architecture": "dense",
+    "seed": 1730,
+    "steps": 8192,
+    "distinct_examples": 128,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      1024,
+      8192
+    ],
+    "validation_records": 128,
+    "diagnostic_train_records": 16,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": true,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 8192,
+        "presentations": 32768
+      }
+    },
+    "target_layer_ids": [
+      25,
+      33
+    ],
+    "cache_backend": "buffer",
+    "device_cache": false
+  },
+  "cache_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5"
+}

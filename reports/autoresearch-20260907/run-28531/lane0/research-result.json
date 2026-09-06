@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Replicate the fixed native/retargeted x16/128-record calibration comparison at seed1730, with all original baseline maps and evaluation requests retained.",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 180.7917233041535,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.766066838046273,
+        "request_seconds": 14.51393875805661
+      },
+      "relay_reduced": {
+        "tokens_per_second": 121.11601161350143,
+        "throughput_ratio": 0.6699201124917809,
+        "throughput_ci95": [
+          0.6257071806599879,
+          0.7112908359595923
+        ],
+        "request_time_ratio": 0.6699201124917809,
+        "request_time_ci95": [
+          0.6257071806599878,
+          0.7112908359595923
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.499145299145299,
+        "request_seconds": 21.665178410708904
+      }
+    }
+  },
+  "scope": "Factorial native/retargeted x16/128 records. Same cache record prefixes, target layers25/33, seed1730 and8192 batch-four updates. Each role retains its original normalization and teacher/output width; compare within-role retention, not absolute feature errors across roles. Eight exposed GSM8K requests at512tokens. No cache-extraction or quality-confirmation claim. Same questions and512-record reference maps as wave40, so this adds fitting-seed replication, not independent evaluation tasks."
+}

@@ -1,0 +1,50 @@
+{
+  "variants": {
+    "relay_base": {
+      "checkpoint": "/home/aryama.murthy/relayspec-autoresearch-w03/outputs/rs-research-w03-28393/lane0/fitting/dflash-last2-n512/step-008192.pt",
+      "sha256": "d1f7ef8ff1f31ac794bb462df4653f71df803c9d4d99cc25c263394e8288eed5",
+      "parameters": 20971520,
+      "resident_parameter_bytes": 41943040,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_reduced": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28531/lane3/fitting/retargeted-late2-n128-s1730/step-008192.pt",
+      "sha256": "d2344e3b9b2143aa3d1d949ad61e749e4a3f3a3ff516e6087bd4a3ab766c0d3a",
+      "parameters": 20971520,
+      "resident_parameter_bytes": 41943040,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    }
+  },
+  "adapted_drafter_variants": [],
+  "methods": [
+    "relay_base",
+    "relay_reduced"
+  ],
+  "selective_capture": {},
+  "release_capture_buffers": {},
+  "runtime_precision": "bfloat16",
+  "target_head_precision": "bfloat16",
+  "target_head_diagnostic": null,
+  "matmul_allow_tf32": false,
+  "target_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "drafter_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "mapper_parameter_dtypes": {
+    "relay_base": [
+      "torch.bfloat16"
+    ],
+    "relay_reduced": [
+      "torch.bfloat16"
+    ]
+  },
+  "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+}
