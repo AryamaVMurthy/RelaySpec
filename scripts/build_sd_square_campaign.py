@@ -141,8 +141,8 @@ def main():
         "independent-drafter controls, and correct runtime-local AR. Sixteen paired exposed "
         "development requests with256-token cap. Immediate/deferred observer equality is "
         "checked before measurements. GPU decision capture is timed, CPU materialization and "
-        "Each ten-minute job covers one disjoint eight-request shard of the fixed sixteen. "
-        "verification occur after the timer. Shared resident steering storage prevents isolated "
+        "verification occur after the timer. Each ten-minute job covers one disjoint "
+        "eight-request shard of the fixed sixteen. Shared resident steering storage prevents isolated "
         "serving-memory claims. No full-answer quality, untouched confirmation or cross-runtime "
         "algorithm-only ranking. Old exact-AR failures are preserved.",
     }
