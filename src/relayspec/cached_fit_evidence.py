@@ -67,6 +67,7 @@ def audit_fit_artifacts(folder, trial, *, cache_sha256):
     ]:
         raise ValueError("validation log does not cover every declared checkpoint")
     token_counts = {}
+    domain_coverage = {}
     for row in validation:
         if row["regularization_included"] is not False:
             raise ValueError("validation must exclude training regularization")
@@ -88,6 +89,59 @@ def audit_fit_artifacts(folder, trial, *, cache_sha256):
             ]:
                 if not math.isfinite(group[key]) or group[key] < -1e-6:
                     raise ValueError("invalid fitting validation metric")
+            if trial.get("report_domain_diagnostics"):
+                domains = group.get("by_domain")
+                if not isinstance(domains, dict) or not domains:
+                    raise ValueError("missing per-domain validation diagnostics")
+                required = trial.get("validation_required_domains")
+                if split == "validation" and required and set(domains) != set(required):
+                    raise ValueError(
+                        "validation domain coverage differs from declaration"
+                    )
+                coverage = {}
+                for name, values in domains.items():
+                    if (
+                        not isinstance(name, str)
+                        or not name
+                        or not isinstance(values["records"], int)
+                        or values["records"] < 1
+                        or not isinstance(values["tokens"], int)
+                        or values["tokens"] < values["records"]
+                    ):
+                        raise ValueError("invalid domain record/token coverage")
+                    coverage[name] = (values["records"], values["tokens"])
+                domain_coverage.setdefault(split, coverage)
+                if domain_coverage[split] != coverage:
+                    raise ValueError("domain coverage changed across checkpoints")
+                for key in ["records", "tokens"]:
+                    if sum(values[key] for values in domains.values()) != group[key]:
+                        raise ValueError(
+                            "domain counts do not sum to aggregate coverage"
+                        )
+                for key in [
+                    "objective",
+                    "relative_mse",
+                    "cosine_error",
+                    "relative_norm_error",
+                ]:
+                    if any(
+                        not math.isfinite(values[key]) or values[key] < -1e-6
+                        for values in domains.values()
+                    ):
+                        raise ValueError("invalid per-domain validation metric")
+                    weighted = (
+                        sum(
+                            values[key] * values["records"]
+                            for values in domains.values()
+                        )
+                        / count
+                    )
+                    if not math.isclose(
+                        weighted, group[key], rel_tol=1e-6, abs_tol=1e-7
+                    ):
+                        raise ValueError(
+                            "domain metrics do not reproduce record-weighted aggregate"
+                        )
     metadata = complete["cache_extraction_metadata"]
     input_width = metadata["target_hidden_size"] * len(metadata["target_layer_ids"])
     output_width = metadata["draft_hidden_size"]

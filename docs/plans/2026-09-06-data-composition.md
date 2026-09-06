@@ -97,3 +97,12 @@ checks only, with a 540-second process timeout. Jobs and raw collection are
 tracked in composition-pilots/jobs.json. Proper extraction/fitting is not yet
 submitted. Eight focused local tests, Ruff, shell syntax, and the version 2
 byte-for-byte rebuild checks pass; see composition-data/implementation-checks.json.
+
+The shared cached-fit evidence auditor now checks per-domain diagnostics when
+requested: every declared validation domain must be present, domain record/token
+counts must sum to aggregate coverage and remain unchanged across checkpoints,
+and domain metrics must reconstruct the aggregate with record weighting. Missing
+labels, nonfinite values, coverage drift and incorrect averaging fail explicitly.
+Eighteen focused evidence/domain/campaign tests pass. The unchanged legacy branch
+also re-audits the eight collected 14B fits successfully. No GPU rerun is needed
+for this local evidence check, and no composition result is yet claimed.
