@@ -60,3 +60,11 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 14 / 1 | 28430 | dflash / fit_reduced_taps | pass | 324.2 | 32 | relay_reduced: 100.4% |
 | 14 / 2 | 28430 | dflash / fit_reduced_taps | pass | 331.2 | 32 | relay_reduced: 97.0% |
 | 14 / 3 | 28430 | dflash / fit_reduced_taps | pass | 339.4 | 32 | relay_reduced: 97.7% |
+| 15 / 0 | 28431 | dflash / existing | pass | 123.9 | 32 | relay_math: 97.3%; relay_mixed: 98.3% |
+| 15 / 1 | 28431 | dflash / existing | pass | 152.8 | 16 | relay_math: 97.9%; relay_mixed: 108.4% |
+| 15 / 2 | 28431 | dflash / existing | pass | 123.6 | 32 | relay_math: 97.1%; relay_mixed: 98.5% |
+| 15 / 3 | 28431 | dflash / existing | pass | 149.3 | 16 | relay_math: 98.2%; relay_mixed: 99.3% |
+| 16 / 0 | 28432 | dflash / existing | pass | 167.0 | 32 | relay_math: 98.3%; relay_mixed: 100.4% |
+| 16 / 1 | 28432 | dflash / existing | pass | 153.9 | 32 | relay_math: 97.6%; relay_mixed: 96.9% |
+| 16 / 2 | 28432 | dflash / existing | pass | 146.3 | 32 | relay_math: 97.0%; relay_mixed: 97.6% |
+| 16 / 3 | 28432 | dflash / existing | pass | 147.7 | 32 | relay_math: 97.0%; relay_mixed: 98.2% |

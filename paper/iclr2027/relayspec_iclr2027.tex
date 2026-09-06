@@ -1887,6 +1887,33 @@ scored in this experiment. Capped outputs remain in every aggregate.}
 \input{generated/composition_quality_table.tex}
 \end{table}
 
+\subsection{Composition with compact interfaces}
+We separately screen two-layer interfaces using 512 math records or
+256 math plus 256 general-instruction records, at 8,192 updates and
+seed 1729. Both use target layers [25,33]. Retargeted maps fit the
+source-drafter interface; native students fit the released native
+projection and normalization. Thus this comparison changes calibration
+composition at fixed interface capacity and record count, but not
+necessarily equal token exposure.
+
+The largest observed difference is on retargeted dialogue: mixed
+calibration retains 110.8\% [107.8,112.5]\% of math-only throughput.
+All seven other intervals include parity. Every paired output matches
+within these capped screens. This is a workload-specific exploratory
+finding from eight conversations and one fitting seed, not evidence
+that mixed calibration universally improves decoding or answer quality.
+
+\begin{table}[H]
+\caption{Compact-interface calibration composition. Ratios compare
+both checkpoints within the same worker. Paired 95\% bootstrap intervals
+use requests, or whole conversations for dialogue, and exclude fitting-seed
+and selection uncertainty. Code and math screens use 128-token caps;
+dialogue uses 256 tokens per turn.}
+\label{tab:compact-composition}
+\centering\small
+\input{generated/compact_composition_table.tex}
+\end{table}
+
 \section{Frozen-checkpoint GSM8K confirmation}
 \label{app:frozen-confirmation}
 We freeze the dense 512- and 2,048-example checkpoints at 8,192 updates
