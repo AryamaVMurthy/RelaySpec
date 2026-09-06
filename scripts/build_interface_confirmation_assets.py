@@ -24,6 +24,17 @@ for job, filename, arms in [
             ("relay_svd1536", "Rank 1,536", 37.75),
         ],
     ),
+    (
+        28524,
+        "native_student_confirmation_table",
+        [
+            ("native_target_dflash", "Released native", 83.89),
+            ("relay_base", "Repacked native", 83.89),
+            ("relay_two", "Two-layer student", 33.55),
+            ("relay_one", "One-layer student", 16.78),
+            ("relay_svd1536", "Rank 1,536", 37.75),
+        ],
+    ),
 ]:
     path = Path(f"reports/autoresearch-20260907/run-{job}/confirmation-analysis.json")
     d = json.loads(path.read_text())
@@ -50,7 +61,7 @@ for job, filename, arms in [
     json.dumps(
         dict(
             input_sha256=inputs,
-            scope="Two fixed64-request comparisons; native comparison is secondary. Parameter counts concern only mapper/projection.",
+            scope="Initial retargeting primary and native-SVD secondary comparisons share64 questions; native-student primary uses a distinct64-question set. Parameter counts concern only mapper/projection.",
         ),
         indent=2,
     )

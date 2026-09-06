@@ -570,8 +570,8 @@ competitive choice after testing nonlinear capacity, longer optimization,
 regularization and token-prediction adaptation. The interface also exposes
 which target features sustain drafting: late-layer selection cuts mapper
 parameters by 60\% while retaining 97.6\% throughput in a fixed comparison.
-A native DFlash application retains 98.7\% throughput with 55\% fewer
-projection parameters. These findings motivate adapting and inspecting
+A native two-layer student retains 97.1\% throughput with 60\% fewer
+projection parameters in a separate fixed comparison. These findings motivate adapting and inspecting
 the inherited interface before investing in a new drafter.
 
 These conclusions concern shared-vocabulary Qwen3 models, greedy decoding
@@ -1164,6 +1164,41 @@ GSM8K/MATH use 32 questions and a 128-token cap, code eight MBPP
 requests and a 512-token cap, and dialogue eight two-turn conversations
 with a 256-token per-turn cap. All are exposed development workloads.}
 \label{tab:native-student}
+\end{table}
+
+
+\paragraph{Frozen native-student confirmation.}
+We subsequently freeze the two-layer student's checkpoint and a new
+64-question set before decoding. These are sorted reserve positions
+64--127, disjoint from the preceding interface/SVD confirmation.
+A scan of 932 prior local result files finds no matching question IDs;
+this does not establish global or pretraining non-exposure. The primary
+criterion requires the lower endpoint of the paired 95\% throughput
+interval against released native to exceed 95\%. We retain the one-layer
+student, rank-1,536 SVD and full repacked projection as descriptive
+controls, with no optional sample extension or candidate refitting.
+
+The two-layer student retains 97.05\% [95.93,98.21]\% of released-native
+throughput and passes the fixed criterion (Table~\ref{tab:native-student-confirmation}).
+One layer retains only 84.55\% [83.11,86.10]\%, while SVD retains
+98.08\% [97.13,99.06]\% with slightly more parameters than two layers.
+Every method produces identical recorded outputs, scoring 60/64, and
+none reaches the 2,048-token cap. The conservative paired accuracy
+interval for two layers versus released native is still $[-6.62,+6.62]$
+percentage points: identical observed answers do not establish tight
+accuracy noninferiority. Together with retargeting, this supports a
+compact late-layer conditioning interface in two uses, without claiming
+that two layers suffice for every drafter or verifier.
+
+\begin{table}[H]
+\centering\small
+\input{generated/native_student_confirmation_table.tex}
+\caption{Fixed native-student comparison on a separate set of 64 GSM8K
+questions. Retention uses the released-native reference and 10,000
+paired question bootstrap replicates, seed 1729. Only the two-layer
+comparison is primary. Counts refer to the input projection, not the
+whole drafter; fitting-seed variation is outside these intervals.}
+\label{tab:native-student-confirmation}
 \end{table}
 
 \paragraph{Expanded NuminaMath data curve.}
@@ -2100,8 +2135,9 @@ and seed 1729 before generating confirmation outputs. The fixed test
 contains 256 GSM8K questions, sampled after exact and lexical exclusion
 against fitting data and collected evaluation history. A separate
 256-question reserve was left unused by this experiment. Subsequently,
-64 reserve questions were consumed by the separately frozen interface
-compression study in Appendix~\ref{app:interface-compression}.
+128 reserve questions were consumed by two separately frozen studies:
+64 for the interface/SVD comparison and 64 different questions for native
+student confirmation (Appendix~\ref{app:interface-compression}).
 Operational pilots use eight
 previously exposed GSM8K questions, not confirmation requests.
 The same confirmation questions are evaluated in both drafter families,
