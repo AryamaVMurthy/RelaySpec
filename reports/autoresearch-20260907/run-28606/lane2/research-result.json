@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Does equal-weight per-layer plus fused-context source alignment improve retargeted DFlash over context-only fitting at matched data, sampled positions and updates?",
+  "summary": {
+    "requests": 2,
+    "clusters": 2,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 100.06215751588368,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 64.0,
+        "token_matches": 2,
+        "progress_per_cycle": 4.029411764705882,
+        "request_seconds": 1.279204878024757
+      },
+      "relay_layer_context": {
+        "tokens_per_second": 29.762945697719555,
+        "throughput_ratio": 0.2974445728196001,
+        "throughput_ci95": [
+          0.26998516181670407,
+          0.3235024008216787
+        ],
+        "request_time_ratio": 0.2974445728196,
+        "request_time_ci95": [
+          0.26998516181670407,
+          0.3235024008216787
+        ],
+        "mean_output_tokens": 64.0,
+        "token_matches": 2,
+        "progress_per_cycle": 1.05,
+        "request_seconds": 4.30064958287403
+      }
+    }
+  },
+  "scope": "Operational pilot only: source feature reconstruction, finite gradients, folding equivalence, checkpoint loading and decoding. Not a scientific endpoint.540seconds."
+}

@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Does equal-weight per-layer plus fused-context source alignment improve retargeted DFlash over context-only fitting at matched data, sampled positions and updates?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 152.71792265104335,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 248.5,
+        "token_matches": 8,
+        "progress_per_cycle": 5.6,
+        "request_seconds": 13.017463605385274
+      },
+      "relay_layer_context": {
+        "tokens_per_second": 127.12917908916539,
+        "throughput_ratio": 0.832444397372091,
+        "throughput_ci95": [
+          0.7627417373530615,
+          0.8780066794676473
+        ],
+        "request_time_ratio": 0.8324443973720911,
+        "request_time_ci95": [
+          0.7627417373530615,
+          0.8780066794676471
+        ],
+        "mean_output_tokens": 248.5,
+        "token_matches": 8,
+        "progress_per_cycle": 4.601851851851852,
+        "request_seconds": 15.637637356296182
+      }
+    }
+  },
+  "scope": "User-proposed loss. Four declared architecture/objective controls, no independent confirmation. Fixed192token cache prefixes,32 sampled positions per record,2048position batches. Frozen 8192-update baseline is a deployment reference with a different fitting budget. All lanes540seconds."
+}

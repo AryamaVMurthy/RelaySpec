@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "settings": {
+    "records": 512,
+    "validation_records": 128,
+    "steps": 1024,
+    "seed": 1729,
+    "learning_rate": 0.0006,
+    "positions_per_record": 32,
+    "batch_positions": 2048,
+    "cache_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+    "mode": "layer_only"
+  },
+  "history": [
+    {
+      "step": 0,
+      "validation": {
+        "layer": 2.1295103430747986,
+        "context": 4.297327756881714
+      }
+    },
+    {
+      "step": 1,
+      "layer": 1.638543725013733,
+      "context": 4.233682155609131,
+      "validation": {
+        "layer": 1.7499669194221497,
+        "context": 3.2921383380889893
+      }
+    },
+    {
+      "step": 32,
+      "layer": 0.3983652889728546,
+      "context": 0.6395835876464844,
+      "validation": {
+        "layer": 0.4277156591415405,
+        "context": 0.6879138052463531
+      }
+    },
+    {
+      "step": 128,
+      "layer": 0.14055638015270233,
+      "context": 0.24200938642024994,
+      "validation": {
+        "layer": 0.2058512568473816,
+        "context": 0.3518774211406708
+      }
+    },
+    {
+      "step": 1024,
+      "layer": 0.07964513450860977,
+      "context": 0.13142387568950653,
+      "validation": {
+        "layer": 0.17289987951517105,
+        "context": 0.2837662249803543
+      }
+    }
+  ],
+  "teacher_context_reproduction_errors": [
+    1.3581440725829452e-05,
+    1.4057433872949332e-05,
+    1.7312946511083283e-05,
+    1.2176900781923905e-05,
+    1.7063084669644013e-05,
+    1.613930544408504e-05,
+    1.3879287507734261e-05,
+    1.434711339243222e-05
+  ],
+  "fold_fp32_relative_error": 1.9433387462176183e-13,
+  "extraction_seconds": 31.23901566909626,
+  "fitting_seconds": 15.714540029875934,
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28609/lane1/relay-layer-context.pt",
+  "checkpoint_sha256": "25e7b7ae7ffa4671a9ed63669193682822f968ee522641b4ab563261e932cc78",
+  "parameter_count": 52428800,
+  "source_model": {
+    "id": "Qwen/Qwen3-4B",
+    "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+  },
+  "scope": "512 records from existing192token prefixes;32 fixed positions per record;128 updates of2048 positions. Folded FP32 projection algebra verified; BF16 two-stage versus folded rounding is not bitwise identical. No full-length rollout reproduction claim."
+}

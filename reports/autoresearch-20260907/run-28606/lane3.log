@@ -1,0 +1,29 @@
+Loading weights:   0%|          | 0/58 [00:00<?, ?it/s]Loading weights: 100%|██████████| 58/58 [00:00<00:00, 25885.26it/s]
+Loading weights:   0%|          | 0/398 [00:00<?, ?it/s]Loading weights: 100%|██████████| 398/398 [00:00<00:00, 6989.28it/s]
+Traceback (most recent call last):
+  File "/home/aryama.murthy/relayspec-layer-context-v1/scripts/run_research_lane.py", line 432, in <module>
+    main()
+  File "/home/aryama.murthy/relayspec-layer-context-v1/scripts/run_research_lane.py", line 322, in main
+    variants = prepare(spec, a.output)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aryama.murthy/relayspec-layer-context-v1/scripts/run_research_lane.py", line 88, in prepare
+    path, result = fit(spec, root, storage, config, draft)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aryama.murthy/relayspec-layer-context-v1/scripts/fit_layer_context_probe.py", line 150, in fit
+    history = [dict(step=0, validation=validate())]
+                                       ^^^^^^^^^^
+  File "/home/aryama.murthy/relayspec-layer-context-v1/scripts/fit_layer_context_probe.py", line 143, in validate
+    a, b = losses(x[j : j + 2048], y[j : j + 2048])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aryama.murthy/relayspec-layer-context-v1/scripts/fit_layer_context_probe.py", line 127, in losses
+    prediction = frozen_norm(model(x.flatten(1)), gamma)
+                             ^^^^^^^^^^^^^^^^^^^
+  File "/home/aryama.murthy/.venvs/factorspec-20260826/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1775, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aryama.murthy/.venvs/factorspec-20260826/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1786, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aryama.murthy/relayspec-layer-context-v1/src/relayspec/relay.py", line 127, in forward
+    raise ValueError("relay input must have shape [batch, sequence, width]")
+ValueError: relay input must have shape [batch, sequence, width]

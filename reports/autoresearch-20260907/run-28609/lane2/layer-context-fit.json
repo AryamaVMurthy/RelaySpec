@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "settings": {
+    "records": 512,
+    "validation_records": 128,
+    "steps": 1024,
+    "seed": 1729,
+    "learning_rate": 0.0006,
+    "positions_per_record": 32,
+    "batch_positions": 2048,
+    "cache_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+    "mode": "context_only"
+  },
+  "history": [
+    {
+      "step": 0,
+      "validation": {
+        "layer": 2.1295103430747986,
+        "context": 4.297327756881714
+      }
+    },
+    {
+      "step": 1,
+      "layer": 1.638543725013733,
+      "context": 4.233682155609131,
+      "validation": {
+        "layer": 2.1651397943496704,
+        "context": 1.3844387531280518
+      }
+    },
+    {
+      "step": 32,
+      "layer": 5.706206798553467,
+      "context": 0.5006910562515259,
+      "validation": {
+        "layer": 6.278823375701904,
+        "context": 0.5127174854278564
+      }
+    },
+    {
+      "step": 128,
+      "layer": 2.8029212951660156,
+      "context": 0.1736556589603424,
+      "validation": {
+        "layer": 3.4554531574249268,
+        "context": 0.28188562393188477
+      }
+    },
+    {
+      "step": 1024,
+      "layer": 5.749579906463623,
+      "context": 0.12206868827342987,
+      "validation": {
+        "layer": 6.392272233963013,
+        "context": 0.26267239451408386
+      }
+    }
+  ],
+  "teacher_context_reproduction_errors": [
+    1.3581440725829452e-05,
+    1.4057433872949332e-05,
+    1.7312946511083283e-05,
+    1.2176900781923905e-05,
+    1.7063084669644013e-05,
+    1.613930544408504e-05,
+    1.3879287507734261e-05,
+    1.434711339243222e-05
+  ],
+  "fold_fp32_relative_error": 9.524282404416162e-14,
+  "extraction_seconds": 31.744792361278087,
+  "fitting_seconds": 15.68672193121165,
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28609/lane2/relay-layer-context.pt",
+  "checkpoint_sha256": "c6d762864f9b17c048327f944f1088e25a529b862af3af2ef634c1d18cca2274",
+  "parameter_count": 52428800,
+  "source_model": {
+    "id": "Qwen/Qwen3-4B",
+    "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+  },
+  "scope": "512 records from existing192token prefixes;32 fixed positions per record;128 updates of2048 positions. Folded FP32 projection algebra verified; BF16 two-stage versus folded rounding is not bitwise identical. No full-length rollout reproduction claim."
+}

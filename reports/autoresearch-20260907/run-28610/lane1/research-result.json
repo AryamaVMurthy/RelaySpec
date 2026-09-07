@@ -1,0 +1,97 @@
+{
+  "status": "pass",
+  "hypothesis": "Does equal-weight per-layer plus fused-context source alignment improve retargeted DFlash over context-only fitting at matched data, sampled positions and updates?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 171.68812747146066,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 294.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.25,
+        "request_seconds": 13.69925826927647
+      },
+      "relay_context_only": {
+        "tokens_per_second": 159.09993868610115,
+        "throughput_ratio": 0.9266799110063565,
+        "throughput_ci95": [
+          0.9041932162156116,
+          0.9589600870215937
+        ],
+        "request_time_ratio": 0.9266799110063566,
+        "request_time_ci95": [
+          0.9041932162156116,
+          0.9589600870215939
+        ],
+        "mean_output_tokens": 294.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.776412776412776,
+        "request_seconds": 14.783160945400596
+      },
+      "relay_dense_context": {
+        "tokens_per_second": 156.94612807506883,
+        "throughput_ratio": 0.9141350097207953,
+        "throughput_ci95": [
+          0.8791800332897216,
+          0.9636542809811413
+        ],
+        "request_time_ratio": 0.9141350097207953,
+        "request_time_ci95": [
+          0.8791800332897216,
+          0.9636542809811413
+        ],
+        "mean_output_tokens": 294.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.6924939467312345,
+        "request_seconds": 14.986033926717937
+      },
+      "relay_layer_context": {
+        "tokens_per_second": 143.86960324833845,
+        "throughput_ratio": 0.8379706003389988,
+        "throughput_ci95": [
+          0.7940469365993619,
+          0.8908395542871687
+        ],
+        "request_time_ratio": 0.837970600338999,
+        "request_time_ci95": [
+          0.7940469365993618,
+          0.8908395542871688
+        ],
+        "mean_output_tokens": 294.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.212860310421286,
+        "request_seconds": 16.348137110937387
+      },
+      "relay_layer_only": {
+        "tokens_per_second": 156.2531653851398,
+        "throughput_ratio": 0.9100988384366497,
+        "throughput_ci95": [
+          0.8668535097945431,
+          0.9526242505175662
+        ],
+        "request_time_ratio": 0.9100988384366497,
+        "request_time_ci95": [
+          0.8668535097945431,
+          0.9526242505175662
+        ],
+        "mean_output_tokens": 294.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.678743961352657,
+        "request_seconds": 15.052495059557259
+      }
+    }
+  },
+  "scope": "All four1024-update loss/architecture arms frozen before this32-task evaluation. Four8-task shards of exposed GSM8K,2048cap, five methods including original8192-update dense reference. The prior8-task screen is a subset. No independent confirmation, no selected primary. Paired comparisons within each worker.540seconds per lane."
+}

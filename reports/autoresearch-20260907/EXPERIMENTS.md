@@ -348,6 +348,30 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 94 / 1 | 28604 | eagle3 / fit_reduced_taps | pass | 137.7 | 8 | relay_reduced: 100.2% |
 | 94 / 2 | 28604 | eagle3 / fit_reduced_taps | pass | 131.0 | 8 | relay_reduced: 94.1% |
 | 94 / 3 | 28604 | eagle3 / fit_reduced_taps | pass | 125.0 | 8 | relay_reduced: 100.6% |
+| 95 / 0 | 28605 | eagle3 / existing | pass | 207.4 | 8 | relay_code_2layers: 94.0%; relay_code_3layers: 100.5%; relay_math_2layers: 94.3%; relay_math_3layers: 99.7% |
+| 95 / 1 | 28605 | eagle3 / existing | pass | 223.4 | 8 | relay_code_2layers: 94.5%; relay_code_3layers: 96.8%; relay_math_2layers: 92.3%; relay_math_3layers: 97.5% |
+| 95 / 2 | 28605 | eagle3 / existing | pass | 194.5 | 8 | relay_code_2layers: 95.2%; relay_code_3layers: 99.3%; relay_math_2layers: 94.8%; relay_math_3layers: 98.2% |
+| 95 / 3 | 28605 | eagle3 / existing | pass | 241.5 | 8 | relay_code_2layers: 95.7%; relay_code_3layers: 98.4%; relay_math_2layers: 93.3%; relay_math_3layers: 98.2% |
+| 96 / 0 | 28606 | dflash / fit_layer_context | pass | 37.7 | 2 | relay_layer_context: 31.3% |
+| 96 / 1 | 28606 | dflash / fit_layer_context | pass | 40.5 | 2 | relay_layer_context: 29.6% |
+| 96 / 2 | 28606 | dflash / fit_layer_context | pass | 39.9 | 2 | relay_layer_context: 29.7% |
+| 96 / 3 | 28606 | dflash / fit_layer_context | failed | 13.7 | — | — |
+| 98 / 0 | 28607 | dflash / fit_layer_context | pass | 39.5 | 2 | relay_layer_context: 28.9% |
+| 98 / 1 | 28607 | dflash / fit_layer_context | pass | 35.5 | 2 | relay_layer_context: 29.6% |
+| 98 / 2 | 28607 | dflash / fit_layer_context | pass | 35.0 | 2 | relay_layer_context: 29.7% |
+| 98 / 3 | 28607 | dflash / fit_layer_context | pass | 35.5 | 2 | relay_layer_context: 28.6% |
+| 97 / 0 | 28608 | dflash / fit_layer_context | pass | 85.4 | 8 | relay_layer_context: 83.2% |
+| 97 / 1 | 28608 | dflash / fit_layer_context | pass | 84.5 | 8 | relay_layer_context: 76.7% |
+| 97 / 2 | 28608 | dflash / fit_layer_context | pass | 82.6 | 8 | relay_layer_context: 83.7% |
+| 97 / 3 | 28608 | dflash / fit_layer_context | pass | 82.7 | 8 | relay_layer_context: 91.7% |
+| 99 / 0 | 28609 | dflash / fit_layer_context | pass | 102.1 | 8 | relay_layer_context: 88.2% |
+| 99 / 1 | 28609 | dflash / fit_layer_context | pass | 102.8 | 8 | relay_layer_context: 94.1% |
+| 99 / 2 | 28609 | dflash / fit_layer_context | pass | 103.0 | 8 | relay_layer_context: 96.1% |
+| 99 / 3 | 28609 | dflash / fit_layer_context | pass | 97.4 | 8 | relay_layer_context: 95.3% |
+| 100 / 0 | 28610 | dflash / existing | pass | 94.8 | 8 | relay_context_only: 95.9%; relay_dense_context: 94.7%; relay_layer_context: 87.2%; relay_layer_only: 93.8% |
+| 100 / 1 | 28610 | dflash / existing | pass | 99.4 | 8 | relay_context_only: 92.7%; relay_dense_context: 91.4%; relay_layer_context: 83.8%; relay_layer_only: 91.0% |
+| 100 / 2 | 28610 | dflash / existing | pass | 108.0 | 8 | relay_context_only: 93.2%; relay_dense_context: 91.9%; relay_layer_context: 87.4%; relay_layer_only: 93.5% |
+| 100 / 3 | 28610 | dflash / existing | pass | 102.1 | 8 | relay_context_only: 93.8%; relay_dense_context: 92.5%; relay_layer_context: 89.5%; relay_layer_only: 92.7% |
 
 ## Four-GPU pipeline stages
 

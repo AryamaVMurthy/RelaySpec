@@ -1,0 +1,24 @@
+{
+  "family": "dflash",
+  "transform": "fit_layer_context",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+  "config": "configs/autoresearch/20260907/layer-context-v1/screen.yaml",
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+  "layer_context_fit": {
+    "records": 512,
+    "validation_records": 128,
+    "steps": 1024,
+    "seed": 1729,
+    "learning_rate": 0.0006,
+    "positions_per_record": 32,
+    "batch_positions": 2048,
+    "cache_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+    "mode": "context_only"
+  },
+  "requests": 8,
+  "max_new_tokens": 2048,
+  "include_ar": false,
+  "include_native": false,
+  "hypothesis": "Does equal-weight per-layer plus fused-context source alignment improve retargeted DFlash over context-only fitting at matched data, sampled positions and updates?",
+  "scope": "User-proposed loss. Four declared architecture/objective controls, no independent confirmation. Fixed192token cache prefixes,32 sampled positions per record,2048position batches. Frozen 8192-update baseline is a deployment reference with a different fitting budget. All lanes540seconds. Longer fixed1024-update follow-up after128-step loss was still improving. Same four arms, no coefficient or learning-rate selection."
+}

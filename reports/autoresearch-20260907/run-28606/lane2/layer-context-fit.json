@@ -1,0 +1,53 @@
+{
+  "status": "pass",
+  "settings": {
+    "records": 64,
+    "validation_records": 16,
+    "steps": 1,
+    "seed": 1729,
+    "learning_rate": 0.0006,
+    "positions_per_record": 32,
+    "batch_positions": 2048,
+    "cache_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+    "mode": "context_only"
+  },
+  "history": [
+    {
+      "step": 0,
+      "validation": {
+        "layer": 1.6386741399765015,
+        "context": 4.265229225158691
+      }
+    },
+    {
+      "step": 1,
+      "layer": 1.638543725013733,
+      "context": 4.233682155609131,
+      "validation": {
+        "layer": 1.6744171380996704,
+        "context": 1.3514492511749268
+      }
+    }
+  ],
+  "teacher_context_reproduction_errors": [
+    1.3581440725829452e-05,
+    1.4057433872949332e-05,
+    1.7312946511083283e-05,
+    1.2176900781923905e-05,
+    1.7063084669644013e-05,
+    1.613930544408504e-05,
+    1.3879287507734261e-05,
+    1.434711339243222e-05
+  ],
+  "fold_fp32_relative_error": 1.0060269945658812e-13,
+  "extraction_seconds": 6.615946006029844,
+  "fitting_seconds": 0.09832545509561896,
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28606/lane2/relay-layer-context.pt",
+  "checkpoint_sha256": "a1464e3c4e33d074e89e0c8a6d61785831f7f4afc788129688223a20cf49e05e",
+  "parameter_count": 52428800,
+  "source_model": {
+    "id": "Qwen/Qwen3-4B",
+    "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+  },
+  "scope": "512 records from existing192token prefixes;32 fixed positions per record;128 updates of2048 positions. Folded FP32 projection algebra verified; BF16 two-stage versus folded rounding is not bitwise identical. No full-length rollout reproduction claim."
+}

@@ -1,0 +1,88 @@
+{
+  "parent_sha256": "b4562dc664748ec2da6e0f1ccac13820bfd0fa9c413a7a3235ebec5f1d84b613",
+  "shape": [
+    2560,
+    20480
+  ],
+  "transform": "fit_layer_context",
+  "layer_context_fit": {
+    "status": "pass",
+    "settings": {
+      "records": 512,
+      "validation_records": 128,
+      "steps": 1024,
+      "seed": 1729,
+      "learning_rate": 0.0006,
+      "positions_per_record": 32,
+      "batch_positions": 2048,
+      "cache_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+      "mode": "layer_context"
+    },
+    "history": [
+      {
+        "step": 0,
+        "validation": {
+          "layer": 2.1295103430747986,
+          "context": 4.297327756881714
+        }
+      },
+      {
+        "step": 1,
+        "layer": 1.638543725013733,
+        "context": 4.233682155609131,
+        "validation": {
+          "layer": 2.0319213271141052,
+          "context": 1.3579095005989075
+        }
+      },
+      {
+        "step": 32,
+        "layer": 0.45659515261650085,
+        "context": 0.3656631410121918,
+        "validation": {
+          "layer": 0.48241478204727173,
+          "context": 0.41608400642871857
+        }
+      },
+      {
+        "step": 128,
+        "layer": 0.18621304631233215,
+        "context": 0.1957223117351532,
+        "validation": {
+          "layer": 0.2487005591392517,
+          "context": 0.3380378484725952
+        }
+      },
+      {
+        "step": 1024,
+        "layer": 0.10731305927038193,
+        "context": 0.16597191989421844,
+        "validation": {
+          "layer": 0.19830817729234695,
+          "context": 0.34245944023132324
+        }
+      }
+    ],
+    "teacher_context_reproduction_errors": [
+      1.3581440725829452e-05,
+      1.4057433872949332e-05,
+      1.7312946511083283e-05,
+      1.2176900781923905e-05,
+      1.7063084669644013e-05,
+      1.613930544408504e-05,
+      1.3879287507734261e-05,
+      1.434711339243222e-05
+    ],
+    "fold_fp32_relative_error": 1.6795358235687646e-13,
+    "extraction_seconds": 32.226089709904045,
+    "fitting_seconds": 16.70965938596055,
+    "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28609/lane0/relay-layer-context.pt",
+    "checkpoint_sha256": "77bab8c09cd272d2d1a71cac6cee0fc85c0ef3770e9c35a5004a617e5e34b6a3",
+    "parameter_count": 52428800,
+    "source_model": {
+      "id": "Qwen/Qwen3-4B",
+      "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+    },
+    "scope": "512 records from existing192token prefixes;32 fixed positions per record;128 updates of2048 positions. Folded FP32 projection algebra verified; BF16 two-stage versus folded rounding is not bitwise identical. No full-length rollout reproduction claim."
+  }
+}

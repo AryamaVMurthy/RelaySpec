@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Does equal-weight per-layer plus fused-context source alignment improve retargeted DFlash over context-only fitting at matched data, sampled positions and updates?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 154.52844564489047,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 248.5,
+        "token_matches": 8,
+        "progress_per_cycle": 5.6,
+        "request_seconds": 12.864945296663791
+      },
+      "relay_layer_context": {
+        "tokens_per_second": 148.48073897205225,
+        "throughput_ratio": 0.9608634730803157,
+        "throughput_ci95": [
+          0.8770125520888974,
+          1.0327669692877972
+        ],
+        "request_time_ratio": 0.9608634730803156,
+        "request_time_ci95": [
+          0.8770125520888975,
+          1.0327669692877974
+        ],
+        "mean_output_tokens": 248.5,
+        "token_matches": 8,
+        "progress_per_cycle": 5.372972972972973,
+        "request_seconds": 13.388941985089332
+      }
+    }
+  },
+  "scope": "User-proposed loss. Four declared architecture/objective controls, no independent confirmation. Fixed192token cache prefixes,32 sampled positions per record,2048position batches. Frozen 8192-update baseline is a deployment reference with a different fitting budget. All lanes540seconds. Longer fixed1024-update follow-up after128-step loss was still improving. Same four arms, no coefficient or learning-rate selection."
+}
