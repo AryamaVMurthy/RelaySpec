@@ -1,0 +1,224 @@
+{
+  "methods": {
+    "relay_base": {
+      "decode_seconds": 46.61143350740895,
+      "decode_tokens_per_second": 49.215392606094504,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "mean_acceptance_length": 3.5532102141801722,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 1.0
+    },
+    "relay_cropped": {
+      "decode_seconds": 56.361786286812276,
+      "decode_tokens_per_second": 40.70133597835876,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "mean_acceptance_length": 3.0036895512659694,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.8270041916381783
+    },
+    "relay_inherited_u128": {
+      "decode_seconds": 49.734152268152684,
+      "decode_tokens_per_second": 46.12524583974794,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "mean_acceptance_length": 3.294100735086595,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.9372117826819104
+    },
+    "relay_inherited_u8192": {
+      "decode_seconds": 48.72736693918705,
+      "decode_tokens_per_second": 47.119311882077774,
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "mean_acceptance_length": 3.279403679763554,
+      "output_tokens": 2296,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.9574100578493168
+    },
+    "relay_random_u128": {
+      "decode_seconds": 81.15619984921068,
+      "decode_tokens_per_second": 28.266478768871426,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "mean_acceptance_length": 2.0482720132388934,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.5743422387200685
+    },
+    "relay_random_u8192": {
+      "decode_seconds": 48.97669499646872,
+      "decode_tokens_per_second": 46.838603547368805,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "mean_acceptance_length": 3.3092293060554496,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.9517063883295859
+    },
+    "relay_svd1536": {
+      "decode_seconds": 53.074127261992544,
+      "decode_tokens_per_second": 43.22256659400182,
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "mean_acceptance_length": 3.1576227608214635,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.8782326891089237
+    }
+  },
+  "paired_requests": 16,
+  "pairwise": {
+    "relay_cropped_vs_relay_base": {
+      "candidate_method": "relay_cropped",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.8270041916381783
+    },
+    "relay_inherited_u128_vs_relay_base": {
+      "candidate_method": "relay_inherited_u128",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.9372117826819104
+    },
+    "relay_inherited_u128_vs_relay_cropped": {
+      "candidate_method": "relay_inherited_u128",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_cropped",
+      "throughput_speedup": 1.1332612242574327
+    },
+    "relay_inherited_u128_vs_relay_random_u128": {
+      "candidate_method": "relay_inherited_u128",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_random_u128",
+      "throughput_speedup": 1.6318002046488915
+    },
+    "relay_inherited_u128_vs_relay_svd1536": {
+      "candidate_method": "relay_inherited_u128",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_svd1536",
+      "throughput_speedup": 1.0671565683040427
+    },
+    "relay_inherited_u8192_vs_relay_base": {
+      "candidate_method": "relay_inherited_u8192",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.9574100578493168
+    },
+    "relay_inherited_u8192_vs_relay_cropped": {
+      "candidate_method": "relay_inherited_u8192",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_cropped",
+      "throughput_speedup": 1.1576846496422502
+    },
+    "relay_inherited_u8192_vs_relay_inherited_u128": {
+      "candidate_method": "relay_inherited_u8192",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_inherited_u128",
+      "throughput_speedup": 1.0215514524471805
+    },
+    "relay_inherited_u8192_vs_relay_random_u128": {
+      "candidate_method": "relay_inherited_u8192",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_random_u128",
+      "throughput_speedup": 1.6669678691626812
+    },
+    "relay_inherited_u8192_vs_relay_random_u8192": {
+      "candidate_method": "relay_inherited_u8192",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_random_u8192",
+      "throughput_speedup": 1.0059930978605092
+    },
+    "relay_inherited_u8192_vs_relay_svd1536": {
+      "candidate_method": "relay_inherited_u8192",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 14,
+      "reference_method": "relay_svd1536",
+      "throughput_speedup": 1.0901553423395436
+    },
+    "relay_random_u128_vs_relay_base": {
+      "candidate_method": "relay_random_u128",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.5743422387200685
+    },
+    "relay_random_u128_vs_relay_cropped": {
+      "candidate_method": "relay_random_u128",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_cropped",
+      "throughput_speedup": 0.6944852813652345
+    },
+    "relay_random_u128_vs_relay_svd1536": {
+      "candidate_method": "relay_random_u128",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_svd1536",
+      "throughput_speedup": 0.6539750180590638
+    },
+    "relay_random_u8192_vs_relay_base": {
+      "candidate_method": "relay_random_u8192",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.9517063883295859
+    },
+    "relay_random_u8192_vs_relay_cropped": {
+      "candidate_method": "relay_random_u8192",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_cropped",
+      "throughput_speedup": 1.15078786534853
+    },
+    "relay_random_u8192_vs_relay_inherited_u128": {
+      "candidate_method": "relay_random_u8192",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_inherited_u128",
+      "throughput_speedup": 1.0154656673288913
+    },
+    "relay_random_u8192_vs_relay_random_u128": {
+      "candidate_method": "relay_random_u8192",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_random_u128",
+      "throughput_speedup": 1.6570370837612078
+    },
+    "relay_random_u8192_vs_relay_svd1536": {
+      "candidate_method": "relay_random_u8192",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_svd1536",
+      "throughput_speedup": 1.0836608567772743
+    },
+    "relay_svd1536_vs_relay_base": {
+      "candidate_method": "relay_svd1536",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.8782326891089237
+    },
+    "relay_svd1536_vs_relay_cropped": {
+      "candidate_method": "relay_svd1536",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_cropped",
+      "throughput_speedup": 1.0619446648381177
+    }
+  }
+}

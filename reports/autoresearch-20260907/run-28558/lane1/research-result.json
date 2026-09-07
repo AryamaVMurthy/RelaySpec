@@ -1,0 +1,131 @@
+{
+  "status": "pass",
+  "hypothesis": "Does longer native EAGLE calibration recover the remaining short-fit throughput deficit across workloads?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 96.14775262172633,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.548128342245989,
+        "request_seconds": 21.300549874082208
+      },
+      "relay_cropped": {
+        "tokens_per_second": 75.76990115680609,
+        "throughput_ratio": 0.7880569133519664,
+        "throughput_ci95": [
+          0.7622088753185309,
+          0.819201300830851
+        ],
+        "request_time_ratio": 0.7880569133519664,
+        "request_time_ci95": [
+          0.762208875318531,
+          0.819201300830851
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.36344537815126,
+        "request_seconds": 27.0292024766095
+      },
+      "relay_inherited_u128": {
+        "tokens_per_second": 91.62924997088541,
+        "throughput_ratio": 0.9530045942039016,
+        "throughput_ci95": [
+          0.9189737380969906,
+          0.9853079612332856
+        ],
+        "request_time_ratio": 0.9530045942039016,
+        "request_time_ci95": [
+          0.9189737380969907,
+          0.9853079612332856
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.336760925449871,
+        "request_seconds": 22.350941436830908
+      },
+      "relay_inherited_u8192": {
+        "tokens_per_second": 95.75046886131324,
+        "throughput_ratio": 0.9958679870347451,
+        "throughput_ci95": [
+          0.9721817673008223,
+          1.0247609065397072
+        ],
+        "request_time_ratio": 0.9958679870347451,
+        "request_time_ci95": [
+          0.9721817673008224,
+          1.0247609065397072
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.497340425531915,
+        "request_seconds": 21.388929206877947
+      },
+      "relay_random_u128": {
+        "tokens_per_second": 67.30785122607368,
+        "throughput_ratio": 0.7000460165811951,
+        "throughput_ci95": [
+          0.6552482325757035,
+          0.750897770439379
+        ],
+        "request_time_ratio": 0.7000460165811953,
+        "request_time_ci95": [
+          0.6552482325757034,
+          0.7508977704393789
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 3.873134328358209,
+        "request_seconds": 30.42735673021525
+      },
+      "relay_random_u8192": {
+        "tokens_per_second": 92.02842847740607,
+        "throughput_ratio": 0.9571563137775367,
+        "throughput_ci95": [
+          0.9272369047431813,
+          0.9923987836242862
+        ],
+        "request_time_ratio": 0.9571563137775368,
+        "request_time_ci95": [
+          0.9272369047431813,
+          0.9923987836242862
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.372093023255814,
+        "request_seconds": 22.253992965910584
+      },
+      "relay_svd1536": {
+        "tokens_per_second": 89.28167205944305,
+        "throughput_ratio": 0.9285882365935638,
+        "throughput_ci95": [
+          0.8850284255976361,
+          0.973589900165531
+        ],
+        "request_time_ratio": 0.9285882365935638,
+        "request_time_ci95": [
+          0.885028425597636,
+          0.973589900165531
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.124069478908188,
+        "request_seconds": 22.93863849947229
+      }
+    }
+  },
+  "scope": "All four512-record random/inherited128/8192-update fits, paired with full native projection, untrained crop and rank1536 SVD. Eight exposed requests per workload256token cap, two turns per dialogue. Same workload/cap as wave59. No fresh confirmation or task-quality claim. All lanes540seconds."
+}

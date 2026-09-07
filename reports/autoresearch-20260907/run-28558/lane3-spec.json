@@ -1,0 +1,31 @@
+{
+  "family": "eagle3",
+  "transform": "native_columns",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/native-fc.pt",
+  "config": "configs/autoresearch/20260907/native-eagle-pilot-lane3.yaml",
+  "requests": 8,
+  "max_new_tokens": 256,
+  "include_ar": false,
+  "include_native": false,
+  "hypothesis": "Does longer native EAGLE calibration recover the remaining short-fit throughput deficit across workloads?",
+  "scope": "All four512-record random/inherited128/8192-update fits, paired with full native projection, untrained crop and rank1536 SVD. Eight exposed requests per workload256token cap, two turns per dialogue. Same workload/cap as wave59. No fresh confirmation or task-quality claim. All lanes540seconds.",
+  "selected_taps": [
+    25,
+    33
+  ],
+  "controls": {
+    "relay_svd1536": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/relay_svd1536.pt",
+    "relay_random_u128": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane0/fitting/native-eagle-late2-n512-random-u128/step-000128.pt",
+    "relay_inherited_u128": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane1/fitting/native-eagle-late2-n512-native_columns-u128/step-000128.pt",
+    "relay_random_u8192": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane2/fitting/native-eagle-late2-n512-random-u8192/step-008192.pt",
+    "relay_inherited_u8192": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane3/fitting/native-eagle-late2-n512-native_columns-u8192/step-008192.pt"
+  },
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/native-fc.pt": "4bca12596cde37b82da0567724939a4bcfb9a0c81eb0abfcbd264f6d37c89e34",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/relay_svd1536.pt": "781a86f84fb14318158d6d0d20a2da20f48b28e3ac12f442de246ec972f0d981",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane0/fitting/native-eagle-late2-n512-random-u128/step-000128.pt": "8fc64e2481ce5fccf0676d106dd43128bf8b7dfbdabda917cdfdf192c2ff6b87",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane1/fitting/native-eagle-late2-n512-native_columns-u128/step-000128.pt": "bd20c784e546e8778a6062a600364411a7c946387693eb0712123eae85d2a6e5",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane2/fitting/native-eagle-late2-n512-random-u8192/step-008192.pt": "269b2542d0b22f60005974ef737127cb67b2998c74d210a85a665af4b69d406a",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane3/fitting/native-eagle-late2-n512-native_columns-u8192/step-008192.pt": "2df84d5feb654d4b95200a88c27b52d94fd2195a71233f1944aabbbba919b9cb"
+  }
+}
