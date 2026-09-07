@@ -1,0 +1,169 @@
+{
+  "pair": "llama",
+  "records": 512,
+  "positions": 36650,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 3.3897644579410553,
+      "seconds": 1.222860129084438
+    },
+    {
+      "epoch": 2,
+      "loss": 1.7618461921811104,
+      "seconds": 1.0842719380743802
+    },
+    {
+      "epoch": 3,
+      "loss": 1.1946335695683956,
+      "seconds": 1.0773483817465603
+    },
+    {
+      "epoch": 4,
+      "loss": 0.9765926748514175,
+      "seconds": 1.063550716266036
+    },
+    {
+      "epoch": 5,
+      "loss": 0.8622572533786297,
+      "seconds": 1.0711542158387601
+    },
+    {
+      "epoch": 6,
+      "loss": 0.7885234132409096,
+      "seconds": 1.064907903317362
+    },
+    {
+      "epoch": 7,
+      "loss": 0.7377173043787479,
+      "seconds": 1.0847956757061183
+    },
+    {
+      "epoch": 8,
+      "loss": 0.7006867341697216,
+      "seconds": 1.064357043709606
+    },
+    {
+      "epoch": 9,
+      "loss": 0.6721258834004402,
+      "seconds": 1.064075408037752
+    },
+    {
+      "epoch": 10,
+      "loss": 0.6497453153133392,
+      "seconds": 1.0574162369593978
+    },
+    {
+      "epoch": 11,
+      "loss": 0.6321567930281162,
+      "seconds": 1.0541438786312938
+    },
+    {
+      "epoch": 12,
+      "loss": 0.6180192343890667,
+      "seconds": 1.0653169872239232
+    },
+    {
+      "epoch": 13,
+      "loss": 0.6068220734596252,
+      "seconds": 1.0578270582482219
+    },
+    {
+      "epoch": 14,
+      "loss": 0.5978909526020288,
+      "seconds": 1.0610016197897494
+    },
+    {
+      "epoch": 15,
+      "loss": 0.5908939521759748,
+      "seconds": 1.0961452899500728
+    },
+    {
+      "epoch": 16,
+      "loss": 0.5856211688369513,
+      "seconds": 1.09939740691334
+    },
+    {
+      "epoch": 17,
+      "loss": 0.5818585604429245,
+      "seconds": 1.1092593069188297
+    },
+    {
+      "epoch": 18,
+      "loss": 0.5793327409774065,
+      "seconds": 1.1200328380800784
+    },
+    {
+      "epoch": 19,
+      "loss": 0.5778657849878073,
+      "seconds": 1.1221885443665087
+    },
+    {
+      "epoch": 20,
+      "loss": 0.5772276725620031,
+      "seconds": 1.1267198058776557
+    }
+  ],
+  "train_seconds": 22.689335483126342,
+  "fold_relative_mse": 1.8005088350037113e-05,
+  "alignment": "identical plain text, exact shared token-end boundaries",
+  "max_input_tokens": 1024,
+  "sample_fraction": 0.25,
+  "manifest_sha256": "b43f68a18df3f0ed28295faf0ca1593dc0f46bb57416a38d23fc31b7b912c507",
+  "job_id": "28857",
+  "config": {
+    "protocol_version": 1,
+    "run_name": "llama32-3b-dflash-llama31-8b-relay-x2",
+    "seed": 1729,
+    "resources": {
+      "gpu_count": 4
+    },
+    "paths": {
+      "scratch": "/scratch/aryama.murthy/relayspec/train"
+    },
+    "target": {
+      "id": "unsloth/Llama-3.2-3B-Instruct",
+      "revision": "006f5dcd1393c3add266de40994ba96225e9689d"
+    },
+    "proposer": {
+      "family": "dflash",
+      "id": "z-lab/LLaMA3.1-8B-Instruct-DFlash-UltraChat",
+      "revision": "d3af30def9601abdd10810aba220d692f0e803f0",
+      "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+    },
+    "source_trunk": {
+      "model": {
+        "id": "unsloth/Llama-3.1-8B-Instruct",
+        "revision": "4699cc75b550f9c6f3173fb80f4703b62d946aa5"
+      },
+      "layers": 32,
+      "tap_layers": [
+        1,
+        8,
+        15,
+        22,
+        29
+      ]
+    },
+    "relay_training": {
+      "manifest_path": "configs/train_math_4096.json",
+      "fit_examples": 4096,
+      "steps": 1024,
+      "max_length": 192,
+      "learning_rate": 0.0006,
+      "weight_decay": 0.0,
+      "gradient_clip": 1.0,
+      "target_layer_ids": [
+        1,
+        7,
+        13,
+        19,
+        25
+      ],
+      "relay_architecture": "normalized_linear",
+      "feature_objective": "relative_interface_mse",
+      "proposal_kl_weight": 0.0
+    }
+  },
+  "scope": "ZIP objective and optimizer pilot; existing solution text, not generated rollout reproduction"
+}

@@ -28,10 +28,25 @@ budgets, and these pilots use plain solution text rather than the ZIP
 generated-rollout pipeline. This is not evidence that the loss cannot
 work with adequate fitting.
 
-A 20-epoch, freshly initialized control reusing the exact cached features
-was submitted as job 28857, with a new 20-epoch cosine schedule. It is an
+A 20-epoch, freshly initialized control reused the exact cached features
+in job 28857, with a new 20-epoch cosine schedule and 360 updates. It is an
 optimization-budget ablation, not the original three-epoch ZIP protocol.
-Its measurements are pending; no results are implied here.
+
+| Transfer | AR | ZIP 20 epochs | Old mapper | ZIP exact token match to AR |
+|---|---:|---:|---:|---:|
+| Llama-3.1-8B drafter to Llama-3.2-3B | 61.36 | 139.02 | 164.92 | 4/8 |
+| Qwen3-4B drafter to Llama-3.1-8B | 41.54 | 94.22 | 96.33 | 0/8 |
+
+Twenty-epoch training took 22.69s for Llama and 18.50s for cross-family;
+final objectives were 0.57723 and 0.74239. More optimization substantially
+improved throughput, but neither new map beats the old mapper in these
+pilots. Output-agreement concerns remain unchanged. The data support a
+fitting-budget sensitivity finding, not a new positive generalization claim.
+
+These eight-prompt measurements are exploratory, single-fit observations;
+small timing differences are not established improvements. Larger generated
+rollouts and a decoder correctness investigation remain separate future work.
 
 Raw per-request records and summaries: `run-28841/{llama,cross}-{zip,old}`.
+Twenty-epoch records: `run-28857/{llama,cross}-epoch20`.
 Configuration and source: this directory and `scripts/train_zip_family_pilot.py`.

@@ -1,0 +1,170 @@
+{
+  "pair": "cross",
+  "records": 512,
+  "positions": 36605,
+  "history": [
+    {
+      "epoch": 1,
+      "loss": 2.432773381471634,
+      "seconds": 1.0087152449414134
+    },
+    {
+      "epoch": 2,
+      "loss": 1.737874373793602,
+      "seconds": 0.8449966791085899
+    },
+    {
+      "epoch": 3,
+      "loss": 1.497406505048275,
+      "seconds": 0.878173696808517
+    },
+    {
+      "epoch": 4,
+      "loss": 1.2942419610917568,
+      "seconds": 0.9325456600636244
+    },
+    {
+      "epoch": 5,
+      "loss": 1.1439030952751637,
+      "seconds": 0.9248263910412788
+    },
+    {
+      "epoch": 6,
+      "loss": 1.0375474616885185,
+      "seconds": 0.9470259519293904
+    },
+    {
+      "epoch": 7,
+      "loss": 0.9619733691215515,
+      "seconds": 0.8497529388405383
+    },
+    {
+      "epoch": 8,
+      "loss": 0.9069208465516567,
+      "seconds": 0.8658952191472054
+    },
+    {
+      "epoch": 9,
+      "loss": 0.8658342286944389,
+      "seconds": 0.8899976969696581
+    },
+    {
+      "epoch": 10,
+      "loss": 0.8343522734940052,
+      "seconds": 0.8863343470729887
+    },
+    {
+      "epoch": 11,
+      "loss": 0.8098691962659359,
+      "seconds": 0.9012120850384235
+    },
+    {
+      "epoch": 12,
+      "loss": 0.7907573767006397,
+      "seconds": 0.9644071888178587
+    },
+    {
+      "epoch": 13,
+      "loss": 0.7760007716715336,
+      "seconds": 0.9345953837037086
+    },
+    {
+      "epoch": 14,
+      "loss": 0.7647801861166954,
+      "seconds": 0.8549141972325742
+    },
+    {
+      "epoch": 15,
+      "loss": 0.7563825063407421,
+      "seconds": 0.8533218647353351
+    },
+    {
+      "epoch": 16,
+      "loss": 0.7504126168787479,
+      "seconds": 0.8569163829088211
+    },
+    {
+      "epoch": 17,
+      "loss": 0.7464137859642506,
+      "seconds": 0.8539198050275445
+    },
+    {
+      "epoch": 18,
+      "loss": 0.744000356644392,
+      "seconds": 0.8483293708413839
+    },
+    {
+      "epoch": 19,
+      "loss": 0.7427933737635612,
+      "seconds": 0.8973341668024659
+    },
+    {
+      "epoch": 20,
+      "loss": 0.7423862405121326,
+      "seconds": 0.9203961910679936
+    }
+  ],
+  "train_seconds": 18.501625447068363,
+  "fold_relative_mse": 2.9482074751285836e-05,
+  "alignment": "identical plain text, exact shared token-end boundaries",
+  "max_input_tokens": 1024,
+  "sample_fraction": 0.25,
+  "manifest_sha256": "b43f68a18df3f0ed28295faf0ca1593dc0f46bb57416a38d23fc31b7b912c507",
+  "job_id": "28857",
+  "config": {
+    "protocol_version": 1,
+    "run_name": "x1-qwen-dflash4b-relay-llama31-8b-aligned",
+    "seed": 1729,
+    "resources": {
+      "gpu_count": 4
+    },
+    "paths": {
+      "scratch": "/scratch/aryama.murthy/relayspec/train"
+    },
+    "target": {
+      "id": "unsloth/Llama-3.1-8B-Instruct",
+      "revision": "4699cc75b550f9c6f3173fb80f4703b62d946aa5"
+    },
+    "proposer": {
+      "family": "dflash",
+      "id": "z-lab/Qwen3-4B-DFlash-b16",
+      "revision": "b74e3a329c4d963783143b1e970d95b002be72bd",
+      "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+    },
+    "source_trunk": {
+      "model": {
+        "id": "Qwen/Qwen3-4B",
+        "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+      },
+      "layers": 34,
+      "tap_layers": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ]
+    },
+    "relay_training": {
+      "manifest_path": "configs/train_math_4096.json",
+      "fit_examples": 4096,
+      "steps": 1024,
+      "max_length": 96,
+      "learning_rate": 0.0006,
+      "weight_decay": 0.0,
+      "gradient_clip": 1.0,
+      "target_layer_ids": [
+        1,
+        8,
+        15,
+        22,
+        29
+      ],
+      "relay_architecture": "normalized_linear",
+      "feature_objective": "relative_interface_mse",
+      "proposal_kl_weight": 0.0,
+      "cross_family": true
+    }
+  },
+  "scope": "ZIP objective and optimizer pilot; existing solution text, not generated rollout reproduction"
+}
