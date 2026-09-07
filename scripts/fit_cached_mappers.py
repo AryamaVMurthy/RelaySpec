@@ -177,6 +177,26 @@ def main():
 
         enable_native_block_gains(relay, len(selected_taps))
         initialization_record["trainable_native_block_gains"] = len(selected_taps)
+    residual_rank = trial.get("native_residual_rank")
+    if residual_rank is not None:
+        if (
+            initialization != "native_columns"
+            or block_gains
+            or l2
+            or decay
+            or trial.get("resume_from")
+        ):
+            raise ValueError(
+                "Native residual requires fresh inherited weights without other parametrizations or regularization"
+            )
+        from relayspec.native_residual import enable_native_residual
+
+        enable_native_residual(relay, residual_rank)
+        initialization_record["native_residual_rank"] = residual_rank
+        initialization_record["residual_scaling"] = 1.0
+        initialization_record["residual_initialization"] = (
+            "zero up; normal down with std=input_width**-0.5"
+        )
     optimizer = torch.optim.AdamW(
         relay.parameters(), lr=float(trial["learning_rate"]), weight_decay=decay
     )

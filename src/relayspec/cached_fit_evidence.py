@@ -150,6 +150,18 @@ def audit_fit_artifacts(folder, trial, *, cache_sha256):
         if trial["architecture"] == "dense"
         else trial["width"] * (input_width + output_width)
     )
+    if trial.get("native_residual_rank") is not None:
+        residual_parameters = trial["native_residual_rank"] * (
+            input_width + output_width
+        )
+        if (
+            trial["architecture"] != "dense"
+            or complete.get("trainable_parameters") != residual_parameters
+        ):
+            raise ValueError(
+                "Native residual fit did not restrict trainable parameters"
+            )
+        parameters += residual_parameters
     if trial.get("native_block_gains"):
         gains = len(metadata["target_layer_ids"])
         if (

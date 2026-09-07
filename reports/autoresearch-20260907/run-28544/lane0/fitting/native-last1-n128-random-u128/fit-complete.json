@@ -1,0 +1,150 @@
+{
+  "status": "pass",
+  "trial": {
+    "name": "native-last1-n128-random-u128",
+    "study": "native_single_tap_initialization",
+    "architecture": "dense",
+    "seed": 1729,
+    "steps": 128,
+    "distinct_examples": 128,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      128
+    ],
+    "validation_records": 128,
+    "diagnostic_train_records": 16,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": false,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 128,
+        "presentations": 512
+      }
+    },
+    "target_layer_ids": [
+      33
+    ],
+    "cache_backend": "buffer",
+    "device_cache": false,
+    "initialization": "random",
+    "native_teacher": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28544/lane0/native-teacher.pt",
+    "native_teacher_sha256": "8bd7e7b3813ac7c3b332cd69ea986fe28e8ff964230137a203ec2318d294f879"
+  },
+  "parameters": 16777216,
+  "trainable_parameters": 16777216,
+  "steps": 128,
+  "start_step": 0,
+  "updates_this_job": 128,
+  "tokens_seen": 96440,
+  "record_presentations": 512,
+  "epochs": 4.0,
+  "distinct_records_seen": 128,
+  "loop_seconds": 1.5553671359084547,
+  "training_update_seconds": 0.9484788160771132,
+  "previous_update_seconds": 0.9424667009152472,
+  "warm_time_budget_seconds": null,
+  "initial_validation_seconds": 0.2579299411736429,
+  "checkpoint_export_seconds": 0.39519385201856494,
+  "worker_total_seconds": 8.557133336085826,
+  "timing_scope": "Training-update time includes data access, loss/gradient computation, optimizer steps and training-log writes. It excludes validation and checkpoint export. Worker total includes model/cache setup and initial validation, but excludes Python import startup and this completion-record/hash write. Outer batch wall time records the full launched process cost.",
+  "validation_seconds": 0.2111661620438099,
+  "input_io_seconds": 0.37650656001642346,
+  "setup_seconds": 3.6218918040394783,
+  "cache_backend": "buffer",
+  "device_cache": false,
+  "peak_gpu_bytes": 675568640,
+  "feature_cache_index_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+  "cache_extraction_metadata": {
+    "config": {
+      "protocol_version": 1,
+      "run_name": "qwen3-8b-dflash4b-relay-relative-final",
+      "seed": 1729,
+      "resources": {
+        "gpu_count": 4
+      },
+      "paths": {
+        "scratch": "/scratch/aryama.murthy/relayspec/train"
+      },
+      "target": {
+        "id": "Qwen/Qwen3-8B",
+        "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+      },
+      "proposer": {
+        "family": "dflash",
+        "id": "z-lab/Qwen3-4B-DFlash-b16",
+        "revision": "b74e3a329c4d963783143b1e970d95b002be72bd",
+        "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+      },
+      "source_trunk": {
+        "model": {
+          "id": "Qwen/Qwen3-4B",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        "layers": 34,
+        "tap_layers": [
+          1,
+          9,
+          17,
+          25,
+          33
+        ]
+      }
+    },
+    "relay_training": {
+      "manifest_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/train-32768.json",
+      "fit_examples": 4096,
+      "steps": 1024,
+      "max_length": 192,
+      "learning_rate": 0.0006,
+      "weight_decay": 0.0,
+      "gradient_clip": 1.0,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "relay_architecture": "normalized_linear",
+      "feature_objective": "relative_interface_mse",
+      "proposal_kl_weight": 0.0,
+      "validation_manifest_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/validation.json",
+      "feature_cache": {
+        "train_records": 32768,
+        "validation_records": 1024
+      }
+    },
+    "config_sha256": "54c71b6f363c5673acf75b0bdb5d6d1d809cb2e3e34f2df7cc5a604d98c99606",
+    "manifest_sha256": {
+      "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/train-32768.json": "6e3e358415d8a5903b9d005cb6d23334cc5b49aaa1cd45c399cb0daded677d81",
+      "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/validation.json": "dbf0ae502016859540fdf42c31bc1dd69d51cd0fd47b9ef9d681ea63a684dcbe"
+    },
+    "target_layer_ids": [
+      33
+    ],
+    "target_hidden_size": 4096,
+    "draft_hidden_size": 4096,
+    "rms_norm_eps": 1e-06,
+    "family": "dflash",
+    "split": {
+      "training_records": 32768,
+      "validation_records": 1024,
+      "validation_content_sha256": "f626cf49d7a8500200ecb9f3abf9f28b6f98e6b8058eab3555fb4cf016d42ddb",
+      "scope": "Fitting validation; not untouched decoding evaluation. Exact normalized problem overlap checked; near-overlap audit is separate."
+    },
+    "output_norm_sha256": "2f229279873aec032e948a0dffa2f2d9718652e10c6c16cbad54ee37c5b02492",
+    "torch_version": "2.9.1+cu128",
+    "elapsed_seconds": 712.5808281092905,
+    "normalization": "Raw target taps; teacher includes the released proposer interface. DFlash predictions must use output-norm.pt; EAGLE-3 predictions use identity.",
+    "native_teacher_sha256": "8bd7e7b3813ac7c3b332cd69ea986fe28e8ff964230137a203ec2318d294f879",
+    "native_teacher_proposer": {
+      "family": "dflash",
+      "id": "z-lab/Qwen3-8B-DFlash-b16",
+      "revision": "9b41424b7109f9c5413454f481b09a82b85333f4",
+      "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+    }
+  },
+  "continuation_sha256": "1d2e8e5346f8be3557e871c7ef19aff12424552f3ce9eb9c3a32e79b18ecf2dc"
+}
