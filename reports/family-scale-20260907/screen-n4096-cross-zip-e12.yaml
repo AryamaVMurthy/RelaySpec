@@ -1,0 +1,53 @@
+protocol_version: 1
+run_name: screen-n4096-cross-zip-e12
+seed: 1729
+resources:
+  gpu_count: 1
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/validation
+target:
+  id: unsloth/Llama-3.1-8B-Instruct
+  revision: 4699cc75b550f9c6f3173fb80f4703b62d946aa5
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 256
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: reports/family-scale-20260907/pilot-manifest.json
+  benchmarks:
+  - math500
+  methods:
+  - native_ar
+  - relay_p_cross_family
+  max_prompts: 2
+  warmups: 1
+  block_size: 16
+  profile_regions: false
+  vocab_bridge_dir: configs/vocab_bridges
+  vocab_bridge_source_to_target: qwen3-4b_llama3.1-8b.json
+  vocab_bridge_target_to_source: llama3.1-8b_qwen3-4b.json
+  precision: float32
+  target_head_precision: float32
+  unload_source_trunk: true
+  research_single_gpu: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  checkpoint_path: /scratch/aryama.murthy/family-scale-20260907/fits/n4096-cross-zip/epoch-12.pt
+  repetitions: 1
