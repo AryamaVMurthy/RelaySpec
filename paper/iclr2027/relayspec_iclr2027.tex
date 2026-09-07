@@ -154,10 +154,10 @@ other distillation objectives or longer full-drafter training.
 \paragraph{Frozen interfaces and the meaning of feature alignment.}
 Adapters, low-rank updates and model stitching already adapt or connect
 frozen networks \citep{houlsby2019adapters,hu2022lora,bansal2021stitching}.
-A linear connector alone is therefore not the novelty. The contribution
-is locating an existing speculative decoder's source-conditioning
-boundary, learning its replacement while preserving the target and drafter,
-and establishing the data, capacity and deployment consequences.
+EDSD selects two target feature layers using representation metrics while
+co-designing drafter architecture and training \citep{cheng2026edsd}.
+Our native-interface studies instead reduce and recalibrate the input
+projection of a released drafter whose prediction network stays fixed.
 Successful stitching need not imply equivalent information
 \citep{smith2025stitching}. We consequently test decoded speed and
 quality, equal-capacity linear and nonlinear maps, saved fitting
@@ -299,15 +299,14 @@ quantifies related templates using token overlap. All completed workload
 cells in each reported suite are included.
 
 \paragraph{Controlled scaling protocol.}
-The original 4,096-record checkpoints remain fixed for the broad workload
-results. A fixed-1,024-update sweep varies distinct records from 64 to
-4,096. A separate NuminaMath study uses nested 16--32,768-record sets,
-1,024 feature-validation records and 8,192 batch-four updates per fit.
-Frozen feature caches are shared across matched linear and MLP fits.
-The longer-output capacity comparisons use 128 exposed MATH questions
-and a 2,048-token cap. The 14B capacity and adaptation screens use
-sixteen exposed questions and a 256-token cap. These studies have
-separate checkpoints and are not pooled with the broad evaluation.
+The original 4,096-record maps stay fixed throughout the broad evaluation.
+Additional sweeps vary 64--4,096 records at 1,024 updates and
+16--32,768 NuminaMath records at 8,192 batch-four updates. Matched linear
+and MLP fits share frozen feature caches and 1,024 validation records.
+The 8B longer-output capacity comparison uses 128 exposed MATH questions
+at a 2,048-token cap. Initial 14B and adaptation screens use sixteen
+questions at 256 tokens, followed by 32 GSM8K questions at 2,048 tokens
+for 14B. These development studies are not pooled with the broad evaluation.
 
 \paragraph{Quality and pairing.}
 We score the same math outputs used for the AR timing comparison with the
@@ -452,18 +451,17 @@ parameters instead of 52.43M. The latter interval crosses the 95\%
 boundary. These are development comparisons with fixed fitting seeds.
 
 Two-layer conditioning also transfers to native drafting. With 60\%
-fewer projection parameters, frozen retargeted DFlash, native DFlash and
-native EAGLE-3 interfaces retain 97.63\% [96.23,99.03]\%,
-97.05\% [95.93,98.21]\% and 98.78\% [97.67,99.96]\% throughput
-on three disjoint 64-question GSM8K sets. Outputs match their respective
-full-interface references (Appendix~\ref{app:interface-compression}).
-Inherited columns improve matched development fits, but a separately
-frozen DFlash 16-record fit fails the retention criterion
-(Table~\ref{tab:native-short-confirmation}).
-
-EAGLE-3 repeats the dense data-count contrast on the same development
-questions, retaining 98.28\% [97.59, 99.01]\%. Its matched MLP remains
-slower than dense. Table~\ref{tab:eagle-quality} retains all eight maps.
+fewer projection weights, frozen retargeted DFlash, native DFlash and
+native EAGLE-3 retain 97.6\%, 97.1\% and 98.8\% throughput on three
+disjoint 64-question GSM8K sets. All lower 95\% bounds exceed 95\%
+and outputs match their full-interface references
+(Appendix~\ref{app:interface-compression}). Code exposes a capacity boundary:
+on 32 MBPP tasks, native EAGLE-3 retains 98.7\% with three late layers
+versus 92.9\% with two (Table~\ref{tab:native-eagle-code}). Inherited
+columns improve matched development fits, but a separately frozen
+DFlash 16-record fit fails the retention criterion
+(Table~\ref{tab:native-short-confirmation}). EAGLE-3 reproduces the dense
+data/capacity ordering in development (Table~\ref{tab:eagle-quality}).
 
 \paragraph{Confirmation with frozen checkpoints.}
 Before generating confirmation outputs, we fix the dense checkpoints and
@@ -507,13 +505,14 @@ measured alternatives, including equal-capacity nonlinear maps, rather
 than assumed from parameter count. All outcomes remain in the appendix.
 
 \paragraph{Replication and workload dependence.}
-The complete 14B grids repeat the small-data/capacity comparison in
-both drafter families. DFlash's wide MLP fits its training features
-better than dense but has worse validation error and lower capped
-decoding throughput. EAGLE-3's late degradation and wide-linear loss
-spike are reduced by lower-rate follow-ups, which improve both dense
-and MLP decoding in a small paired screen. These results delimit the
-optimization recipe rather than prove a function-class disadvantage
+The 14B grids repeat the data/capacity comparison in both families.
+On 32 exposed GSM8K questions, dense $N=512$ retains 97.5\% (DFlash)
+and 97.2\% (EAGLE-3) of dense $N=2048$ throughput. All five methods,
+including AR, score 31/32 without reaching the 2,048-token cap.
+Matched-size linear maps also outperform MLPs in this full-answer screen
+(Table~\ref{tab:capacity14-full-answer}). Lower-rate EAGLE-3 follow-ups
+improve its fitting and short-screen decoding, so the original-rate
+comparison does not establish an optimized function-class ranking
 (Appendix~\ref{app:target14-capacity}).
 On the 8B capped long-output development set, dense $N=512$ retains
 97.4--97.9\% of dense $N=2048$ throughput across MATH difficulty groups.
@@ -587,8 +586,8 @@ A smaller sampled-GSM8K study also yields 2.47--3.72 times AR throughput
 and EAGLE-3 optimization depends on the recipe. Frozen GSM8K confirmation
 supports speed retention but not tight accuracy noninferiority.
 Development exposure, possible shared math templates and limited fitting
-seeds restrict generalization. The 14B capacity and adaptation screens
-remain capped comparisons, and public-runtime baselines do not isolate
+seeds restrict generalization. The adaptation studies remain capped
+comparisons, and public-runtime baselines do not isolate
 an algorithm-only ranking.
 
 \label{maintextend}
@@ -1326,6 +1325,57 @@ exclude fitting-data and fitting-seed variation.}
 \label{tab:native-eagle-confirmation}
 \end{table}
 
+\paragraph{Code benefits from an additional late layer.}
+The native EAGLE-3 code deficit motivates a fixed-budget layer intervention.
+We retain layers 25 and 33 and separately add layer 1, 9 or 17, using
+inherited columns, 512 math records and 128 updates for every fitted map.
+An eight-question screen motivates a separate 32-question MBPP development
+comparison, disjoint from those eight. All three additions remain in the
+comparison, without selecting a confirmatory primary. The late triple
+[17,25,33] retains 98.67\% [97.35,99.90]\% of released-native throughput
+with 40\% fewer projection weights, versus 92.94\% [91.46,94.46]\%
+for two layers (Table~\ref{tab:native-eagle-code}). The other triples
+retain 94.58\% and 96.61\%. All six methods pass 25/32 published base-test
+suites with no 1,024-token cap hits. Three-layer maps match all native
+token sequences, while two layers match 31/32. Tests use the same isolated
+base-assertion harness as the DFlash code study, without extended tests.
+Equal observed pass counts do not establish tight quality noninferiority.
+These results support workload-dependent interface capacity, not a
+general two-layer requirement or a globally optimal layer selection.
+
+\begin{table}[H]
+\centering\small
+\input{generated/native_eagle_code_table.tex}
+\caption{Native EAGLE-3 on 32 MBPP development tasks, all frozen layer
+choices retained. Paired 95\% question-bootstrap intervals use 10,000
+draws, seed 1729, without multiplicity adjustment. Fitted maps share
+512 math records, 128 updates and inherited initialization.}
+\label{tab:native-eagle-code}
+\end{table}
+
+A subsequent control separates calibration from retained native weights.
+For a fixed first 16 tasks of this cohort, we compare each fitted map
+with its untrained column crop in the same worker
+(Table~\ref{tab:native-eagle-code-crops}). The late-three-layer crop
+already retains 94.66\% of native throughput. Fitting improves it by
+2.62\% [0.21,5.02]\%, while the two-layer crop gains 13.80\%
+[11.16,16.55]\%. All four fitting/crop intervals exceed parity in this
+subset, without adjustment for multiple comparisons. Every arm passes
+12/16 base-test suites and avoids the cap. This is a paired calibration
+control on reused development questions, not another independent sample.
+It shows that inherited columns explain much of the compact map's
+performance, while learned correction provides a measurable addition.
+
+\begin{table}[H]
+\centering\small
+\input{generated/native_eagle_code_crops_table.tex}
+\caption{Untrained cropping versus calibrated native EAGLE projections
+on the same fixed 16-task subset. Every layer choice is retained.
+Fitted/crop ratios are paired within worker, with 95\% question-bootstrap
+intervals. This subset does not add 64 independent questions.}
+\label{tab:native-eagle-code-crops}
+\end{table}
+
 \paragraph{A smaller-verifier boundary.}
 Repeating the depth screen with the 0.6B verifier gives a weaker compact
 interface (Table~\ref{tab:downscale-depth}). At matched 5.24M parameters,
@@ -1834,8 +1884,34 @@ cap for every method, so these are development throughput results,
 not full-answer quality confirmation.}
 \label{tab:rate-check}
 \end{table}
-Full-answer quality, broader workloads and additional fitting seeds
-remain separate from this capped comparison.
+\paragraph{A fixed full-answer follow-up at 14B.}
+We freeze the original-rate dense $N\in\{512,2048\}$ checkpoints and
+the matched-size linear-4096 and MLP-4096 maps at $N=2048$, all at
+8,192 updates. A separate development campaign evaluates them with AR
+on 32 fixed GSM8K questions in each drafter family, using a 2,048-token
+cap. The questions were previously exposed and are shared with the
+sampled 8B study, so this is not independent confirmation. Every declared
+output is retained. All ten family/method cells score 31/32 and avoid
+the cap (Table~\ref{tab:capacity14-full-answer}). Dense $N=512$ retains
+97.53\% [95.77,99.48]\% of dense $N=2048$ throughput for DFlash and
+97.17\% [95.36,99.25]\% for EAGLE-3. The wider MLP retains 92.14\%
+and 95.73\%, respectively, while matched-size linear maps retain
+98.80\% and 100.28\%. This extends the data-efficiency and capacity
+comparison to completed answers at 14B under the original fitting recipe.
+It does not compare the best optimizer for each architecture or establish
+tight quality noninferiority. Broader tasks and fitting-seed uncertainty
+remain outside this 32-question follow-up.
+
+\begin{table}[H]
+\centering\small
+\input{generated/capacity14_full_answer_table.tex}
+\caption{Full-answer 14B development comparison, 32 shared GSM8K questions
+per family. All fitted checkpoints use learning rate 0.0006 and 8,192
+updates. Weight counts concern the mapper. Paired 95\% intervals use
+10,000 question-bootstrap draws, seed 1729, conditioning on the fixed
+checkpoints. Correctness does not establish one-point noninferiority.}
+\label{tab:capacity14-full-answer}
+\end{table}
 
 \subsection{Matched warm-training budgets on 512 examples}
 \label{app:timed-budget}
@@ -2170,7 +2246,10 @@ at 1.0 with DFlash, and 2.64 and 2.47 times AR with EAGLE-3
 from 87.7\% to 80.2\% for DFlash and from 97.7\% to 95.5\% for
 EAGLE-3 between the two temperatures. Thus applicability extends beyond
 greedy decoding in this setting, while the retention gap depends on
-family and sampling temperature. We report request-time ratios separately
+family and sampling temperature. This historical DFlash run samples draft
+proposals, whereas its released-native reference proposes greedily.
+Its native-retention gap therefore also includes a proposal-policy difference.
+We report request-time ratios separately
 because methods can generate different output lengths. These comparisons
 use the original retargeting maps, not the compact native students.
 

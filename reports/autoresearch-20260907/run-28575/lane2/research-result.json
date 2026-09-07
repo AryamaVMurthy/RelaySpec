@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "hypothesis": "Does native projection compression retain drafting throughput under nonzero-temperature sampling in both drafter families?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_eagle3": {
+        "tokens_per_second": 100.49912129879685,
+        "throughput_ratio": 0.9870017751554563,
+        "throughput_ci95": [
+          0.9548769825724646,
+          1.008486982359829
+        ],
+        "request_time_ratio": 0.9870017751554563,
+        "request_time_ci95": [
+          0.9548769825724646,
+          1.008486982359829
+        ],
+        "mean_output_tokens": 234.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.788819875776397,
+        "request_seconds": 18.627028533257544
+      },
+      "relay_base": {
+        "tokens_per_second": 101.82263480019363,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 234.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.788819875776397,
+        "request_seconds": 18.38491022819653
+      },
+      "relay_svd1536": {
+        "tokens_per_second": 92.23067307806153,
+        "throughput_ratio": 0.9057973530055042,
+        "throughput_ci95": [
+          0.8763422177011466,
+          0.9402758237059868
+        ],
+        "request_time_ratio": 0.8328352872427819,
+        "request_time_ci95": [
+          0.743243106817862,
+          0.9386518999265222
+        ],
+        "mean_output_tokens": 254.5,
+        "token_matches": 0,
+        "progress_per_cycle": 5.213367609254499,
+        "request_seconds": 22.07508556591347
+      },
+      "relay_two": {
+        "tokens_per_second": 102.05151954922722,
+        "throughput_ratio": 1.002247876903625,
+        "throughput_ci95": [
+          0.9692253741355166,
+          1.0218789141191402
+        ],
+        "request_time_ratio": 0.9170127202168064,
+        "request_time_ci95": [
+          0.8028098907207297,
+          1.0300926619269233
+        ],
+        "mean_output_tokens": 255.75,
+        "token_matches": 0,
+        "progress_per_cycle": 5.7897727272727275,
+        "request_seconds": 20.048697060439736
+      }
+    }
+  },
+  "scope": "Eight exposed GSM8K questions at two temperatures across two native drafter families. Explicit sampling seed base1732, frozen original512-record8192update two-layer maps, SVD1536, full repacked and released native.2048token cap. Separate from greedy confirmation and retargeted sampling. No quality NI or distributional exactness claim. Every lane540seconds."
+}

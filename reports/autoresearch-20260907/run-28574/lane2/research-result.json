@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "hypothesis": "Does a frozen retargeting interface preserve its native-relative drafting behavior when the same problem requests terse versus explained answers?",
+  "summary": {
+    "requests": 16,
+    "clusters": 16,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.08000228848736,
+        "throughput_ratio": 0.3771392546320025,
+        "throughput_ci95": [
+          0.33761250754986655,
+          0.4166911591619911
+        ],
+        "request_time_ratio": 0.38683601297872866,
+        "request_time_ci95": [
+          0.3474810625422734,
+          0.4270006323829917
+        ],
+        "mean_output_tokens": 182.3125,
+        "token_matches": 13,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 78.66774056013674
+      },
+      "native_target_eagle3": {
+        "tokens_per_second": 97.5029792639778,
+        "throughput_ratio": 0.9916989928404956,
+        "throughput_ci95": [
+          0.9448213277653995,
+          1.0400942573584204
+        ],
+        "request_time_ratio": 0.9916989928404956,
+        "request_time_ci95": [
+          0.9448213277653994,
+          1.0400942573584204
+        ],
+        "mean_output_tokens": 187.0,
+        "token_matches": 16,
+        "progress_per_cycle": 5.511111111111111,
+        "request_seconds": 30.68624182138592
+      },
+      "relay_base": {
+        "tokens_per_second": 98.31912704146524,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 187.0,
+        "token_matches": 16,
+        "progress_per_cycle": 4.870703764320786,
+        "request_seconds": 30.431515108328313
+      }
+    }
+  },
+  "scope": "Eight exposed GSM8K questions, each with original and one instruction-prefixed user prompt. Two families by two styles, four GPU lanes. AR/native/relay512 controls paired within each worker, greedy2048cap. No system-role modification, new training or independent16-question sample. Report output length and acceptance alongside time because concise answers change amortization. Every lane540seconds."
+}

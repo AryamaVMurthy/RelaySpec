@@ -1,0 +1,21 @@
+{
+  "family": "eagle3",
+  "transform": "existing",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/native-fc.pt",
+  "config": "configs/autoresearch/20260907/native-sampling-v1/eagle3-t0.6.yaml",
+  "requests": 8,
+  "max_new_tokens": 2048,
+  "include_ar": false,
+  "include_native": true,
+  "candidates": {
+    "relay_two": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane3/fitting/native-eagle-late2-n512-native_columns-u8192/step-008192.pt",
+    "relay_svd1536": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/relay_svd1536.pt"
+  },
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/native-fc.pt": "4bca12596cde37b82da0567724939a4bcfb9a0c81eb0abfcbd264f6d37c89e34",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane3/fitting/native-eagle-late2-n512-native_columns-u8192/step-008192.pt": "2df84d5feb654d4b95200a88c27b52d94fd2195a71233f1944aabbbba919b9cb",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/relay_svd1536.pt": "781a86f84fb14318158d6d0d20a2da20f48b28e3ac12f442de246ec972f0d981"
+  },
+  "hypothesis": "Does native projection compression retain drafting throughput under nonzero-temperature sampling in both drafter families?",
+  "scope": "Eight exposed GSM8K questions at two temperatures across two native drafter families. Explicit sampling seed base1732, frozen original512-record8192update two-layer maps, SVD1536, full repacked and released native.2048token cap. Separate from greedy confirmation and retargeted sampling. No quality NI or distributional exactness claim. Every lane540seconds."
+}

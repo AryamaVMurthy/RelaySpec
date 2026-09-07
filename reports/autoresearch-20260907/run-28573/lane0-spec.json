@@ -1,0 +1,23 @@
+{
+  "family": "dflash",
+  "transform": "existing",
+  "config": "configs/autoresearch/20260907/capacity14-full-answer-v1/dflash-shard2.yaml",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-dflash14-fit2-27938/dflash14-dense-n2048-s1729/step-008192.pt",
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-dflash14-fit2-27938/dflash14-dense-n2048-s1729/step-008192.pt": "3b41c22c14d18a082ef923b63019dd73686601f8fdb935580c02699811f6c07d",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-dflash14-fit2-27938/dflash14-dense-n512-s1729/step-008192.pt": "65ec1581b2047344c7ba0f3503c9addceefeb7cab1f3ad6b42c9cde6611d8817",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-dflash14-fit3-27939/dflash14-factorized4096-n2048-s1729/step-008192.pt": "93a8f833aa19ee607acb3e9174ea07c72de1583f6267a0a23075cf7c4c43320d",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-dflash14-fit3-27939/dflash14-mlp4096-n2048-s1729/step-008192.pt": "42662fd606177a310407300237000d73224869a6723c03fc45e1605a9347f873"
+  },
+  "candidates": {
+    "relay_dense_n512": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-dflash14-fit2-27938/dflash14-dense-n512-s1729/step-008192.pt",
+    "relay_factorized4096_n2048": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-dflash14-fit3-27939/dflash14-factorized4096-n2048-s1729/step-008192.pt",
+    "relay_mlp4096_n2048": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-dflash14-fit3-27939/dflash14-mlp4096-n2048-s1729/step-008192.pt"
+  },
+  "requests": 8,
+  "max_new_tokens": 2048,
+  "include_ar": true,
+  "include_native": false,
+  "hypothesis": "Do the original14B small-data and capacity conclusions persist when answers can finish, across both drafter families?",
+  "scope": "Fixed32 exposed GSM8K questions shared with sampling-breadth cohort, now14B targets and greedy generation. Dense512/2048, matched-size factorized4096 and MLP4096 at2048, plusAR. All original recipe endpoints8192updates lr0.0006 retained, not a best-optimizer comparison. Two four-GPU waves, four8-question shards per family. No fresh confirmation or tight quality NI claim.2048token cap, every lane540seconds."
+}

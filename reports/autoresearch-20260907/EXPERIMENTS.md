@@ -280,6 +280,34 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 74 / 1 | 28569 | eagle3 / fit_reduced_taps | pass | 113.7 | 8 | relay_reduced: 98.0%; relay_two_control: 95.1% |
 | 74 / 2 | 28569 | eagle3 / fit_reduced_taps | pass | 114.4 | 8 | relay_reduced: 96.6%; relay_two_control: 95.2% |
 | 74 / 3 | 28569 | eagle3 / fit_reduced_taps | pass | 117.8 | 8 | relay_reduced: 97.2%; relay_two_control: 95.4% |
+| 75 / 0 | 28570 | eagle3 / existing | pass | 234.1 | 8 | relay_three1: 92.7%; relay_three17: 97.1%; relay_three9: 95.3%; relay_two: 91.9% |
+| 75 / 1 | 28570 | eagle3 / existing | pass | 203.9 | 8 | relay_three1: 94.4%; relay_three17: 97.4%; relay_three9: 97.1%; relay_two: 92.8% |
+| 75 / 2 | 28570 | eagle3 / existing | pass | 241.4 | 8 | relay_three1: 95.2%; relay_three17: 100.4%; relay_three9: 96.4%; relay_two: 93.2% |
+| 75 / 3 | 28570 | eagle3 / existing | pass | 242.9 | 8 | relay_three1: 95.5%; relay_three17: 99.0%; relay_three9: 97.2%; relay_two: 93.3% |
+| 76 / 0 | 28571 | eagle3 / native_columns | pass | 292.6 | 16 | relay_cropped: 81.3%; relay_fitted: 92.5% |
+| 76 / 1 | 28571 | eagle3 / native_columns | pass | 281.9 | 16 | relay_cropped: 94.7%; relay_fitted: 97.2% |
+| 76 / 2 | 28571 | eagle3 / native_columns | pass | 281.3 | 16 | relay_cropped: 92.3%; relay_fitted: 95.8% |
+| 76 / 3 | 28571 | eagle3 / native_columns | pass | 284.1 | 16 | relay_cropped: 86.7%; relay_fitted: 93.4% |
+| 77 / 0 | 28572 | dflash / existing | pass | 203.5 | 8 | relay_dense_n512: 96.4%; relay_factorized4096_n2048: 97.4%; relay_mlp4096_n2048: 90.7% |
+| 77 / 1 | 28572 | dflash / existing | pass | 205.3 | 8 | relay_dense_n512: 98.0%; relay_factorized4096_n2048: 99.0%; relay_mlp4096_n2048: 95.0% |
+| 77 / 2 | 28572 | eagle3 / existing | pass | 229.2 | 8 | relay_dense_n512: 98.3%; relay_factorized4096_n2048: 100.0%; relay_mlp4096_n2048: 94.7% |
+| 77 / 3 | 28572 | eagle3 / existing | pass | 239.6 | 8 | relay_dense_n512: 97.3%; relay_factorized4096_n2048: 100.3%; relay_mlp4096_n2048: 100.0% |
+| 78 / 0 | 28573 | dflash / existing | pass | 239.7 | 8 | relay_dense_n512: 96.6%; relay_factorized4096_n2048: 100.3%; relay_mlp4096_n2048: 90.9% |
+| 78 / 1 | 28573 | dflash / existing | pass | 213.0 | 8 | relay_dense_n512: 99.3%; relay_factorized4096_n2048: 98.1%; relay_mlp4096_n2048: 92.4% |
+| 78 / 2 | 28573 | eagle3 / existing | pass | 289.1 | 8 | relay_dense_n512: 95.6%; relay_factorized4096_n2048: 99.4%; relay_mlp4096_n2048: 92.4% |
+| 78 / 3 | 28573 | eagle3 / existing | pass | 243.4 | 8 | relay_dense_n512: 98.0%; relay_factorized4096_n2048: 101.6%; relay_mlp4096_n2048: 96.9% |
+| 79 / 0 | 28574 | dflash / existing | pass | 135.2 | 16 | — |
+| 79 / 1 | 28574 | dflash / existing | pass | 181.7 | 16 | — |
+| 79 / 2 | 28574 | eagle3 / existing | pass | 161.3 | 16 | — |
+| 79 / 3 | 28574 | eagle3 / existing | pass | 213.7 | 16 | — |
+| 80 / 0 | 28575 | dflash / existing | pass | 80.5 | 8 | relay_svd1536: 99.3%; relay_two: 95.9% |
+| 80 / 1 | 28575 | dflash / existing | pass | 84.0 | 8 | relay_svd1536: 102.0%; relay_two: 95.5% |
+| 80 / 2 | 28575 | eagle3 / existing | pass | 98.5 | 8 | relay_svd1536: 90.6%; relay_two: 100.2% |
+| 80 / 3 | 28575 | eagle3 / existing | pass | 107.3 | 8 | relay_svd1536: 93.4%; relay_two: 94.9% |
+| 81 / 0 | 28576 | dflash / existing | pass | 73.2 | 8 | relay_svd1536: 100.3%; relay_two: 97.4% |
+| 81 / 1 | 28576 | dflash / existing | pass | 77.5 | 8 | relay_svd1536: 103.8%; relay_two: 94.7% |
+| 81 / 2 | 28576 | dflash / existing | pass | 107.8 | 8 | — |
+| 81 / 3 | 28576 | dflash / existing | pass | 96.6 | 8 | — |
 
 ## Four-GPU pipeline stages
 

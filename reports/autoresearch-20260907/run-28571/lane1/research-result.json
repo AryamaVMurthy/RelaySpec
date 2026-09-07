@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "hypothesis": "Does native code layer selection work without calibration, or does fitting add value beyond retaining released projection columns?",
+  "summary": {
+    "requests": 16,
+    "clusters": 16,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_eagle3": {
+        "tokens_per_second": 81.78503890354071,
+        "throughput_ratio": 1.0004784978150256,
+        "throughput_ci95": [
+          0.9994169449554474,
+          1.0016325224807603
+        ],
+        "request_time_ratio": 1.0004784978150256,
+        "request_time_ci95": [
+          0.9994169449554473,
+          1.0016325224807603
+        ],
+        "mean_output_tokens": 320.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.537234042553192,
+        "request_seconds": 62.77431751368567
+      },
+      "relay_base": {
+        "tokens_per_second": 81.74592365768325,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 320.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.537234042553192,
+        "request_seconds": 62.8043548874557
+      },
+      "relay_cropped": {
+        "tokens_per_second": 77.417017125188,
+        "throughput_ratio": 0.9470443743394124,
+        "throughput_ci95": [
+          0.9219445701692138,
+          0.9743776093599311
+        ],
+        "request_time_ratio": 0.9470443743394122,
+        "request_time_ci95": [
+          0.9219445701692139,
+          0.974377609359931
+        ],
+        "mean_output_tokens": 320.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.297229219143577,
+        "request_seconds": 66.31616911431774
+      },
+      "relay_fitted": {
+        "tokens_per_second": 79.44729807904494,
+        "throughput_ratio": 0.971880853799341,
+        "throughput_ci95": [
+          0.9586874434858136,
+          0.9875064203598514
+        ],
+        "request_time_ratio": 0.971880853799341,
+        "request_time_ci95": [
+          0.9586874434858136,
+          0.9875064203598513
+        ],
+        "mean_output_tokens": 320.875,
+        "token_matches": 16,
+        "progress_per_cycle": 4.412068965517242,
+        "request_seconds": 64.6214550291188
+      }
+    }
+  },
+  "scope": "First16 questions of the fixed32-question code breadth cohort, chosen by frozen manifest order for runtime, not outcomes. Four layer sets retained, each paired with its calibrated512-record128update map, released native and repacked full.1024token cap. No independent benchmark sample. All lanes540seconds."
+}

@@ -30,12 +30,14 @@ hash, requiring inspection and an updated record before the audit passes.
 LaTeX intermediate files are ignored by Git and rebuilt locally. Official
 style files retain their original notices.
 
-The regenerated draft uses the unmodified official ICLR 2027 review style and
-bibliography style. It has nine main-text pages and eighteen pages in total.
-Its 42 cited sources comprise 36 peer-reviewed papers, five preprints and one
-software reference. The five preprints are Qwen3, GSM8K, HumanEval, MBPP and
-Draft-OPD. See the [citation and structure revision](../../docs/research/2026-09-05-iclr-format-and-citations.md)
-and [per-source status audit](../../reports/CITATION_STATUS_2026-09-05.json).
+The current draft uses the unmodified official ICLR 2027 review style and
+bibliography style. It has nine main-text pages and 52 pages including references
+and appendices. The manuscript audit resolves 47 cited sources. The September 5
+citation-status report is historical, while later additions are recorded in
+`reports/citation-expansion-20260905.json`. Current evidence includes native
+interface confirmation in both drafter families, code-capacity controls and
+full-answer 14B development comparisons. Sampling results explicitly identify
+the historical DFlash proposal-policy difference pending matched-policy results.
 
 The scaling branch adds completed fixed-work data and continuous-fitting curves
 and AR-paired EAGLE-3 code quality to the appendix. Regenerate these assets with

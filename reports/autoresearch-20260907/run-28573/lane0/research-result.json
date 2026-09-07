@@ -1,0 +1,97 @@
+{
+  "status": "pass",
+  "hypothesis": "Do the original14B small-data and capacity conclusions persist when answers can finish, across both drafter families?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 22.94440283464769,
+        "throughput_ratio": 0.2400823599469564,
+        "throughput_ci95": [
+          0.2186774740718494,
+          0.25764231908691254
+        ],
+        "request_time_ratio": 0.2493085826349764,
+        "request_time_ci95": [
+          0.22811822497420423,
+          0.26749301934167424
+        ],
+        "mean_output_tokens": 299.25,
+        "token_matches": 4,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 104.33917227014899
+      },
+      "relay_base": {
+        "tokens_per_second": 95.5688824439955,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 310.75,
+        "token_matches": 8,
+        "progress_per_cycle": 5.2175732217573225,
+        "request_seconds": 26.01265115197748
+      },
+      "relay_dense_n512": {
+        "tokens_per_second": 92.311927079094,
+        "throughput_ratio": 0.9659203363939082,
+        "throughput_ci95": [
+          0.937259091133966,
+          1.0079966259366382
+        ],
+        "request_time_ratio": 0.9659203363939082,
+        "request_time_ci95": [
+          0.9372590911339659,
+          1.0079966259366382
+        ],
+        "mean_output_tokens": 310.75,
+        "token_matches": 8,
+        "progress_per_cycle": 5.03030303030303,
+        "request_seconds": 26.930431187618524
+      },
+      "relay_factorized4096_n2048": {
+        "tokens_per_second": 95.88773254839549,
+        "throughput_ratio": 1.003336338107614,
+        "throughput_ci95": [
+          0.9800480740108235,
+          1.0334515591204838
+        ],
+        "request_time_ratio": 1.0033363381076141,
+        "request_time_ci95": [
+          0.9800480740108235,
+          1.0334515591204838
+        ],
+        "mean_output_tokens": 310.75,
+        "token_matches": 8,
+        "progress_per_cycle": 5.246315789473684,
+        "request_seconds": 25.926152740605175
+      },
+      "relay_mlp4096_n2048": {
+        "tokens_per_second": 86.90229832083921,
+        "throughput_ratio": 0.9093158368966486,
+        "throughput_ci95": [
+          0.8872130942924767,
+          0.9407284574567077
+        ],
+        "request_time_ratio": 0.9093158368966486,
+        "request_time_ci95": [
+          0.8872130942924767,
+          0.9407284574567076
+        ],
+        "mean_output_tokens": 310.75,
+        "token_matches": 8,
+        "progress_per_cycle": 4.748571428571428,
+        "request_seconds": 28.60683834645897
+      }
+    }
+  },
+  "scope": "Fixed32 exposed GSM8K questions shared with sampling-breadth cohort, now14B targets and greedy generation. Dense512/2048, matched-size factorized4096 and MLP4096 at2048, plusAR. All original recipe endpoints8192updates lr0.0006 retained, not a best-optimizer comparison. Two four-GPU waves, four8-question shards per family. No fresh confirmation or tight quality NI claim.2048token cap, every lane540seconds."
+}

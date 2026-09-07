@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "hypothesis": "Does matching released DFlash greedy proposal selection remove the sampled full-projection control gap and improve retargeted sampling?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_dflash": {
+        "tokens_per_second": 168.7033344000426,
+        "throughput_ratio": 1.008847505089153,
+        "throughput_ci95": [
+          1.0067531132570766,
+          1.0110047303884435
+        ],
+        "request_time_ratio": 1.0088475050891532,
+        "request_time_ci95": [
+          1.0067531132570766,
+          1.0110047303884437
+        ],
+        "mean_output_tokens": 269.875,
+        "token_matches": 8,
+        "progress_per_cycle": 6.281159420289855,
+        "request_seconds": 12.797613086178899
+      },
+      "relay_base": {
+        "tokens_per_second": 167.22382079453533,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 269.875,
+        "token_matches": 8,
+        "progress_per_cycle": 6.281159420289855,
+        "request_seconds": 12.91084003308788
+      },
+      "relay_svd1536": {
+        "tokens_per_second": 167.6874594870996,
+        "throughput_ratio": 1.0027725636835791,
+        "throughput_ci95": [
+          0.9548725747591715,
+          1.0533218358142489
+        ],
+        "request_time_ratio": 1.0418604258868371,
+        "request_time_ci95": [
+          0.968930469305553,
+          1.1590753270709861
+        ],
+        "mean_output_tokens": 259.75,
+        "token_matches": 0,
+        "progress_per_cycle": 6.283132530120482,
+        "request_seconds": 12.392101391218603
+      },
+      "relay_two": {
+        "tokens_per_second": 162.84497510213387,
+        "throughput_ratio": 0.973814462128684,
+        "throughput_ci95": [
+          0.9296306564590174,
+          1.0141036782201864
+        ],
+        "request_time_ratio": 1.0311257595565615,
+        "request_time_ci95": [
+          0.9657533917298593,
+          1.119276639335702
+        ],
+        "mean_output_tokens": 254.875,
+        "token_matches": 0,
+        "progress_per_cycle": 6.092261904761905,
+        "request_seconds": 12.521110944449902
+      }
+    }
+  },
+  "scope": "Eight exposed GSM8K questions, same seed1732 as wave80 native controls. Greedy draft proposals and sampled target verification. Two temperatures, native compression and retargeted maps. All declared arms retained. No new training, no independent confirmation. Every lane540seconds."
+}

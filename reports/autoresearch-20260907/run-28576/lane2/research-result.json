@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "hypothesis": "Does matching released DFlash greedy proposal selection remove the sampled full-projection control gap and improve retargeted sampling?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 35.72006671544426,
+        "throughput_ratio": 0.24788438270287005,
+        "throughput_ci95": [
+          0.21548015463750847,
+          0.2837579414423361
+        ],
+        "request_time_ratio": 0.2710168875649941,
+        "request_time_ci95": [
+          0.23398754291936433,
+          0.31029180538569867
+        ],
+        "mean_output_tokens": 245.125,
+        "token_matches": 0,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 54.89911358850077
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 165.20054252348191,
+        "throughput_ratio": 1.1464321954333514,
+        "throughput_ci95": [
+          1.0904450374503512,
+          1.2036527023071497
+        ],
+        "request_time_ratio": 1.138467173232564,
+        "request_time_ci95": [
+          1.0425212294499853,
+          1.2208693883287705
+        ],
+        "mean_output_tokens": 269.875,
+        "token_matches": 0,
+        "progress_per_cycle": 6.281159420289855,
+        "request_seconds": 13.068964344915003
+      },
+      "relay_base": {
+        "tokens_per_second": 144.09970618544614,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 268.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.483375959079284,
+        "request_seconds": 14.878586894832551
+      }
+    }
+  },
+  "scope": "Eight exposed GSM8K questions, same seed1732 as wave80 native controls. Greedy draft proposals and sampled target verification. Two temperatures, native compression and retargeted maps. All declared arms retained. No new training, no independent confirmation. Every lane540seconds."
+}
