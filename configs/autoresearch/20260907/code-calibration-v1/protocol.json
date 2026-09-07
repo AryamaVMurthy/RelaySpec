@@ -1,0 +1,24 @@
+{
+  "phase": "data and cache validation before native-interface fits",
+  "source_repository": "https://github.com/sahil280114/codealpaca",
+  "source_revision": "2f78ddc5c682ed6738ad092bbbfa59ba915afcb0",
+  "data_license": "CC BY-NC4.0",
+  "training_records": 512,
+  "validation_records": 128,
+  "manifests": {
+    "validation.json": {
+      "sha256": "805af8e85d3a4449acdada598ea6926dcb3dee397d7378ae664bc09299019df0",
+      "records": 128
+    },
+    "train-512.json": {
+      "sha256": "da869b0d7dee30f3fdc43bd2548092893d98e8ebe80c46809fca8eed3ddb16dc",
+      "records": 512
+    }
+  },
+  "filter": "Python in instruction, deterministic order, exact and5-shingle Jaccard0.6 overlap exclusions against10354 unique texts from all record-bearing config manifests plus earlier selected records. No semantic/pretraining independence or code-correctness guarantee.",
+  "hypothesis": "Does code-focused calibration recover native EAGLE two-layer code throughput and reduce the need for an additional retained feature layer?",
+  "pilot": "Existing EAGLE cache/gradient-equivalence/duplicate-map decoding pipeline,64training16validation records,16update operational fits. Not a quality experiment.",
+  "next": "After pilot pass, extract all512training128validation records, then compare fixed-budget inherited native two- and three-layer fits against the existing matched math-fitted controls. No source or drafter transformer training.",
+  "max_gpus": 4,
+  "timeout_seconds": 540
+}

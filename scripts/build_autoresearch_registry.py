@@ -14,11 +14,11 @@ collector = json.loads(collector_path.read_text()) if collector_path.exists() el
 inputs = {str(ledger_path): hashlib.sha256(ledger_path.read_bytes()).hexdigest()}
 for job in ledger["jobs"]:
     run = root / f"run-{job['id']}"
-    if job.get("kind", "").startswith("boundary_"):
+    if job.get("gate_file") or job.get("kind", "").startswith("boundary_"):
         state = collector.get(str(job["id"]), {})
         if not state.get("collected"):
             continue
-        gate_name = {
+        gate_name = job.get("gate_file") or {
             "boundary_pipeline_pilot": "pilot-gate.json",
             "boundary_extraction": "extraction-complete.json",
             "boundary_capacity_pilot": "batch-gate.json",

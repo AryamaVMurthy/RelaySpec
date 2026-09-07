@@ -1,0 +1,1285 @@
+{
+  "records": [
+    {
+      "problem": "Edit the code to print \u201cWelcome to Python Programming\u201d five times.\n\nprint(\"Hello Python\")",
+      "solution": "for i in range(5):\n  print(\"Welcome to Python Programming\")",
+      "source": "codealpaca-python-instruction",
+      "source_row": 11668,
+      "domain": "code_instruction",
+      "problem_sha256": "a5cc978c3f35f28756364b054146810422a4a953953f0a1e8729aafe436a2546",
+      "solution_sha256": "b8c6953eed674d778678e527ac90e42e6be0d7cc95683e2d29f5174f210e220a",
+      "normalized_problem_sha256": "4d9453d61f268493fdb7e71a75f93c83fe721e2f0f85e0b05abe1e10a8c411bd"
+    },
+    {
+      "problem": "Write a Python program that takes two numbers as input and outputs the greatest common divisor (GCD) between them.\n\n18 9",
+      "solution": "def gcd(a, b):\n    while b != 0:\n        a, b = b, a % b\n    return a\n\nx = int(input(\"Enter the first number: \"))\ny = int(input(\"Enter the second number: \"))\n\nprint(\"The GCD of {} and {} is {}\".format(x, y, gcd(x, y)))",
+      "source": "codealpaca-python-instruction",
+      "source_row": 6604,
+      "domain": "code_instruction",
+      "problem_sha256": "5de88add03866af1e4bf638e8c87764c6b59a01c0740482a6d2e27716965c144",
+      "solution_sha256": "c7c94e3e420eaf81cd2bc38655ba701aee194566522ce55bd0166f6ee730d2b9",
+      "normalized_problem_sha256": "fd2720ca4e7320d44fb5752157434fcd57809ed9bc9d9440583a81d31906828f"
+    },
+    {
+      "problem": "Given a string, write a Python program to remove all special characters from it.",
+      "solution": "def remove_special_characters(string): \n    final_string = \"\" \n    for character in string: \n        if character.isalnum(): \n            final_string += character \n    return final_string",
+      "source": "codealpaca-python-instruction",
+      "source_row": 18625,
+      "domain": "code_instruction",
+      "problem_sha256": "46cba3574fec65cf9588023fadb2a33508f691e0ca7c284955c75005c0e2cdc0",
+      "solution_sha256": "1d9350bdb5487c6674575e5a0d986a70240f0487472ea1a0a4b5cdb7f9557598",
+      "normalized_problem_sha256": "6af267864bc650038a9e0ee15946b7aeeef356471d49ea65ccbb76da83e87fb9"
+    },
+    {
+      "problem": "Write a function to reverse a given sentence in Python.\n\nGiven sentence: \"The quick brown fox jumps over the lazy dog.\"",
+      "solution": "def reverse_sentence(sentence):\n    words = sentence.split()\n    reversed_words = words[::-1]\n    reversed_sentence = ' '.join(reversed_words)\n    return reversed_sentence\n\nif __name__ == '__main__': \n    sentence = \"The quick brown fox jumps over the lazy dog.\"\n    print(reverse_sentence(sentence))",
+      "source": "codealpaca-python-instruction",
+      "source_row": 7819,
+      "domain": "code_instruction",
+      "problem_sha256": "fb714ab08df3c73f3433e99a14940a6d4ef533314b3cefb58f076646650b21ae",
+      "solution_sha256": "c084c47d44ade6d2b4833dc842a7fc969c9f76cc7a9c2a80f6383d6a38e87752",
+      "normalized_problem_sha256": "38f744aecde8808bb664c01096c06584ddb2f88fc2e9d8302c95d0ef276c0f05"
+    },
+    {
+      "problem": "Construct a class in Python that describes a car",
+      "solution": "class Car:\n    def __init__(self, brand, color):\n        self.brand = brand\n        self.color = color\n    def describe(self):\n        return \u201cThis car is a {} and it is {}.\u201d.format(self.brand, self.color)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 7308,
+      "domain": "code_instruction",
+      "problem_sha256": "35d9949f0fbeaf3e2d0dca9743c146b982abf77343971b68bfa5219ffc37ea05",
+      "solution_sha256": "b7ef9eda3dd884b201a26598f4f653c3782bd4a2992a5802e1346727a47b91a7",
+      "normalized_problem_sha256": "04d7bba64377ac27f91610d3461daaf7f28ee87092090fc8f1bb5dad864d502a"
+    },
+    {
+      "problem": "Parse the following JSON string in Python.\n\n{\"name\":\"John\",\"age\":30,\"city\":\"New York\"}",
+      "solution": "import json\n\ndata = '{\"name\":\"John\", \"age\":30, \"city\":\"New York\"}'\n\n# parse the JSON string\nparsed_string = json.loads(data) \n\n# print the individual elements\nname = parsed_string[\"name\"]\nage = parsed_string[\"age\"]\ncity = parsed_string[\"city\"]\n\nprint(name)\nprint(age)\nprint(city)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 7795,
+      "domain": "code_instruction",
+      "problem_sha256": "ca560e45d71455b6b662722b7541d8712f201e5ef74eb4d2629bc7be67cb2351",
+      "solution_sha256": "19a6cb56eed3b9b887a261a236769acc760512a519db52aa337ff3111aaf413a",
+      "normalized_problem_sha256": "aa9a9b1f3ea22582f325a7b7d6e9d4d1021f3905730e8c8d85e12c2f5660366a"
+    },
+    {
+      "problem": "Write a Python code to fetch the top three trending topics from Twitter.",
+      "solution": "import tweepy\n\n# create OAuth handler\nconsumer_key = \"YOUR_CONSUMER_KEY\"\nconsumer_secret = \"YOUR_CONSUMER_SECRET\"\naccess_token = \"YOUR_ACCESS_TOKEN\"\naccess_token_secret = \"YOUR_ACCESS_TOKEN_SECRET\"\n\n# authenticate \nauth = tweepy.OAuthHandler(consumer_key, consumer_secret) \nauth.set_access_token(access_token, access_token_secret) \n  \n# overridable get method\napi = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True) \n \n# results\ntrends = api.trends_place(1) \ndata = trends[0]\ntrends_list = data['trends']\n\n# top 3 trending topics \nfor i in range(3): \n    print(trends_list[i]['name'])",
+      "source": "codealpaca-python-instruction",
+      "source_row": 18420,
+      "domain": "code_instruction",
+      "problem_sha256": "090d65a3fcc77560fa6bf83bdcccea1bbd643bdc7e5c27536a917c0876779232",
+      "solution_sha256": "d44080bf4f8f1c845f77342b793d326b8fbe87806cb34c781c7d9f6a01a7a50d",
+      "normalized_problem_sha256": "2210271a1c9208df9c48cc6b9e1a7a1490aedf7d73e1e6d60b1995ec2ec408f3"
+    },
+    {
+      "problem": "Using list comprehension, write a Python code to get a list of all possible subsets of the list [1, 2, 3]\n\n[1, 2, 3]",
+      "solution": "subsets = [[x for x in [1, 2, 3]] for y in range(0, 2**len([1, 2, 3]))]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 6811,
+      "domain": "code_instruction",
+      "problem_sha256": "b5e9474a9674bd80ca3a47c9b0e43f9336505d7e52087d20e999b044a90a653e",
+      "solution_sha256": "8c4dcc988cb7dadccec522e547659bc3a3203d67642b71d42499a73fcb705b5c",
+      "normalized_problem_sha256": "2f33bdf64dad94e7387a3697f361dfc5592b407bc0ea832280b106827fabf85e"
+    },
+    {
+      "problem": "Convert the following pseudocode into Python code\n\nfor i = 0 to 9\n    print i",
+      "solution": "for i in range(10):\n    print(i)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 1642,
+      "domain": "code_instruction",
+      "problem_sha256": "611e463e6f25dc0016a475ecd48bda31a19d98b1ae41030fd7d44cc0bcf06b1d",
+      "solution_sha256": "7b253b71e50e0725bdb354c19582b5675f7017c7f3befd4468b6fb06a2b0c474",
+      "normalized_problem_sha256": "9776191e2b27253c63f21148d790b1dcba2b37ba7b538b390628f905df92ab42"
+    },
+    {
+      "problem": "Convert the following Python code from functions to lambda expressions.\n\ndef cube(x):\n    return x ** 3\n\ndef add_cube(x, y):\n    return cube(x) + cube(y)",
+      "solution": "cube = lambda x: x ** 3\nadd_cube = lambda x, y: cube(x) + cube(y)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 2815,
+      "domain": "code_instruction",
+      "problem_sha256": "7c71735cbc7195489674b04ec3fc3cd7edd22a2af9643ada046732cecac9e06b",
+      "solution_sha256": "004f214386d9c55f3545d6c31412c7b708c9c872dd7c3b30aea652722ba4ced3",
+      "normalized_problem_sha256": "b64ca1d16918a9ae9e4ac0e6028508e81eb285d54071a582a63b066ecec0c6e0"
+    },
+    {
+      "problem": "Write a function in Python which takes an array of integers and returns a list of all distinct pairs whose sum is equal to a given value.\n\narr = [1, 2, 3, 4, 5]\nvalue = 7",
+      "solution": "def pairs_with_sum(arr, value):\n    pairs = []\n    for i in range(len(arr)-1):\n        for j in range(i+1, len(arr)):\n            if (arr[i] + arr[j] == value):\n                pairs.append((arr[i], arr[j]))\n    return pairs",
+      "source": "codealpaca-python-instruction",
+      "source_row": 13370,
+      "domain": "code_instruction",
+      "problem_sha256": "5da4410e7b036be08ad01a88404578de8c49d96575f38e52a67c859f4524a247",
+      "solution_sha256": "3d1e9e528f3fd7393e39b2a8ab0b94967bb4e9f2a014e8a70cddae14247b9ab7",
+      "normalized_problem_sha256": "227af52e567a6f762c9e396632de8da405bf23ee0bd70db8c3e540d22aa7e8e2"
+    },
+    {
+      "problem": "Create a functional programming paradigm in Python.",
+      "solution": "def functional_programming(lst):\n    return list(map(lambda x : x*2, filter(lambda x : x % 2 == 0, lst)))\n \nprint(functional_programming([1,2,3,4,5]))      \n# Output: [4, 8]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 16770,
+      "domain": "code_instruction",
+      "problem_sha256": "6db79a50611fada9a4d507707b3673c07645c5e6ef2b4b674ed3654fde81b07e",
+      "solution_sha256": "e7e4de1218f12b8a49bb23495449cc270c8437288d49a3e4dc8e50923fec0277",
+      "normalized_problem_sha256": "aa8eff15602da17947629b88e026c07b63c9ba438a9c03951cd17156fd805ec8"
+    },
+    {
+      "problem": "Name a function in Python which can be used to convert a list to a dictionary.",
+      "solution": "The function in Python which can be used to convert a list to a dictionary is the dict() function. This function takes in an iterable such as a list as an argument and returns a dictionary with the elements of the iterable as the keys and their index as the values.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 12055,
+      "domain": "code_instruction",
+      "problem_sha256": "337ad5bdf6c7e761a171cff32ce115b3e521632a49c8cab5202b9de21df6a3d4",
+      "solution_sha256": "4d6a9b73c7803356b2fd5d56799af1668b6bcb7920f99bc98f0b576646579081",
+      "normalized_problem_sha256": "88ce18eb2eb972d589eb5897c7cb8080d44a42ce431ca679d9a5092cb0b61fa3"
+    },
+    {
+      "problem": "How many jokes can you write in Python?",
+      "solution": "There is no definite answer to this question. It depends on the creativity and programming skills of the individual. It is possible to write an infinite number of jokes, but writing a joke that is funny and unique will require more effort and expertise.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 11320,
+      "domain": "code_instruction",
+      "problem_sha256": "1e717aa779335234c2c5da84ee4ca8d5b30f12b1f5ecaaa51922e7f8c6053bfd",
+      "solution_sha256": "6c926708ebab8330f29048d52f794b69195a29fd5a22aa48d5fba29e02cb3f27",
+      "normalized_problem_sha256": "9d6f0b44a5ee17e8a419684d730c76cdae249467215b36f42955f11d972d3253"
+    },
+    {
+      "problem": "Write a code in Python to convert a string of text to its equivalent uppercase characters.\n\nstr_lower_case = \"hello world\"",
+      "solution": "str_upper_case = str_lower_case.upper()",
+      "source": "codealpaca-python-instruction",
+      "source_row": 17595,
+      "domain": "code_instruction",
+      "problem_sha256": "2278b327bbd795b2fab464f1eeb53825f535f8332520197515a0a7b8ca5c7262",
+      "solution_sha256": "8333f9ac38318091dd03ceb4d6c055e91dc5cdc7754062ad0eb72fc06e4c1a65",
+      "normalized_problem_sha256": "4be288e0587e21c1a65bb87f953c6b524fabfe92d4ccac0d72e777d92a0c6d4f"
+    },
+    {
+      "problem": "Create a function in Python to find all elements of a given list whose sum is equal to a given number.\n\nlist = [5, 7, 9, 4]\nnumber = 18",
+      "solution": "def find_elements(list, number): \n    result = [] \n    for i in range(len(list)): \n        for j in range(i + 1, len(list)): \n            if list[i] + list[j] == number: \n                result.append([list[i], list[j]]) \n  \n    return result \n  \n# Driver code \nlist = [5, 7, 9, 4] \nn = 18\nprint(find_elements(list, n))",
+      "source": "codealpaca-python-instruction",
+      "source_row": 12310,
+      "domain": "code_instruction",
+      "problem_sha256": "858cf1d4340e6f89806c233675cc716af2615c02c8a617ce8284ee50cf1ba17c",
+      "solution_sha256": "62085c271d57af19080bf9747530ecf962365ea6d0931a70dd50c148938c1b82",
+      "normalized_problem_sha256": "2fed85d7b31aa9ae28fdf3451b94712dd709f90d9cdbc1feb9183cfb6ac9ebf7"
+    },
+    {
+      "problem": "Create a Python function that takes an object as an input and returns its names and values.\n\nInput: {\"name\": \"John\", \"age\": 25, \"cities\": [\"New York\", \"Boston\"]}",
+      "solution": "def get_object_details(input_obj):\n    output = []\n    for key, value in input_obj.items():\n        if type(value) == list:\n            value = \", \".join(value)\n        output.append(f\"{key}: {value}\")\n    return \"\\n\".join(output)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 17232,
+      "domain": "code_instruction",
+      "problem_sha256": "15cdda661d8c58f378dcabe76c98c3071ca724d7ddab5a6800b6d61a4afccd63",
+      "solution_sha256": "44095e0d688b8f4954d42a0c2c3fd3af167dade681ee50ef732f896d4153cd28",
+      "normalized_problem_sha256": "a1d8f37a4ea96ff48aabea901efef1c1f02b090947efc9e451a2061daeceba16"
+    },
+    {
+      "problem": "What could be a use case of a 'while' loop in Python?",
+      "solution": "A while loop can be used to iterate over a sequence or perform a computation until a specific condition is met. For example, it can be used to generate a list of prime numbers, where it would check if the current number is a prime number by checking if its divisible by any of the already discovered primes before it.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 8191,
+      "domain": "code_instruction",
+      "problem_sha256": "707fa7f98a3129da642a7f9ed0691386f8027407d3efb1c5a57ca56cc81766a9",
+      "solution_sha256": "7028d4edb8dca7f5d6df80a93a4a243cb3deb9f7e79d8827cdcb55300aec8ab4",
+      "normalized_problem_sha256": "b775c9de5d5815677ec3bd96e40dd571b4a8ab8d097f54788662ea6912a68f3b"
+    },
+    {
+      "problem": "Write a Python expression to compute the exponential of a given number.\n\nx = 3",
+      "solution": "import math\nmath.exp(x)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 6722,
+      "domain": "code_instruction",
+      "problem_sha256": "a0d0fd249588a14659231c97a19e1a06f222beff4b4807e3fabf9f2104de6dbe",
+      "solution_sha256": "4f8f6690ae79baaddd4c79f9c2b3cd076e5c4ecde7eeb4f1781c3940c5523907",
+      "normalized_problem_sha256": "20088bd46109ba9054887d8490a71e77aa71128bfc9b01fe44ae8e855c4bb2bd"
+    },
+    {
+      "problem": "Use Python to reverse the order of a string input.\n\nI love coding",
+      "solution": "def reverse_string(string): \n    return string[::-1]\n\nstring_input = 'I love coding'\n\nreverse_string(string_input)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 11398,
+      "domain": "code_instruction",
+      "problem_sha256": "8454f0bf66cba41c7a64a7384a3456068c82099ecabd6d845747f552d07bcb3a",
+      "solution_sha256": "3b53d7453b759062870346f2f73b37ce18c9658de8c012e8ef8db3078c29bde4",
+      "normalized_problem_sha256": "459b80984866140a33b7b07dc1b8447b6da82bcf2fd1d2cfaab35c1ad6e91197"
+    },
+    {
+      "problem": "Write the equivalent Java code for the following Python code.\n\nx = [1, 2, 3, 4]\nfor x in x:\n   print(x)",
+      "solution": "int[] x = {1, 2, 3, 4}; \nfor (int i = 0; i < x.length; i++) {\n    System.out.println(x[i]);\n}",
+      "source": "codealpaca-python-instruction",
+      "source_row": 5540,
+      "domain": "code_instruction",
+      "problem_sha256": "25164cde3e7df9e3537d4194d16dc23313e97bf4ffa8ee8a81e1143ddf25aa96",
+      "solution_sha256": "1b20566962e4ca1afb89680175f16ae3a74258855541d15613a777ef99feb0bb",
+      "normalized_problem_sha256": "c3183c58a325694f30b2882fabd045e3ca3d5b44dc8eed18648987d4505e81c5"
+    },
+    {
+      "problem": "Write a Python program to concatenate all elements in a list into a string separated by a given separator.\n\ninput_list = [\"Python\", \"is\", \"a\", \"programming\", \"language\"]\nseparator = \"-\"",
+      "solution": "def list_to_string(input_list, separator):\n    return separator.join(input_list)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 118,
+      "domain": "code_instruction",
+      "problem_sha256": "d611d64e1332b481a5fc553e839c52b52e3fe9fee81c23a7dd187797d354fb74",
+      "solution_sha256": "ebae5c57383bfe959b9576091f89cf8cf270723a169507b79837b8ba82a85b42",
+      "normalized_problem_sha256": "404439e0a4adab5b757f8e362b381efca8260b5d4756fcb70122d2f3966ecb87"
+    },
+    {
+      "problem": "Write a Python script that prints out all of the letters of the alphabet one per line.",
+      "solution": "for letter in 'abcdefghijklmnopqrstuvwxyz':\n    print(letter)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 18836,
+      "domain": "code_instruction",
+      "problem_sha256": "74efe879360465ace6ded880394d63e2ed5bf01b4a777fc9509096656ebc43ab",
+      "solution_sha256": "2589a890dbf4e8bc75ca28ef556333b0a9d4457bc34241635bece5b48bd3c464",
+      "normalized_problem_sha256": "e87bb41ea3e33616171d47c9f96b43f60c9189feb648cae08c7530d663d872c7"
+    },
+    {
+      "problem": "Convert the following code to Python and make it object-oriented.\n\nfunction celsius_to_fahrenheit(celsius) { \n  let fahrenheit = (celsius * 9/5) + 32\n  return fahrenheit \n}",
+      "solution": "class TemperatureConverter:\n    def celsius_to_fahrenheit(self, celsius):\n        fahrenheit = (celsius * 9/5) + 32\n        return fahrenheit",
+      "source": "codealpaca-python-instruction",
+      "source_row": 16040,
+      "domain": "code_instruction",
+      "problem_sha256": "9cb31a68f32d62b6a7264edc65acbe05ec9dd92eeed1b585a62dd026b9a703b3",
+      "solution_sha256": "d8772bb19d6f9224a600c18dc8c94135ea4572c65b3f5cde374b885d70cd2855",
+      "normalized_problem_sha256": "7214d669e393e37ed69d26d7299862e810ba54e9ba66b6c30e294c23bccab023"
+    },
+    {
+      "problem": "Edit the Python code snippet to remove the syntax error.\n\ndef calculate_area(length, width):\n    area = length * width\n    return \u201cThe area is\u201d + area",
+      "solution": "def calculate_area(length, width):\n    area = length * width\n    return \"The area is \" + str(area)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 11696,
+      "domain": "code_instruction",
+      "problem_sha256": "a9a67c37c20112ddcbfc94e93557f1bd4e5a8613a5f8196488e988d079fa061b",
+      "solution_sha256": "159faf20a6b23141be856bb1075cdf53e05abc70a7c099129855e78296031ee1",
+      "normalized_problem_sha256": "0eb40696d4787189f65198fab9c5a9799a160815bfba2c3a74d9e85ca381a964"
+    },
+    {
+      "problem": "Write a Python program to determine if an input string is a valid IP address.",
+      "solution": "import re\ndef isValidIP(ip): \n    # check if the string is a valid IP address\n    regex = '''^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\\.( \n            25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\\.( \n            25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\\.( \n            25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)'''\n    # compile the regex \n    pattern = re.compile(regex) \n    \n    # Pass the string in search() method\n    if(pattern.search(ip)):  \n        return True\n    else:  \n        return False\n    \n# Driver Code\nprint(isValidIP(\"192.168.0.1\"))",
+      "source": "codealpaca-python-instruction",
+      "source_row": 19634,
+      "domain": "code_instruction",
+      "problem_sha256": "baeb9745136c7fffd53af0d4057507b6dc2520efdc9fec5cff14f3289266abbb",
+      "solution_sha256": "e9d347bf829a146a8c1a49f48b6c65dbb608b6ae1a0dc5e4d39a98fafcd43003",
+      "normalized_problem_sha256": "cfaaf6556bf4b5d8ca5daf6a9044a967ffb8328e389d34b9ac522043cc65983b"
+    },
+    {
+      "problem": "Write a Python function to check if an element is present in a given list or not.",
+      "solution": "def is_in_list(element, input_list):\n    return element in input_list",
+      "source": "codealpaca-python-instruction",
+      "source_row": 12649,
+      "domain": "code_instruction",
+      "problem_sha256": "64f90f73de64230686a255478613ad8535a40a4fb65457c6029ff07c1f1f5dfd",
+      "solution_sha256": "64a22be33d48038e838e0458c9f03a747c0f0c86794f3eaabe882d272c6bfab0",
+      "normalized_problem_sha256": "989354f5059eb8974528ac3bd6449d0617ca6f8f1fcde624bf8488378e24a86a"
+    },
+    {
+      "problem": "Write Python code which changes a string to all lowercase characters.\n\nString: \"This is a string in Uppercase!!!\"",
+      "solution": "text = \"This is a string in Uppercase!!!\"\ntext = text.lower()\nprint(text)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 9674,
+      "domain": "code_instruction",
+      "problem_sha256": "4123e578f4b9ea1c3d7995537761e0fc290d732a8a2c2e96c296b4ed7b38eec4",
+      "solution_sha256": "57ca64bea38c81bcf4f39031ae19b081900bcbff64428ee0fca0ff8a760dff1f",
+      "normalized_problem_sha256": "c0080eb4a501a2d65e211578fd36202376b2c16b1dfd4fdecd19b6784adf9416"
+    },
+    {
+      "problem": "Develop a Python class for handling the API calls.",
+      "solution": "class APIHandler:\n    def __init__(self, base_url, api_key):\n        self.base_url = base_url\n        self.api_key = api_key\n    \n    def get(self, endpoint):\n        response = requests.get(self.base_url + endpoint)\n        return response\n    \n    def post(self, endpoint, data):\n        headers = {'Authorization': 'Bearer ' + self.api_key}\n        response = requests.post(self.base_url + endpoint, headers=headers, data=data)\n        return response",
+      "source": "codealpaca-python-instruction",
+      "source_row": 2563,
+      "domain": "code_instruction",
+      "problem_sha256": "3dd83f5b89384126b915dc7633cd73d6e60ad45810364dd07fcce480a601278e",
+      "solution_sha256": "3681bca66e28c45f5dafe69aad065de60b3b038abf985f5b2744bbdbe978c9df",
+      "normalized_problem_sha256": "a86e08fcd29f33ee8ee8459a52446e8927a5e4e80ff33ff3a99f23d724a5f4d9"
+    },
+    {
+      "problem": "Explain in detail what is the significance of a local variable in Python",
+      "solution": "A local variable in Python is a variable that is declared within a function or a class. It is a variable that only exists in the context of that function or class, and cannot be accessed outside the function or class in which it is declared. Local variables are also referred to as \"lexical\" or \"automatic\" variables because they are automatically scoped to the function or class in which they are declared. They are different from global variables, which are available to the entire program. Local variables are helpful in limiting the scope of a variable, which means that the variable is only accessible in the function or class in which it is declared. This can help make code more efficient, clear, and secure.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 13800,
+      "domain": "code_instruction",
+      "problem_sha256": "74f3116aa6771e4e15cf33de676e529fcf76c32390b295a5976b04b97256a458",
+      "solution_sha256": "f862bbd2bf778a81c29185d2ab8099919acc5b44dd4382989ebfdc522d7867d4",
+      "normalized_problem_sha256": "dc30eb700d1fd06fa7a44cb031010ce85c0411831f68bd0098aea54dd618f7af"
+    },
+    {
+      "problem": "Create a Python script to separate a given string into words and count the number of times the each word is used in the string.",
+      "solution": "def count_words(string):\n counts = {}\n words = string.split()\n for word in words:\n if word in counts:\n counts[word] += 1\n else:\n counts[word] = 1\n return counts",
+      "source": "codealpaca-python-instruction",
+      "source_row": 4998,
+      "domain": "code_instruction",
+      "problem_sha256": "f87cf681713e30965acf36b26a2b065e9b6d6afc64bf3a27d7452b79424d8306",
+      "solution_sha256": "4e61b887d889e022627d0e5abc30745aa7fe91150849728e6e7049ce5cd1b7d4",
+      "normalized_problem_sha256": "2e6db1ec67d4371cad014b12959e4106b2174cfd69a41d29f1fb26861add5475"
+    },
+    {
+      "problem": "Create a program in python that sorts a given list.",
+      "solution": "def bubbleSort(arr):\n    n = len(arr) \n  \n    # Traverse through all array elements \n    for i in range(n): \n  \n        # Last i elements are already in place \n        for j in range(0, n-i-1): \n  \n            # traverse the array from 0 to n-i-1 \n            # Swap if the element found is greater \n            # than the next element \n            if arr[j] > arr[j+1] : \n                arr[j], arr[j+1] = arr[j+1], arr[j] \n  \n# Driver code to test above \narr = [64, 34, 25, 12, 22, 11, 90] \n  \nbubbleSort(arr) \n  \nprint (\"Sorted array is:\") \nfor i in range(len(arr)): \n    print (\"%d\" %arr[i]),",
+      "source": "codealpaca-python-instruction",
+      "source_row": 8686,
+      "domain": "code_instruction",
+      "problem_sha256": "5252c4ee7addb9e9ef19c9cee05c8f80b0bad8d9a44c1ab1467c1684052d593f",
+      "solution_sha256": "a94dd3aa4effa08cf1d3be22098079b1e494143180647480a04fbdd4c550f9c4",
+      "normalized_problem_sha256": "7be4d71722467f9c150b357ef53e0b2e527347795957cd6e7310a37fa661d04d"
+    },
+    {
+      "problem": "Reorganize the given Python code such that two functions are created.\n\ndef greet_to(name):\n    \"\"\"Print a greeting to the name provided.\"\"\"\n    # assert name is a string\n    assert isinstance(name, str), \"name must be a string\"\n    print(\"Hello, \" + name + \"!\")",
+      "solution": "def check_name(name):\n    \"\"\"Check whether the name is a string\"\"\"\n    assert isinstance(name, str), \"name must be a string\"\n\ndef greet_to(name):\n    \"\"\"Print a greeting to the name provided.\"\"\"\n    check_name(name)\n    print(\"Hello, \" + name + \"!\")",
+      "source": "codealpaca-python-instruction",
+      "source_row": 17537,
+      "domain": "code_instruction",
+      "problem_sha256": "066fb892f70232210ce048ffd65f638d029c0b0cc5b308d2b28c5dfd0498db27",
+      "solution_sha256": "dd76322d7f53b099e21e3fbd04feadb810588b92440785bda467ca0c30daff6a",
+      "normalized_problem_sha256": "b994cd483dffb108912b81b90f908ddf8cfc789a95a4a4d60e63c95c13560075"
+    },
+    {
+      "problem": "Write a Python code snippet to print the pyramid structure with the given number of lines.\n\n4",
+      "solution": "*   \n   ***\n  *****\n *******",
+      "source": "codealpaca-python-instruction",
+      "source_row": 382,
+      "domain": "code_instruction",
+      "problem_sha256": "67606235b15363ea2f57d864f8e258495d3411efa457ce473ea4527d6a47d891",
+      "solution_sha256": "e88ee2771ea30ff4b3d9d7cb4d749dba33d37bf8ce022e7075a7fd07be7b27d1",
+      "normalized_problem_sha256": "6f68a347b94b0ba863e67aebfeb2884b8baa9b815735777bb0f93d1148866469"
+    },
+    {
+      "problem": "Write a python script that takes user input and prints out the squares of the numbers",
+      "solution": "# Take input from user\nnumbers = input(\"Enter numbers: \") \n  \n# split the string \nnumbers = list(map(int, numbers.split(' '))) \n  \n# Loop to print the squares of numbers\nfor number in numbers:\n    print(number*number)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 19652,
+      "domain": "code_instruction",
+      "problem_sha256": "7eb39f4a1e553090f5c94a33c57fd32cd8fcfc0f9a7a534a26477c1c91e1eed5",
+      "solution_sha256": "9daf417c20cde105851803c4201c8ab99dcc4221a8fe8798b7d2ae6d2e63ff50",
+      "normalized_problem_sha256": "cd2831005970ffe990b7472a1601d1281bced02a4c92036f53240b7d7c658956"
+    },
+    {
+      "problem": "Write a Python program to display even numbers between two intervals.",
+      "solution": "def print_even_numbers_in_range(start, end):\n    for i in range(start, end+1):\n        if i % 2 == 0:\n            print(i)\n\nprint_even_numbers_in_range(2, 10)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 7156,
+      "domain": "code_instruction",
+      "problem_sha256": "a20437123d4a6df3898b6fbd433164bd96df436fbb5472f1141c40a048df8768",
+      "solution_sha256": "82deaedf73b62089433b1ee14d5393c02df043b1964c7e63641eaa775a2fc0fa",
+      "normalized_problem_sha256": "fa948f3b9edc40cfcca2edee4bce36d67b2c8cb41a63f925b601b96225312928"
+    },
+    {
+      "problem": "Count the number of words in this sentence using Python.\n\nThis sentence has a total of eight words.",
+      "solution": "8",
+      "source": "codealpaca-python-instruction",
+      "source_row": 349,
+      "domain": "code_instruction",
+      "problem_sha256": "e4ecdead70f7fb26a0f4ece4868c126af1a58d72c4adcd190ddc6f7ac33561ce",
+      "solution_sha256": "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3",
+      "normalized_problem_sha256": "3632d574802594e7d4289932b9d8e7904f5bc2479b78acee4d7b0aada77a5b19"
+    },
+    {
+      "problem": "Write a Python program to compute the gravitational force between two masses.\n\nm1 = 5 kg, m2 = 10 kg",
+      "solution": "def calc_grav_force(m1, m2):\n    G = 6.67 * 10 ** -11 # gravitational constant\n    force = G * m1 * m2 / (4 * 3.14 ** 2)\n    return force",
+      "source": "codealpaca-python-instruction",
+      "source_row": 1654,
+      "domain": "code_instruction",
+      "problem_sha256": "1d181eec712a07efc036181ae7c4be3722de2e77be45383fe8a15ef9172275ea",
+      "solution_sha256": "3695f5ff98d8a1c5e21c8034ef8d7ef0ec5fa5a6e05f51b172799b5c4f8a2838",
+      "normalized_problem_sha256": "456e53acbe10ec39079b65460684ddf9864e5acc2b3e5294657fe8f222eafba0"
+    },
+    {
+      "problem": "Convert this Ruby code to Python.\n\ndef add_two_numbers(a, b)\n  a + b \nend",
+      "solution": "def add_two_numbers(a, b):\n  return a + b",
+      "source": "codealpaca-python-instruction",
+      "source_row": 3758,
+      "domain": "code_instruction",
+      "problem_sha256": "ce5f105d8fd355fbdf827424c8471c71014aaea930f54330adab0dd0f3ed921d",
+      "solution_sha256": "01822c6882f9ae1f0ed36df37ae3e8b4571dd8037dba2b9770c83fbd31c3f222",
+      "normalized_problem_sha256": "b245748e85a280a3524004f84fdac3e75b8789609b83dccb1bb4549cb05cd557"
+    },
+    {
+      "problem": "Write a python program to filter a list of numbers to only include even numbers\n\n[1, 2, 3, 4]",
+      "solution": "def filter_even(nums):\n    even_nums = []\n    for num in nums:\n        if num % 2 == 0:\n            even_nums.append(num)\n    return even_nums",
+      "source": "codealpaca-python-instruction",
+      "source_row": 3629,
+      "domain": "code_instruction",
+      "problem_sha256": "50f72f7e9c06c34c700828de9df3d3c57d8c6c7af97d4dcf7d5437bc8aa3602b",
+      "solution_sha256": "656a638ca633ca1a1cbd411c82c3a29447b7ccef2a9597f4103a466a428afe20",
+      "normalized_problem_sha256": "40e0a410d99a75bdf5f38086429740e574a8cdfe7ae26b7bc346a90a8b54b4fc"
+    },
+    {
+      "problem": "Given a matrix, write a program that finds its determinant in Python.\n\n[[a, b], \u00a0[c, d]]",
+      "solution": "def determinant(matrix): \n  a = matrix[0][0]\n  b = matrix[0][1]\n  c = matrix[1][0]\n  d = matrix[1][1]\n  return a*d - b*c",
+      "source": "codealpaca-python-instruction",
+      "source_row": 17200,
+      "domain": "code_instruction",
+      "problem_sha256": "5b94c881cd67f1ba334b90dccce5464bb96fec23aa960c13528b3716cd4ed52e",
+      "solution_sha256": "5c2b78bb9466cb1bc401a76157f2ee0930e87a28c0a50d2242a80c6e638be571",
+      "normalized_problem_sha256": "8445f8c210cffb1cddd2d12c1fb9b492eead3fdc32296ff0f825af04a4ce8426"
+    },
+    {
+      "problem": "Extract the type of the following object in Python.\n\na = [1, 2, 3]",
+      "solution": "list",
+      "source": "codealpaca-python-instruction",
+      "source_row": 1319,
+      "domain": "code_instruction",
+      "problem_sha256": "4e2a80215a2c0de6080ad83d51bbe6b47e75f2db4ffa9f36727be04cb2b7462a",
+      "solution_sha256": "a330395cc0a53ad1207736546afff4735940937564bbf75ce1edad40780d9139",
+      "normalized_problem_sha256": "904440ade47ed9333b0b0d24a80d9e0b657cd2a52fb16d2e9effe31498cecab4"
+    },
+    {
+      "problem": "How to debug a program in Python?",
+      "solution": "In Python, debugging a program can be done by using a debugger to step through code line by line and checking the current state of the values, variables, objects, and functions. Using a debugger is useful for understanding the exact flow of code and finding errors or unexpected behavior. Python also provides a number of built-in debugging tools such as the ``pdb`` module which can be used to debug a program.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 6210,
+      "domain": "code_instruction",
+      "problem_sha256": "b0b5ad5c843816258a3e736be67b5d605be4bc92192e3ee2483660dff844906c",
+      "solution_sha256": "0e1e5252b535d926b2720c316181c98443f8d895a57dc04bdafcc94d7fb412b3",
+      "normalized_problem_sha256": "0d5b6a0df3a068ffcaec2100b935dd8deda639564e5be0df3e0ebd08bb01beeb"
+    },
+    {
+      "problem": "Create a list comprehension in Python to double each element in the list.\n\nlist = [1, 2, 3, 4, 5]",
+      "solution": "result = [x*2 for x in list]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 13417,
+      "domain": "code_instruction",
+      "problem_sha256": "b68002b9b421501fd0de6ce284405251837eeefaf424a31fa1af03873df974fe",
+      "solution_sha256": "a19be39bedb0e51ea41fe84ddeba618c53f6e52ea0f838f201be520758a404e9",
+      "normalized_problem_sha256": "eaeffb631534e184ee23b07aba07da7ffa3017b720023ea73244cb881d3784ff"
+    },
+    {
+      "problem": "Create a Python program which takes a sentence and prints back the words in reverse order",
+      "solution": "def reverse_words(sentence):\n  words = sentence.split()\n  words.reverse()\n  return ' '.join(words)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 8088,
+      "domain": "code_instruction",
+      "problem_sha256": "fab94b8f732a60d4108af4d07e980db3b31dca1c39e95ad5f00765dcccff8dfe",
+      "solution_sha256": "702ea1c926d7ccc2e5e230ff77d3291918acd886f3bcda155631b439c7941503",
+      "normalized_problem_sha256": "fc2cabdd12dfac8f90f5ea673d105c5f37cdd85e908221c7cc1d9e1eda6ddca1"
+    },
+    {
+      "problem": "Create a function in Python that adds two numbers.",
+      "solution": "def add(x, y):\n    \"\"\"Return the sum of x and y.\"\"\"\n    return x + y",
+      "source": "codealpaca-python-instruction",
+      "source_row": 10227,
+      "domain": "code_instruction",
+      "problem_sha256": "1b71d4468c918f98e2a3f04acac6d08efeef426ec0c6630878d21f4d7716707f",
+      "solution_sha256": "c825d389275914aa21de7a7c8ab1885e504bdba64e0dba676c3e796f36d0ba1c",
+      "normalized_problem_sha256": "33c22e9106ba34e594501333a67de4648631f5f051df991a46d2cbaeefdf42a2"
+    },
+    {
+      "problem": "Write a single line of code to convert a string to a date in Python.",
+      "solution": "date = datetime.strptime('01/01/2019', '%d/%m/%Y')",
+      "source": "codealpaca-python-instruction",
+      "source_row": 12312,
+      "domain": "code_instruction",
+      "problem_sha256": "92dbc283dfb9004a9eb2b8d78e9be901d1832d24d6c22927ba8ac0851b7f1371",
+      "solution_sha256": "2120749c419ba2b3fa80a45a3dd5e7d533e8c308a793ed8436646889999f4d34",
+      "normalized_problem_sha256": "de884f3869285f767a91bcea138e8e0b9d18fac12daf51334e56beb76e8d28db"
+    },
+    {
+      "problem": "Create a rectangle using the turtle library in Python",
+      "solution": "import turtle\nt = turtle.Turtle() \nt.forward(100) \nt.left(90) \nt.forward(50) \nt.left(90) \nt.forward(100) \nt.left(90) \nt.forward(50) \nt.left(90)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 15154,
+      "domain": "code_instruction",
+      "problem_sha256": "a15f683aa78325fa76b81d51326fc38a980eeaf47bb2d4b5b8c8d3d231d6db9f",
+      "solution_sha256": "8a42fee15982c70283352c76803438d1eeaed8e973b1b1101ff2e3de03fc6b0c",
+      "normalized_problem_sha256": "a40847495c34a9d5abd29d417d1a2e74101b9e3eed90aaa91b5225b99338e562"
+    },
+    {
+      "problem": "Write a loop in Python to find the summation of the square of the first 10 natural numbers.",
+      "solution": "sum = 0\nfor i in range(1, 11): \n    sum += i**2 \n \nprint(\"The sum of the square of the first 10 natural numbers is\", sum)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 7615,
+      "domain": "code_instruction",
+      "problem_sha256": "2c111901e2a22259577aa828397a2f03d47de7f4de053746ac7a5daca93e4135",
+      "solution_sha256": "7988554729618020749efca0bfb821ae5eadf414b085aec2fea4f85783547001",
+      "normalized_problem_sha256": "dfd91c3f00a1cf3a7c638beccf77f44c7bf81117b75f4381979f1f6258e79ee3"
+    },
+    {
+      "problem": "Read the given Python code and generate the output for the following input.\n\nmy_list = range(1, 11)",
+      "solution": "my_list = range(1, 11)\noutput = 0\nfor i in my_list:\n output += i\nprint(output) #55",
+      "source": "codealpaca-python-instruction",
+      "source_row": 13851,
+      "domain": "code_instruction",
+      "problem_sha256": "e888c2b5cda396e0b8c4391b55476366c3b1db4ca3e24c64ace239ce9328bf9a",
+      "solution_sha256": "5644685dcc4dad1092dd4622e5d73945e5a17471b6d6b92f6f5c9c36aabfddaa",
+      "normalized_problem_sha256": "dd6b00d30735020da3defd6d02f70137603b05c105920230acc4c3c60aa9db4d"
+    },
+    {
+      "problem": "Write a Python code snippet to sum up all the elements in a given dictionary.\n\n{\n  'a': 10,\n  'b': 15,\n  'c': 20\n}",
+      "solution": "d = {'a': 10, 'b': 15, 'c': 20} \n\nprint(sum(d.values())) # Output: 45",
+      "source": "codealpaca-python-instruction",
+      "source_row": 9193,
+      "domain": "code_instruction",
+      "problem_sha256": "2ff7d00f3fa29f9487480b33b1b00bbfebd61a4d9e330cb039096d34939ca214",
+      "solution_sha256": "b394651ed25d4dd152c93ea712c098f77dfa3ab04231c53e9466440bf0892e8a",
+      "normalized_problem_sha256": "0e7bcf8488a2370d663237008f1d93eb0a8f2f554e6c05d4d97f06998933c76d"
+    },
+    {
+      "problem": "Implement a function in Python that sorts a list in ascending order using Bubble Sort algorithm.\n\nmy_list = [4, 6, 3, 9, 1]",
+      "solution": "def bubble_sort(list):\n    for i in range(len(list)):\n        for j in range(i+1, len(list)):\n            if list[i] > list[j]:\n                list[i], list[j] = list[j], list[i]\n    return list\n\nmy_list = [4, 6, 3, 9, 1]\nprint(bubble_sort(my_list))",
+      "source": "codealpaca-python-instruction",
+      "source_row": 12061,
+      "domain": "code_instruction",
+      "problem_sha256": "41ab0fdac5c6b8cf212ca4417d94bc2135a4dec6cf551451835f574b7251bdcc",
+      "solution_sha256": "dbd17f60caeb9d2c9ac420692dae7ed34d4fb926b5c5dc388286b2c1b041d1cc",
+      "normalized_problem_sha256": "1e4758670e6d810a7151c813ec1872e837bdf86d75f6dfcc14772c2f28827faa"
+    },
+    {
+      "problem": "Name two methods of sorting a list in Python.",
+      "solution": "The two methods of sorting a list in Python are the sorted() function and the .sort() method.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 9764,
+      "domain": "code_instruction",
+      "problem_sha256": "8d0d910b16cf23ef8409b429edfb3ddb33fe3e82be26f89faf877c20145e4ffd",
+      "solution_sha256": "67120283ed293af89364c96a30a7f063cbda0db31b74ec3470b7b80ad6fb0183",
+      "normalized_problem_sha256": "38951b19cd319b973331e7466d776e87fe7be699e9e2e8c60ce5c8bfed60d43d"
+    },
+    {
+      "problem": "Rewrite the given Python code snippet using list comprehensions .\n\neven_list = []\nfor x in my_list:\n    if x % 2 == 0:\n        even_list.append(x)",
+      "solution": "even_list = [x for x in my_list if x % 2 == 0]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 13321,
+      "domain": "code_instruction",
+      "problem_sha256": "998079c77c0e42e43e227bca350ee4bc6497420bdcdbd6a59919fe875734fd9c",
+      "solution_sha256": "ea5ba674056fb040a0d2269f100690b28a0d273fdc58ea0a69b3fe088489f4ed",
+      "normalized_problem_sha256": "7b8ae6b443c278fe3c2ac7c0c39548497d0bb6e3ae7b33c41f1a30368526016d"
+    },
+    {
+      "problem": "Implement a function in Python that calculates the Levenshtein Distance of two strings.\n\nstr1 = \"hackathon\"\nstr2 = \"hack\"",
+      "solution": "def calculate_levenshtein_distance(str1, str2):    \n    distances = np.zeros((len(str1)+1, len(str2)+1))\n    for i in range(0, len(str1)+1):\n        distances[i, 0] = i\n    for j in range(0, len(str2)+1):\n        distances[0, j] = j\n    for i in range(1, len(str1)+1):\n        for j in range(1, len(str2)+1):\n            if str1[i-1] == str2[j-1]:\n                distances[i, j] = distances[i-1, j-1]\n            else:\n                distances[i, j] = min(distances[i-1, j], distances[i, j-1], distances[i-1, j-1]) + 1\n    return distances[len(str1), len(str2)]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 15916,
+      "domain": "code_instruction",
+      "problem_sha256": "0d208f23408d7e4cb8885a216c94969782f2ee0c6a06602452ea26a7462f0887",
+      "solution_sha256": "cfdae599b436be43b702521d83584d7b93e418f458d494ba05d64646310c3809",
+      "normalized_problem_sha256": "def5278a4ff7e9914e02c81d12bd9ac56593a2db8c97b283118e5d291f48e0c9"
+    },
+    {
+      "problem": "Update the given Python program to reverse a string.\n\ndef reverse_string(s): \n    #insert code here\n    return s",
+      "solution": "def reverse_string(s):\n    return s[::-1]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 19952,
+      "domain": "code_instruction",
+      "problem_sha256": "c83c4592471d77a48561601ef584f1ba85874b92b267623464cb4fd0cd3f2f46",
+      "solution_sha256": "6c277d449885ca7a83c3f01dda2b84ee6ea0d6f0aa21ec00482c6fa5df3505bd",
+      "normalized_problem_sha256": "7a576a52ffded8306c35e433f1e9cbe696cb77c8376028ab706787ae8c610b64"
+    },
+    {
+      "problem": "Create a function in Python that prints out a stringified version of a list.\n\n[1, 4, 6, 8]",
+      "solution": "def print_str_list(in_list):\n    \"\"\"This function takes a list and returns a stringified version of it\"\"\"\n    return \" \".join(str(x) for x in in_list)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 456,
+      "domain": "code_instruction",
+      "problem_sha256": "13abe9ca8358a566a7f35d03137365f850e0e0fa3b00a0d2a09c4ca424aaa31b",
+      "solution_sha256": "7a27f1e9810e778d78a9c181ae63d664baad8ffa5db6c239cb6618dfe1d58c57",
+      "normalized_problem_sha256": "f1d26ee05be12cc69d0f2aa9c116e2ea85ff2ac20165d2f4fb3a1f09e317e792"
+    },
+    {
+      "problem": "Create a class in Python to build a Frequency Table from a given array of numbers.\n\n[1,1,1,2,2,3,3,3]",
+      "solution": "class FrequencyTable:\n    def __init__(self, arr):\n        self.table = {}\n        for num in arr:\n            if num in self.table:\n                self.table[num] += 1\n            else:\n                self.table[num] = 1\n    def query(self, num):\n        return self.table.get(num, 0)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 19334,
+      "domain": "code_instruction",
+      "problem_sha256": "a6738003838531ce598bdd41faf682da289242b8c979f4eac02a9c22c7b196a6",
+      "solution_sha256": "11192b57d2ae04ab5e4b3a4500efed026bdd73935d5664262fc4c2d90a9f8ccb",
+      "normalized_problem_sha256": "daa36fd51c2801bc2959e886b8780eebfd953fc1bf4b7972c747a45abfd0112a"
+    },
+    {
+      "problem": "Given a range of numbers, write a python program to find the sum of the elements within that range.\n\nrange: 1 to 10",
+      "solution": "def sum_range(start, end):\n    res = 0\n    for i in range(start, end+1):\n        res += i\n    return res\n\nsum_range(1, 10)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 14842,
+      "domain": "code_instruction",
+      "problem_sha256": "f2a882fd5d8c8b88100c12251765af4443066ff50ee30ef1bcbfbcc8645a0443",
+      "solution_sha256": "6fa6521ea3146c8fdbed7f3fbc0dc353c58bc46c0d78a85fb0782721d958b22b",
+      "normalized_problem_sha256": "788ff9f1b792575f4d971c90e9965a77849239f27290e80b664da24d68c6e4b4"
+    },
+    {
+      "problem": "Implement a function in Python to determine if a string is a palindrome.",
+      "solution": "def is_palindrome(str): \n    rev = ''.join(reversed(str)) \n\n    if (str == rev): \n        return True\n    return False",
+      "source": "codealpaca-python-instruction",
+      "source_row": 2837,
+      "domain": "code_instruction",
+      "problem_sha256": "edd876ba12a6119d0044bc541aa496285af09539abe9443892994ad52ca470f8",
+      "solution_sha256": "82af53582783d114d61ba8eeaaa9fdcaddb2a25e14cdfb737fc5675755eab14b",
+      "normalized_problem_sha256": "38ee5d034be5ba96256379a5c40265b1e1c5b3ab019dfcff3cc7b2192c83eea6"
+    },
+    {
+      "problem": "Explain in simple terms what a dictionary is in Python.",
+      "solution": "In Python, a dictionary is a collection of unordered key-value pairs. It is a mutable data type which allows users to store data in the form of key-value pairs. A key is an immutable object (like a number, string, or tuple) that is used to access the value stored for the corresponding key. A value can be any type of object like an integer, float, list, string, etc.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 10758,
+      "domain": "code_instruction",
+      "problem_sha256": "057534b8f1cef6578940094823fca29259bcc159016b9b84a3dfb1fd284b1ec0",
+      "solution_sha256": "2e4d60ad6b092db41c96232e8160e85dd6a9721bc31e124b8b0a45035dfe7baf",
+      "normalized_problem_sha256": "2fa0b3ce9027c364147b903f02e439c58adc8c3ca042cce04013797e7a52333f"
+    },
+    {
+      "problem": "Reverse the given list using python.\n\nlist_to_reverse = [2, 3, 5, 6, 8, 10, 11]",
+      "solution": "def reverse_list(input_list):\n    \"\"\"Return a reversed copy of the list\"\"\"\n    return input_list[::-1]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 12589,
+      "domain": "code_instruction",
+      "problem_sha256": "57ce9acc956acd008e6fdb66194551920152aa00833350150a12df46c736404d",
+      "solution_sha256": "e87b47b293eb0e02ed019a47cdcaa9bb04f9b34703c164a9cbeccf67b77eece0",
+      "normalized_problem_sha256": "479b8e1c4f0a1dd3b81b34e56eec1f35f1995ae3df7f15004122d58100421a58"
+    },
+    {
+      "problem": "Create a string of length 100 using a Python loop and save it into a variable named 'string_100'.",
+      "solution": "string_100 = ''\nfor i in range(100):\n string_100 += 'x'",
+      "source": "codealpaca-python-instruction",
+      "source_row": 19256,
+      "domain": "code_instruction",
+      "problem_sha256": "bfa9e42022b677734a1d3cc23236076609c563f81cff400458244c754ecba574",
+      "solution_sha256": "b768f683f76f03a15736c331863b1f9f1d1e361903e03414f17197b650442c94",
+      "normalized_problem_sha256": "f7797d7ff65814c013bbb2f9d8961e83aba5773a1234401be91fb473961e4bbb"
+    },
+    {
+      "problem": "Generate a function in Python to calculate the total cost of an item given its price and quantity\n\nPrice=10 and Quantity=5",
+      "solution": "def calculate_total_cost(price, quantity):\n    return price * quantity",
+      "source": "codealpaca-python-instruction",
+      "source_row": 2959,
+      "domain": "code_instruction",
+      "problem_sha256": "588e9e1c4b00e03b8e6d3835ba08df6fe5f570b151513412cbc43ca2842f6c50",
+      "solution_sha256": "56435523826e7ba047d7518bcfd7f22270ba0e808dfc23b321c647abca86a1ed",
+      "normalized_problem_sha256": "b43af4a7a74634b669753a0fcaead5392a906dcb9cfb4052ba187a14e7fea6ed"
+    },
+    {
+      "problem": "Create a Python function to generate a Fibonacci sequence of a given length.",
+      "solution": "def generate_fibonacci(length): \n    result = [0, 1] \n    for i in range(2,length): \n        result.append(result[i-2] + result[i-1]) \n    return result",
+      "source": "codealpaca-python-instruction",
+      "source_row": 5389,
+      "domain": "code_instruction",
+      "problem_sha256": "90e8166b2922c48090ad3375a61fd63f1389e5400384d0037f3dcd2adfeb56b2",
+      "solution_sha256": "74ae0c8c9c3b6e401a6ca30af752e46bc7088482fbbb0a59f91e82e289d1aca0",
+      "normalized_problem_sha256": "5862a6357a9854250edfb5ffd7bd62a522993b36607caa63c5da5867079d3b36"
+    },
+    {
+      "problem": "Declare a variable named 'items' and assign it a list containing the elements \u2018pen\u2019, \u2018paper\u2019 and \u2018pencil\u2019 in Python.",
+      "solution": "items = ['pen', 'paper', 'pencil']",
+      "source": "codealpaca-python-instruction",
+      "source_row": 13984,
+      "domain": "code_instruction",
+      "problem_sha256": "7facfe4dc5970ff61490752f366b9ed6bacec5c469477e3af8784efa788e5c7a",
+      "solution_sha256": "9a59dba049cd73b31c72c17eb93bb05c960f6e1b0c1e2f52054dd3749978600c",
+      "normalized_problem_sha256": "c1bf4f06f586f4ec4dfcff2d2588d1a4dc6c1f9b75f3f6dcc6c061c57b9bee6b"
+    },
+    {
+      "problem": "Create a class in Python that can be used to store the details of a student.",
+      "solution": "class Student:\n    def __init__(self, name, age, gender):\n        self.name = name\n        self.age = age\n        self.gender = gender\n    \n    def set_details(self, name, age, gender):\n        self.name = name\n        self.age = age\n        self.gender = gender\n    \n    def get_details(self):\n        return f'Name: {self.name}, Age: {self.age}, Gender: {self.gender}'",
+      "source": "codealpaca-python-instruction",
+      "source_row": 15385,
+      "domain": "code_instruction",
+      "problem_sha256": "08c9a851ecefc256028f19f3e484c3133d0092d1996d49c8ddf8e2ea1607e1bf",
+      "solution_sha256": "6ba1ac432162116b4bcc852638a91ca074551b3568c698e1c24f0f4b157e0a69",
+      "normalized_problem_sha256": "30e3d0e5d77ab036c8354d2bae6e949987a81863735312ea980531d252f1d4a3"
+    },
+    {
+      "problem": "Design a Python class to represent geometric shapes.",
+      "solution": "class GeometricShape:\n\n    def __init__(self, sides):\n        self.sides = sides\n\n    def area(self):\n        if self.sides == 3:\n            return ((self.sides[0] + self.sides[1] + self.sides[2]) / 2)\n        else:\n            return 0",
+      "source": "codealpaca-python-instruction",
+      "source_row": 3695,
+      "domain": "code_instruction",
+      "problem_sha256": "9906ab18e68e20019fb4b6eca9b9d0f3307638db9403f56d70c79bb719511e4d",
+      "solution_sha256": "c9eb8853a28152b5be2845fb866dcc6c68d684befd5bae008a8df1b4169def53",
+      "normalized_problem_sha256": "64790b4f8be4a620a3715806d154ad84e914c63ee39bfc8b6eb8ce4dc446c3fe"
+    },
+    {
+      "problem": "Write a function in Python for printing a given 2D array.\n\narr = [[1,2,3], [4,5,6], [7,8,9]]",
+      "solution": "def print_2D_array(arr):\n  for row in arr:\n    for element in row:\n      print(element,end=\" \")\n    print()\n\nprint_2D_array(arr)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 911,
+      "domain": "code_instruction",
+      "problem_sha256": "6a7e257b60c4b3abf94cafef71bb3c123637abdbdf301583bda387a228f02b4d",
+      "solution_sha256": "5a02b3147665f31de559149149007c43143929894795c27d5cc9bfd14f930d43",
+      "normalized_problem_sha256": "cdb79286ec5cb839172c1c8d54eb44422030ed0fff1ce614dd56f7dbdf97d25d"
+    },
+    {
+      "problem": "How do you create a new list in Python from a given list that contains the square of each element?",
+      "solution": "The following code creates a new list from the given list by squaring each element using a list comprehension: new_list = [el**2 for el in original_list]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 6043,
+      "domain": "code_instruction",
+      "problem_sha256": "1f695ce8a89a21c211403a0210344ff2dd86023db64ce892ad3c5eb55a29b4d0",
+      "solution_sha256": "6fdd3c896c6a76380e72d4549fd1fbd0bb956d409d9a2ba1ef54f2cc204ea5b9",
+      "normalized_problem_sha256": "1af4401f94b420304d61fa6983e3cc88fd80eb856ea379b3adb8348cdd44b78b"
+    },
+    {
+      "problem": "What does the `filter()` method do in Python?",
+      "solution": "The filter() method in Python takes in a function and a list as arguments. The function is called with all the items in the list and a new list is returned which contains items\nfor which the function evaluates to True.\nIt is typically used to filter out elements from a list based on a certain condition.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 14372,
+      "domain": "code_instruction",
+      "problem_sha256": "3563dc998e0b17158bd5c863013be976c05152319d7608e22b17d8808fa61a4a",
+      "solution_sha256": "8584d18730cf84e7f6d1d57461f984b15f090da31189e9205c12d5ed0aad9a26",
+      "normalized_problem_sha256": "1028152c5d69a2e81d6246ae1629c829d51da2923b30bedc797043160437f0c5"
+    },
+    {
+      "problem": "Write a Python code snippet to display the multiplication table of 5.",
+      "solution": "for i in range(1, 11):\n    print(f\"5 * {i} = {5 * i}\")",
+      "source": "codealpaca-python-instruction",
+      "source_row": 6536,
+      "domain": "code_instruction",
+      "problem_sha256": "37a3e02b6ec8cefd3cce71465524821e1ecb5252b00179fdf8e6825f199ff264",
+      "solution_sha256": "dd6f395bef1b36942023219f13ea7707c83c5971b9ae462797335e4c85fb1148",
+      "normalized_problem_sha256": "6b5faea8d2c269691ffa72b90676414bda9abff4f2a301e0abb67a6086e6c96e"
+    },
+    {
+      "problem": "Explain what is Closure in Python Programming?",
+      "solution": "In Python, a closure is a higher order function (a function that takes one or more functions as arguments or returns a function) that allows a function to remember or access the variables or arguments of the enclosing scope\u2014even after the execution of the outer function has finished. A closure is created when a nested function is defined, and an inner function remembers the variables of its enclosing scope even after the execution of the outer function has finished.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 2800,
+      "domain": "code_instruction",
+      "problem_sha256": "b4874df4ec3286dd0f511c25e3ced9559172c773e4c868350989545a991d031b",
+      "solution_sha256": "c0efb2aeadd6a840acd3cbf4e0daae2a6482ef5cd5d1b100f9f90ab34a3d000f",
+      "normalized_problem_sha256": "936bad06e4430539ae82caee0fcfbfbe239d8e86f1d9e6593265ada8c9166ed4"
+    },
+    {
+      "problem": "Create a method to generate a random integer between 1 and 10 in Python.",
+      "solution": "import random\n\ndef random_int():\n    return random.randint(1, 10)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 4456,
+      "domain": "code_instruction",
+      "problem_sha256": "47c2e4c2165a9a6d2abcd244b14158361d023ea4acc3e9a59c4c6d4230c2f123",
+      "solution_sha256": "8a3f92b4c4ce398b5c68e34836ee7e84ff88ca70eb3996cb6df43cb4b33056bb",
+      "normalized_problem_sha256": "d8a11122fe52a02aa72ef0b2f40e459e1987d8af36a6f83866d883b5b1f7b1dc"
+    },
+    {
+      "problem": "Write a Python class for a Rectangle object with two instance attributes, length and width.",
+      "solution": "class Rectangle:\n    def __init__(self, length, width):\n        self.length = length \n        self.width = width",
+      "source": "codealpaca-python-instruction",
+      "source_row": 19109,
+      "domain": "code_instruction",
+      "problem_sha256": "0a083bda22b36731d820588e84f103c22ea615f88daf78b2a098234d2307385f",
+      "solution_sha256": "0fd14340f4539eff86bc443b21c1df517782f0d384949b597decd78b41166977",
+      "normalized_problem_sha256": "5d9c5052ec35e318d523cc2e5bf5984077c4a19f5bf90efd802491c56946b8bc"
+    },
+    {
+      "problem": "Implement a Fibonacci series generator using Python.",
+      "solution": "def generate_fibonacci(n):\n a, b = 0, 1\n fibonacci_series = [a]\n for i in range(n-1):\n a, b = b, a+b\n fibonacci_series.append(b)\n return fibonacci_series",
+      "source": "codealpaca-python-instruction",
+      "source_row": 16343,
+      "domain": "code_instruction",
+      "problem_sha256": "3ce332799938d5824076136dc0a0db68dd9bceb92ba86b60082b81a1b368e951",
+      "solution_sha256": "eec81a14c027da191893b1408275aba9cd3da76c7275c472145e1dd516c6e305",
+      "normalized_problem_sha256": "92bfe08cad088b1a268ad5189b45fb9c8216fddbd419aef0fd2de1c991863b85"
+    },
+    {
+      "problem": "Write a Python statement to print out the common items between two lists.\n\nlist1 = [1, 2, 3, 4]\nlist2 = [2, 4, 6 , 8]",
+      "solution": "for i in list1:\n  if i in list2:\n    print(i)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 10041,
+      "domain": "code_instruction",
+      "problem_sha256": "7e9dc6cf194d655132ffc61fcb8a43ca90febfda6845ceb214be766e9fc86fe3",
+      "solution_sha256": "ee70cbda2bd4da26ea607268dce70bc758cecdfb603009e70e9805cd0bb31d04",
+      "normalized_problem_sha256": "8314a8e91aac06c52f6146c6178fb056bdf0b6556de314c7e703834e27b5edc4"
+    },
+    {
+      "problem": "Write a python code snippet to calculate the sum of any number of integers.\n\nnum1 = 10\nnum2 = 6 \nnum3 = 8",
+      "solution": "sum = num1 + num2 + num3\nprint(\"The sum is\", sum)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 12971,
+      "domain": "code_instruction",
+      "problem_sha256": "fabda713fa5aad0ce0aa92852232a7eb95829ef01a5c48fd37ca4dbf926b19d4",
+      "solution_sha256": "d9ff3cf1e99e40dfb29968ea6c8850b0c69ed27bd3439bdf0aaaf09423f13a61",
+      "normalized_problem_sha256": "eebd484e87f0dda647ca6e7997ba3c62843e7e4967c6848be83ec3bb58a5a6c7"
+    },
+    {
+      "problem": "Solve the following programming puzzle using Python.\n\nA rope connected two opposite trees.  You need to cut the rope so the rope is never longer than 10 meters.  What is the shortest distance you can cut?",
+      "solution": "def closest_cutting_distance(total_rope_length):\n    '''This function will calculate the shortest distance you can cut a rope so the rope is never longer than 10 meters.'''\n    if total_rope_length <= 10:\n        return total_rope_length\n    else:\n        return total_rope_length - 10",
+      "source": "codealpaca-python-instruction",
+      "source_row": 9235,
+      "domain": "code_instruction",
+      "problem_sha256": "16c1432db52f65cedbc04a6a56ae194cee978bd0d88a7f33be96e28e7339704d",
+      "solution_sha256": "40693b895a1839a16b8c5ad0d2cefb487c5ba990e0cea6f0b178ed9ccc6cd15d",
+      "normalized_problem_sha256": "aa547536549a943dec320b93d0d1305821548d483da5ddae990734a7a1b0f395"
+    },
+    {
+      "problem": "Implement a Search algorithm in Python with a space complexity of O(n).",
+      "solution": "def search(list, target): \n    for i in range(len(list)): \n        if list[i] == target: \n            return i \n    return -1",
+      "source": "codealpaca-python-instruction",
+      "source_row": 5242,
+      "domain": "code_instruction",
+      "problem_sha256": "037517e9719a69dc8e8e96c84f5988eb556d6411981745e1d8e19267b9aad082",
+      "solution_sha256": "524c386a84ee1516d9e5f99c7915cbf599e4a77939c6238b1669cce4a2b7005d",
+      "normalized_problem_sha256": "1084c6ef113c2a614b323ac9735a9cf1010039cc4f78bad0ea914c8a9f561676"
+    },
+    {
+      "problem": "Explain the use of the continue keyword in Python",
+      "solution": "The continue keyword can be used to skip over certain elements in a loop body. It is often used to skip over certain unwanted elements. It works by returning to the loop condition by stopping the current iteration of the loop and jumping straight to the next iteration.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 10640,
+      "domain": "code_instruction",
+      "problem_sha256": "a5e6b25d84c01404a2d2a72d8bff4efafd3d3addf2548fde7da58018108363b4",
+      "solution_sha256": "16ef38edaf8532ef4525e888b8ff42271ce3d0b2e649cf060804e0b7329df9f8",
+      "normalized_problem_sha256": "fe3a0c5c4130dd3560f7a8482e9dbff9189058eb0c144648b581a8b60f75d0d4"
+    },
+    {
+      "problem": "Write a python code to generate permutations of an input string.\n\n\"abc\"",
+      "solution": "def permutations(string): \n    if len(string) == 0: \n        return [] \n  \n    if len(string) == 1: \n        return [string] \n  \n    l = [] \n    for i in range(len(string)): \n       m = string[i] \n       rem_string = string[:i] + string[i+1:] \n       for p in permutations(rem_string): \n           l.append(m + p) \n    return l",
+      "source": "codealpaca-python-instruction",
+      "source_row": 17866,
+      "domain": "code_instruction",
+      "problem_sha256": "6e262bf191c9cf5510bca271b0bcd7ac8b6747ec70fc2c5aafebbf31deeea2d3",
+      "solution_sha256": "8943b535a6376b16807b4d61356e89740bc39096de4df59be487d8f695943c42",
+      "normalized_problem_sha256": "7a3aa2d6bbaff858bb4fbb214a47b2cd1ca25be590dcbdbea5c16af27e0fd750"
+    },
+    {
+      "problem": "Write a Python script to fetch the top 10 latest YouTube videos.",
+      "solution": "import requests\nimport json\n\n#Generating Youtube API URL\nurl = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=10&regionCode=US&key={YOUR_API_KEY}'\n\n#Sending a GET request to API for obtaining data\nresponse = requests.get(url)\n\n#Data parsing and extracting top 10 latest YouTube Videos\ndata = json.loads(response.text)\nlatest_videos = []\nfor items in data['items']:\n    latest_videos.append(items['snippet']['title'])\n\nprint(\"Top 10 latest videos : \")\nfor item in latest_videos:\n    print(item)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 2474,
+      "domain": "code_instruction",
+      "problem_sha256": "22a53aed7483457a5391ff0029b844aca448c472c88e055d8d0d7ee08aabef04",
+      "solution_sha256": "b78e659250a49cd7bd73bd0fc6f290ebb8199e72e1c2c2f085547acf096cea88",
+      "normalized_problem_sha256": "8291cf467e1cfe0bef30a4f28e007a6a45f3d76160141d8371b533a1fa03ac8c"
+    },
+    {
+      "problem": "Write a code snippet using Python to print the following sentence \"Programming is fun!\".",
+      "solution": "print(\"Programming is fun!\")",
+      "source": "codealpaca-python-instruction",
+      "source_row": 1948,
+      "domain": "code_instruction",
+      "problem_sha256": "6545642d0d92d0eaec6854652cf0159f4451bd71fc411bb45fb29fc63e3cf1e8",
+      "solution_sha256": "9b1d601232c2d065d24ba04700b5f70542c14bfc01ddc144ccfa263a4169c75f",
+      "normalized_problem_sha256": "b6e5ab15dd1d19b80a100fcc5240715531f8cb40263cd58baf0808cdd9ec4e9c"
+    },
+    {
+      "problem": "Create a function in Python which takes in a list of numbers and returns the sum of all numbers.\n\n[1,2,3,4,5]",
+      "solution": "def list_sum(num_list): \n \n    # initialize sum\n    Sum = 0\n \n    # traverse through all numbers\n    for num in num_list: \n        Sum += num \n  \n    # return Sum\n    return Sum \n  \n# test the above code\nlist1 = [1,2,3,4,5] \nprint(list_sum(list1)) \n\n# Output:\n15",
+      "source": "codealpaca-python-instruction",
+      "source_row": 13291,
+      "domain": "code_instruction",
+      "problem_sha256": "f7abb2a753be3a3ef1ef21acdeef1350917e32a6d5deb806201a752b596b6d63",
+      "solution_sha256": "5e476a59dbc86220ddc880514f5f899657127946ca3b59305da13fe4fbbd3646",
+      "normalized_problem_sha256": "dfc31cde7589cc5d74a6416c7881d18ef0a21de7b14777f176d456ba88630f1b"
+    },
+    {
+      "problem": "Integrate the plotting library Matplotlib into this Python script.\n\nimport pandas as pd\ndata = pd.read_csv('data.csv')",
+      "solution": "import pandas as pd\nimport matplotlib.pyplot as plt \n\n# Read csv file \ndata = pd.read_csv('data.csv')  \n\n# Data visualization \nplt.plot(data) \nplt.xlabel('x-axis') \nplt.ylabel('y-axis')  \nplt.title('Plot of data')  \nplt.show()",
+      "source": "codealpaca-python-instruction",
+      "source_row": 6107,
+      "domain": "code_instruction",
+      "problem_sha256": "4ba14ca506f15bc4acfd909e46adb6fa3ab0c9d0dfc7c5e08b73db7b4ae1b93c",
+      "solution_sha256": "9acd9c1786ffc303c1c91d36eb292aa7fe3ac34276a4873640f9790fe3555ea7",
+      "normalized_problem_sha256": "3fde9e3e6f8c90052547bc2e086c08f69ad0ffa878f18130a28b8577c3ee6135"
+    },
+    {
+      "problem": "Provide a function to read a single line of user input in Python.",
+      "solution": "def read_input():\n    \"\"\"Reads a single line of user input.\"\"\"\n    return input()",
+      "source": "codealpaca-python-instruction",
+      "source_row": 9883,
+      "domain": "code_instruction",
+      "problem_sha256": "86fc016b76bc87c9211a759769333c44c15f6e2415601e879df3d80afcec779b",
+      "solution_sha256": "14c70f16ce98d026ac99f49d7d46c4734f2503662b10ddb55fb87ab3439d3b92",
+      "normalized_problem_sha256": "78c55ec847f39ed34e46337bf24531235a343ebc0715152b78e3134d3f077a7d"
+    },
+    {
+      "problem": "Create a Python dictionary that includes the keys \"name\", \"age\", and \"location\", and set the values to your name, age, and location.",
+      "solution": "my_dict = {\n \"name\": \"John Smith\",\n \"age\": 28,\n \"location\": \"New York\"\n}",
+      "source": "codealpaca-python-instruction",
+      "source_row": 16251,
+      "domain": "code_instruction",
+      "problem_sha256": "22996980faa36382a0fa8790e7a4d302ecc51d64e4d8a72f9a7c8adb210f15bd",
+      "solution_sha256": "baa457f44036dce63a101fd7049b41aed0d0c0b8a679eeb0b3dcaaff46cec4fc",
+      "normalized_problem_sha256": "20a94a4bfa0ff7601d2abb3321f9b785b803268744ee5ad65bb337c7f97fa108"
+    },
+    {
+      "problem": "Create a Python script that takes a list of numbers as an argument and returns the maximum number in the list.\n\nnumbers = [8, 1, 2, 3, 4, 5, 6, 7]",
+      "solution": "def maximum_number(numbers):\n    max_number = numbers[0]\n\n    for i in range(1, len(numbers)):\n        if numbers[i] > max_num:\n            max_number = numbers[i]\n    \n    return max_number\n\nmax_number = maximum_number(numbers)\nprint(max_number) # 8",
+      "source": "codealpaca-python-instruction",
+      "source_row": 2143,
+      "domain": "code_instruction",
+      "problem_sha256": "e21dfdaccaeb999530659d691d8b1158dd6db2095211634ebc70b0d22ff0e918",
+      "solution_sha256": "b2ff74d7547888f569a730d2e2e1025f370db7cce05110edd16a9fb5adf690c5",
+      "normalized_problem_sha256": "38c51379e49f4bbbe2deddfe46a54bc2bc86ecca5f31398b740c37fb03955b30"
+    },
+    {
+      "problem": "Create a python program to return a new list with each item multiplied by 2 in an existing list.\n\n[1, 2, 3, 4, 5]",
+      "solution": "def mult_by_two(nums):\n    \"\"\"\n    Returns a new list with each item multiplied by 2 in an existing list\n    :param nums: a list of numbers\n    :return: a list of numbers with each item multiplied by 2\n    \"\"\"\n    new_list = []\n    for num in nums:\n        new_list.append(num * 2)\n    return new_list\n\nif __name__ == '__main__':\n    nums = [1, 2, 3, 4, 5]\n    print(mult_by_two(nums))",
+      "source": "codealpaca-python-instruction",
+      "source_row": 15896,
+      "domain": "code_instruction",
+      "problem_sha256": "abba64369d876fafd5925e4d244196acfbd425de83003cc278bd39c41af1413e",
+      "solution_sha256": "2c2c1bc95e59a0e04496fc82722c8da60c74b64aa59d0baf13628bedb85011c6",
+      "normalized_problem_sha256": "a93b125660f2060ff3da52d9ebb6a45d9731d44fb822c4001c6e9bbf60e70325"
+    },
+    {
+      "problem": "What is the difference between len() and index() methods in Python?",
+      "solution": "The len() method returns the length of a string, while the index() method returns the index of a substring or character in the string. The len() method returns the number of characters or elements in the string, while the index() method returns the starting index of the substring in the string.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 18350,
+      "domain": "code_instruction",
+      "problem_sha256": "5b983cbda5fa9cc3868e89aa7b61713bbab2d69b49a2fc824af9283dd5e2f041",
+      "solution_sha256": "b3ca5a1d231c0eb26fae4cd565c8c7ac8ee741059ecee1edb193a5372123d041",
+      "normalized_problem_sha256": "25ea25a6d17d47a2e0044e34cb19dd0728d01415de9e15d6537015a8f36209b4"
+    },
+    {
+      "problem": "Writing a Python function which takes a 2D array as an argument and transposes it.\n\narr = [[4, 5, 44], [3, 8, 20], [2, 5, 10]]",
+      "solution": "def transpose_(arr):\n  transposedarr = []\n  for i in range(len(arr[0])):\n    row = []\n    for j in range(len(arr)):\n      row.append(arr[j][i])\n    transposedarr.append(row)\n  return transposedarr",
+      "source": "codealpaca-python-instruction",
+      "source_row": 10308,
+      "domain": "code_instruction",
+      "problem_sha256": "dd0003fc2308d587b4dc3cb434e03c12986fb66a2487f1656fed0beea8cf44fe",
+      "solution_sha256": "a08998feec3e1aec53509a0e14b7661780a95ce6779c6bb0aa63cc0ae75a66ed",
+      "normalized_problem_sha256": "50b5dfcef216b4c2f50726d2c0de4c8fea4e4ceacf437cb525b68a9b4257e736"
+    },
+    {
+      "problem": "Implement Quicksort in Python to sort this list of integers.\n\n[8, 5, 3, 9, 1]",
+      "solution": "def quicksort(arr):\n    if len(arr) <= 1:\n        return arr\n\n    pivot = arr[len(arr) // 2]\n    left = [x for x in arr if x < pivot]\n    middle = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n\n    return quicksort(left) + middle + quicksort(right)\n\nsorted_arr = quicksort([8, 5, 3, 9, 1])\n \nprint(sorted_arr)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 13537,
+      "domain": "code_instruction",
+      "problem_sha256": "21c3168a8114f6bd85b470d259a4e7da73ac83ad069b52d4851bc8c66a0562d6",
+      "solution_sha256": "ea041e1a9ac3540d013050099beb3450a96861f98f15973f820d2a2c93a708be",
+      "normalized_problem_sha256": "255da8351f0f6a1163efce105f6c5552696e50dcef900f8ba33e6ba619bc409a"
+    },
+    {
+      "problem": "Filter the following list of integer using python, so that only the numbers divisible by 2 are left\n\n[1, 2, 3, 4, 5, 6, 7, 8]",
+      "solution": "def filter_list(list): \n    new_list = []\n    for item in list:\n        if item % 2 == 0:\n            new_list.append(item)\n    return new_list \n\nlist = [1, 2, 3, 4, 5, 6, 7, 8]\nprint(filter_list(list))\n\n# Output: [2, 4, 6, 8]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 6814,
+      "domain": "code_instruction",
+      "problem_sha256": "030fffb7cfe788d408c9c5ce2b81538be0710ac25d70570a9235baacdd02ac1e",
+      "solution_sha256": "a84c4effad66a8af5afb32be861093d1324205f11fa7c4e57c3ceb3ca15d59d7",
+      "normalized_problem_sha256": "3c01b4091cae88231789bab654faeb8717b776fec0e1ed210ff094a763780fa1"
+    },
+    {
+      "problem": "Write a Python program to reverse each word of a given sentence.\n\nThis is a test",
+      "solution": "def reverse_words(sentence):\n    words = sentence.split()\n    reversed_words = [word[::-1] for word in words]\n    return ' '.join(reversed_words)\n\nprint(reverse_words(\"This is a test\")) # Output: sihT si a tset",
+      "source": "codealpaca-python-instruction",
+      "source_row": 13709,
+      "domain": "code_instruction",
+      "problem_sha256": "f1d198975c69d5b899e83e3e65c507e4bf4224269bd6fd77be694fe1fc3851d2",
+      "solution_sha256": "90f7511dfc705335cb75b7ae8b7343eeee64f299315c48e80c3bb92c6bfc6b2c",
+      "normalized_problem_sha256": "105becba315c49eb840f38db2ccbc89725a740821a4de37aeabe2c4e20df933e"
+    },
+    {
+      "problem": "Create a Python list of 10 numbers from 0 to 9.",
+      "solution": "numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 1283,
+      "domain": "code_instruction",
+      "problem_sha256": "4a4dead70188ea1174def2ca67b1f3b1e7851be1302c6c7004eac42f2b770885",
+      "solution_sha256": "28a1b65fbbab07f2303a68788253be62456a9e3282e7f8185c031dc35db6b71e",
+      "normalized_problem_sha256": "6ce0193048fd3fb6e71f610b51baf83f2bd70d9f290be6400682620c580315c5"
+    },
+    {
+      "problem": "Write a Python program to print out an ASCII art of a given word.\n\nword = \"happy\"",
+      "solution": "def draw_word(word):\n    art = \"\"\"\n                 __\n           _   /  \\\\\n           \\\\_/\\_/\\_/\n           /    |\n           \\___/\n          \\\\\\\\_//\n           \\/ \\/\n            \\/\n        \"\"\"\n    for letter in word:\n        art += \"  \" + letter\n    print(art)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 113,
+      "domain": "code_instruction",
+      "problem_sha256": "84ef56df6816b50c6b3188b0f5268ec4794fbd2fb4cc8ba670f14166551d47b0",
+      "solution_sha256": "6a3f4dfb34bbef43b172fb758a2f177f7ec1d12c9b73dcd75e7f561f5270159d",
+      "normalized_problem_sha256": "ec0111ea73ffe62abcbf18a8ecbbd7a23382a6d1a5d6019d3709a55e33a65075"
+    },
+    {
+      "problem": "Create a JSON object from a dictionary in Python.\n\n{\n    \"name\": \"John Doe\",\n    \"age\": 30,\n    \"address\": {\n        \"street\": \"Main Street\",\n        \"city\": \"New York City\"\n    }\n}",
+      "solution": "import json\n\ndata = {\n    \"name\": \"John Doe\",\n    \"age\": 30,\n    \"address\": {\n        \"street\": \"Main Street\",\n        \"city\": \"New York City\"\n    }\n}\n\njson_data = json.dumps(data)\nprint(json_data)\n# Output: {\"name\": \"John Doe\", \"age\": 30, \"address\": {\"street\": \"Main Street\", \"city\": \"New York City\"}}",
+      "source": "codealpaca-python-instruction",
+      "source_row": 8689,
+      "domain": "code_instruction",
+      "problem_sha256": "f9e285c758330408029f8aac420c0fc518f915b4d82f632347ebb398b07ef9ee",
+      "solution_sha256": "5c8397f416950e7c5a95e7f562d5ec5e18cbbe11c43b3058e038ac183ff95b2f",
+      "normalized_problem_sha256": "f772b90c8789beb0e67a9d846fcfc40060c86412f0701581e265a17c1babfeb5"
+    },
+    {
+      "problem": "Create a looping statement in Python to print the alphabet in lowercase.",
+      "solution": "for letter in \"abcdefghijklmnopqrstuvwxyz\":\n    print(letter)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 5899,
+      "domain": "code_instruction",
+      "problem_sha256": "3cb17251c7bb010a27182626650505ecdf327c2dda830be7f83856da1df9c992",
+      "solution_sha256": "729fd4832dccc1599b229db2b7d1f8c00eebbf09b04a4429125a6ddc745f86f9",
+      "normalized_problem_sha256": "860a5838c76e30da7b26a220d24ef608b62050ba34940e02ae01bab7be9b11fe"
+    },
+    {
+      "problem": "Code a solution in Python to replace all the occurences of a specific word in a string.\n\nsentence = \"I like apples\"\nword = \"apples\"\nreplacement = \"bananas\"",
+      "solution": "def replace_word(sentence, word, replacement):\n    words = sentence.split(\" \")\n    new_sentence = \"\"\n    for w in words:\n        if w == word:\n            w = replacement\n        new_sentence += w + \" \"\n    return new_sentence\n\nsentence = \"I like apples\"\nword = \"apples\"\nreplacement = \"bananas\"\n\nprint(replace_word(sentence, word, replacement))",
+      "source": "codealpaca-python-instruction",
+      "source_row": 16447,
+      "domain": "code_instruction",
+      "problem_sha256": "11a65454aacc787839058762e6740aafd10ed6f17fa7f0795bd9a2bdabf81cfe",
+      "solution_sha256": "4182333da01c72da7ceebeb14fa18098fee67bc64f5c5d9212b859e5804cf856",
+      "normalized_problem_sha256": "87d077137b3270c3db34456d6660a50d6762fa0ce673bf083d2d8acf83716f56"
+    },
+    {
+      "problem": "Create a python function that computes the area of a rectangle given the length and width.",
+      "solution": "def calculateRectangleArea(length, width):\n  area = length * width\n  return area",
+      "source": "codealpaca-python-instruction",
+      "source_row": 9098,
+      "domain": "code_instruction",
+      "problem_sha256": "a2bc069f92496b26bb85647c04625527134d62d8f151fc653ed80ad4c658b1b4",
+      "solution_sha256": "0210301a5cb99f26fc834458060d8d74c3399226cd782c2588d5371599ebd402",
+      "normalized_problem_sha256": "cdcb598b3a02f0ce9dbeaf2e737021705e8e07ed280f7e0b1de723de23f56ce6"
+    },
+    {
+      "problem": "Design a program in Python which takes a string as input and returns a list of words from the string.\n\nstring1 = 'Python Programming is Fun!'",
+      "solution": "def get_words(string1):\n    words = string1.split()\n    return words",
+      "source": "codealpaca-python-instruction",
+      "source_row": 14351,
+      "domain": "code_instruction",
+      "problem_sha256": "1e7a12ea79c9f9f4467a291f31e92a054129f39a9a9878e93bcc6f04e9201534",
+      "solution_sha256": "65b32e6f9f608574714ed23a8468842afe20c8951bb712c14e360a0eb540f7f4",
+      "normalized_problem_sha256": "9b0fe2175929b32ca1496e4bc7b8ff1f87bd88e7f2d0dd71c53a1db7a9ec9bf4"
+    },
+    {
+      "problem": "Formulate a regex expression in Python to check if a given string is an email address.",
+      "solution": "import re \n\ndef is_email(string): \n   regex = '^[a-z0-9]+[\\._]?[a-z0-9]+[@]\\w+[.]\\w+$'\n   if(re.search(regex,string)): \n      print(\"Valid Email\")  \n   else: \n      print(\"Invalid Email\")",
+      "source": "codealpaca-python-instruction",
+      "source_row": 2768,
+      "domain": "code_instruction",
+      "problem_sha256": "83c2301e72a0db8e60ad18b952bb370b61d3548a4f023b5ba7c94f64f0711763",
+      "solution_sha256": "d99b4c694f22919e817b072e00e26a21c067215a2edc668315a2722110d463f5",
+      "normalized_problem_sha256": "7b6374f5e81332d44fb213cce4616efe48cf7cf98d6fc68e405d3a62f7ca780b"
+    },
+    {
+      "problem": "Name five different Python libraries used for visualization.",
+      "solution": "Matplotlib, Seaborn, Bokeh, Plotly, and Altair.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 15241,
+      "domain": "code_instruction",
+      "problem_sha256": "34aace296ba2645c535edf03ef431757e784bcd1bbdad2f39fb588020b4bebaf",
+      "solution_sha256": "02615b6b2f1871ef682e1b09f0b5790a2d3e05c12cd6cbd2d6d640c16d9accdc",
+      "normalized_problem_sha256": "fb6e6fbdeea3fbb3ab10e71b6afe6d20ca43107f7252ff573b86aad571ccde16"
+    },
+    {
+      "problem": "Make a copy of a given dictionary in Python.",
+      "solution": "import copy\n\noriginal_dict = {1: 'a', 2: 'b', 3: 'c'}\nnew_dict = copy.deepcopy(original_dict)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 9326,
+      "domain": "code_instruction",
+      "problem_sha256": "421457d86d9257991d04eb9c94a19ca7d752555f5f9e435d1c1c01a7b55ae2bd",
+      "solution_sha256": "aaa68c907836096f870d0f34c3b172bcabdc6cc7363c626126a49c0019e956ef",
+      "normalized_problem_sha256": "cdc9af148a077dd77d4f77d547b538214b4010e3c816285efabb043ac2202115"
+    },
+    {
+      "problem": "Initialize an empty list in Python and then add three items to it.",
+      "solution": "my_list = []\nmy_list.append(\"item1\")\nmy_list.append(\"item2\")\nmy_list.append(\"item3\")",
+      "source": "codealpaca-python-instruction",
+      "source_row": 619,
+      "domain": "code_instruction",
+      "problem_sha256": "9b5336d21d3f4042abc88ac7921cb128ec730fe3bf0a54736615c65a3280ebcf",
+      "solution_sha256": "23e2f88791673bf48d149e4aaabec52c9cc51ee1ec812a53b75426f5b3cd0946",
+      "normalized_problem_sha256": "1f4c1ecbe0a2ee9908841b128b092cd81f2dac55e29488c6b37278937817ccc4"
+    },
+    {
+      "problem": "How to convert a pandas DataFrame to a python list?",
+      "solution": "The DataFrame can be converted to a list using the tolist() method. For example:\n\nimport pandas as pd\n\ndf = pd.DataFrame([[1, 2], [3, 4], [5, 6]])\nmy_list = df.tolist()\nprint(my_list)\n\n# Output: [[1, 2], [3, 4], [5, 6]]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 17632,
+      "domain": "code_instruction",
+      "problem_sha256": "69e319690c632dda582235a387c303bb3ae2d0769b8f3b0d1974bca0fbd1ca69",
+      "solution_sha256": "4894c452ebd31ad5e0a7da905cf29599f015a788ca153710e93f4d281330cf24",
+      "normalized_problem_sha256": "5145bc7789b923e81e3f5bf86a2e3876bafa7fed293610a4c8588f0f884f8ccc"
+    },
+    {
+      "problem": "Create a function in Python that prints out all prime numbers between two given numbers.",
+      "solution": "def print_primes(start, end):\n    for num in range(start, end):\n        if num > 1:\n            for i in range(2, num):\n                if (num % i) == 0:\n                    break\n            else:\n                print(num)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 8982,
+      "domain": "code_instruction",
+      "problem_sha256": "3317d2b628491d975508ad1ba798ca3a743578258d9be9fe4152526d39065501",
+      "solution_sha256": "77a5aed1045c239eee178146f0041fdabdb475a3cc7407f9ed4cbc83e6328c2a",
+      "normalized_problem_sha256": "639c0bb833c998289c921cce5567ec824f03ce18341acfa167f4993958383540"
+    },
+    {
+      "problem": "Generate a HTTP request using Python to send a GET request to https://www.wikihow.com/Main-Page",
+      "solution": "import requests\n\nurl = 'https://www.wikihow.com/Main-Page'\n\nresponse = requests.get(url)\n\nprint(response)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 12776,
+      "domain": "code_instruction",
+      "problem_sha256": "c30d15b54540597328e3f2a49a5d359f788c2f41f209b849edf91751b490180b",
+      "solution_sha256": "ed6f6cf9dd168035a46d6ba34803a17ae563fc2a7e34a5d3fed173ef95ca5a46",
+      "normalized_problem_sha256": "8aad306289555f5b673b7344453480a49c3d97a2e911a66534e42ad207c3138d"
+    },
+    {
+      "problem": "Write Python code to find the nth element of a Fibonacci sequence.",
+      "solution": "def Fibonacci(n): \n    if n<0: \n        print(\"Incorrect input\") \n    elif n==1: \n        return 0\n    elif n==2: \n        return 1\n    else: \n        return Fibonacci(n-1)+Fibonacci(n-2)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 5780,
+      "domain": "code_instruction",
+      "problem_sha256": "8deae398730edde431727f35ca274a577b2ab273b5fa2d1411d4c1674f525e6d",
+      "solution_sha256": "a11d2e2e133c0ddd8d3a2a563f9310b53d883d08ee82a3fbe5d8121b477eba63",
+      "normalized_problem_sha256": "822594611058f6477a7265148fe407ad255e230816d09db5b5d298cd1276a56a"
+    },
+    {
+      "problem": "Write a Python program to remove the nth index character from a nonempty string.\n\nvar_str = Python, n = 0",
+      "solution": "def remove_character(var_str, n):\n  first_part = var_str[:n] \n  last_part = var_str[n+1:]\n  return first_part + last_part\n\nprint(remove_character('Python', 0))\n\nOutput: ython",
+      "source": "codealpaca-python-instruction",
+      "source_row": 14536,
+      "domain": "code_instruction",
+      "problem_sha256": "d025081d1930936dde9fc03ffcddf5130b0981c2c152cd626fe60f63062f488b",
+      "solution_sha256": "5ae03b5f9e73ac25d6288050745b456e408274b2718d3980f66e049dfaa65197",
+      "normalized_problem_sha256": "052c4fe63dd15bd56f296fe8d73221f3ece3de08b3514fc3711d0ec06a790cd9"
+    },
+    {
+      "problem": "Deconstruct this line of Python code and explain what it does\n\ny = [x**2 for x in range(10)]",
+      "solution": "This line of code is a Python List Comprehension, it will iterate through the range of 0 to 9 and square each of those numbers and add them to a new list 'y'. The list will contain the squares of the numbers 0 to 9, i.e. [0, 1, 4, 9, 16, 25, 36, 49, 64, 81].",
+      "source": "codealpaca-python-instruction",
+      "source_row": 8079,
+      "domain": "code_instruction",
+      "problem_sha256": "ea8a8b5cbfa3ad6d21465086c578eb7caae8c942cc8c926d94371221cd7282cd",
+      "solution_sha256": "d3b19690e6d36b91697d85e56c06bea9c290830fa18b6c0d9ea199acea989d68",
+      "normalized_problem_sha256": "f597b564327e180207f00541e6ad9c997c929135ca785e1859a43f637dc4c8c6"
+    },
+    {
+      "problem": "Rewrite the following Python function so it returns the opposite of the original output.\n\ndef returnsThree() :\n return 3",
+      "solution": "def returnsThree():\n    return -3",
+      "source": "codealpaca-python-instruction",
+      "source_row": 8800,
+      "domain": "code_instruction",
+      "problem_sha256": "9973ab9c167d461bb0f0f9ac4b88b33691d0c2f2cc25b6355ae0c0e65d5a1c29",
+      "solution_sha256": "d87e232dd104f2b40d3e42048db6494148863f693e8540a6668f102e63ae8cef",
+      "normalized_problem_sha256": "723fe6270b7d53be11d889e5afd5bbc4f4cd3e542f6b3782b7c7dfcb63a9f866"
+    },
+    {
+      "problem": "What is the result of the following operation in Python?\n\nx = 1\ny = 3\nz = 4\n\nx = y - z",
+      "solution": "x = -3",
+      "source": "codealpaca-python-instruction",
+      "source_row": 18675,
+      "domain": "code_instruction",
+      "problem_sha256": "af3f53c7acc0bda3250dcd5a26500d9798d1434d24b5a3e1935987e2f6d3ade7",
+      "solution_sha256": "458cee473d24bd9208208c80431244da2242510222ad7b71849c820e81ca485b",
+      "normalized_problem_sha256": "ce4e390b59893b091fcf15b38aec699c26bff77aff7c27114f822ed939938c67"
+    },
+    {
+      "problem": "Write a method in Python to append a given list to another list.\n\nlist_1 = [1,2,3]\nlist_2 = [4,5,6]",
+      "solution": "list_1.extend(list_2)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 9604,
+      "domain": "code_instruction",
+      "problem_sha256": "d28d7cd63c83a97b849fcfa7bd475e32efa4a7ed30cc863986b132255b3291eb",
+      "solution_sha256": "20cb050d888bd33f985eee96342fec688708a9392ce803f437f0fe9429fe42fb",
+      "normalized_problem_sha256": "60924510a64b83062b658d801fb30d286d42ec17dea76a5ad38a17eb3d718333"
+    },
+    {
+      "problem": "Create a function in Python which takes two strings as arguments and returns true if the first string contains the second string, false otherwise.",
+      "solution": "def contains(string1, string2):\n    return string2 in string1",
+      "source": "codealpaca-python-instruction",
+      "source_row": 10744,
+      "domain": "code_instruction",
+      "problem_sha256": "28a2bded2c6f8f276f2178e79b4d2bcfc354b33bfaf3be8a69dd87dd84646617",
+      "solution_sha256": "a9d251f6e831b7cf01d576397e58a6d382511ea968612c798e96c710b238d745",
+      "normalized_problem_sha256": "260a33f4e1f2b7e4d5b573b7c2c0b9eca33743cf1642230a5d69f3ff39295c00"
+    },
+    {
+      "problem": "Create a Python class for circles with radius and color as its properties.",
+      "solution": "class Circle:\n \n    # Constructor\n    def __init__(self, radius, color):\n        self.radius = radius\n        self.color = color\n \n    # To get radius\n    def getRadius(self):\n        return self.radius\n \n    # To get color\n    def getColor(self):\n        return self.color",
+      "source": "codealpaca-python-instruction",
+      "source_row": 8504,
+      "domain": "code_instruction",
+      "problem_sha256": "53d3005555386384dd70e21928989a1a49029b4b3b4464d37188417505405026",
+      "solution_sha256": "895b41b0094b6894713bba3578a439decf0dfa83ecf0362b3b3058f4fce43ccd",
+      "normalized_problem_sha256": "e16253a6743595fe55a3d45b01114be4f1ce57b50e95ec5448fe9a8536024bb3"
+    },
+    {
+      "problem": "Create a Python program to find the average of the given numbers in the list",
+      "solution": "my_list = [2, 4, 10, 20]\n\ndef average(nums):\n    return sum(nums) / len(nums)\n\nprint(average(my_list))\n\nOutput:\n8.0",
+      "source": "codealpaca-python-instruction",
+      "source_row": 15694,
+      "domain": "code_instruction",
+      "problem_sha256": "67825af26ca41ec5f3a65254cf62abe1810a194d4020a2068c28057feeb53ff7",
+      "solution_sha256": "71c4785fffcb275d2edf4be6435e6477f5ab5af4966a5440f48a407aead80cf3",
+      "normalized_problem_sha256": "1b6bcfb1f272f626f8d977d27d8d91135c8cb111ef5ff751bd04be44f21556bb"
+    },
+    {
+      "problem": "Suggest a way to convert the following XML code into JSON in Python.\n\n<data>\n  <records> \n  \t<record name=\"John Smith\" age=\"27\">\n   \t\t<address>123 Main Street</address>\n   \t</record>\n    <record name=\"Jane Smith\" age=\"18\">\n    \t<address>167 King Avenue</address>\n    </record>\n  </records>\n</data>",
+      "solution": "import json \nimport xmltodict \n  \nxml_data = \"\"\"\n<data> \n  <records> \n    <record name=\"John Smith\" age=\"27\"> \n      <address>123 Main Street</address> \n    </record> \n    <record name=\"Jane Smith\" age=\"18\"> \n      <address>167 King Avenue</address> \n    </record> \n  </records>\n</data> \n\"\"\"\n  \nxml_dict = xmltodict.parse(xml_data)  \njson_data = json.dumps(xml_dict) \nprint(json_data)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 14516,
+      "domain": "code_instruction",
+      "problem_sha256": "dd1bcb1680238a52fa802ddc101cdaa1e3f271846c2469c9701253623ce038e3",
+      "solution_sha256": "888447c30f6b0e0cb008850467d7b272b44c6f51e4834c8897d5bc847ef3ba3c",
+      "normalized_problem_sha256": "90b168ecbe11cd0e8d68c3863300dbbad6792e698f843c5e8e86af4dc5ab169f"
+    },
+    {
+      "problem": "Suggest a python code that returns the average of all the elements in a list.",
+      "solution": "def avg_list(lst): \n    return sum(lst) / len(lst)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 17864,
+      "domain": "code_instruction",
+      "problem_sha256": "86c638575ef21b44382c07eb3e6d37c91ce1048131c4ac3dc5fa2c06a245e088",
+      "solution_sha256": "daf7e22835716b4f2b85de1c900c37be863ffed4fac209b59dc7c3258ec2fec9",
+      "normalized_problem_sha256": "8683fb940cf38705c055e2a5e49d9f6e4a83d4843aa9a813f029571fb531cf6b"
+    },
+    {
+      "problem": "Create a program in Python that takes two strings as input and determines if they are anagrams of each other\n\nstring1=\"listen\";\nstring2=\"silent\";",
+      "solution": "def isAnagram(str1, str2): \n\n # convert both strings into lowercase \n str1 = str1.lower()\n str2 = str2.lower()\n  \n # sort both strings \n sortedStr1 = ''.join(sorted(str1)) \n sortedStr2 = ''.join(sorted(str2)) \n  \n # check if sorted strings are equal \n if sortedStr1 == sortedStr2: \n     return True\n else: \n     return False\n\nresult = isAnagram(string1, string2)\nprint(result)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 17036,
+      "domain": "code_instruction",
+      "problem_sha256": "634f33347f85bd711a34e08e30c6ee68c8955c7e935d81566d687c0c6445056d",
+      "solution_sha256": "ae0175b8ddb33b43beb94838680ed562a215b6dc9f63381649a4aff607b6718a",
+      "normalized_problem_sha256": "99551509aa0596fbe6c9a3825416c153cf89fb08b49b3501704812215b4fe958"
+    },
+    {
+      "problem": "Suggest a better way to compare two strings in Python.",
+      "solution": "Using Python's Standard Library function `difflib.SequenceMatcher` is a more efficient way to compare two strings. This function uses an algorithm to compute the longest common subsequence between the two strings which is then used to calculate the similarity score of the given strings.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 12251,
+      "domain": "code_instruction",
+      "problem_sha256": "c323dd048386940898ea107133ed753bc83658c40f90a2b534cae9732bc1f87a",
+      "solution_sha256": "da820f37f12d7dd24e8a1d8d67f19517ecb5b4c08dd27143262494fe8a314525",
+      "normalized_problem_sha256": "72f38513882c8ee66de59f8393f51ccee38094e9110ecd5bd9f75206ee201549"
+    },
+    {
+      "problem": "Create a python function which finds the intersection of two lists\n\nlist1=[2, 5, 8, 10]\nlist2=[3, 5, 8, 10]",
+      "solution": "def intersect(list1,list2):\n    return [i for i in list1 if i in list2]",
+      "source": "codealpaca-python-instruction",
+      "source_row": 10601,
+      "domain": "code_instruction",
+      "problem_sha256": "149c0219d46390f007a2b17c48e9db5ecf657fdde4c24b285ad389bd2d0ccf4d",
+      "solution_sha256": "b57def02f61dca04d359eecce4c52476b8e4b4828c2757dd806d857759c500e0",
+      "normalized_problem_sha256": "b45c66044a268063f4dfe0f1c0a46ea2113ac515303522842f45a56f003ece3c"
+    },
+    {
+      "problem": "Create a script in Python which can generate random numbers in a given range.",
+      "solution": "import random\n\ndef generate_random_number_in_range(min_value, max_value):\n    return random.randint(min_value, max_value)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 4544,
+      "domain": "code_instruction",
+      "problem_sha256": "b726ab1af506a853c451cc3d92b5062493e95b07290ef855cd9b5d892181ee1b",
+      "solution_sha256": "a069482eee8b6e4b2be5416828ac2712aad7c6df44baacc08306f70387080f10",
+      "normalized_problem_sha256": "f5d02f4c776988f2a74f3dc77e9ba09bf434d85521c95b79abecfa639b1fe5da"
+    },
+    {
+      "problem": "How do you debug an application in Python?",
+      "solution": "Debugging an application in Python can be done using a variety of methods such as using a debugger like pdb, setting breakpoints, using logging, using the assert statement, etc. Additionally, tools like PyCharm and Visual Studio Code come with built-in debugging capabilities.",
+      "source": "codealpaca-python-instruction",
+      "source_row": 6073,
+      "domain": "code_instruction",
+      "problem_sha256": "5b9567de23593f3284ea51b68d2a30d17e6198706b2a8ec2ee76fe3e5a597ab1",
+      "solution_sha256": "b8b9fe68f168f33dd73255874b958df6c71e87ad900bba297fe6906547d4df77",
+      "normalized_problem_sha256": "2a9e86ad4b86bbffa92c50cf7ccc33f13463acc61c5690b8d4ea5778aca321c5"
+    },
+    {
+      "problem": "Given the following Python code, identify if it is syntactically correct or not.\n\ndef add(a\nb):\nreturn a+b",
+      "solution": "false",
+      "source": "codealpaca-python-instruction",
+      "source_row": 16653,
+      "domain": "code_instruction",
+      "problem_sha256": "980529092f1fb460785365197eb86299db3227b66be2731979a7be58ea052a73",
+      "solution_sha256": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa",
+      "normalized_problem_sha256": "214515fd0bac4d82a50aa1e8c358ec5179181f0ab24d77931830f79bc6998543"
+    },
+    {
+      "problem": "Create a Python function which accepts two numbers then return an array with the Fibonacci sequence starting by the two numbers.\n\nstart_1: 1\nstart_2: 2",
+      "solution": "def fib_array(start_1, start_2):\n    arr = [start_1, start_2]\n    while True:\n        next_num = arr[-1] + arr[-2]\n        if next_num > 100:\n            break\n        arr.append(next_num)\n    return arr",
+      "source": "codealpaca-python-instruction",
+      "source_row": 12339,
+      "domain": "code_instruction",
+      "problem_sha256": "a4e54a0b6645b1936a4930018e5d01267d90372740ab0b4a2c7b56361da9504d",
+      "solution_sha256": "dfdaef92362f30c4380e98fc3f0585ba79aacdd2100cf60530bca8f489ee3644",
+      "normalized_problem_sha256": "8fc638a062c2e4704ed8a26e31ae3653fe1e7b9c5ae7c78e84472402e405a13c"
+    },
+    {
+      "problem": "Construct a for loop in Python to iterate through the list [3, 2, 5, 4, 6] in reverse order.",
+      "solution": "for num in reversed([3, 2, 5, 4, 6]):\n    print(num)",
+      "source": "codealpaca-python-instruction",
+      "source_row": 17235,
+      "domain": "code_instruction",
+      "problem_sha256": "02eb0c91a9174a2eaa6e77b049f32d1ceb71af7763a1f7e97647835f611d73ac",
+      "solution_sha256": "d265e5635a90441ebb6482ba30063033443507af02bd569fac57dbf40125ea86",
+      "normalized_problem_sha256": "0408c0bc3d7d2deae17270769a12e8eec05d7cb1128c15e4f842fb66134545c6"
+    }
+  ],
+  "scope": "Calibration text, not evaluation. Python-keyword subset of synthetic CodeAlpaca instructions, no asserted code correctness."
+}
