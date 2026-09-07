@@ -1,0 +1,1494 @@
+{
+  "mode": "ar8",
+  "config": {
+    "async_scheduling": false,
+    "worker_extension_cls": "metrics.MetricsWorker",
+    "model": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+    "dtype": "bfloat16",
+    "max_model_len": 4096,
+    "max_num_seqs": 8,
+    "max_num_batched_tokens": 2048,
+    "gpu_memory_utilization": 0.8,
+    "enable_prefix_caching": false,
+    "seed": 0,
+    "generation_config": "vllm",
+    "attention_config": {
+      "backend": "FLASH_ATTN"
+    },
+    "enforce_eager": false,
+    "compilation_config": {
+      "mode": 0,
+      "cudagraph_mode": "FULL",
+      "cudagraph_capture_sizes": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64
+      ]
+    },
+    "disable_log_stats": false
+  },
+  "args": {
+    "mode": "ar8",
+    "split": "eval",
+    "count": 8,
+    "repeat": 0,
+    "tag": "quick512",
+    "cap": 512,
+    "offset": 0,
+    "worker_index": 0,
+    "workers": 1
+  },
+  "setup_wall_seconds": 13.769518679007888,
+  "gpu_identity": [
+    {
+      "jit_events": 0,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "22084c79-06ae-e41c-3584-e137264393b6",
+      "allocated": 37835611648,
+      "reserved": 37899730944,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "attachment_check": [
+    {
+      "passed": true,
+      "target_size": 8,
+      "target_and_draft_embedding_head_samples_verified": true
+    }
+  ],
+  "warmup_wall_seconds": 54.98468942940235,
+  "measurement_wall_seconds": 130.7441915916279,
+  "gpu_before": [
+    {
+      "jit_events": 0,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "22084c79-06ae-e41c-3584-e137264393b6",
+      "allocated": 37835611648,
+      "reserved": 37899730944,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "gpu_after": [
+    {
+      "jit_events": 0,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "22084c79-06ae-e41c-3584-e137264393b6",
+      "allocated": 37835611648,
+      "reserved": 37899730944,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "metrics_before": [
+    {
+      "name": "vllm:estimated_flops_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_read_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_write_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_requests_running",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "reason": "capacity"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "reason": "deferred"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "sleep_state": "awake"
+      },
+      "value": 1.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "sleep_state": "weights_offloaded"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "sleep_state": "discard_all"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:kv_cache_usage_perc",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_preemptions",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 369
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "source": "local_compute"
+      },
+      "value": 369
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "source": "local_cache_hit"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "source": "external_kv_transfer"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_cached",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 1443
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "finished_reason": "stop"
+      },
+      "value": 4
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "finished_reason": "length"
+      },
+      "value": 2
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "finished_reason": "abort"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "finished_reason": "error"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "finished_reason": "repetition"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_prompt_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 369.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 5,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 1443.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 3,
+        "500.0": 4,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:iteration_tokens_total",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 1443,
+      "sum": 1812.0,
+      "buckets": {
+        "1.0": 1437,
+        "8.0": 1437,
+        "16.0": 1437,
+        "32.0": 1439,
+        "64.0": 1439,
+        "128.0": 1443,
+        "256.0": 1443,
+        "512.0": 1443,
+        "1024.0": 1443,
+        "2048.0": 1443,
+        "4096.0": 1443,
+        "8192.0": 1443,
+        "16384.0": 1443,
+        "+Inf": 1443
+      }
+    },
+    {
+      "name": "vllm:request_max_num_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 1443.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 3,
+        "500.0": 4,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_params_n",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 6.0,
+      "buckets": {
+        "1.0": 6,
+        "2.0": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_params_max_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 2112.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 0,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 2,
+        "500.0": 2,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:time_to_first_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.23502349853515625,
+      "buckets": {
+        "0.001": 0,
+        "0.005": 0,
+        "0.01": 0,
+        "0.02": 0,
+        "0.04": 5,
+        "0.06": 5,
+        "0.08": 6,
+        "0.1": 6,
+        "0.25": 6,
+        "0.5": 6,
+        "0.75": 6,
+        "1.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "7.5": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "40.0": 6,
+        "80.0": 6,
+        "160.0": 6,
+        "640.0": 6,
+        "2560.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:inter_token_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 1437,
+      "sum": 54.92574969958514,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 1437,
+        "0.075": 1437,
+        "0.1": 1437,
+        "0.15": 1437,
+        "0.2": 1437,
+        "0.3": 1437,
+        "0.4": 1437,
+        "0.5": 1437,
+        "0.75": 1437,
+        "1.0": 1437,
+        "2.5": 1437,
+        "5.0": 1437,
+        "7.5": 1437,
+        "10.0": 1437,
+        "20.0": 1437,
+        "40.0": 1437,
+        "80.0": 1437,
+        "+Inf": 1437
+      }
+    },
+    {
+      "name": "vllm:request_time_per_output_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.2302582197869791,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 6,
+        "0.075": 6,
+        "0.1": 6,
+        "0.15": 6,
+        "0.2": 6,
+        "0.3": 6,
+        "0.4": 6,
+        "0.5": 6,
+        "0.75": 6,
+        "1.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "7.5": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "40.0": 6,
+        "80.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:e2e_request_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 55.16103935241699,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 3,
+        "10.0": 3,
+        "15.0": 4,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_queue_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 7.837498560547829e-05,
+      "buckets": {
+        "0.3": 6,
+        "0.5": 6,
+        "0.8": 6,
+        "1.0": 6,
+        "1.5": 6,
+        "2.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_inference_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 55.14026199886575,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 3,
+        "10.0": 3,
+        "15.0": 4,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_prefill_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.21451229928061366,
+      "buckets": {
+        "0.3": 6,
+        "0.5": 6,
+        "0.8": 6,
+        "1.0": 6,
+        "1.5": 6,
+        "2.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_decode_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 54.92574969958514,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 3,
+        "10.0": 3,
+        "15.0": 4,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_prefill_kv_computed_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 6,
+      "sum": 369.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 5,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:cache_config_info",
+      "labels": {
+        "block_size": "16",
+        "user_specified_block_size": "False",
+        "user_specified_mamba_block_size": "False",
+        "prefix_match_unit": "None",
+        "gpu_memory_utilization": "0.8",
+        "cache_dtype": "auto",
+        "is_attention_free": "False",
+        "num_gpu_blocks_override": "None",
+        "sliding_window": "None",
+        "enable_prefix_caching": "False",
+        "prefix_caching_hash_algo": "sha256",
+        "kv_cache_dtype_skip_layers": "[]",
+        "mamba_page_size_padded": "None",
+        "skip_page_size_padded": "None",
+        "mamba_block_size": "None",
+        "mamba_cache_dtype": "auto",
+        "mamba_ssm_cache_dtype": "auto",
+        "mamba_cache_mode": "none",
+        "replayssm_buffer_len": "16",
+        "use_replayssm": "False",
+        "num_gpu_blocks": "9067",
+        "num_cpu_blocks": "None",
+        "kv_cache_size_tokens": "145072",
+        "kv_cache_max_concurrency": "35.41796875",
+        "kv_sharing_fast_prefill": "False",
+        "kv_cache_memory_bytes": "None",
+        "kv_offloading_size": "None",
+        "kv_offloading_backend": "native",
+        "_block_size_resolved": "True",
+        "engine": "0"
+      },
+      "value": 1.0
+    }
+  ],
+  "metrics_after": [
+    {
+      "name": "vllm:estimated_flops_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_read_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_write_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_requests_running",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "reason": "capacity"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "reason": "deferred"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "sleep_state": "awake"
+      },
+      "value": 1.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "sleep_state": "weights_offloaded"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "sleep_state": "discard_all"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:kv_cache_usage_perc",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_preemptions",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 1180
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "source": "local_compute"
+      },
+      "value": 1180
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "source": "local_cache_hit"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "source": "external_kv_transfer"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_cached",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0"
+      },
+      "value": 4870
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "finished_reason": "stop"
+      },
+      "value": 7
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "finished_reason": "length"
+      },
+      "value": 7
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "finished_reason": "abort"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "finished_reason": "error"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target",
+        "engine": "0",
+        "finished_reason": "repetition"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_prompt_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 1180.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 9,
+        "200.0": 14,
+        "500.0": 14,
+        "1000.0": 14,
+        "2000.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:request_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 4870.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 3,
+        "500.0": 7,
+        "1000.0": 14,
+        "2000.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:iteration_tokens_total",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 4870,
+      "sum": 6050.0,
+      "buckets": {
+        "1.0": 4856,
+        "8.0": 4856,
+        "16.0": 4856,
+        "32.0": 4858,
+        "64.0": 4858,
+        "128.0": 4869,
+        "256.0": 4870,
+        "512.0": 4870,
+        "1024.0": 4870,
+        "2048.0": 4870,
+        "4096.0": 4870,
+        "8192.0": 4870,
+        "16384.0": 4870,
+        "+Inf": 4870
+      }
+    },
+    {
+      "name": "vllm:request_max_num_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 4870.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 3,
+        "500.0": 7,
+        "1000.0": 14,
+        "2000.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:request_params_n",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 14.0,
+      "buckets": {
+        "1.0": 14,
+        "2.0": 14,
+        "5.0": 14,
+        "10.0": 14,
+        "20.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:request_params_max_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 6208.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 0,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 2,
+        "500.0": 2,
+        "1000.0": 14,
+        "2000.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:time_to_first_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 0.5066440105438232,
+      "buckets": {
+        "0.001": 0,
+        "0.005": 0,
+        "0.01": 0,
+        "0.02": 0,
+        "0.04": 12,
+        "0.06": 13,
+        "0.08": 14,
+        "0.1": 14,
+        "0.25": 14,
+        "0.5": 14,
+        "0.75": 14,
+        "1.0": 14,
+        "2.5": 14,
+        "5.0": 14,
+        "7.5": 14,
+        "10.0": 14,
+        "20.0": 14,
+        "40.0": 14,
+        "80.0": 14,
+        "160.0": 14,
+        "640.0": 14,
+        "2560.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:inter_token_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 4856,
+      "sum": 185.25555233331397,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 4856,
+        "0.075": 4856,
+        "0.1": 4856,
+        "0.15": 4856,
+        "0.2": 4856,
+        "0.3": 4856,
+        "0.4": 4856,
+        "0.5": 4856,
+        "0.75": 4856,
+        "1.0": 4856,
+        "2.5": 4856,
+        "5.0": 4856,
+        "7.5": 4856,
+        "10.0": 4856,
+        "20.0": 4856,
+        "40.0": 4856,
+        "80.0": 4856,
+        "+Inf": 4856
+      }
+    },
+    {
+      "name": "vllm:request_time_per_output_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 0.5349649079143426,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 14,
+        "0.075": 14,
+        "0.1": 14,
+        "0.15": 14,
+        "0.2": 14,
+        "0.3": 14,
+        "0.4": 14,
+        "0.5": 14,
+        "0.75": 14,
+        "1.0": 14,
+        "2.5": 14,
+        "5.0": 14,
+        "7.5": 14,
+        "10.0": 14,
+        "20.0": 14,
+        "40.0": 14,
+        "80.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:e2e_request_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 185.7623028755188,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 3,
+        "10.0": 4,
+        "15.0": 7,
+        "20.0": 14,
+        "30.0": 14,
+        "40.0": 14,
+        "50.0": 14,
+        "60.0": 14,
+        "120.0": 14,
+        "240.0": 14,
+        "480.0": 14,
+        "960.0": 14,
+        "1920.0": 14,
+        "7680.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:request_queue_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 0.00023090559989213943,
+      "buckets": {
+        "0.3": 14,
+        "0.5": 14,
+        "0.8": 14,
+        "1.0": 14,
+        "1.5": 14,
+        "2.0": 14,
+        "2.5": 14,
+        "5.0": 14,
+        "10.0": 14,
+        "15.0": 14,
+        "20.0": 14,
+        "30.0": 14,
+        "40.0": 14,
+        "50.0": 14,
+        "60.0": 14,
+        "120.0": 14,
+        "240.0": 14,
+        "480.0": 14,
+        "960.0": 14,
+        "1920.0": 14,
+        "7680.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:request_inference_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 185.72521033510566,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 3,
+        "10.0": 4,
+        "15.0": 7,
+        "20.0": 14,
+        "30.0": 14,
+        "40.0": 14,
+        "50.0": 14,
+        "60.0": 14,
+        "120.0": 14,
+        "240.0": 14,
+        "480.0": 14,
+        "960.0": 14,
+        "1920.0": 14,
+        "7680.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:request_prefill_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 0.4696580017916858,
+      "buckets": {
+        "0.3": 14,
+        "0.5": 14,
+        "0.8": 14,
+        "1.0": 14,
+        "1.5": 14,
+        "2.0": 14,
+        "2.5": 14,
+        "5.0": 14,
+        "10.0": 14,
+        "15.0": 14,
+        "20.0": 14,
+        "30.0": 14,
+        "40.0": 14,
+        "50.0": 14,
+        "60.0": 14,
+        "120.0": 14,
+        "240.0": 14,
+        "480.0": 14,
+        "960.0": 14,
+        "1920.0": 14,
+        "7680.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:request_decode_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 185.25555233331397,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 3,
+        "10.0": 4,
+        "15.0": 7,
+        "20.0": 14,
+        "30.0": 14,
+        "40.0": 14,
+        "50.0": 14,
+        "60.0": 14,
+        "120.0": 14,
+        "240.0": 14,
+        "480.0": 14,
+        "960.0": 14,
+        "1920.0": 14,
+        "7680.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:request_prefill_kv_computed_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/rs-q512/models/8b/target"
+      },
+      "count": 14,
+      "sum": 1180.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 9,
+        "200.0": 14,
+        "500.0": 14,
+        "1000.0": 14,
+        "2000.0": 14,
+        "+Inf": 14
+      }
+    },
+    {
+      "name": "vllm:cache_config_info",
+      "labels": {
+        "block_size": "16",
+        "user_specified_block_size": "False",
+        "user_specified_mamba_block_size": "False",
+        "prefix_match_unit": "None",
+        "gpu_memory_utilization": "0.8",
+        "cache_dtype": "auto",
+        "is_attention_free": "False",
+        "num_gpu_blocks_override": "None",
+        "sliding_window": "None",
+        "enable_prefix_caching": "False",
+        "prefix_caching_hash_algo": "sha256",
+        "kv_cache_dtype_skip_layers": "[]",
+        "mamba_page_size_padded": "None",
+        "skip_page_size_padded": "None",
+        "mamba_block_size": "None",
+        "mamba_cache_dtype": "auto",
+        "mamba_ssm_cache_dtype": "auto",
+        "mamba_cache_mode": "none",
+        "replayssm_buffer_len": "16",
+        "use_replayssm": "False",
+        "num_gpu_blocks": "9067",
+        "num_cpu_blocks": "None",
+        "kv_cache_size_tokens": "145072",
+        "kv_cache_max_concurrency": "35.41796875",
+        "kv_sharing_fast_prefill": "False",
+        "kv_cache_memory_bytes": "None",
+        "kv_offloading_size": "None",
+        "kv_offloading_backend": "native",
+        "_block_size_resolved": "True",
+        "engine": "0"
+      },
+      "value": 1.0
+    }
+  ],
+  "slurm_job_id": "28696",
+  "cuda_visible_devices": "2",
+  "timing_valid": true,
+  "timing_contract": "Per-request generate wall; compile/capture-affected request retried once, cold time retained; prefix cache off"
+}

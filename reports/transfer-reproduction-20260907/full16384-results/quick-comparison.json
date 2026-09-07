@@ -1,0 +1,77 @@
+{
+  "count": 8,
+  "cap": 512,
+  "all_tokens_and_stops_equal": true,
+  "different_groups": [],
+  "different_from_historical_output": [],
+  "stats": {
+    "ar8": {
+      "tps": 26.239330532373543,
+      "tokens": 3427,
+      "seconds": 130.60546631598845,
+      "length_stops": 5
+    },
+    "native8": {
+      "tps": 175.5489223280593,
+      "tokens": 3427,
+      "seconds": 19.52162368502468,
+      "length_stops": 5
+    },
+    "mapped": {
+      "tps": 179.35161877901083,
+      "tokens": 3427,
+      "seconds": 19.10771713871509,
+      "length_stops": 5
+    }
+  },
+  "ratios": {
+    "mapped_over_ar8": {
+      "ratio": 6.835220836054888,
+      "paired_request_95ci": [
+        6.093851939648593,
+        7.599761829262069
+      ]
+    },
+    "native8_over_ar8": {
+      "ratio": 6.690297304326063,
+      "paired_request_95ci": [
+        5.878662394367006,
+        7.4803129637569095
+      ]
+    },
+    "mapped_over_native8": {
+      "ratio": 1.0216617476229515,
+      "paired_request_95ci": [
+        0.9814440424733218,
+        1.063635446721809
+      ]
+    }
+  },
+  "sources": {
+    "ar8": [
+      {
+        "path": "reports/transfer-reproduction-20260907/full16384-results/quick/worker_0/ar8-r0.jsonl",
+        "sha256": "a53167a3447630963f024a18cc97388af41622ae18ea48dc7ebe435f903e1701",
+        "job": "28696",
+        "gpu": "2"
+      }
+    ],
+    "native8": [
+      {
+        "path": "reports/transfer-reproduction-20260907/full16384-results/quick/worker_0/native8-r0.jsonl",
+        "sha256": "8c9a7ffc240febdc6ba2becbd5f00582484355baa6dfb056025978accf357e74",
+        "job": "28696",
+        "gpu": "3"
+      }
+    ],
+    "mapped": [
+      {
+        "path": "reports/transfer-reproduction-20260907/full16384-results/quick/worker_0/mapped-r0.jsonl",
+        "sha256": "c2dfc3afbafb88fb320714f06e3aaafc2b7b517bf351acb8daf592952973b159",
+        "job": "28720",
+        "gpu": "0"
+      }
+    ]
+  },
+  "uncertainty_scope": "10000 paired request bootstrap samples, seed42; excludes fitting seeds, repeated timing runs and hardware variation."
+}

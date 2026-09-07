@@ -13,12 +13,14 @@ def main():
     ap.add_argument('--reference', type=Path, required=True)
     ap.add_argument('--count', type=int, default=128)
     ap.add_argument('--cap', type=int, default=2048)
+    ap.add_argument('--repeat', type=int, default=0, help='Speculative modes repeat index; AR baseline remains repeat0')
     ap.add_argument('--output', type=Path, required=True)
     args = ap.parse_args()
     modes = ['ar8', 'native8', 'mapped']
     groups, sources = {}, {}
     for mode in modes:
-        files = sorted(args.measurements.glob(f'worker_*/{mode}-r0.jsonl'))
+        repeat = 0 if mode == 'ar8' else args.repeat
+        files = sorted(args.measurements.glob(f'worker_*/{mode}-r{repeat}.jsonl'))
         rr = [json.loads(line) for path in files for line in path.read_text().splitlines()]
         assert len(rr) == args.count, (mode, len(rr), args.count)
         groups[mode] = {r['group_id']: r for r in rr}
@@ -58,7 +60,7 @@ def main():
         ratios[f'{numerator}_over_{denominator}'] = {
             'ratio': stats[numerator]['tps'] / stats[denominator]['tps'],
             'paired_request_95ci': np.quantile(sampled, [.025, .975]).tolist()}
-    result = {'count': args.count, 'cap': args.cap, 'all_tokens_and_stops_equal': not mismatches,
+    result = {'count': args.count, 'cap': args.cap, 'speculative_repeat': args.repeat, 'all_tokens_and_stops_equal': not mismatches,
               'different_groups': mismatches, 'different_from_historical_output': historical,
               'stats': stats, 'ratios': ratios, 'sources': sources,
               'uncertainty_scope': '10000 paired request bootstrap samples, seed42; excludes fitting seeds, repeated timing runs and hardware variation.'}
