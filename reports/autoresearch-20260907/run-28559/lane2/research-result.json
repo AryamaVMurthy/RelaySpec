@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "hypothesis": "What throughput and scored-answer behavior do frozen RelaySpec maps show under sampled decoding in both drafter families?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 36.65962809027647,
+        "throughput_ratio": 0.35612347314618925,
+        "throughput_ci95": [
+          0.323927245573426,
+          0.39755736385530566
+        ],
+        "request_time_ratio": 0.3498296856973612,
+        "request_time_ci95": [
+          0.3048914022285301,
+          0.4035043234696153
+        ],
+        "mean_output_tokens": 339.5,
+        "token_matches": 0,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 74.08694909047335
+      },
+      "native_target_eagle3": {
+        "tokens_per_second": 106.49845333397973,
+        "throughput_ratio": 1.0345603886814607,
+        "throughput_ci95": [
+          0.9733511009742729,
+          1.0880224445229976
+        ],
+        "request_time_ratio": 1.0353365030015518,
+        "request_time_ci95": [
+          0.9641307426713284,
+          1.1062267533231125
+        ],
+        "mean_output_tokens": 333.25,
+        "token_matches": 0,
+        "progress_per_cycle": 6.0272108843537415,
+        "request_seconds": 25.033227399457246
+      },
+      "relay_base": {
+        "tokens_per_second": 102.94077996714256,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 333.5,
+        "token_matches": 8,
+        "progress_per_cycle": 5.165048543689321,
+        "request_seconds": 25.917814114596695
+      }
+    }
+  },
+  "scope": "Eight fixed exposed GSM8K requests per family/temperature,2048token cap, frozen512-record dense retargeting maps with native and AR controls. Temperatures0.6/1.0, recorded per-request sampling_seed_base1729. Score every saved output using pinned scorer. One sampling seed and eight questions per cell: descriptive applicability study, no quality noninferiority or distributional-exactness claim. No optional question extension. All lanes540seconds."
+}

@@ -1,0 +1,69 @@
+{
+  "status": "frozen-before-decoding",
+  "records": 32,
+  "sampling_seed_bases": [
+    1730,
+    1731
+  ],
+  "families": [
+    "dflash",
+    "eagle3"
+  ],
+  "temperatures": [
+    0.6,
+    1.0
+  ],
+  "max_new_tokens": 2048,
+  "source_manifest_sha256": "9f6e5bf446aa45f1e939751e068c071e8e541f5d56f4029bb013f0a1bc9628ea",
+  "manifest_sha256": "f36424dd6fba51ca33c56308dc0c00d1ad7b3efe16259b30f426c1a674bf15b1",
+  "exposure_files_scanned": 2844,
+  "exposure": "All32 questions have prior local evaluation records. Exact IDs are disjoint from the entire256-question reserve and the separate eight-question sampling study. No fresh-question confirmation claim.",
+  "checkpoints": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt": "b4562dc664748ec2da6e0f1ccac13820bfd0fa9c413a7a3235ebec5f1d84b613",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-small03-27802/eagle3-dense-n512-s1729/step-008192.pt": "24bc7558727ef402b14a27b261991c46b2c91ac2e701156ea75574b8beb9e40c"
+  },
+  "analysis": "Fixed32 questions x2 sampling seeds per family/temperature. Pair methods within worker. Bootstrap question clusters jointly across both seeds with10000 draws seed1729. Report token throughput, request time, output length, scored-answer counts and uncertainty. No quality noninferiority, distributional exactness or joint significance claim. Do not pool the separate eight-question study.",
+  "execution": "Eight four-GPU waves, each lane handles eight questions and three methods with a540-second timeout. All declared cells required for complete aggregate. Failures remain recorded. No outcome-dependent sample extension or candidate tuning.",
+  "waves": [
+    {
+      "wave": 66,
+      "sampling_seed_base": 1730,
+      "shard": 0
+    },
+    {
+      "wave": 67,
+      "sampling_seed_base": 1730,
+      "shard": 1
+    },
+    {
+      "wave": 68,
+      "sampling_seed_base": 1730,
+      "shard": 2
+    },
+    {
+      "wave": 69,
+      "sampling_seed_base": 1730,
+      "shard": 3
+    },
+    {
+      "wave": 70,
+      "sampling_seed_base": 1731,
+      "shard": 0
+    },
+    {
+      "wave": 71,
+      "sampling_seed_base": 1731,
+      "shard": 1
+    },
+    {
+      "wave": 72,
+      "sampling_seed_base": 1731,
+      "shard": 2
+    },
+    {
+      "wave": 73,
+      "sampling_seed_base": 1731,
+      "shard": 3
+    }
+  ]
+}

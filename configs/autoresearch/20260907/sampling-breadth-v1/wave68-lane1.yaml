@@ -1,0 +1,69 @@
+protocol_version: 1
+run_name: distinct-record-scaling-full
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 2048
+  temperature: 1.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/autoresearch/20260907/sampling-breadth-v1/shard2.json
+  benchmarks:
+  - gsm8k
+  methods:
+  - native_ar
+  - native_target_dflash
+  - optimized_source_reuse
+  - relay_n4096_fixed
+  - relay_n4096_epoch1
+  - relay_n8192_fixed
+  - relay_n8192_epoch1
+  - relay_n16384_fixed
+  - relay_n16384_epoch1
+  - relay_n32768_fixed
+  - relay_n512_fixed
+  - relay_n2048_fixed
+  max_prompts: 8
+  warmups: 1
+  block_size: 16
+  profile_regions: true
+  sampling_seed_base: 1730
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants:
+    relay_n4096_fixed: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-records-dense-28272/dense-n4096-s1729/step-008192.pt
+    relay_n4096_epoch1: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-records-dense-28272/dense-n4096-s1729/step-001024.pt
+    relay_n8192_fixed: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-records-dense-28272/dense-n8192-s1729/step-008192.pt
+    relay_n8192_epoch1: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-records-dense-28272/dense-n8192-s1729/step-002048.pt
+    relay_n16384_fixed: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-records-dense-28272/dense-n16384-s1729/step-008192.pt
+    relay_n16384_epoch1: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-records-dense-28272/dense-n16384-s1729/step-004096.pt
+    relay_n32768_fixed: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-records-dense-28272/dense-n32768-s1729/step-008192.pt
+    relay_n512_fixed: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt
+    relay_n2048_fixed: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n2048-s1729/step-008192.pt
+native_target_proposer:
+  id: z-lab/Qwen3-8B-DFlash-b16
+  revision: 9b41424b7109f9c5413454f481b09a82b85333f4
