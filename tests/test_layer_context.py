@@ -28,3 +28,17 @@ def test_relative_error_equal_layer_token_weighting_and_epsilon():
     p = torch.tensor([[[2.0, 0.0], [0.0, 0.0]], [[0.0, 0.0], [2.0, 0.0]]])
     t = torch.tensor([[[1.0, 0.0], [0.0, 0.0]], [[0.0, 0.0], [1.0, 0.0]]])
     torch.testing.assert_close(relative_error(p, t), torch.tensor(0.5 / (1 + 1e-6)))
+
+
+def test_dense_control_accepts_sampled_position_batch():
+    from relayspec.relay import TargetFeatureRelay
+    from relayspec.layer_context import frozen_norm
+
+    model = TargetFeatureRelay(
+        target_hidden_size=7, num_taps=5, draft_hidden_size=4, eps=1e-6
+    )
+    x = torch.randn(11, 5, 7)
+    p = frozen_norm(model(x.flatten(1).unsqueeze(0)).squeeze(0), torch.ones(4))
+    assert p.shape == (11, 4)
+    relative_error(p, torch.randn_like(p)).backward()
+    assert model.projection.weight.grad is not None

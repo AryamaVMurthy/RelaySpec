@@ -124,7 +124,9 @@ def fit(spec, root, storage, config, draft):
     def losses(x, y):
         with torch.autocast("cuda", dtype=torch.bfloat16):
             if mode == "dense_context":
-                prediction = frozen_norm(model(x.flatten(1)), gamma)
+                prediction = frozen_norm(
+                    model(x.flatten(1).unsqueeze(0)).squeeze(0), gamma
+                )
                 with torch.no_grad():
                     target = frozen_norm(
                         torch.nn.functional.linear(y.flatten(1), fusion), gamma
