@@ -150,6 +150,16 @@ def audit_fit_artifacts(folder, trial, *, cache_sha256):
         if trial["architecture"] == "dense"
         else trial["width"] * (input_width + output_width)
     )
+    if trial.get("native_block_gains"):
+        gains = len(metadata["target_layer_ids"])
+        if (
+            trial["architecture"] != "dense"
+            or complete.get("trainable_parameters") != gains
+        ):
+            raise ValueError(
+                "Native block-gain fit did not restrict trainable parameters"
+            )
+        parameters += gains
     if complete["parameters"] != parameters:
         raise ValueError(
             "reported parameter count differs from actual interface dimensions"

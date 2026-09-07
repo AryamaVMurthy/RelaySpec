@@ -147,16 +147,36 @@ def main():
     initialization_record = {"mode": "random"}
     if initialization == "native_columns":
         if native_teacher is None or trial.get("resume_from"):
-            raise ValueError("Native initialization requires a fresh native-teacher fit")
+            raise ValueError(
+                "Native initialization requires a fresh native-teacher fit"
+            )
         from relayspec.native_initialization import initialize_native_columns
 
         initialization_record = initialize_native_columns(
-            relay, native_teacher["weight"], all_taps, selected_taps,
+            relay,
+            native_teacher["weight"],
+            all_taps,
+            selected_taps,
             metadata["target_hidden_size"],
         )
         initialization_record["native_teacher_sha256"] = trial["native_teacher_sha256"]
     elif initialization != "random":
         raise ValueError("Unknown mapper initialization")
+    block_gains = bool(trial.get("native_block_gains", False))
+    if block_gains:
+        if (
+            initialization != "native_columns"
+            or l2
+            or decay
+            or trial.get("resume_from")
+        ):
+            raise ValueError(
+                "Block-gain calibration requires fresh inherited native weights and no regularization"
+            )
+        from relayspec.native_block_gains import enable_native_block_gains
+
+        enable_native_block_gains(relay, len(selected_taps))
+        initialization_record["trainable_native_block_gains"] = len(selected_taps)
     optimizer = torch.optim.AdamW(
         relay.parameters(), lr=float(trial["learning_rate"]), weight_decay=decay
     )
@@ -165,7 +185,9 @@ def main():
     (output / "training-selection.json").write_text(
         json.dumps({"offset": offset, "count": n, "entries": entries}, indent=2) + "\n"
     )
-    (output / "initialization.json").write_text(json.dumps(initialization_record, indent=2) + "\n")
+    (output / "initialization.json").write_text(
+        json.dumps(initialization_record, indent=2) + "\n"
+    )
     (output / "trial.json").write_text(json.dumps(trial, indent=2) + "\n")
     objective = trial.get("feature_objective", "relative_interface_mse")
     cosine_weight = trial.get("historical_cosine_weight")
@@ -263,8 +285,12 @@ def main():
             historical_cosine_weight=cosine_weight,
         )
         batched_loss.backward()
-        ref_grad = torch.cat([p.grad.flatten() for p in reference.parameters()])
-        batch_grad = torch.cat([p.grad.flatten() for p in relay.parameters()])
+        ref_grad = torch.cat(
+            [p.grad.flatten() for p in reference.parameters() if p.requires_grad]
+        )
+        batch_grad = torch.cat(
+            [p.grad.flatten() for p in relay.parameters() if p.requires_grad]
+        )
         relative_gradient_error = float(
             (ref_grad - batch_grad).norm() / ref_grad.norm().clamp_min(1e-12)
         )
@@ -423,8 +449,10 @@ def main():
                 diagnostics(step)
                 validation_seconds += time.perf_counter() - validation_started
                 export_started = time.perf_counter()
+                from relayspec.native_block_gains import folded_relay_state
+
                 checkpoint = {
-                    "relay": relay.state_dict(),
+                    "relay": folded_relay_state(relay),
                     "target_layer_ids": metadata["target_layer_ids"],
                     "steps": step,
                     "seed": seed,
@@ -448,6 +476,26 @@ def main():
                 }
                 if any(not torch.isfinite(p).all() for p in relay.parameters()):
                     raise ValueError("nonfinite cached mapper checkpoint")
+                if block_gains:
+                    gains = (
+                        relay.projection.parametrizations.weight[0]
+                        .gains.detach()
+                        .cpu()
+                        .tolist()
+                    )
+                    checkpoint["native_block_gains"] = gains
+                    (output / "block-gains.json").write_text(
+                        json.dumps(
+                            {
+                                "gains": gains,
+                                "steps": step,
+                                "trainable_parameters": len(gains),
+                                "export": "Folded into dense projection; frozen native columns during fitting",
+                            },
+                            indent=2,
+                        )
+                        + "\n"
+                    )
                 torch.save(checkpoint, output / f"step-{step:06d}.pt")
                 checkpoint_export_seconds += time.perf_counter() - export_started
             if step == 1 or step % 128 == 0:
@@ -506,6 +554,9 @@ def main():
                 "status": "pass",
                 "trial": trial,
                 "parameters": sum(p.numel() for p in relay.parameters()),
+                "trainable_parameters": sum(
+                    p.numel() for p in relay.parameters() if p.requires_grad
+                ),
                 "steps": steps,
                 "start_step": start_step,
                 "updates_this_job": steps - start_step,
