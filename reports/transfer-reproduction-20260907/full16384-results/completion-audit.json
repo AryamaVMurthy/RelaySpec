@@ -1,0 +1,19 @@
+{
+  "goal": "keep running this tilll it works properly on this and get the proper required tps comparisions",
+  "requirements": {
+    "full16384_three_epoch_training": "fit-summary.json: actual_train_examples16384, selected_epoch2,7911updates",
+    "loss_and_training_identical_to_zip": "source/source-audit.json; only capture execution flags changed",
+    "complete_paired_features": "feature-manifest.json:16384records5398695positions",
+    "frozen_components_and_finite_mapper": "mapper-audit.json; frozenfusion/norm historical hashes equal",
+    "folded_export_valid": "export-check.json:2.148134e-5 relativeMSE",
+    "normal_native_mapped128prompt_comparison": "final-comparison-r0.json:128prompts2048cap124899tokens all equal",
+    "repeat_swapped_gpus": "final-comparison-r1.json and repeat-job/repeat_gate.json",
+    "historical_inference_outputs": "both audited comparisons show no differences",
+    "historical_training_reproduction_limit": "mapper-audit.json exactfalse; FULL_REPRODUCTION_RESULTS.md explicitly distinguishes fresh-data realization",
+    "checkpoint_preserved": "checkpoint-preservation.json; local and remote SHA256equal",
+    "user_report": "FULL_REPRODUCTION_RESULTS.md; includes both runs, uncertainty, timings and limits",
+    "all_jobs_finished": "28719,28720,28721,28735COMPLETED exit0; squeue empty"
+  },
+  "requested_comparison_complete": true,
+  "bitwise_historical_training_reproduction": false
+}

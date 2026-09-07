@@ -1,0 +1,1595 @@
+{
+  "mode": "native8",
+  "config": {
+    "async_scheduling": false,
+    "worker_extension_cls": "metrics.MetricsWorker",
+    "model": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+    "dtype": "bfloat16",
+    "max_model_len": 4096,
+    "max_num_seqs": 8,
+    "max_num_batched_tokens": 2048,
+    "gpu_memory_utilization": 0.8,
+    "enable_prefix_caching": false,
+    "seed": 0,
+    "generation_config": "vllm",
+    "attention_config": {
+      "backend": "FLASH_ATTN"
+    },
+    "enforce_eager": false,
+    "compilation_config": {
+      "mode": 0,
+      "cudagraph_mode": "FULL",
+      "cudagraph_capture_sizes": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64
+      ]
+    },
+    "disable_log_stats": false,
+    "speculative_config": {
+      "method": "dflash",
+      "model": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/draft",
+      "num_speculative_tokens": 15
+    }
+  },
+  "args": {
+    "mode": "native8",
+    "split": "eval",
+    "count": 128,
+    "repeat": 0,
+    "tag": "full16384-final",
+    "cap": 2048,
+    "offset": 0,
+    "worker_index": 1,
+    "workers": 2
+  },
+  "setup_wall_seconds": 15.725528738927096,
+  "gpu_identity": [
+    {
+      "jit_events": 12,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b1c59d5d-db4e-3c67-a31a-2fc61e93adde",
+      "allocated": 37709511168,
+      "reserved": 37815844864,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "attachment_check": [
+    {
+      "passed": true,
+      "target_size": 8,
+      "target_and_draft_embedding_head_samples_verified": true
+    }
+  ],
+  "warmup_wall_seconds": 23.584557063877583,
+  "measurement_wall_seconds": 412.700301096309,
+  "gpu_before": [
+    {
+      "jit_events": 9,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b1c59d5d-db4e-3c67-a31a-2fc61e93adde",
+      "allocated": 37707501056,
+      "reserved": 37813747712,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "gpu_after": [
+    {
+      "jit_events": 12,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b1c59d5d-db4e-3c67-a31a-2fc61e93adde",
+      "allocated": 37709511168,
+      "reserved": 37815844864,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "metrics_before": [
+    {
+      "name": "vllm:spec_decode_num_drafts",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 533
+    },
+    {
+      "name": "vllm:spec_decode_num_draft_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 7995
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 2724
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens_per_pos",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "values": [
+        466,
+        385,
+        316,
+        252,
+        216,
+        187,
+        162,
+        139,
+        129,
+        105,
+        95,
+        82,
+        74,
+        63,
+        53
+      ]
+    },
+    {
+      "name": "vllm:estimated_flops_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_read_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_write_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_requests_running",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "reason": "capacity"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "reason": "deferred"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "sleep_state": "awake"
+      },
+      "value": 1.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "sleep_state": "weights_offloaded"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "sleep_state": "discard_all"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:kv_cache_usage_perc",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_preemptions",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 369
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "source": "local_compute"
+      },
+      "value": 369
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "source": "local_cache_hit"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "source": "external_kv_transfer"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_cached",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 3254
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "finished_reason": "stop"
+      },
+      "value": 5
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "finished_reason": "length"
+      },
+      "value": 1
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "finished_reason": "abort"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "finished_reason": "error"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "finished_reason": "repetition"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_prompt_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 369.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 5,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 3254.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 3,
+        "500.0": 4,
+        "1000.0": 5,
+        "2000.0": 5,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:iteration_tokens_total",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 539,
+      "sum": 3623.0,
+      "buckets": {
+        "1.0": 69,
+        "8.0": 394,
+        "16.0": 533,
+        "32.0": 535,
+        "64.0": 535,
+        "128.0": 539,
+        "256.0": 539,
+        "512.0": 539,
+        "1024.0": 539,
+        "2048.0": 539,
+        "4096.0": 539,
+        "8192.0": 539,
+        "16384.0": 539,
+        "+Inf": 539
+      }
+    },
+    {
+      "name": "vllm:request_max_num_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 3254.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 3,
+        "500.0": 4,
+        "1000.0": 5,
+        "2000.0": 5,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_params_n",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 6.0,
+      "buckets": {
+        "1.0": 6,
+        "2.0": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_params_max_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 8256.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 0,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 2,
+        "500.0": 2,
+        "1000.0": 2,
+        "2000.0": 2,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:time_to_first_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.2821507453918457,
+      "buckets": {
+        "0.001": 0,
+        "0.005": 0,
+        "0.01": 0,
+        "0.02": 0,
+        "0.04": 0,
+        "0.06": 5,
+        "0.08": 6,
+        "0.1": 6,
+        "0.25": 6,
+        "0.5": 6,
+        "0.75": 6,
+        "1.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "7.5": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "40.0": 6,
+        "80.0": 6,
+        "160.0": 6,
+        "640.0": 6,
+        "2560.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:inter_token_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 533,
+      "sum": 23.51001296332106,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 533,
+        "0.075": 533,
+        "0.1": 533,
+        "0.15": 533,
+        "0.2": 533,
+        "0.3": 533,
+        "0.4": 533,
+        "0.5": 533,
+        "0.75": 533,
+        "1.0": 533,
+        "2.5": 533,
+        "5.0": 533,
+        "7.5": 533,
+        "10.0": 533,
+        "20.0": 533,
+        "40.0": 533,
+        "80.0": 533,
+        "+Inf": 533
+      }
+    },
+    {
+      "name": "vllm:request_time_per_output_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.12440405141996769,
+      "buckets": {
+        "0.01": 4,
+        "0.025": 4,
+        "0.05": 6,
+        "0.075": 6,
+        "0.1": 6,
+        "0.15": 6,
+        "0.2": 6,
+        "0.3": 6,
+        "0.4": 6,
+        "0.5": 6,
+        "0.75": 6,
+        "1.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "7.5": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "40.0": 6,
+        "80.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:e2e_request_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 23.792153120040894,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 3,
+        "1.5": 3,
+        "2.0": 4,
+        "2.5": 4,
+        "5.0": 4,
+        "10.0": 5,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_queue_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.0001783524639904499,
+      "buckets": {
+        "0.3": 6,
+        "0.5": 6,
+        "0.8": 6,
+        "1.0": 6,
+        "1.5": 6,
+        "2.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_inference_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 23.771748303901404,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 3,
+        "1.5": 3,
+        "2.0": 4,
+        "2.5": 4,
+        "5.0": 4,
+        "10.0": 5,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_prefill_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.2617353405803442,
+      "buckets": {
+        "0.3": 6,
+        "0.5": 6,
+        "0.8": 6,
+        "1.0": 6,
+        "1.5": 6,
+        "2.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_decode_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 23.51001296332106,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 3,
+        "1.5": 3,
+        "2.0": 4,
+        "2.5": 4,
+        "5.0": 4,
+        "10.0": 5,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_prefill_kv_computed_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 6,
+      "sum": 369.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 5,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:cache_config_info",
+      "labels": {
+        "block_size": "16",
+        "user_specified_block_size": "False",
+        "user_specified_mamba_block_size": "False",
+        "prefix_match_unit": "None",
+        "gpu_memory_utilization": "0.8",
+        "cache_dtype": "auto",
+        "is_attention_free": "False",
+        "num_gpu_blocks_override": "None",
+        "sliding_window": "None",
+        "enable_prefix_caching": "False",
+        "prefix_caching_hash_algo": "sha256",
+        "kv_cache_dtype_skip_layers": "[]",
+        "mamba_page_size_padded": "None",
+        "skip_page_size_padded": "None",
+        "mamba_block_size": "None",
+        "mamba_cache_dtype": "auto",
+        "mamba_ssm_cache_dtype": "auto",
+        "mamba_cache_mode": "none",
+        "replayssm_buffer_len": "16",
+        "use_replayssm": "False",
+        "num_gpu_blocks": "7084",
+        "num_cpu_blocks": "None",
+        "kv_cache_size_tokens": "113344",
+        "kv_cache_max_concurrency": "27.671875",
+        "kv_sharing_fast_prefill": "False",
+        "kv_cache_memory_bytes": "None",
+        "kv_offloading_size": "None",
+        "kv_offloading_backend": "native",
+        "_block_size_resolved": "True",
+        "engine": "0"
+      },
+      "value": 1.0
+    }
+  ],
+  "metrics_after": [
+    {
+      "name": "vllm:spec_decode_num_drafts",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 9800
+    },
+    {
+      "name": "vllm:spec_decode_num_draft_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 147000
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 60351
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens_per_pos",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "values": [
+        8794,
+        7537,
+        6490,
+        5598,
+        4894,
+        4341,
+        3865,
+        3455,
+        3084,
+        2745,
+        2427,
+        2127,
+        1885,
+        1647,
+        1462
+      ]
+    },
+    {
+      "name": "vllm:estimated_flops_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_read_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_write_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_requests_running",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "reason": "capacity"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "reason": "deferred"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "sleep_state": "awake"
+      },
+      "value": 1.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "sleep_state": "weights_offloaded"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "sleep_state": "discard_all"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:kv_cache_usage_perc",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_preemptions",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 8455
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "source": "local_compute"
+      },
+      "value": 8455
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "source": "local_cache_hit"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "source": "external_kv_transfer"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_cached",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0"
+      },
+      "value": 70070
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "finished_reason": "stop"
+      },
+      "value": 59
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "finished_reason": "length"
+      },
+      "value": 14
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "finished_reason": "abort"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "finished_reason": "error"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+        "engine": "0",
+        "finished_reason": "repetition"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_prompt_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 8455.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 5,
+        "100.0": 34,
+        "200.0": 64,
+        "500.0": 73,
+        "1000.0": 73,
+        "2000.0": 73,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:request_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 70070.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 4,
+        "500.0": 23,
+        "1000.0": 45,
+        "2000.0": 59,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:iteration_tokens_total",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 9873,
+      "sum": 78525.0,
+      "buckets": {
+        "1.0": 1011,
+        "8.0": 6353,
+        "16.0": 9800,
+        "32.0": 9802,
+        "64.0": 9807,
+        "128.0": 9848,
+        "256.0": 9873,
+        "512.0": 9873,
+        "1024.0": 9873,
+        "2048.0": 9873,
+        "4096.0": 9873,
+        "8192.0": 9873,
+        "16384.0": 9873,
+        "+Inf": 9873
+      }
+    },
+    {
+      "name": "vllm:request_max_num_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 70070.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 4,
+        "500.0": 23,
+        "1000.0": 45,
+        "2000.0": 59,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:request_params_n",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 73.0,
+      "buckets": {
+        "1.0": 73,
+        "2.0": 73,
+        "5.0": 73,
+        "10.0": 73,
+        "20.0": 73,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:request_params_max_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 145472.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 0,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 2,
+        "500.0": 2,
+        "1000.0": 2,
+        "2000.0": 2,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:time_to_first_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 3.10313081741333,
+      "buckets": {
+        "0.001": 0,
+        "0.005": 0,
+        "0.01": 0,
+        "0.02": 0,
+        "0.04": 23,
+        "0.06": 72,
+        "0.08": 73,
+        "0.1": 73,
+        "0.25": 73,
+        "0.5": 73,
+        "0.75": 73,
+        "1.0": 73,
+        "2.5": 73,
+        "5.0": 73,
+        "7.5": 73,
+        "10.0": 73,
+        "20.0": 73,
+        "40.0": 73,
+        "80.0": 73,
+        "160.0": 73,
+        "640.0": 73,
+        "2560.0": 73,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:inter_token_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 9800,
+      "sum": 432.1685807649046,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 9800,
+        "0.075": 9800,
+        "0.1": 9800,
+        "0.15": 9800,
+        "0.2": 9800,
+        "0.3": 9800,
+        "0.4": 9800,
+        "0.5": 9800,
+        "0.75": 9800,
+        "1.0": 9800,
+        "2.5": 9800,
+        "5.0": 9800,
+        "7.5": 9800,
+        "10.0": 9800,
+        "20.0": 9800,
+        "40.0": 9800,
+        "80.0": 9800,
+        "+Inf": 9800
+      }
+    },
+    {
+      "name": "vllm:request_time_per_output_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 0.5302270209031128,
+      "buckets": {
+        "0.01": 71,
+        "0.025": 71,
+        "0.05": 73,
+        "0.075": 73,
+        "0.1": 73,
+        "0.15": 73,
+        "0.2": 73,
+        "0.3": 73,
+        "0.4": 73,
+        "0.5": 73,
+        "0.75": 73,
+        "1.0": 73,
+        "2.5": 73,
+        "5.0": 73,
+        "7.5": 73,
+        "10.0": 73,
+        "20.0": 73,
+        "40.0": 73,
+        "80.0": 73,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:e2e_request_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 435.27324962615967,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 3,
+        "1.5": 6,
+        "2.0": 9,
+        "2.5": 16,
+        "5.0": 41,
+        "10.0": 57,
+        "15.0": 69,
+        "20.0": 73,
+        "30.0": 73,
+        "40.0": 73,
+        "50.0": 73,
+        "60.0": 73,
+        "120.0": 73,
+        "240.0": 73,
+        "480.0": 73,
+        "960.0": 73,
+        "1920.0": 73,
+        "7680.0": 73,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:request_queue_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 0.0014919200912117958,
+      "buckets": {
+        "0.3": 73,
+        "0.5": 73,
+        "0.8": 73,
+        "1.0": 73,
+        "1.5": 73,
+        "2.0": 73,
+        "2.5": 73,
+        "5.0": 73,
+        "10.0": 73,
+        "15.0": 73,
+        "20.0": 73,
+        "30.0": 73,
+        "40.0": 73,
+        "50.0": 73,
+        "60.0": 73,
+        "120.0": 73,
+        "240.0": 73,
+        "480.0": 73,
+        "960.0": 73,
+        "1920.0": 73,
+        "7680.0": 73,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:request_inference_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 435.12778092129156,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 3,
+        "1.5": 6,
+        "2.0": 9,
+        "2.5": 16,
+        "5.0": 41,
+        "10.0": 57,
+        "15.0": 69,
+        "20.0": 73,
+        "30.0": 73,
+        "40.0": 73,
+        "50.0": 73,
+        "60.0": 73,
+        "120.0": 73,
+        "240.0": 73,
+        "480.0": 73,
+        "960.0": 73,
+        "1920.0": 73,
+        "7680.0": 73,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:request_prefill_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 2.9592001563869417,
+      "buckets": {
+        "0.3": 73,
+        "0.5": 73,
+        "0.8": 73,
+        "1.0": 73,
+        "1.5": 73,
+        "2.0": 73,
+        "2.5": 73,
+        "5.0": 73,
+        "10.0": 73,
+        "15.0": 73,
+        "20.0": 73,
+        "30.0": 73,
+        "40.0": 73,
+        "50.0": 73,
+        "60.0": 73,
+        "120.0": 73,
+        "240.0": 73,
+        "480.0": 73,
+        "960.0": 73,
+        "1920.0": 73,
+        "7680.0": 73,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:request_decode_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 432.1685807649046,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 3,
+        "1.5": 6,
+        "2.0": 9,
+        "2.5": 19,
+        "5.0": 41,
+        "10.0": 57,
+        "15.0": 69,
+        "20.0": 73,
+        "30.0": 73,
+        "40.0": 73,
+        "50.0": 73,
+        "60.0": 73,
+        "120.0": 73,
+        "240.0": 73,
+        "480.0": 73,
+        "960.0": 73,
+        "1920.0": 73,
+        "7680.0": 73,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:request_prefill_kv_computed_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target"
+      },
+      "count": 73,
+      "sum": 8455.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 5,
+        "100.0": 34,
+        "200.0": 64,
+        "500.0": 73,
+        "1000.0": 73,
+        "2000.0": 73,
+        "+Inf": 73
+      }
+    },
+    {
+      "name": "vllm:cache_config_info",
+      "labels": {
+        "block_size": "16",
+        "user_specified_block_size": "False",
+        "user_specified_mamba_block_size": "False",
+        "prefix_match_unit": "None",
+        "gpu_memory_utilization": "0.8",
+        "cache_dtype": "auto",
+        "is_attention_free": "False",
+        "num_gpu_blocks_override": "None",
+        "sliding_window": "None",
+        "enable_prefix_caching": "False",
+        "prefix_caching_hash_algo": "sha256",
+        "kv_cache_dtype_skip_layers": "[]",
+        "mamba_page_size_padded": "None",
+        "skip_page_size_padded": "None",
+        "mamba_block_size": "None",
+        "mamba_cache_dtype": "auto",
+        "mamba_ssm_cache_dtype": "auto",
+        "mamba_cache_mode": "none",
+        "replayssm_buffer_len": "16",
+        "use_replayssm": "False",
+        "num_gpu_blocks": "7084",
+        "num_cpu_blocks": "None",
+        "kv_cache_size_tokens": "113344",
+        "kv_cache_max_concurrency": "27.671875",
+        "kv_sharing_fast_prefill": "False",
+        "kv_cache_memory_bytes": "None",
+        "kv_offloading_size": "None",
+        "kv_offloading_backend": "native",
+        "_block_size_resolved": "True",
+        "engine": "0"
+      },
+      "value": 1.0
+    }
+  ],
+  "slurm_job_id": "28721",
+  "cuda_visible_devices": "1",
+  "timing_valid": true,
+  "timing_contract": "Per-request generate wall; compile/capture-affected request retried once, cold time retained; prefix cache off"
+}

@@ -47,3 +47,7 @@ Full-data precheck28706 passed in95seconds, all16 sampled/dense comparisons exac
 Goal continuation:28721 queued after28720 to verify8prompt pilot token equality, then measure all128original prompts at2048cap with fourAR workers followed by two native and two mapped workers. Raw outputs, timing checks and historical-reference equality are retained separately. No positive-speedup threshold is used as a completion criterion.
 
 Training28720 completed: losses0.737848,0.329735,0.239859;7911updates;864.86s epoch compute. Full training/frozen tensor audit passed; historical mapper hashes differ (fresh-data realization). Fold export relativeMSE2.148e-5 passed. Eightprompt512cap mapper179.3516TPS vs175.5489native and26.2393AR; all tokens equal to each other and reference prefixes. Full comparison28721running. Prespecified repeat28735queued after28721, same128prompts2048cap, oppositeGPU assignments native/mapped to assess small timing difference. No refitting or result-based selection.
+
+## Final verified result
+
+Full comparison and swappedGPU repeat completed successfully. Run0:AR26.0503TPS,native163.5698,mapped167.8297. Run1:native163.6735,mapped167.9705,using sameARbaseline. Mapper+2.604%and+2.625%native. Both128prompt2048cap comparisons produce124899tokens and exact historical output agreement. All four finalstage jobs completed; no activeGPUjobs. Full report:FULL_REPRODUCTION_RESULTS.md. Training hashes remain different; inference behavior/performance reproduction succeeded on explicitly documented fresh data.
