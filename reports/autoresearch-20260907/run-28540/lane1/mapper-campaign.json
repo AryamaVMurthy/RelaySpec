@@ -1,0 +1,151 @@
+{
+  "variants": {
+    "relay_base": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28400/lane3/native-fc.pt",
+      "sha256": "ece1269540becf19b73b75b0ca48a5dfd6178ffe372c6606870efbbab8ae580a",
+      "parameters": 83886080,
+      "resident_parameter_bytes": 167772160,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ]
+    },
+    "relay_cropped": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28540/lane1/relay_cropped.pt",
+      "sha256": "0a4f3a2a3c16c7a936e9bb48040a8a34a5ebd624b90afc44855d7cc390241de1",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_two": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28428/lane2/fitting/native-dflash-taps-25-33/step-008192.pt",
+      "sha256": "a53b21494b39f7139d3a04b206a5698dbf22fbd0fa7192f8f9cc577bcf4a59e9",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_n16_native_columns": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28535/lane0/fitting/native-late2-n16-s1729-native-columns-u128/step-000128.pt",
+      "sha256": "ecd16d69a7e6edbcfe8d796ce084f81c5d3a5058496a0505758e766cb6732be5",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_n128_native_columns": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28535/lane2/fitting/native-late2-n128-s1729-native-columns-u128/step-000128.pt",
+      "sha256": "a97c9d29782f500040ee993bc365f4b7bcd9bd61dae8f5f2ba6d2114138ba588",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_gains_lane0": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28539/lane0/fitting/native-late2-gains-n16-lr0.003-u128/step-000128.pt",
+      "sha256": "a2933d80597c8da11710ef84bc174a1ef64810f6834c544fee358817919d5e8e",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_gains_lane1": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28539/lane1/fitting/native-late2-gains-n16-lr0.03-u128/step-000128.pt",
+      "sha256": "2d9ccd41f109683307159c9b33025ed4f3f27b4f76e0056f88f618f0bfb10d5a",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_gains_lane2": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28539/lane2/fitting/native-late2-gains-n128-lr0.003-u128/step-000128.pt",
+      "sha256": "289068dc17f26dfb52ef8924ee58d345e936119e035ef12dce86b8e3cfbbcced",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_gains_lane3": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28539/lane3/fitting/native-late2-gains-n128-lr0.03-u128/step-000128.pt",
+      "sha256": "119dc100b6409b6e89a550dc733b4fa3ce2d6a402779221deb0af6f7bc3c33d3",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    }
+  },
+  "adapted_drafter_variants": [],
+  "methods": [
+    "relay_base",
+    "relay_cropped",
+    "relay_two",
+    "relay_n16_native_columns",
+    "relay_n128_native_columns",
+    "relay_gains_lane0",
+    "relay_gains_lane1",
+    "relay_gains_lane2",
+    "relay_gains_lane3"
+  ],
+  "selective_capture": {},
+  "release_capture_buffers": {},
+  "runtime_precision": "bfloat16",
+  "target_head_precision": "bfloat16",
+  "target_head_diagnostic": null,
+  "matmul_allow_tf32": false,
+  "target_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "drafter_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "mapper_parameter_dtypes": {
+    "relay_base": [
+      "torch.bfloat16"
+    ],
+    "relay_cropped": [
+      "torch.bfloat16"
+    ],
+    "relay_two": [
+      "torch.bfloat16"
+    ],
+    "relay_n16_native_columns": [
+      "torch.bfloat16"
+    ],
+    "relay_n128_native_columns": [
+      "torch.bfloat16"
+    ],
+    "relay_gains_lane0": [
+      "torch.bfloat16"
+    ],
+    "relay_gains_lane1": [
+      "torch.bfloat16"
+    ],
+    "relay_gains_lane2": [
+      "torch.bfloat16"
+    ],
+    "relay_gains_lane3": [
+      "torch.bfloat16"
+    ]
+  },
+  "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+}

@@ -1,0 +1,165 @@
+{
+  "status": "pass",
+  "hypothesis": "How much compact-native calibration benefit is explained by layer reweighting alone versus updating projection directions?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 163.1285544835934,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.140243902439025,
+        "request_seconds": 12.309310324955732
+      },
+      "relay_cropped": {
+        "tokens_per_second": 147.89174218526293,
+        "throughput_ratio": 0.9065962893708905,
+        "throughput_ci95": [
+          0.8403726242934505,
+          0.9693150141083091
+        ],
+        "request_time_ratio": 0.9065962893708905,
+        "request_time_ci95": [
+          0.8403726242934505,
+          0.9693150141083093
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.532967032967033,
+        "request_seconds": 13.577499124221504
+      },
+      "relay_gains_lane0": {
+        "tokens_per_second": 148.5651791585703,
+        "throughput_ratio": 0.9107245486780315,
+        "throughput_ci95": [
+          0.8522016041443756,
+          0.970729915250038
+        ],
+        "request_time_ratio": 0.9107245486780317,
+        "request_time_ci95": [
+          0.8522016041443756,
+          0.9707299152500382
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.56353591160221,
+        "request_seconds": 13.515953141730279
+      },
+      "relay_gains_lane1": {
+        "tokens_per_second": 147.53911195346123,
+        "throughput_ratio": 0.9044346185774602,
+        "throughput_ci95": [
+          0.8389995254586422,
+          0.9677201283985949
+        ],
+        "request_time_ratio": 0.9044346185774601,
+        "request_time_ci95": [
+          0.8389995254586422,
+          0.967720128398595
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.517808219178082,
+        "request_seconds": 13.609950428828597
+      },
+      "relay_gains_lane2": {
+        "tokens_per_second": 147.91366258331416,
+        "throughput_ratio": 0.9067306643619559,
+        "throughput_ci95": [
+          0.8462385127649478,
+          0.9684505288538918
+        ],
+        "request_time_ratio": 0.9067306643619559,
+        "request_time_ci95": [
+          0.8462385127649478,
+          0.9684505288538919
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.532967032967033,
+        "request_seconds": 13.575486976187676
+      },
+      "relay_gains_lane3": {
+        "tokens_per_second": 147.91508874234313,
+        "throughput_ratio": 0.9067394069087986,
+        "throughput_ci95": [
+          0.841298566064145,
+          0.9689702222428427
+        ],
+        "request_time_ratio": 0.9067394069087986,
+        "request_time_ci95": [
+          0.8412985660641451,
+          0.9689702222428428
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.532967032967033,
+        "request_seconds": 13.57535608485341
+      },
+      "relay_n128_native_columns": {
+        "tokens_per_second": 154.99174923935277,
+        "throughput_ratio": 0.9501202884436827,
+        "throughput_ci95": [
+          0.9002104594843984,
+          0.9993736081858107
+        ],
+        "request_time_ratio": 0.9501202884436827,
+        "request_time_ci95": [
+          0.9002104594843983,
+          0.9993736081858106
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.804034582132565,
+        "request_seconds": 12.955528341699392
+      },
+      "relay_n16_native_columns": {
+        "tokens_per_second": 153.70260955464377,
+        "throughput_ratio": 0.9422176886272989,
+        "throughput_ci95": [
+          0.888172250713921,
+          0.9888946817359774
+        ],
+        "request_time_ratio": 0.9422176886272988,
+        "request_time_ci95": [
+          0.888172250713921,
+          0.9888946817359774
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.7542857142857144,
+        "request_seconds": 13.064189383760095
+      },
+      "relay_two": {
+        "tokens_per_second": 159.94478202810404,
+        "throughput_ratio": 0.9804830462357247,
+        "throughput_ci95": [
+          0.9521802784903022,
+          1.0092096676567466
+        ],
+        "request_time_ratio": 0.9804830462357246,
+        "request_time_ci95": [
+          0.9521802784903023,
+          1.0092096676567466
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.994047619047619,
+        "request_seconds": 12.5543326549232
+      }
+    }
+  },
+  "scope": "All four scalar settings retained, plus untrained crop, full repacked native, original512-record compact reference and16/128-record full inherited fits at128 updates. Nine methods paired within worker on eight exposed requests per workload512token cap. No fresh quality confirmation. Scalar and matrix learning rates differ. All lanes540second cap."
+}
