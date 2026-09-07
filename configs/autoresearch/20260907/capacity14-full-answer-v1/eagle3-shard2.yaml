@@ -1,0 +1,82 @@
+protocol_version: 1
+run_name: small-data-complete-capacity-decoding
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-14B
+  revision: 40c069824f4251a91eefaf281ebe4c544efd3e18
+proposer:
+  family: eagle3
+  id: deepseek-ai/eagle3_qwen3_4b_ttt7
+  revision: b0b90fd15d052217c226be5e46d468d8d129e0cd
+  source_commit: 005e03b81cec38b7da6399833d609ee89a2587f2
+native_target_proposer:
+  id: deepseek-ai/eagle3_qwen3_14b_ttt7
+  revision: d7ea05d0b0009badfff0df2dcaedf82cce0f74f8
+generation:
+  enable_thinking: false
+  max_new_tokens: 2048
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/autoresearch/20260907/sampling-breadth-v1/shard2.json
+  benchmarks:
+  - gsm8k
+  methods:
+  - native_ar
+  - native_target_eagle3
+  - source_reuse_eagle3
+  - relay_eagle314_dense_n512
+  - relay_eagle314_factorized512_n512
+  - relay_eagle314_factorized1024_n512
+  - relay_eagle314_factorized4096_n512
+  - relay_eagle314_mlp512_n512
+  - relay_eagle314_mlp1024_n512
+  - relay_eagle314_mlp4096_n512
+  - relay_eagle314_dense_n2048
+  - relay_eagle314_factorized512_n2048
+  - relay_eagle314_factorized1024_n2048
+  - relay_eagle314_factorized4096_n2048
+  - relay_eagle314_mlp512_n2048
+  - relay_eagle314_mlp1024_n2048
+  - relay_eagle314_mlp4096_n2048
+  - relay_eagle314_dense_n512_s1730
+  - relay_eagle314_dense_n2048_s1730
+  max_prompts: 8
+  warmups: 1
+  draft_length: 7
+  profile_regions: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants:
+    relay_eagle314_dense_n512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit2-27942/eagle314-dense-n512-s1729/step-008192.pt
+    relay_eagle314_factorized512_n512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit0-27940/eagle314-factorized512-n512-s1729/step-008192.pt
+    relay_eagle314_factorized1024_n512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit1-27941/eagle314-factorized1024-n512-s1729/step-008192.pt
+    relay_eagle314_factorized4096_n512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit3-27943/eagle314-factorized4096-n512-s1729/step-008192.pt
+    relay_eagle314_mlp512_n512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit0-27940/eagle314-mlp512-n512-s1729/step-008192.pt
+    relay_eagle314_mlp1024_n512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit1-27941/eagle314-mlp1024-n512-s1729/step-008192.pt
+    relay_eagle314_mlp4096_n512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit3-27943/eagle314-mlp4096-n512-s1729/step-008192.pt
+    relay_eagle314_dense_n2048: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit2-27942/eagle314-dense-n2048-s1729/step-008192.pt
+    relay_eagle314_factorized512_n2048: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit0-27940/eagle314-factorized512-n2048-s1729/step-008192.pt
+    relay_eagle314_factorized1024_n2048: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit1-27941/eagle314-factorized1024-n2048-s1729/step-008192.pt
+    relay_eagle314_factorized4096_n2048: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit3-27943/eagle314-factorized4096-n2048-s1729/step-008192.pt
+    relay_eagle314_mlp512_n2048: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit0-27940/eagle314-mlp512-n2048-s1729/step-008192.pt
+    relay_eagle314_mlp1024_n2048: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit1-27941/eagle314-mlp1024-n2048-s1729/step-008192.pt
+    relay_eagle314_mlp4096_n2048: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit3-27943/eagle314-mlp4096-n2048-s1729/step-008192.pt
+    relay_eagle314_dense_n512_s1730: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit2-27942/eagle314-dense-n512-s1730/step-008192.pt
+    relay_eagle314_dense_n2048_s1730: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle14-fit2-27942/eagle314-dense-n2048-s1730/step-008192.pt
