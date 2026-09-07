@@ -1,0 +1,17 @@
+\paragraph{A low-rank correction between gains and full fitting.}
+Freezing the inherited columns and fitting an additive low-rank correction
+provides another calibration control, using the standard low-rank
+adaptation construction \citep{hu2022lora}. Rank 128 trains 1.57M parameters
+instead of 33.55M, a 95.3\% reduction in trainable weights. Folding the
+correction retains the same dense deployed projection, so this is not
+an additional inference-memory saving. At 128 records and 128 updates,
+the higher of two tested rates (0.006) retains 97.3--100.5\% of full-matrix
+fitting throughput across three fitting seeds and four workloads.
+Validation error remains 0.038--0.042, versus 0.029 for full fitting.
+The individual paired intervals and every rank/rate arm are retained in
+the artifacts. These are the same eight exposed requests per workload,
+with capped MATH and dialogue outputs. The range describes twelve
+seed/workload point estimates, not a confidence bound or a new independent
+benchmark sample. The result supports a parameter-efficient approximation
+to full calibration, with seed and workload dependence, rather than exact
+equivalence or a novel low-rank algorithm.

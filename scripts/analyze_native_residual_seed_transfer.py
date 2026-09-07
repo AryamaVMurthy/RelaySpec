@@ -24,9 +24,7 @@ for i, cell in enumerate(result["results"]):
         .splitlines()
     ]
     cell["full_fit_reference"] = summarize(rows, reference="relay_n128_native_columns")
-    for j, (rank, lr) in enumerate(
-        [(16, 1730), (128, 1730), (16, 1731), (128, 1731)]
-    ):
+    for j, (rank, lr) in enumerate([(16, 1730), (128, 1730), (16, 1731), (128, 1731)]):
         fields = []
         for summary in [cell["cropped_reference"], cell["full_fit_reference"]]:
             m = summary["methods"][f"relay_residual_lane{j}"]

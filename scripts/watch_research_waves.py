@@ -42,6 +42,10 @@ def main():
             }
             if state in {"RUNNING", "PENDING", "CONFIGURING", "COMPLETING"}:
                 continue
+            if state.startswith("CANCELLED") and elapsed == "00:00:00":
+                status[key]["collection"] = "not-started cancellation, no artifacts expected"
+                done.add(key)
+                continue
             dest = BASE / f"run-{key}"
             dest.mkdir(exist_ok=True)
             subprocess.run(

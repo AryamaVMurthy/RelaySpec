@@ -25,11 +25,12 @@ that the interface can be learned from substantially fewer records:
 frozen 512-example maps retain 97.5\% (DFlash) and 98.9\% (EAGLE-3)
 of their 2,048-example maps' throughput on 256 held-out GSM8K questions
 with 8B targets. Both confidence intervals exceed 95\% retention,
-although tight accuracy noninferiority remains unresolved. The simple dense map has the highest mapper throughput in the completed
-8B long-output capacity comparisons. Wider MLPs and longer fitting do
-not consistently improve decoding. Under matched warm-training
-budgets, feature regression outperforms the tested connector-CE and
-LoRA alternatives. These results identify a low-cost reuse regime and
+although tight accuracy noninferiority remains unresolved. Dense maps lead
+the completed 8B long-output capacity comparisons, while wider MLPs and
+longer fitting do not consistently improve decoding. The interface also
+enables native drafting with fewer input features: two-layer DFlash and
+EAGLE-3 projections retain 97.1\% and 98.8\% throughput with 60\% fewer
+projection weights on separate frozen GSM8K tests. These results identify a low-cost reuse regime and
 its limits, including task-dependent slowdowns relative to source reuse,
 optimization sensitivity and finite-precision output differences.
 \end{abstract}
@@ -450,15 +451,15 @@ Linear-1024 at $N=512$ retains 95.00\% [94.14, 95.85]\% with 23.59M
 parameters instead of 52.43M. The latter interval crosses the 95\%
 boundary. These are development comparisons with fixed fitting seeds.
 
-Two-layer conditioning also transfers to native drafting. Frozen
-retargeted and native two-layer interfaces each cut projection parameters
-by 60\%, retaining 97.63\% [96.23,99.03]\% and 97.05\%
-[95.93,98.21]\% throughput on disjoint 64-question GSM8K sets.
-Outputs match their respective full-interface references
-(Appendix~\ref{app:interface-compression}).
-Inherited native columns reduce calibration needs in matched development
-tests, but a fresh 16-record fit fails the fixed retention criterion
-(Tables~\ref{tab:native-initialization} and~\ref{tab:native-short-confirmation}).
+Two-layer conditioning also transfers to native drafting. With 60\%
+fewer projection parameters, frozen retargeted DFlash, native DFlash and
+native EAGLE-3 interfaces retain 97.63\% [96.23,99.03]\%,
+97.05\% [95.93,98.21]\% and 98.78\% [97.67,99.96]\% throughput
+on three disjoint 64-question GSM8K sets. Outputs match their respective
+full-interface references (Appendix~\ref{app:interface-compression}).
+Inherited columns improve matched development fits, but a separately
+frozen DFlash 16-record fit fails the retention criterion
+(Table~\ref{tab:native-short-confirmation}).
 
 EAGLE-3 repeats the dense data-count contrast on the same development
 questions, retaining 98.28\% [97.59, 99.01]\%. Its matched MLP remains
@@ -577,8 +578,8 @@ competitive choice after testing nonlinear capacity, longer optimization,
 regularization and token-prediction adaptation. The interface also exposes
 which target features sustain drafting: late-layer selection cuts mapper
 parameters by 60\% while retaining 97.6\% throughput in a fixed comparison.
-A native two-layer student retains 97.1\% throughput with 60\% fewer
-projection parameters in a separate fixed comparison. These findings motivate adapting and inspecting
+Native two-layer students retain 97.1\% (DFlash) and 98.8\% (EAGLE-3)
+throughput with 60\% fewer projection parameters in separate frozen tests. These findings motivate adapting and inspecting
 the inherited interface before investing in a new drafter.
 
 These conclusions concern shared-vocabulary Qwen3 models, greedy decoding
@@ -1207,6 +1208,8 @@ reweighting in this setting. They do not establish superiority over all
 scalar optimizers: full fits use learning rate 0.0006, and intervals
 exclude selection and multiple-comparison uncertainty.
 
+\input{generated/native_correction_paragraph.tex}
+
 \paragraph{A separately frozen short-fit test.}
 Before decoding, we fix the 16-record, 128-update inherited map as the
 primary candidate on 64 further GSM8K questions (sorted reserve positions
@@ -1267,6 +1270,60 @@ paired question bootstrap replicates, seed 1729. Only the two-layer
 comparison is primary. Counts refer to the input projection, not the
 whole drafter. Fitting-seed variation is outside these intervals.}
 \label{tab:native-student-confirmation}
+\end{table}
+
+\paragraph{Native conditioning transfers across drafter families.}
+We repeat the native-interface intervention in EAGLE-3, retaining layers
+25 and 33 and learning its raw post-fusion vector without adding an
+external normalization layer. Repacking the released full projection
+first reproduces tokens, acceptance and verifier-call trajectories in
+four operational pilots. At 128 updates, inherited columns reduce
+validation error from 0.369 to 0.046 with 16 fitting records and from
+0.281 to 0.043 with 128 records, compared with random initialization.
+With 512 records, extending inherited fitting from 128 to 8,192 updates
+improves validation error from 0.034 to 0.029. The four-workload screen
+nevertheless shows a tradeoff: GSM8K retention rises from 96.4\% to
+100.3\% and MATH from 95.3\% to 99.6\%, while code falls from 95.3\%
+to 93.5\%. These are eight exposed requests per workload, with two
+turns per dialogue and a 256-token cap. They do not measure full-answer
+quality or support uniformly better decoding from a lower fitting loss.
+
+\begin{table}[H]
+\centering\small
+\input{generated/native_eagle_budget_table.tex}
+\caption{Native EAGLE-3 throughput retention (\%) against full repacked
+native on exposed development requests. Rnd/Inh denote random/inherited
+initialization. All fitted maps use 512 records and the indicated update
+count. Crop is untrained and SVD has rank 1,536. Each task has eight
+requests, with two turns per dialogue and a 256-token cap.}
+\label{tab:native-eagle-budget}
+\end{table}
+
+Before confirmation decoding, we freeze the inherited 512-record,
+8,192-update map as primary and the final 64 reserve questions (sorted
+positions 192--255). An exact-ID scan of 2,838 prior local result files
+finds no matches, without guaranteeing global or pretraining non-exposure.
+The primary retains 98.78\% [97.67,99.96]\% of released-native throughput,
+passing the predeclared 95\% lower-bound criterion
+(Table~\ref{tab:native-eagle-confirmation}). All five methods score 59/64,
+produce identical outputs and avoid the 2,048-token cap. The conservative
+paired accuracy interval is still $[-6.62,+6.62]$ percentage points.
+The shorter inherited fit and weight-SVD remain descriptive controls.
+Weight-SVD retains 92.44\% with 37.75M parameters, versus 33.55M for
+the calibrated map, but requires no calibration data. We have not tested
+activation-aware SVD for this native EAGLE-3 comparison. The result
+supports compact native conditioning in both tested drafter families,
+without claiming a generally optimal compression method.
+
+\begin{table}[H]
+\centering\small
+\input{generated/native_eagle_confirmation_table.tex}
+\caption{Separately frozen native EAGLE-3 comparison on 64 GSM8K questions.
+Only the 8,192-update inherited map is primary. Retention uses released
+native and 10,000 paired question bootstrap draws, seed 1729. Counts
+concern projection weights, excluding the rest of the drafter. Intervals
+exclude fitting-data and fitting-seed variation.}
+\label{tab:native-eagle-confirmation}
 \end{table}
 
 \paragraph{A smaller-verifier boundary.}
@@ -2263,11 +2320,11 @@ and seed 1729 before generating confirmation outputs. The fixed test
 contains 256 GSM8K questions, sampled after exact and lexical exclusion
 against fitting data and collected evaluation history. A separate
 256-question reserve was left unused by this experiment. Subsequently,
-192 reserve questions were consumed by three separately frozen studies:
+all 256 reserve questions were consumed by four separately frozen studies:
 64 for the interface/SVD comparison and 64 different questions for native
 student confirmation, followed by 64 further questions for short-fit
-native confirmation (Appendix~\ref{app:interface-compression}).
-64 reserve questions remain unused.
+native confirmation and the final 64 for native EAGLE-3 confirmation
+(Appendix~\ref{app:interface-compression}). No reserve questions remain unused.
 Operational pilots use eight
 previously exposed GSM8K questions, not confirmation requests.
 The same confirmation questions are evaluated in both drafter families,
