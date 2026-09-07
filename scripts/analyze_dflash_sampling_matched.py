@@ -191,12 +191,8 @@ def main():
             dict(
                 family=family,
                 temperature=temp,
-                ar_reference=clustered_summary(
-                    rows, "native_ar", protocol["seeds"]
-                ),
-                native_reference=clustered_summary(
-                    rows, native, protocol["seeds"]
-                ),
+                ar_reference=clustered_summary(rows, "native_ar", protocol["seeds"]),
+                native_reference=clustered_summary(rows, native, protocol["seeds"]),
             )
         )
     output = dict(
@@ -207,7 +203,7 @@ def main():
         scorer=name,
         scorer_provenance_sha256=digest(provenance_path),
         scope=protocol["analysis"],
-        exposure=protocol["exposure"],
+        exposure=protocol["scope"],
     )
     (root / "dflash-sampling-matched-summary.json").write_text(
         json.dumps(output, indent=2) + "\n"
