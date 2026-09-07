@@ -15,6 +15,31 @@ import yaml
 from relayspec.ar_paper_evidence import summarize
 
 
+def load_released_draft(config):
+    family = config["proposer"]["family"]
+    if family == "dflash":
+        from relayspec.dflash import import_official_dflash
+
+        klass, _ = import_official_dflash(
+            os.environ["DFLASH_SOURCE"], config["proposer"]["source_commit"]
+        )
+    elif family == "eagle3":
+        from relayspec.eagle3 import import_official_eagle3
+
+        klass = import_official_eagle3(
+            os.environ["DEEPSPEC_SOURCE"], config["proposer"]["source_commit"]
+        ).model_class
+    else:
+        raise ValueError("Unsupported native drafter family")
+    return klass.from_pretrained(
+        config["proposer"]["id"],
+        revision=config["proposer"]["revision"],
+        cache_dir=os.environ["TRANSFORMERS_CACHE"],
+        dtype=torch.bfloat16,
+        local_files_only=True,
+    )
+
+
 def prepare(spec, root):
     storage = root / "weights"
     if os.environ.get("RELAYSPEC_CACHE_DIR"):
@@ -26,19 +51,8 @@ def prepare(spec, root):
         )
     storage.mkdir(parents=True, exist_ok=True)
     if spec["transform"] == "native_svd":
-        from relayspec.dflash import import_official_dflash
-
         config = yaml.safe_load(Path(spec["config"]).read_text())
-        klass, _ = import_official_dflash(
-            os.environ["DFLASH_SOURCE"], config["proposer"]["source_commit"]
-        )
-        draft = klass.from_pretrained(
-            config["proposer"]["id"],
-            revision=config["proposer"]["revision"],
-            cache_dir=os.environ["TRANSFORMERS_CACHE"],
-            dtype=torch.bfloat16,
-            local_files_only=True,
-        )
+        draft = load_released_draft(config)
         native = {
             "target_layer_ids": list(draft.target_layer_ids),
             "relay": {"projection.weight": draft.fc.weight.detach().float().cpu()},
