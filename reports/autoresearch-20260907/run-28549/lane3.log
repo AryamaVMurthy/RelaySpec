@@ -1,0 +1,53 @@
+Loading weights:   0%|          | 0/16 [00:00<?, ?it/s]Loading weights: 100%|██████████| 16/16 [00:00<00:00, 39874.55it/s]
+Loading weights:   0%|          | 0/399 [00:00<?, ?it/s]Loading weights: 100%|██████████| 399/399 [00:00<00:00, 10801.27it/s]
+Loading weights:   0%|          | 0/16 [00:00<?, ?it/s]Loading weights: 100%|██████████| 16/16 [00:00<00:00, 11580.48it/s]
+Loading weights:   0%|          | 0/16 [00:00<?, ?it/s]Loading weights: 100%|██████████| 16/16 [00:00<00:00, 12448.31it/s]
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/home/aryama.murthy/relayspec-autoresearch-w54/scripts/benchmark_eagle3.py", line 590, in <module>
+[rank0]:     main()
+[rank0]:   File "/home/aryama.murthy/relayspec-autoresearch-w54/scripts/benchmark_eagle3.py", line 284, in main
+[rank0]:     raise ValueError("EAGLE-3 campaign checkpoint has the wrong family")
+[rank0]: ValueError: EAGLE-3 campaign checkpoint has the wrong family
+[rank0]:[W907 06:02:48.029772966 ProcessGroupNCCL.cpp:1524] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+E0907 06:02:50.022000 1841724 torch/distributed/elastic/multiprocessing/api.py:882] failed (exitcode: 1) local_rank: 0 (pid: 1841741) of binary: /home/aryama.murthy/.venvs/factorspec-20260826/bin/python
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/aryama.murthy/.venvs/factorspec-20260826/lib/python3.12/site-packages/torch/distributed/run.py", line 940, in <module>
+    main()
+  File "/home/aryama.murthy/.venvs/factorspec-20260826/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 357, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/aryama.murthy/.venvs/factorspec-20260826/lib/python3.12/site-packages/torch/distributed/run.py", line 936, in main
+    run(args)
+  File "/home/aryama.murthy/.venvs/factorspec-20260826/lib/python3.12/site-packages/torch/distributed/run.py", line 927, in run
+    elastic_launch(
+  File "/home/aryama.murthy/.venvs/factorspec-20260826/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 156, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/aryama.murthy/.venvs/factorspec-20260826/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 293, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+scripts/benchmark_eagle3.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-09-07_06:02:50
+  host      : node07.local
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 1841741)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+Traceback (most recent call last):
+  File "/home/aryama.murthy/relayspec-autoresearch-w54/scripts/run_research_lane.py", line 441, in <module>
+    main()
+  File "/home/aryama.murthy/relayspec-autoresearch-w54/scripts/run_research_lane.py", line 363, in main
+    subprocess.run(
+  File "/home/aryama.murthy/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/aryama.murthy/.venvs/factorspec-20260826/bin/python', '-m', 'torch.distributed.run', '--standalone', '--nproc_per_node=1', 'scripts/benchmark_eagle3.py', '--config', '/home/aryama.murthy/relayspec-autoresearch-w54/outputs/rs-research-w54-28549/lane3/config.yaml']' returned non-zero exit status 1.

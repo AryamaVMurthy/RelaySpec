@@ -57,6 +57,7 @@ def prepare(spec, root):
             "target_layer_ids": list(draft.target_layer_ids),
             "relay": {"projection.weight": draft.fc.weight.detach().float().cpu()},
             "relay_architecture": "scale_preserving_linear",
+            "proposer_family": config["proposer"]["family"],
             "steps": 0,
             "origin": "Released native drafter fc; no fitting",
         }

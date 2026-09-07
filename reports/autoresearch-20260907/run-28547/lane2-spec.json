@@ -1,0 +1,33 @@
+{
+  "family": "dflash",
+  "transform": "native_columns",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28400/lane3/native-fc.pt",
+  "config": "configs/autoresearch/20260907/native-mbpp-screen.yaml",
+  "requests": 8,
+  "max_new_tokens": 512,
+  "include_ar": false,
+  "include_native": false,
+  "hypothesis": "Do low-rank inherited-weight corrections preserve full-matrix calibration benefits beyond the initial GSM8K screen?",
+  "scope": "Eight methods within each worker: repacked native, untrained crop,512-record compact reference,128-record full fit and all four rank/rate residual fits. Same exposed four-task screens512token cap. Trainable-parameter comparison, not deployed parameter savings or matched wall-time. All lanes540seconds.",
+  "selected_taps": [
+    25,
+    33
+  ],
+  "controls": {
+    "relay_two": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28428/lane2/fitting/native-dflash-taps-25-33/step-008192.pt",
+    "relay_n128_native_columns": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28535/lane2/fitting/native-late2-n128-s1729-native-columns-u128/step-000128.pt",
+    "relay_residual_lane0": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28545/lane0/fitting/native-residual-r16-n128-lr0.0006-u128/step-000128.pt",
+    "relay_residual_lane1": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28545/lane1/fitting/native-residual-r16-n128-lr0.006-u128/step-000128.pt",
+    "relay_residual_lane2": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28545/lane2/fitting/native-residual-r128-n128-lr0.0006-u128/step-000128.pt",
+    "relay_residual_lane3": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28545/lane3/fitting/native-residual-r128-n128-lr0.006-u128/step-000128.pt"
+  },
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28400/lane3/native-fc.pt": "ece1269540becf19b73b75b0ca48a5dfd6178ffe372c6606870efbbab8ae580a",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28428/lane2/fitting/native-dflash-taps-25-33/step-008192.pt": "a53b21494b39f7139d3a04b206a5698dbf22fbd0fa7192f8f9cc577bcf4a59e9",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28535/lane2/fitting/native-late2-n128-s1729-native-columns-u128/step-000128.pt": "a97c9d29782f500040ee993bc365f4b7bcd9bd61dae8f5f2ba6d2114138ba588",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28545/lane0/fitting/native-residual-r16-n128-lr0.0006-u128/step-000128.pt": "ee94b4cf9b993882b5733baaccbd063767797f556413a5a919abaffe8d196453",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28545/lane1/fitting/native-residual-r16-n128-lr0.006-u128/step-000128.pt": "2d18a068ef336c0d47af960259fb1eccd3aa541a8bb68612f442dedb4a755043",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28545/lane2/fitting/native-residual-r128-n128-lr0.0006-u128/step-000128.pt": "2dae3e194afd6eb22ab388fa331679dde4817acdc3746439204c14277e5dc4b2",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28545/lane3/fitting/native-residual-r128-n128-lr0.006-u128/step-000128.pt": "f9f3a50b9572045bbccaf73384d7231e1f80e9d80fbc718f0dcd5570aa071853"
+  }
+}

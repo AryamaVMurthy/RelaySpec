@@ -1,0 +1,148 @@
+{
+  "status": "pass",
+  "hypothesis": "Do low-rank inherited-weight corrections preserve full-matrix calibration benefits beyond the initial GSM8K screen?",
+  "summary": {
+    "requests": 16,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 78.2201391171334,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 198.6875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.956400742115028,
+        "request_seconds": 40.641707313247025
+      },
+      "relay_cropped": {
+        "tokens_per_second": 77.00039969123095,
+        "throughput_ratio": 0.9844063250248647,
+        "throughput_ci95": [
+          0.9720501437144903,
+          0.9971505399203998
+        ],
+        "request_time_ratio": 0.9844063250248648,
+        "request_time_ci95": [
+          0.9720501437144904,
+          0.9971505399203999
+        ],
+        "mean_output_tokens": 198.6875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.8989990900818925,
+        "request_seconds": 41.285499981138855
+      },
+      "relay_n128_native_columns": {
+        "tokens_per_second": 77.64789286697795,
+        "throughput_ratio": 0.9926841570903049,
+        "throughput_ci95": [
+          0.974245205720513,
+          1.0019510972613621
+        ],
+        "request_time_ratio": 0.992684157090305,
+        "request_time_ci95": [
+          0.974245205720513,
+          1.0019510972613621
+        ],
+        "mean_output_tokens": 198.6875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.9238532110091744,
+        "request_seconds": 40.941226897761226
+      },
+      "relay_residual_lane0": {
+        "tokens_per_second": 76.86206642083341,
+        "throughput_ratio": 0.9826378128238011,
+        "throughput_ci95": [
+          0.9497224442909612,
+          0.9978773889907113
+        ],
+        "request_time_ratio": 0.9826378128238012,
+        "request_time_ci95": [
+          0.9497224442909613,
+          0.9978773889907113
+        ],
+        "mean_output_tokens": 198.6875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.8955495004541327,
+        "request_seconds": 41.35980397136882
+      },
+      "relay_residual_lane1": {
+        "tokens_per_second": 77.91508006868438,
+        "throughput_ratio": 0.9960999935324558,
+        "throughput_ci95": [
+          0.9624120781131336,
+          1.013000716267294
+        ],
+        "request_time_ratio": 0.9960999935324559,
+        "request_time_ci95": [
+          0.9624120781131336,
+          1.013000716267294
+        ],
+        "mean_output_tokens": 198.6875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.9337016574585637,
+        "request_seconds": 40.80083081731573
+      },
+      "relay_residual_lane2": {
+        "tokens_per_second": 77.6281622095108,
+        "throughput_ratio": 0.9924319118541055,
+        "throughput_ci95": [
+          0.9676304435075884,
+          1.0116304927915105
+        ],
+        "request_time_ratio": 0.9924319118541056,
+        "request_time_ci95": [
+          0.9676304435075884,
+          1.0116304927915105
+        ],
+        "mean_output_tokens": 198.6875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.922935779816514,
+        "request_seconds": 40.95163288060576
+      },
+      "relay_residual_lane3": {
+        "tokens_per_second": 77.84803459460596,
+        "throughput_ratio": 0.995242855270684,
+        "throughput_ci95": [
+          0.9817225534640541,
+          1.0053629625809677
+        ],
+        "request_time_ratio": 0.995242855270684,
+        "request_time_ci95": [
+          0.981722553464054,
+          1.0053629625809677
+        ],
+        "mean_output_tokens": 198.6875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.9319227230910765,
+        "request_seconds": 40.83596993237734
+      },
+      "relay_two": {
+        "tokens_per_second": 77.28481507555561,
+        "throughput_ratio": 0.9880424139852634,
+        "throughput_ci95": [
+          0.955129357703242,
+          1.0087645146270037
+        ],
+        "request_time_ratio": 0.9880424139852635,
+        "request_time_ci95": [
+          0.955129357703242,
+          1.0087645146270037
+        ],
+        "mean_output_tokens": 198.6875,
+        "token_matches": 16,
+        "progress_per_cycle": 2.9077625570776258,
+        "request_seconds": 41.13356546033174
+      }
+    }
+  },
+  "scope": "Eight methods within each worker: repacked native, untrained crop,512-record compact reference,128-record full fit and all four rank/rate residual fits. Same exposed four-task screens512token cap. Trainable-parameter comparison, not deployed parameter savings or matched wall-time. All lanes540seconds."
+}
