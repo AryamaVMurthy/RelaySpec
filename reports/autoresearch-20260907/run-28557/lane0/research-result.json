@@ -1,0 +1,84 @@
+{
+  "status": "pass",
+  "hypothesis": "Can frozen RelaySpec maps operate under the existing sampling decoder at temperatures0.6 and1.0 in both drafter families?",
+  "summary": {
+    "requests": 4,
+    "clusters": 4,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.66127845361468,
+        "throughput_ratio": 0.30434170203036015,
+        "throughput_ci95": [
+          0.25168969382641415,
+          0.3657664357436811
+        ],
+        "request_time_ratio": 0.30434170203036015,
+        "request_time_ci95": [
+          0.25168969382641415,
+          0.3657664357436811
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 0,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 13.594865098129958
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 145.51356392320127,
+        "throughput_ratio": 1.1758986293424725,
+        "throughput_ci95": [
+          1.0527064271300177,
+          1.3167455988608452
+        ],
+        "request_time_ratio": 1.1758986293424722,
+        "request_time_ci95": [
+          1.0527064271300177,
+          1.3167455988608452
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 0,
+        "progress_per_cycle": 5.666666666666667,
+        "request_seconds": 3.5185723323374987
+      },
+      "relay_base": {
+        "tokens_per_second": 123.74669065187034,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 4,
+        "progress_per_cycle": 4.616071428571429,
+        "request_seconds": 4.137484382838011
+      },
+      "relay_duplicate": {
+        "tokens_per_second": 123.70234504646942,
+        "throughput_ratio": 0.9996416420902465,
+        "throughput_ci95": [
+          0.9954835604479848,
+          1.00269478656971
+        ],
+        "request_time_ratio": 0.9996416420902464,
+        "request_time_ci95": [
+          0.9954835604479847,
+          1.00269478656971
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 4,
+        "progress_per_cycle": 4.616071428571429,
+        "request_seconds": 4.138967614620924
+      }
+    }
+  },
+  "scope": "Seeded sampling operational pilot. Four exposed GSM8K requests128token cap, frozen512-record RelaySpec map, byte-identical duplicate, native drafting and AR. Per-request sampling seed1729-derived and recorded, independent of method order. Duplicate map must reproduce tokens and acceptance exactly. No task-quality or distributional-exactness claim. All lanes540seconds.",
+  "duplicate_control": {
+    "status": "pass",
+    "differences": []
+  }
+}
