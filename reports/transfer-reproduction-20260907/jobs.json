@@ -1,0 +1,31 @@
+{
+  "archive_sha256": "de405a43604c6e939f2bfd345be7e85acc16b70241ff8504ad9432075b3956e8",
+  "jobs": [
+    {
+      "id": 28613,
+      "stage": "exact_runtime_setup",
+      "command": "sbatch --parsable /home/aryama.murthy/relayspec-transfer-reproduction/setup.sbatch",
+      "gpus": 1,
+      "script_sha256": "eabba3f569aec679ac730ef24cc43e342fc7caec05963bf6e2d8581f87388618",
+      "gpu_compute": false,
+      "resource_note": "Scheduler automatically adds1 billed GPU for4CPU request; these stages run installation/data preparation, not GPU computation."
+    },
+    {
+      "id": 28614,
+      "stage": "pinned_inputs_and_split",
+      "command": "sbatch --parsable --dependency=afterok:28613 /home/aryama.murthy/relayspec-transfer-reproduction/prepare.sbatch",
+      "gpus": 1,
+      "script_sha256": "bdd8170af82cbf57acbc03c1db04e27349939bbe0a9df42e48a835cef716bfdd",
+      "gpu_compute": false,
+      "resource_note": "Scheduler automatically adds1 billed GPU for4CPU request; these stages run installation/data preparation, not GPU computation."
+    },
+    {
+      "id": 28615,
+      "stage": "four_gpu_operational_probes",
+      "command": "sbatch --parsable --dependency=afterok:28614 /home/aryama.murthy/relayspec-transfer-reproduction/probes.sbatch",
+      "gpus": 4,
+      "timeout_seconds_per_lane": 540,
+      "script_sha256": "793e7812eaabc8c7111367a31f6e01a00cf8c83c2eb37e734d4dd6ed939acca3"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "all_three_exact_match": 128,
+  "tokens_each": 124899,
+  "table": {
+    "ar8": {
+      "tokens": 124899,
+      "request_seconds": 4760.891750509385,
+      "tokens_per_second": 26.23437090050128,
+      "speedup_vs_ar8": 1.0
+    },
+    "native8": {
+      "tokens": 124899,
+      "request_seconds": 765.1822574604303,
+      "tokens_per_second": 163.22777845702842,
+      "speedup_vs_ar8": 6.221905570981675,
+      "paired_prompt_ci95_vs_ar8": [
+        5.93275378502783,
+        6.528954041814015
+      ]
+    },
+    "mapper": {
+      "tokens": 124899,
+      "request_seconds": 745.3568247039802,
+      "tokens_per_second": 167.56940549864,
+      "speedup_vs_ar8": 6.387399420942018,
+      "paired_prompt_ci95_vs_ar8": [
+        6.09022084769302,
+        6.71061297529059
+      ],
+      "paired_prompt_ci95_vs_native8": [
+        1.0186608504418215,
+        1.0342875770258382
+      ]
+    }
+  },
+  "limitations": [
+    "Original128 prompts, greedy2048-token cap, no thinking; equality is scoped to these settings.",
+    "Single measurement per prompt on independent L40S GPUs; confidence intervals capture prompt sampling, not repeated-run or hardware variance.",
+    "Summed sequential request times, not parallel job wall time, determine speedups."
+  ]
+}

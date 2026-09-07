@@ -1,0 +1,88 @@
+{
+  "sources": [
+    {
+      "portable": "src/prepare.py",
+      "executed_source": "experiments/dflash_transfer_cost_pilot_20260905/common/prepare_dataset.py",
+      "executed_source_sha256": "96ab835b79c39b9a44ba593eefe5063d14a7f6b6090b5d82518ac34224576743",
+      "portable_sha256": "c89017f7dec539c399d45db4b84f9943415f8fb448ff51f076d5b5b72c20f6fa"
+    },
+    {
+      "portable": "src/generate.py",
+      "executed_source": "experiments/dflash_rollout_length_20260905/common/generate_rollouts_r1.py",
+      "executed_source_sha256": "51177d4130b5f0be84e3134566c1e246d4042abfb59f5a4b38cf0f8a8d4be812",
+      "portable_sha256": "dc97d4b683f7ed1dede1cb55f4f71866c442da55d52f94be7f500a48289d8b9f"
+    },
+    {
+      "portable": "src/capture.py",
+      "executed_source": "experiments/dflash_features25_20260906/capture.py",
+      "executed_source_sha256": "56bed6c3e24808d75d5618e0e7ef7151772579420c5a1f365ad248709d116e78",
+      "portable_sha256": "36ef5c7948b0dfb2e5ba024fd572697f5f0481a433b93560b610d7d50ff8adaa"
+    },
+    {
+      "portable": "src/capture_runtime.py",
+      "executed_source": "experiments/dflash_features25_20260906/runtime_r1/capture_runtime.py",
+      "executed_source_sha256": "d65f1baa5ff0eaec1a0601e291d2744d916fc83bf4241c026c7e354b5332b131",
+      "portable_sha256": "eefdea91c7ab2ab66ebc910051fc84c5ca1764864ecf44fc56a9e9d755c5053f"
+    },
+    {
+      "portable": "src/sampling.py",
+      "executed_source": "experiments/dflash_features25_20260906/sampling.py",
+      "executed_source_sha256": "2b8935ff68bbcf1dc14e90d99d1237e3f42e5e96963d67f14d7dfb8888b7ab4a",
+      "portable_sha256": "2b8935ff68bbcf1dc14e90d99d1237e3f42e5e96963d67f14d7dfb8888b7ab4a"
+    },
+    {
+      "portable": "src/mapper.py",
+      "executed_source": "experiments/dflash_ablation_20260906_r2/modules.py",
+      "executed_source_sha256": "9bab536628ea69d02c1e6c559d1f42d45acd56db8ddb3e4c193424c00d8bee40",
+      "portable_sha256": "01cfe636a0f8f4cd12f3360d77f63201aa5fc53e3ea85c5d488dbac004a7b822"
+    },
+    {
+      "portable": "src/data.py",
+      "executed_source": "experiments/dflash_ablation_20260906_r2/data.py",
+      "executed_source_sha256": "21a6b9f1739306613a64455ef39917c6d0f51e5278d8d0be351e8214512ef824",
+      "portable_sha256": "587640de1191b8b05f4c84c4f6fc45907d1887ee7a4e715395af3f85b5c41010"
+    },
+    {
+      "portable": "src/train.py",
+      "executed_source": "experiments/dflash_ablation_20260906_r2/train.py",
+      "executed_source_sha256": "175d875711dcbb69c21bb740b95dc88051254203c4d4269ce9dcc51c80424015",
+      "portable_sha256": "244c2290095d0c04a6a03b51b2036d1c1a91912e488a8424430a9f28fe047d58"
+    },
+    {
+      "portable": "src/export.py",
+      "executed_source": "experiments/dflash_ablation_20260906_r2/export.py",
+      "executed_source_sha256": "c3572a20f9f892635800de41cadb56478003aa589c74a4e4ae81f403447c64d2",
+      "portable_sha256": "260e1ffcef31d619a75286b1324d4b6bbda6594b2ca3778cb5aece7178bc099f"
+    },
+    {
+      "portable": "src/mapper_runtime.py",
+      "executed_source": "experiments/dflash_ablation_20260906_r2/runtime.py",
+      "executed_source_sha256": "c786c1614036629fe8b16f11a00f74321cd72f592ea31ff6fcae013474c00cb5",
+      "portable_sha256": "22d8ec17d052c3d433d4b554152d7e9866bd4af3d91034254c67f92f843d6ece"
+    },
+    {
+      "portable": "src/benchmark.py",
+      "executed_source": "experiments/dflash_ablation_20260906_r2/benchmark_equivalence_r2.py",
+      "executed_source_sha256": "ba6e0abf360afa2ee2658414865da1787f96e7165d423903e6e01e615e1c9eaf",
+      "portable_sha256": "fe6671026c68b5823b25cea6523d3a50233bf084750e04464a61479521df0f47"
+    },
+    {
+      "portable": "src/metrics.py",
+      "executed_source": "experiments/dflash_ablation_20260906_r2/worker_metrics_r2.py",
+      "executed_source_sha256": "b4aa1cced0348d79148966c9e9d4c4ff162a008d4a6e6036b55c0e8d84e6e332",
+      "portable_sha256": "4679b488dd4cd569621a81b3c5cf44ef06af0b8b6247eae0861f9fcd39302f5e"
+    }
+  ],
+  "scope": "Selected added-linear context computation only; no additional configurations included",
+  "packaging_changes": [
+    "Replace cluster-specific paths with TRANSFER_WORK and scheduler submission with local per-GPU child processes.",
+    "Keep only the selected five-map objective and frozen 4B embedding/head serving path. Projection ordering, loss reduction, random initialization and fold checked against executed source on CPU.",
+    "Register MapperDFlash instead of historical class name; remove unused identity wrapper and unrelated runtime branches. Native vLLM target verification is unchanged.",
+    "Store identical exported tensor values in one safetensors file instead of component hard links. Consequently container file hashes differ; learned tensor hashes remain independently checked.",
+    "Recreate the same full selection but generate/capture training only; the unused development data are retained only as selection/warmup definitions.",
+    "Preserve original generation queue settings; historical shard hashes detect schedule/numerical changes.",
+    "Evaluate the same final profiles; split AR into four workers and native/mapped into two each. Add strict historical token-reference checks.",
+    "Bounded portability checks are new packaging checks, not additional research results."
+  ],
+  "no_gpu_end_to_end_reexecution_claim": true
+}
