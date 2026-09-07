@@ -1,0 +1,67 @@
+{
+  "status": "pass",
+  "hypothesis": "Does the native interface compression application extend to the released EAGLE-3 family?",
+  "summary": {
+    "requests": 4,
+    "clusters": 4,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_eagle3": {
+        "tokens_per_second": 94.00696042421006,
+        "throughput_ratio": 0.9993380355497272,
+        "throughput_ci95": [
+          0.9912887307363695,
+          1.0080534162436305
+        ],
+        "request_time_ratio": 0.9993380355497273,
+        "request_time_ci95": [
+          0.9912887307363695,
+          1.0080534162436305
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 4,
+        "progress_per_cycle": 5.473684210526316,
+        "request_seconds": 5.446405220311135
+      },
+      "relay_base": {
+        "tokens_per_second": 94.0692309109376,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 4,
+        "progress_per_cycle": 5.473684210526316,
+        "request_seconds": 5.442799893673509
+      },
+      "relay_svd1536": {
+        "tokens_per_second": 76.752831482217,
+        "throughput_ratio": 0.8159185606065459,
+        "throughput_ci95": [
+          0.7781076146548646,
+          0.9037675705442959
+        ],
+        "request_time_ratio": 0.8159185606065458,
+        "request_time_ci95": [
+          0.7781076146548646,
+          0.9037675705442959
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 4,
+        "progress_per_cycle": 4.478632478632479,
+        "request_seconds": 6.670763672329485
+      }
+    }
+  },
+  "scope": "Operational native EAGLE3 export/SVD pilot on four exposed requests per workload128token cap. Require repacked full projection to match native output and acceptance trajectory. Rank1536 is a descriptive compression control. Every lane540seconds. Corrected native export includes proposer_family=eagle3 after wave54 failed before decoding. Same declared requests and controls.",
+  "duplicate_control": {
+    "status": "pass",
+    "differences": []
+  }
+}

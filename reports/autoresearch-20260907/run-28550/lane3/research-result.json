@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Does the rank128 correction advantage repeat under independent low-rank initialization seeds?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 180.8187923972405,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.766066838046273,
+        "request_seconds": 14.511765979696065
+      },
+      "relay_reduced": {
+        "tokens_per_second": 179.50800081503058,
+        "throughput_ratio": 0.992750800042231,
+        "throughput_ci95": [
+          0.9517038876500103,
+          1.025676326979084
+        ],
+        "request_time_ratio": 0.992750800042231,
+        "request_time_ci95": [
+          0.9517038876500105,
+          1.0256763269790843
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.714285714285714,
+        "request_seconds": 14.61773284804076
+      }
+    }
+  },
+  "scope": "Repeat rank16/128 additive native corrections at lr0.006 with seeds1730/1731,128 records and128 updates. Unlike copied full matrices, random residual down-factors vary with seed. Exposed eight-request GSM8K512token screen against original512-record two-layer reference. No new quality confirmation. All lanes540seconds."
+}

@@ -84,7 +84,7 @@ def main():
         if (
             native_teacher["target_layer_ids"] != all_taps
             or native_teacher["target"] != metadata["config"]["target"]
-            or metadata["family"] != "dflash"
+            or metadata["family"] != native_teacher.get("family", "dflash")
             or trial.get("resume_from")
         ):
             raise ValueError("Native teacher does not match the cached target")
@@ -134,15 +134,9 @@ def main():
     if native_teacher is None:
         norm = restore_output_norm(root, metadata, device)
     else:
-        from transformers.models.qwen3.modeling_qwen3 import Qwen3RMSNorm
+        from relayspec.native_teacher import restore_native_norm
 
-        norm = Qwen3RMSNorm(metadata["draft_hidden_size"], eps=native_teacher["eps"])
-        norm.load_state_dict({"weight": native_teacher["norm_weight"]})
-        norm = (
-            norm.to(device=device, dtype=native_teacher["weight"].dtype)
-            .requires_grad_(False)
-            .eval()
-        )
+        norm = restore_native_norm(native_teacher, device)
     initialization = trial.get("initialization", "random")
     initialization_record = {"mode": "random"}
     if initialization == "native_columns":
