@@ -10,9 +10,16 @@ p = argparse.ArgumentParser()
 p.add_argument('--list', required=True)
 p.add_argument('--output', required=True)
 a = p.parse_args()
+paths = json.loads(Path(a.list).read_text())
+gate = Path(os.environ['FAMILY_SCALE_CACHE'])/'shared-pilot'/'equivalence-gate.json'
+if len(paths) > 1 and gate.exists():
+    assert json.loads(gate.read_text())['status'] == 'pass'
+    subprocess.run([sys.executable,'scripts/run_family_shared_candidates.py',
+                    '--list',a.list,'--output',a.output],check=True)
+    sys.exit(0)
 out = Path(a.output); out.mkdir(parents=True,exist_ok=True)
 results = []
-for config in json.loads(Path(a.list).read_text()):
+for config in paths:
     run = out/Path(config).stem
     run.mkdir(exist_ok=False)
     env = dict(os.environ,RELAYSPEC_OUTPUT=str(run.resolve()))

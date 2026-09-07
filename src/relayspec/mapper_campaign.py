@@ -51,7 +51,7 @@ def restore_mapper(checkpoint, *, target_hidden_size, draft_hidden_size, eps):
     if not taps or tuple(sorted(set(taps))) != taps:
         raise ValueError("checkpoint tap IDs must be sorted and unique")
     architecture = checkpoint.get("relay_architecture", "normalized_linear")
-    if architecture not in {"normalized_linear", "scale_preserving_linear"}:
+    if architecture not in {"normalized_linear", "scale_preserving_linear", "raw_linear"}:
         raise ValueError("unsupported checkpoint input normalization")
     width = checkpoint.get("mlp_hidden_width")
     rank = checkpoint.get("factorized_rank")

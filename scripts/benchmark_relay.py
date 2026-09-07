@@ -534,10 +534,28 @@ def main() -> None:
         inherited_draft,
         selective_capture=False,
         release_capture_buffers=False,
+        variant_block_size=None,
     ):
         def generate(**kwargs):
             if source_embedding is None or source_lm_head is None:
                 raise RuntimeError("mapper campaign requires source embedding/head")
+            variant_common = dict(common)
+            if variant_block_size is not None:
+                variant_common["block_size"] = int(variant_block_size)
+            if bool(probe.get("cross_family_variants", False)):
+                if source_tokenizer is None:
+                    raise RuntimeError("cross-family variants require the cross-family reference method")
+                if selective_capture or release_capture_buffers:
+                    raise ValueError("selective capture is not supported for cross-family variants")
+                return cross_family_relay_dflash_generate(
+                    inherited_draft, relay=mapper, relay_target_layer_ids=taps,
+                    native_target=target, source_embedding=source_embedding,
+                    source_lm_head=source_lm_head, source_tokenizer=source_tokenizer,
+                    target_tokenizer=tokenizer,
+                    source_to_target_intersection=source_to_target_intersection,
+                    target_to_source_intersection=target_to_source_intersection,
+                    **variant_common, **kwargs,
+                )
             return relay_dflash_generate(
                 inherited_draft,
                 relay=mapper,
@@ -547,7 +565,7 @@ def main() -> None:
                 source_lm_head=source_lm_head,
                 selective_capture=selective_capture,
                 release_capture_buffers=release_capture_buffers,
-                **common,
+                **variant_common,
                 **kwargs,
             )
 
@@ -560,6 +578,7 @@ def main() -> None:
             variant_drafters.get(name, draft),
             bool(probe.get("selective_capture", {}).get(name, False)),
             bool(probe.get("release_capture_buffers", {}).get(name, False)),
+            probe.get("variant_block_sizes", {}).get(name),
         )
     unknown = sorted(set(method_names) - set(available_methods))
     if unknown:
@@ -599,6 +618,8 @@ def main() -> None:
                     "methods": method_names,
                     "selective_capture": probe.get("selective_capture", {}),
                     "release_capture_buffers": probe.get("release_capture_buffers", {}),
+                    "cross_family_variants": bool(probe.get("cross_family_variants", False)),
+                    "variant_block_sizes": probe.get("variant_block_sizes", {}),
                     "runtime_precision": precision,
                     "target_head_precision": head_precision,
                     "target_head_diagnostic": head_diagnostic,

@@ -60,3 +60,13 @@ and correctness gates have completed.
 - 28947: corrected inference pilot, all four lanes pass exact 2/2 AR agreement.
 - Full dependent capture, fitting, screening, block tuning and final jobs are recorded in `jobs.json`.
 - Block grids: Llama 6/8/10/12/16/24; cross 8/12/16/20/24/32.
+
+## Adaptive optimization follow-up
+
+After initial screens, choose the strongest new configuration in each family. Refit it at LR 0.0003 for 12 epochs and LR 0.001 for 24 epochs; screen checkpoints before block tuning. This selection uses development throughput only. Jobs 28953/28954; block job 28951 now depends on 28954.
+
+## Evaluation efficiency
+
+Job 28956 checks shared-model candidate evaluation against standalone job 28947: exact outputs and full acceptance trajectories must match. After its gate passes, candidate batches reuse frozen models and one AR reference, rotate method order, and preserve raw per-method rows. Final confirmation remains standalone per configuration, avoiding candidate-residency effects. Restore raw ZIP maps without input normalization; route cross-family variants through the existing cross-family verifier.
+
+Unit checks: 14 mapper-campaign / research-transform tests pass.

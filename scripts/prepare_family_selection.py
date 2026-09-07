@@ -16,6 +16,7 @@ results = []
 if a.stage == 'blocks':
     paths = [root/f'screen-{n}'/f'lane{lane}'/'results.json'
              for n in [4096,8192,16384] for lane in range(4)]
+    paths += [root/'refine-screen'/f'lane{lane}'/'results.json' for lane in range(4)]
 else:
     paths = [root/'blocks'/f'lane{lane}'/'results.json' for lane in range(4)]
 for path in paths:

@@ -63,7 +63,7 @@ def main():
 
     saves = sorted(set([e for e in [1,3,6,12] if e <= a.epochs]+[a.epochs]))
     steps = math.ceil(a.records/64)*a.epochs
-    warm = max(1,int(.05*steps)); step = 0
+    warm = max(1,int(.05*steps)); step = 0; positions_seen = 0
     start = time.perf_counter()
     print(json.dumps({'initial_validation':validation()}), flush=True)
     for epoch in range(1,a.epochs+1):
@@ -71,6 +71,7 @@ def main():
         total = 0.; epoch_start = time.perf_counter()
         for j in range(0,len(order),64):
             ids = order[j:j+64]; x,y,w = batch('train',ids)
+            positions_seen += len(x)
             rate = (step+1)/warm if step < warm else .5*(1+math.cos(math.pi*(step-warm)/max(1,steps-warm)))
             opt.param_groups[0]['lr'] = a.lr*rate
             opt.zero_grad(set_to_none=True)
@@ -81,7 +82,7 @@ def main():
             torch.nn.utils.clip_grad_norm_(model.parameters(),1.,error_if_nonfinite=True)
             opt.step(); step += 1
             total += float(loss.detach())*len(ids)
-        event = {'epoch':epoch,'updates':step,'train_loss':total/a.records,
+        event = {'epoch':epoch,'updates':step,'positions_seen':positions_seen,'train_loss':total/a.records,
                  'validation_loss':validation(),'seconds':time.perf_counter()-epoch_start}
         if epoch in saves:
             if a.objective == 'zip':
@@ -100,12 +101,13 @@ def main():
                 'target_layer_ids':meta['target_taps'], 'source_layer_ids':meta['source_taps'],
                 'proposer_family':'dflash','feature_objective':a.objective,
                 'steps':step,'epoch':epoch,'training_records':a.records,
+                'positions_seen':positions_seen,
                 'train_manifest_sha256':meta['train_sha256']},out/f'epoch-{epoch}.pt')
         with (out/'history.jsonl').open('a') as f:
             f.write(json.dumps(event)+'\n')
         print(json.dumps(event),flush=True)
     (out/'COMPLETE.json').write_text(json.dumps({'seconds':time.perf_counter()-start,
-        'records':a.records,'epochs':a.epochs,'steps':step,'job_id':os.environ['SLURM_JOB_ID']}))
+        'records':a.records,'epochs':a.epochs,'steps':step,'positions_seen':positions_seen,'job_id':os.environ['SLURM_JOB_ID']}))
 
 
 if __name__ == '__main__':

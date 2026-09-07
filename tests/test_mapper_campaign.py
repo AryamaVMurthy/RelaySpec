@@ -75,3 +75,15 @@ def test_campaign_restores_each_mapper_and_rejects_wrong_target(kind):
     assert taps == (1, 3, 5)
     with pytest.raises(ValueError, match="input width"):
         restore_mapper(checkpoint, target_hidden_size=6, draft_hidden_size=5, eps=1e-6)
+
+
+def test_zip_raw_mapper_restore_preserves_feature_scale():
+    mapper = TargetFeatureRelay(target_hidden_size=4, num_taps=3,
+        draft_hidden_size=5, eps=1e-6, normalize_input=False)
+    checkpoint = {'relay': mapper.state_dict(), 'target_layer_ids': [1,3,5],
+                  'relay_architecture': 'raw_linear'}
+    restored, _ = restore_mapper(checkpoint, target_hidden_size=4,
+                                 draft_hidden_size=5, eps=1e-6)
+    x = torch.randn(2,7,12)
+    torch.testing.assert_close(restored(x), mapper(x))
+    torch.testing.assert_close(restored(2*x), 2*restored(x))

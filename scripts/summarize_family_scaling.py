@@ -9,12 +9,17 @@ p.add_argument('--root',required=True)
 p.add_argument('--output',required=True)
 a=p.parse_args()
 root=Path(a.root); out=Path(a.output); out.mkdir(parents=True,exist_ok=True)
+def artifact(path):
+    path=Path(path)
+    if path.exists():
+        return path
+    return root/path.relative_to('/scratch/aryama.murthy/family-scale-20260907')
 fits=[]; screens=[]; blocks=[]; final=[]
-for path in sorted((root/'fits').glob('n*/history.jsonl')):
+for path in sorted(list((root/'fits').glob('n*/history.jsonl'))+list((root/'fits').glob('refine-*/history.jsonl'))):
     trial=json.loads((path.parent/'trial.json').read_text())
     fits.append({'trial':trial,'history':[json.loads(s) for s in path.read_text().splitlines()],
                  'complete':(path.parent/'COMPLETE.json').exists()})
-for stage,dest in [('screen-*',screens),('blocks',blocks),('final',final)]:
+for stage,dest in [('screen-*',screens),('refine-screen',screens),('blocks',blocks),('final',final)]:
     for path in sorted(root.glob(stage+'/lane*/results.json')):
         dest.extend(json.loads(path.read_text()))
 comparison=[]
@@ -22,7 +27,7 @@ if len(final)==4:
     lanes={}
     for r in final:
         lane=int(Path(r['output']).parent.name.removeprefix('lane'))
-        raw=[json.loads(s) for s in (Path(r['output'])/'benchmark-rank0.jsonl').read_text().splitlines()]
+        raw=[json.loads(s) for s in (artifact(r['output'])/'benchmark-rank0.jsonl').read_text().splitlines()]
         method=next(k for k in r['methods'] if k!='native_ar')
         rows={ (x['problem_id'],x['turn_index'],x['repetition']):x for x in raw if x.get('method')==method }
         assert r['exact_gate'] and len(rows)==16
@@ -51,7 +56,7 @@ if len(final)==4:
 data={'fits':fits,'screening':screens,'block_tuning':blocks,'final':final,'comparison':comparison}
 (out/'results.json').write_text(json.dumps(data,indent=2))
 lines=['# Expanded family-transfer results','',
-    f'Completed fitting runs: {sum(f["complete"] for f in fits)} / 12.',
+    f'Completed fitting runs: {sum(f["complete"] for f in fits)} / 16 (12 initial, 4 adaptive follow-ups).',
     f'Observed checkpoint/control screens: {len(screens)}; block trials: {len(blocks)}; final lanes: {len(final)}.','',
     'Screening uses two requests capped at 256 new tokens. It is selection evidence only.',
     'Final confirmation uses 16 reserved requests capped at 1,024 new tokens.',
