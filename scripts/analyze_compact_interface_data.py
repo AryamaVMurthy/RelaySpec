@@ -7,11 +7,16 @@ from relayspec.ar_paper_evidence import summarize
 from relayspec.cached_fit_evidence import audit_fit_artifacts, digest
 
 
-def analyze(job_id, wave_number, output):
+def analyze(
+    job_id,
+    wave_number,
+    output,
+    *,
+    cache_sha="a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+):
     root = Path(f"reports/autoresearch-20260907/run-{job_id}")
     wave_path = Path(f"configs/autoresearch/20260907/wave{wave_number:02}.json")
     wave = json.loads(wave_path.read_text())
-    cache_sha = "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5"
     inputs = {str(wave_path): digest(wave_path)}
     ledger = json.loads(Path("reports/autoresearch-20260907/jobs.json").read_text())
     job = next(j for j in ledger["jobs"] if j["id"] == job_id)
@@ -49,8 +54,15 @@ def analyze(job_id, wave_number, output):
             lane / "fitting" / trial["name"], trial, cache_sha256=cache_sha
         )
         for cp, sha in spec["checkpoint_sha256"].items():
-            found = [v for v in campaign["variants"].values() if v["checkpoint"] == cp]
-            if len(found) != 1 or found[0]["sha256"] != sha:
+            found = [
+                v
+                for v in campaign["variants"].values()
+                if v.get("checkpoint", v.get("checkpoint_path")) == cp
+            ]
+            if (
+                len(found) != 1
+                or found[0].get("sha256", found[0].get("checkpoint_sha256")) != sha
+            ):
                 raise ValueError("512-record reference hash mismatch")
         rows = [json.loads(x) for x in paths[-1].read_text().splitlines()]
         ids = {r["problem_id"] for r in rows}
