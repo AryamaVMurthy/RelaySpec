@@ -1,0 +1,117 @@
+{
+  "dataset_revisions": {
+    "evalplus_mbpp": "26d6d00bb1fd0fa37f39c99d5290da67891d1c5e",
+    "gsm8k": "740312add88f781978c0658806c59bc2815b9866",
+    "humaneval": "7dce6050a7d6d172f3cc5c32aa97f52fa1a2e544",
+    "math500": "6e4ed1a2a79af7d8630a6b768ec859cb5af4d3be",
+    "mtbench": "e3a795c5e9a82ee40611c416b8a7786c73198991"
+  },
+  "records": [
+    {
+      "answer": {
+        "entry_point": "search",
+        "tests": [
+          "assert search([1,1,2,2,3]) == 3",
+          "assert search([1,1,3,3,4,4,5,5,7,7,8]) == 8",
+          "assert search([1,2,2,3,3,4,4]) == 1"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/119",
+      "prompt": "\"\"\"\nWrite a python function to find the element that appears only once in a sorted array.\nassert search([1,1,2,2,3]) == 3\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert search([1,1,2,2,3]) == 3\nassert search([1,1,3,3,4,4,5,5,7,7,8]) == 8\nassert search([1,2,2,3,3,4,4]) == 1\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "extract_even",
+        "tests": [
+          "assert extract_even((4, 5, (7, 6, (2, 4)), 6, 8)) == (4, (6, (2, 4)), 6, 8)",
+          "assert extract_even((5, 6, (8, 7, (4, 8)), 7, 9)) == (6, (8, (4, 8)))",
+          "assert extract_even((5, 6, (9, 8, (4, 6)), 8, 10)) == (6, (8, (4, 6)), 8, 10)"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/580",
+      "prompt": "\"\"\"\nWrite a function to remove uneven elements in the nested mixed tuple.\nassert extract_even((4, 5, (7, 6, (2, 4)), 6, 8)) == (4, (6, (2, 4)), 6, 8)\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert extract_even((4, 5, (7, 6, (2, 4)), 6, 8)) == (4, (6, (2, 4)), 6, 8)\nassert extract_even((5, 6, (8, 7, (4, 8)), 7, 9)) == (6, (8, (4, 8)))\nassert extract_even((5, 6, (9, 8, (4, 6)), 8, 10)) == (6, (8, (4, 6)), 8, 10)\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "square_Sum",
+        "tests": [
+          "assert square_Sum(2) == 10",
+          "assert square_Sum(3) == 35",
+          "assert square_Sum(4) == 84"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/267",
+      "prompt": "\"\"\"\nWrite a python function that takes in an integer n and returns the sum of the squares of the first n odd natural numbers.\nassert square_Sum(2) == 10\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert square_Sum(2) == 10\nassert square_Sum(3) == 35\nassert square_Sum(4) == 84\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "odd_values_string",
+        "tests": [
+          "assert odd_values_string('abcdef') == 'ace'",
+          "assert odd_values_string('python') == 'pto'",
+          "assert odd_values_string('data') == 'dt'",
+          "assert odd_values_string('lambs') == 'lms'"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/226",
+      "prompt": "\"\"\"\nWrite a python function to remove the characters which have odd index values of a given string.\nassert odd_values_string('abcdef') == 'ace'\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert odd_values_string('abcdef') == 'ace'\nassert odd_values_string('python') == 'pto'\nassert odd_values_string('data') == 'dt'\nassert odd_values_string('lambs') == 'lms'\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "pair_xor_Sum",
+        "tests": [
+          "assert pair_xor_Sum([5,9,7,6],4) == 47",
+          "assert pair_xor_Sum([7,3,5],3) == 12",
+          "assert pair_xor_Sum([7,3],2) == 4"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/633",
+      "prompt": "\"\"\"\nWrite a python function to find the sum of xor of all pairs of numbers in the given list.\nassert pair_xor_Sum([5,9,7,6],4) == 47\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert pair_xor_Sum([5,9,7,6],4) == 47\nassert pair_xor_Sum([7,3,5],3) == 12\nassert pair_xor_Sum([7,3],2) == 4\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "count_list",
+        "tests": [
+          "assert count_list([[1, 3], [5, 7], [9, 11], [13, 15, 17]]) == 4",
+          "assert count_list([[1,2],[2,3],[4,5]]) == 3",
+          "assert count_list([[1,0],[2,0]]) == 2"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/792",
+      "prompt": "\"\"\"\nWrite a python function to count the number of lists in a given number of lists.\nassert count_list([[1, 3], [5, 7], [9, 11], [13, 15, 17]]) == 4\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert count_list([[1, 3], [5, 7], [9, 11], [13, 15, 17]]) == 4\nassert count_list([[1,2],[2,3],[4,5]]) == 3\nassert count_list([[1,0],[2,0]]) == 2\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "len_log",
+        "tests": [
+          "assert len_log([\"python\",\"PHP\",\"bigdata\"]) == 7",
+          "assert len_log([\"a\",\"ab\",\"abc\"]) == 3",
+          "assert len_log([\"small\",\"big\",\"tall\"]) == 5"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/90",
+      "prompt": "\"\"\"\nWrite a python function to find the length of the longest word.\nassert len_log([\"python\",\"PHP\",\"bigdata\"]) == 7\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert len_log([\"python\",\"PHP\",\"bigdata\"]) == 7\nassert len_log([\"a\",\"ab\",\"abc\"]) == 3\nassert len_log([\"small\",\"big\",\"tall\"]) == 5\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "max_sum",
+        "tests": [
+          "assert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194",
+          "assert max_sum([80, 60, 30, 40, 20, 10]) == 210",
+          "assert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/245",
+      "prompt": "\"\"\"\nWrite a function that takes an array and finds the maximum sum of a bitonic subsequence for the given array, where a sequence is bitonic if it is first increasing and then decreasing.\nassert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert max_sum([1, 15, 51, 45, 33, 100, 12, 18, 9]) == 194\nassert max_sum([80, 60, 30, 40, 20, 10]) == 210\nassert max_sum([2, 3 ,14, 16, 21, 23, 29, 30]) == 138\n```"
+    }
+  ],
+  "seed": 42
+}

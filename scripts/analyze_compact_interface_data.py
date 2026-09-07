@@ -66,11 +66,12 @@ def analyze(
                 raise ValueError("512-record reference hash mismatch")
         rows = [json.loads(x) for x in paths[-1].read_text().splitlines()]
         ids = {r["problem_id"] for r in rows}
+        expected_methods = {"relay_base", "relay_reduced", *spec.get("controls", {})}
         if (
-            len(rows) != 16
+            len(rows) != 8 * len(expected_methods)
             or len(ids) != 8
             or {(r["problem_id"], r["method"]) for r in rows}
-            != {(p, m) for p in ids for m in ["relay_base", "relay_reduced"]}
+            != {(p, m) for p in ids for m in expected_methods}
         ):
             raise ValueError("Incomplete paired screen")
         if common_ids is None:
