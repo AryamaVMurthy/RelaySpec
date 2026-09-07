@@ -36,6 +36,7 @@ from relayspec.mapper_campaign import campaign_model_methods, restore_mapper
 from relayspec.profiling import CudaRegionRecorder
 from relayspec.proposers import RelayContextProvider, SourceContextProvider
 from relayspec.relay import TargetFeatureRelay
+from relayspec.sampling_rng import initialize_sampling_rng
 from relayspec.sequence_scaling import validate_exact_input
 from relayspec.source import SourceTapProvider
 
@@ -525,6 +526,13 @@ def main() -> None:
                                 if hasattr(encoded, "keys")
                                 else encoded
                             ).to(device)
+                        sampling_seed = initialize_sampling_rng(
+                            float(config.generation.temperature),
+                            getattr(config.benchmark, "sampling_seed_base", None),
+                            record["problem_id"],
+                            repetition,
+                            turn_index,
+                        )
                         row = run_method(
                             method,
                             available[method],
@@ -532,6 +540,11 @@ def main() -> None:
                             int(config.generation.max_new_tokens),
                             tokenizer,
                         )
+                        if sampling_seed is not None:
+                            row["sampling_seed"] = sampling_seed
+                            row["sampling_temperature"] = float(
+                                config.generation.temperature
+                            )
                         if method in variant_provenance:
                             row["mapper_checkpoint_sha256"] = variant_provenance[
                                 method

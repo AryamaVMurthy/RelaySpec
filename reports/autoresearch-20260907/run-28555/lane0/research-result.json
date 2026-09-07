@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "hypothesis": "Can frozen RelaySpec maps operate under the existing sampling decoder at temperatures0.6 and1.0 in both drafter families?",
+  "summary": {
+    "requests": 4,
+    "clusters": 4,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 36.737960241864464,
+        "throughput_ratio": 0.29618015097036626,
+        "throughput_ci95": [
+          0.25962791518106076,
+          0.3399693643655845
+        ],
+        "request_time_ratio": 0.29618015097036626,
+        "request_time_ci95": [
+          0.25962791518106076,
+          0.33996936436558456
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 0,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 13.936538572888821
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 137.82360084587782,
+        "throughput_ratio": 1.1111290511794603,
+        "throughput_ci95": [
+          1.0220223727279245,
+          1.1912491500083355
+        ],
+        "request_time_ratio": 1.1111290511794603,
+        "request_time_ci95": [
+          1.0220223727279243,
+          1.1912491500083355
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 0,
+        "progress_per_cycle": 5.618556701030927,
+        "request_seconds": 3.714893507771194
+      },
+      "relay_base": {
+        "tokens_per_second": 124.03923801612285,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 4,
+        "progress_per_cycle": 4.962616822429907,
+        "request_seconds": 4.127726098522544
+      }
+    }
+  },
+  "scope": "Operational sampling pilot with frozen512-record dense retargeting maps, native drafter and AR. Four exposed GSM8K requests128token cap, one generation seed. Output equality is not expected under sampling. No distributional exactness or task-quality claim from this pilot. All lanes540seconds."
+}

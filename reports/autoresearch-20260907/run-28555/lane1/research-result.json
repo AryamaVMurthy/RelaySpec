@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "hypothesis": "Can frozen RelaySpec maps operate under the existing sampling decoder at temperatures0.6 and1.0 in both drafter families?",
+  "summary": {
+    "requests": 4,
+    "clusters": 4,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.656409166787796,
+        "throughput_ratio": 0.3214187151591327,
+        "throughput_ci95": [
+          0.2712174876717767,
+          0.38502023521204454
+        ],
+        "request_time_ratio": 0.32141871515913273,
+        "request_time_ci95": [
+          0.2712174876717767,
+          0.38502023521204454
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 0,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 13.596623027231544
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 138.99310257240126,
+        "throughput_ratio": 1.1863846137566723,
+        "throughput_ci95": [
+          1.0848203412124588,
+          1.361975988406846
+        ],
+        "request_time_ratio": 1.1863846137566723,
+        "request_time_ci95": [
+          1.0848203412124586,
+          1.361975988406846
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 0,
+        "progress_per_cycle": 5.346938775510204,
+        "request_seconds": 3.683636025991291
+      },
+      "relay_base": {
+        "tokens_per_second": 117.1568654555299,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 4,
+        "progress_per_cycle": 4.4033613445378155,
+        "request_seconds": 4.37020910391584
+      }
+    }
+  },
+  "scope": "Operational sampling pilot with frozen512-record dense retargeting maps, native drafter and AR. Four exposed GSM8K requests128token cap, one generation seed. Output equality is not expected under sampling. No distributional exactness or task-quality claim from this pilot. All lanes540seconds."
+}

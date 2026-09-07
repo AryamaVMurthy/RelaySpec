@@ -42,6 +42,7 @@ from relayspec.generation import (
 from relayspec.mapper_campaign import campaign_model_methods, restore_mapper
 from relayspec.profiling import CudaRegionRecorder
 from relayspec.relay import TargetFeatureRelay
+from relayspec.sampling_rng import initialize_sampling_rng
 from relayspec.sequence_scaling import validate_exact_input
 from relayspec.source import SourceTapProvider
 from relayspec.unfitted_controls import UnfittedContext
@@ -527,7 +528,13 @@ def main() -> None:
         "relay_p_cross_family": relayed_cross_family,
     }
 
-    def variant_generator(mapper, taps, inherited_draft, selective_capture=False, release_capture_buffers=False):
+    def variant_generator(
+        mapper,
+        taps,
+        inherited_draft,
+        selective_capture=False,
+        release_capture_buffers=False,
+    ):
         def generate(**kwargs):
             if source_embedding is None or source_lm_head is None:
                 raise RuntimeError("mapper campaign requires source embedding/head")
@@ -548,7 +555,9 @@ def main() -> None:
 
     for name, (mapper, taps) in variant_mappers.items():
         available_methods[name] = variant_generator(
-            mapper, taps, variant_drafters.get(name, draft),
+            mapper,
+            taps,
+            variant_drafters.get(name, draft),
             bool(probe.get("selective_capture", {}).get(name, False)),
             bool(probe.get("release_capture_buffers", {}).get(name, False)),
         )
@@ -594,8 +603,12 @@ def main() -> None:
                     "target_head_precision": head_precision,
                     "target_head_diagnostic": head_diagnostic,
                     "matmul_allow_tf32": torch.backends.cuda.matmul.allow_tf32,
-                    "target_parameter_dtypes": sorted({str(p.dtype) for p in target.parameters()}),
-                    "drafter_parameter_dtypes": sorted({str(p.dtype) for p in draft.parameters()}),
+                    "target_parameter_dtypes": sorted(
+                        {str(p.dtype) for p in target.parameters()}
+                    ),
+                    "drafter_parameter_dtypes": sorted(
+                        {str(p.dtype) for p in draft.parameters()}
+                    ),
                     "mapper_parameter_dtypes": {
                         name: sorted({str(p.dtype) for p in mapper.parameters()})
                         for name, (mapper, _) in variant_mappers.items()
@@ -647,6 +660,13 @@ def main() -> None:
                                 if hasattr(encoded, "keys")
                                 else encoded
                             ).to(device)
+                        sampling_seed = initialize_sampling_rng(
+                            float(config.generation.temperature),
+                            getattr(config.benchmark, "sampling_seed_base", None),
+                            record["problem_id"],
+                            repetition,
+                            turn_index,
+                        )
                         row = run_method(
                             name,
                             available_methods[name],
@@ -654,6 +674,11 @@ def main() -> None:
                             config.generation.max_new_tokens,
                             tokenizer,
                         )
+                        if sampling_seed is not None:
+                            row["sampling_seed"] = sampling_seed
+                            row["sampling_temperature"] = float(
+                                config.generation.temperature
+                            )
                         if name in variant_provenance:
                             row["mapper_checkpoint_sha256"] = variant_provenance[name][
                                 "sha256"
