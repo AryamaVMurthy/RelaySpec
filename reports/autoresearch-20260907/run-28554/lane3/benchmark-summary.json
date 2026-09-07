@@ -1,0 +1,224 @@
+{
+  "methods": {
+    "relay_base": {
+      "decode_seconds": 46.47928441828117,
+      "decode_tokens_per_second": 49.35532095020222,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "mean_acceptance_length": 3.5532102141801722,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 1.0
+    },
+    "relay_cropped": {
+      "decode_seconds": 56.156754593364894,
+      "decode_tokens_per_second": 40.849939007533806,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "mean_acceptance_length": 3.0036895512659694,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.8276704156933749
+    },
+    "relay_n128_native_columns": {
+      "decode_seconds": 50.26144944364205,
+      "decode_tokens_per_second": 45.681133859350695,
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "mean_acceptance_length": 3.2545318065728104,
+      "output_tokens": 2296,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.9255564137743395
+    },
+    "relay_n128_random": {
+      "decode_seconds": 82.56519908225164,
+      "decode_tokens_per_second": 27.784103054299088,
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "mean_acceptance_length": 1.9671840804981209,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.5629403784514393
+    },
+    "relay_n16_native_columns": {
+      "decode_seconds": 49.310529108159244,
+      "decode_tokens_per_second": 46.56206375242663,
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "mean_acceptance_length": 3.340335704012502,
+      "output_tokens": 2296,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.9434051457067033
+    },
+    "relay_n16_random": {
+      "decode_seconds": 87.4417615509592,
+      "decode_tokens_per_second": 26.257476510945402,
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "mean_acceptance_length": 1.7881564936353394,
+      "output_tokens": 2296,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.5320090317604919
+    },
+    "relay_svd1536": {
+      "decode_seconds": 52.92837587138638,
+      "decode_tokens_per_second": 43.3415906351315,
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "mean_acceptance_length": 3.1576227608214635,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.8781543671625931
+    }
+  },
+  "paired_requests": 16,
+  "pairwise": {
+    "relay_cropped_vs_relay_base": {
+      "candidate_method": "relay_cropped",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.8276704156933749
+    },
+    "relay_n128_native_columns_vs_relay_base": {
+      "candidate_method": "relay_n128_native_columns",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.9255564137743395
+    },
+    "relay_n128_native_columns_vs_relay_cropped": {
+      "candidate_method": "relay_n128_native_columns",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_cropped",
+      "throughput_speedup": 1.1182668804211895
+    },
+    "relay_n128_native_columns_vs_relay_n128_random": {
+      "candidate_method": "relay_n128_native_columns",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 14,
+      "reference_method": "relay_n128_random",
+      "throughput_speedup": 1.644146430427322
+    },
+    "relay_n128_native_columns_vs_relay_n16_native_columns": {
+      "candidate_method": "relay_n128_native_columns",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_n16_native_columns",
+      "throughput_speedup": 0.9810805230249265
+    },
+    "relay_n128_native_columns_vs_relay_n16_random": {
+      "candidate_method": "relay_n128_native_columns",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_n16_random",
+      "throughput_speedup": 1.7397381595412857
+    },
+    "relay_n128_native_columns_vs_relay_svd1536": {
+      "candidate_method": "relay_n128_native_columns",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 14,
+      "reference_method": "relay_svd1536",
+      "throughput_speedup": 1.0539791731206751
+    },
+    "relay_n128_random_vs_relay_base": {
+      "candidate_method": "relay_n128_random",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.5629403784514393
+    },
+    "relay_n128_random_vs_relay_cropped": {
+      "candidate_method": "relay_n128_random",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_cropped",
+      "throughput_speedup": 0.6801504170954813
+    },
+    "relay_n128_random_vs_relay_n16_native_columns": {
+      "candidate_method": "relay_n128_random",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 14,
+      "reference_method": "relay_n16_native_columns",
+      "throughput_speedup": 0.5967111595832367
+    },
+    "relay_n128_random_vs_relay_n16_random": {
+      "candidate_method": "relay_n128_random",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 14,
+      "reference_method": "relay_n16_random",
+      "throughput_speedup": 1.0581406420650252
+    },
+    "relay_n128_random_vs_relay_svd1536": {
+      "candidate_method": "relay_n128_random",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 14,
+      "reference_method": "relay_svd1536",
+      "throughput_speedup": 0.6410494549726575
+    },
+    "relay_n16_native_columns_vs_relay_base": {
+      "candidate_method": "relay_n16_native_columns",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.9434051457067033
+    },
+    "relay_n16_native_columns_vs_relay_cropped": {
+      "candidate_method": "relay_n16_native_columns",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_cropped",
+      "throughput_speedup": 1.1398319038821418
+    },
+    "relay_n16_native_columns_vs_relay_n16_random": {
+      "candidate_method": "relay_n16_native_columns",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_n16_random",
+      "throughput_speedup": 1.7732878379617814
+    },
+    "relay_n16_native_columns_vs_relay_svd1536": {
+      "candidate_method": "relay_n16_native_columns",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 14,
+      "reference_method": "relay_svd1536",
+      "throughput_speedup": 1.0743044514541813
+    },
+    "relay_n16_random_vs_relay_base": {
+      "candidate_method": "relay_n16_random",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.5320090317604919
+    },
+    "relay_n16_random_vs_relay_cropped": {
+      "candidate_method": "relay_n16_random",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_cropped",
+      "throughput_speedup": 0.6427788424874473
+    },
+    "relay_n16_random_vs_relay_svd1536": {
+      "candidate_method": "relay_n16_random",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 14,
+      "reference_method": "relay_svd1536",
+      "throughput_speedup": 0.6058263235420301
+    },
+    "relay_svd1536_vs_relay_base": {
+      "candidate_method": "relay_svd1536",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.8781543671625931
+    },
+    "relay_svd1536_vs_relay_cropped": {
+      "candidate_method": "relay_svd1536",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_cropped",
+      "throughput_speedup": 1.0609952349534273
+    }
+  }
+}

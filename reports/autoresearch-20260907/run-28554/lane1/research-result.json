@@ -1,0 +1,131 @@
+{
+  "status": "pass",
+  "hypothesis": "Does native-column initialization preserve its low-data benefit across EAGLE3 workloads, beyond untrained cropping and SVD?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 97.25008730609991,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.548128342245989,
+        "request_seconds": 21.059107058215886
+      },
+      "relay_cropped": {
+        "tokens_per_second": 76.64215469983874,
+        "throughput_ratio": 0.7880934282208242,
+        "throughput_ci95": [
+          0.7618209870648573,
+          0.8196563757935552
+        ],
+        "request_time_ratio": 0.7880934282208242,
+        "request_time_ci95": [
+          0.7618209870648573,
+          0.8196563757935551
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.36344537815126,
+        "request_seconds": 26.72158693894744
+      },
+      "relay_n128_native_columns": {
+        "tokens_per_second": 89.8051506057852,
+        "throughput_ratio": 0.9234454497004062,
+        "throughput_ci95": [
+          0.8999523183378089,
+          0.9465896511587738
+        ],
+        "request_time_ratio": 0.9234454497004062,
+        "request_time_ci95": [
+          0.8999523183378089,
+          0.9465896511587737
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.120987654320988,
+        "request_seconds": 22.804928071331233
+      },
+      "relay_n128_random": {
+        "tokens_per_second": 66.6280235615386,
+        "throughput_ratio": 0.685120449833873,
+        "throughput_ci95": [
+          0.6469913094088109,
+          0.7361078717851884
+        ],
+        "request_time_ratio": 0.685120449833873,
+        "request_time_ci95": [
+          0.646991309408811,
+          0.7361078717851884
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 3.7883211678832116,
+        "request_seconds": 30.73781707044691
+      },
+      "relay_n16_native_columns": {
+        "tokens_per_second": 92.61606073623629,
+        "throughput_ratio": 0.9523493839622192,
+        "throughput_ci95": [
+          0.9146529141488792,
+          0.9950440458300843
+        ],
+        "request_time_ratio": 0.9523493839622192,
+        "request_time_ci95": [
+          0.9146529141488792,
+          0.9950440458300845
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.254452926208652,
+        "request_seconds": 22.112795380409807
+      },
+      "relay_n16_random": {
+        "tokens_per_second": 53.885093677069996,
+        "throughput_ratio": 0.5540878694274458,
+        "throughput_ci95": [
+          0.5197739961363992,
+          0.58657128193309
+        ],
+        "request_time_ratio": 0.5540878694274458,
+        "request_time_ci95": [
+          0.5197739961363992,
+          0.58657128193309
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 3.0500736377025035,
+        "request_seconds": 38.00680040149018
+      },
+      "relay_svd1536": {
+        "tokens_per_second": 90.13639663408627,
+        "throughput_ratio": 0.9268515754682778,
+        "throughput_ci95": [
+          0.8829711807700095,
+          0.9715050447153719
+        ],
+        "request_time_ratio": 0.9268515754682778,
+        "request_time_ci95": [
+          0.8829711807700095,
+          0.971505044715372
+        ],
+        "mean_output_tokens": 256.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.124069478908188,
+        "request_seconds": 22.721121283713728
+      }
+    }
+  },
+  "scope": "Seven methods within worker: full native projection, untrained late-two-layer crop, rank1536 SVD and all four16/128-record random/inherited128-update fits. Eight exposed requests per workload256token cap, two turns per dialogue. Shorter cap than DFlash transfer screen to maintain540second lanes. No direct cross-family speed ranking, fresh confirmation or full-answer quality claim."
+}
