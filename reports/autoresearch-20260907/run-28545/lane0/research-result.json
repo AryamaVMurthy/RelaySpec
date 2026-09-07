@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Can a low-rank weight correction recover the benefit of full native interface calibration with fewer trainable parameters?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 180.5955392818464,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.766066838046273,
+        "request_seconds": 14.529705497901887
+      },
+      "relay_reduced": {
+        "tokens_per_second": 178.12731271996748,
+        "throughput_ratio": 0.9863328486866616,
+        "throughput_ci95": [
+          0.9456552001847772,
+          1.014418133993567
+        ],
+        "request_time_ratio": 0.9863328486866616,
+        "request_time_ci95": [
+          0.9456552001847772,
+          1.0144181339935672
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.680203045685279,
+        "request_seconds": 14.731036806944758
+      }
+    }
+  },
+  "scope": "Native inherited two-layer columns frozen; train rank16/128 additive residual at learning rates0.0006/0.006,128 records and128 updates. Unit residual scaling; zero up and normal down initialization. Export folds into dense map, so savings concern trainable parameters, not deployed size. All four arms retained; eight exposed GSM8K requests512token cap versus original512-record compact reference. Each lane540seconds."
+}
