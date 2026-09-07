@@ -31,8 +31,8 @@ def test_relative_error_equal_layer_token_weighting_and_epsilon():
 
 
 def test_dense_control_accepts_sampled_position_batch():
-    from relayspec.relay import TargetFeatureRelay
     from relayspec.layer_context import frozen_norm
+    from relayspec.relay import TargetFeatureRelay
 
     model = TargetFeatureRelay(
         target_hidden_size=7, num_taps=5, draft_hidden_size=4, eps=1e-6

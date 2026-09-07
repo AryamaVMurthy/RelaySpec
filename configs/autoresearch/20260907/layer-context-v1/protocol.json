@@ -51,5 +51,7 @@
   "scope": "User-proposed loss. Four declared architecture/objective controls, no independent confirmation. Fixed192token cache prefixes,32 sampled positions per record,2048position batches. Frozen 8192-update baseline is a deployment reference with a different fitting budget. All lanes540seconds.",
   "loss": "mean_n_i ||Wi xi - yi||^2/(||yi||^2+1e-6) + mean_n ||RMSNorm(F concat(Wi xi))-RMSNorm(F concat(yi))||^2/(||c||^2+1e-6)",
   "normalization": "Frozen source RMSNorm scale and epsilon1e-6. No input normalization in five-map arms. Existing dense context control keeps input RMS normalization.",
-  "caveat": "The proposal changes both parameterization and loss. Context-only same-parameterization control isolates layer supervision; dense context is matched-budget original architecture. Not a recreation of512/4k rollout lengths."
+  "caveat": "The proposal changes both parameterization and loss. Context-only same-parameterization control isolates layer supervision; dense context is matched-budget original architecture. Not a recreation of512/4k rollout lengths.",
+  "corrected_pilot_wave": 98,
+  "pilot_failure": "Wave96 dense control failed before training because sampled position matrix lacked the sequence dimension required by TargetFeatureRelay. Corrected wrapper tested on CPU and wave98."
 }
