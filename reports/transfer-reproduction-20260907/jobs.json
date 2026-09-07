@@ -34,6 +34,67 @@
       "gpus": 0,
       "reason": "Original30minute setup cannot have its wall limit extended. Preserve current download and allow remaining exact locked dependencies to finish in CPU-only continuation.",
       "script_sha256": "6c415c4c32f3c30a8381a68257254a3eb1ad5a35c2e9fb6da632c126f077687d"
+    },
+    {
+      "id": 28637,
+      "stage": "full_16384_two_worker_generation",
+      "command": "sbatch --parsable /home/aryama.murthy/relayspec-transfer-reproduction/generate.sbatch",
+      "gpus": 2,
+      "script_sha256": "3a3d5dbc0577ae57fa39930c4683c40cc8917498d59bac60450e995a860c7dcb",
+      "audit": "generation-sample-audit.json"
+    },
+    {
+      "id": 28695,
+      "stage": "quick512_capture_validation_and_baselines",
+      "gpus": 4,
+      "script_sha256": "d21493a09819ece716d364cc0762c103084f74cda48c271704741089c284f962",
+      "historical_reproduction": false
+    },
+    {
+      "id": 28696,
+      "stage": "quick512_baselines_completed_capture_compiled_check_failed",
+      "gpus": 4,
+      "historical_reproduction": false
+    },
+    {
+      "id": 28699,
+      "stage": "quick512_eager_batch_invariant_capture_check_passed",
+      "gpus": 2,
+      "historical_reproduction": false
+    },
+    {
+      "id": 28700,
+      "stage": "quick512_capture_fit_export_evaluate",
+      "gpus": 2,
+      "historical_reproduction": false
+    },
+    {
+      "id": 28706,
+      "stage": "full16384_capture_precheck",
+      "gpus": 2,
+      "script_sha256": "50ea97a6ca01ba5754cdcec5471f4b69fef4d6ba3ec45e233947866a60b632a1"
+    },
+    {
+      "id": 28719,
+      "stage": "full16384_capture",
+      "gpus": 2,
+      "dependency": null,
+      "script_sha256": "63c0186b55d81d616850c142bfcdddb9ed7d7168db013a4a0120979044b39a64"
+    },
+    {
+      "id": 28720,
+      "stage": "full16384_train",
+      "gpus": 1,
+      "dependency": "afterok:28719",
+      "script_sha256": "c3aacfc759c1d5809c1bfe8a9dfb17bb399162521b9536305fe7861734b0d437"
+    },
+    {
+      "id": 28721,
+      "stage": "full16384_128prompt_2048cap_comparison",
+      "gpus": 4,
+      "dependency": "afterok:28720",
+      "script_sha256": "c414ef3e51f479ce490860727be77aabc50c3da104f514dc85c78d2a8766a333",
+      "runner_sha256": "c87b32f06da822edc349fc0d4c528ad4a9c2b0c20164e0ead03285ecff94b307"
     }
   ],
   "dependency_updates": [

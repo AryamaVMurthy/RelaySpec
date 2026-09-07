@@ -33,3 +33,15 @@ The prior negative result is not a reproduction of this recipe. Both results mus
 Original recorded generation summed across workers: 11643.1 seconds, approximately97.0 minutes wall time with two balanced workers. Original fit887.5seconds. Feature payload336GiB. These are historical measurements, not completion promises. Scratch preflight found13TiB free.
 
 GPU budget: maximum4 across active GPU stages. Scheduler auto-adds1 billed GPU to the4CPU setup/preparation requests; those stages do not perform GPU computation. Every operational probe has540second cap. Full generation must retain two long-lived workers to preserve the archive scheduling contract.
+
+## Live update
+
+Setup28613/28618 and preparation28614 completed; all four probes28615 passed in3m35s. Dataset and reference prompts reconstructed exactly. All eight generation samples inspected; see generation-sample-audit.json for data-quality limitations. Full16,384-record generation submitted as28637 on two GPUs, preserving the archive two-worker schedule. Capture, three-epoch mapper training, export, and full evaluation remain pending. Current GPU driver570.211.01 differs from archive610.57.04; exact historical reproduction remains unverified.
+
+## Completed quick comparison
+
+Full generation28637 produced16,384records but failed historical shard hash equality; preserved. User requested quick pilot:512fresh records,3epochs,8evalprompts capped512tokens. Job28700 completed: mapped159.7628TPS, native175.5489TPS, AR26.2393TPS; all8output token sequences exactly equal. Mapped6.0887xAR,91.0075%native. See QUICK_PILOT.md and quick512-results/comparison.json. Full-data mapper training remains outstanding.
+
+Full-data precheck28706 passed in95seconds, all16 sampled/dense comparisons exactly equal. Operator inspected full-data representative boundaries,26token and4096token outputs, regular and capped stops. Full contract16,384records,5,398,695positions/epoch (~334.66GiB paired BF16). Capture28719 submitted with first512records reused from audited identical-capture pilot. Training/export/eight-prompt evaluation28720 automatically depends on successful capture28719. Three epochs, unchanged archive train.py/mapper.py. Estimated55–70minutes from capture start, pending queue/I/O variability.
+
+Goal continuation:28721 queued after28720 to verify8prompt pilot token equality, then measure all128original prompts at2048cap with fourAR workers followed by two native and two mapped workers. Raw outputs, timing checks and historical-reference equality are retained separately. No positive-speedup threshold is used as a completion criterion.
