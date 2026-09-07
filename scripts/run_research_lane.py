@@ -80,7 +80,16 @@ def prepare(spec, root):
         torch.save(checkpoint, path)
         variants[name] = str(path)
 
-    if spec["transform"] in {"svd", "native_svd"}:
+    if spec["transform"] == "fit_layer_context":
+        from fit_layer_context_probe import fit
+
+        config = yaml.safe_load(Path(spec["config"]).read_text())
+        draft = load_released_draft(config).eval().requires_grad_(False)
+        path, result = fit(spec, root, storage, config, draft)
+        del draft
+        variants["relay_layer_context"] = path
+        provenance["layer_context_fit"] = result
+    elif spec["transform"] in {"svd", "native_svd"}:
         torch.manual_seed(1729)
         w = weight.float().cuda()
         u, s, v = torch.svd_lowrank(
