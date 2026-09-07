@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Can two trainable layer gains recover native compact-interface performance without updating the inherited projection directions?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 180.26412153187314,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.766066838046273,
+        "request_seconds": 14.55641853576526
+      },
+      "relay_reduced": {
+        "tokens_per_second": 172.76251348197616,
+        "throughput_ratio": 0.9583854624750128,
+        "throughput_ci95": [
+          0.899756930370542,
+          1.004659587789969
+        ],
+        "request_time_ratio": 0.9583854624750128,
+        "request_time_ci95": [
+          0.899756930370542,
+          1.004659587789969
+        ],
+        "mean_output_tokens": 328.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.477832512315271,
+        "request_seconds": 15.18848011130467
+      }
+    }
+  },
+  "scope": "Two scalar block gains versus the512-record compact reference,16/128 calibration records,128 updates, scalar rates0.003/0.03. Frozen inherited columns, dense folded export. Eight exposed GSM8K requests512token cap. Rates are a development screen, not a matched-rate comparison with full-map fitting. All lanes540second cap."
+}
