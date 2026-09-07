@@ -1,0 +1,148 @@
+{
+  "status": "pass",
+  "hypothesis": "Does low-rank native calibration transfer across workloads under two additional fitting seeds?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 214.95926847889908,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 471.125,
+        "token_matches": 8,
+        "progress_per_cycle": 8.275711159737417,
+        "request_seconds": 17.533554271329194
+      },
+      "relay_cropped": {
+        "tokens_per_second": 196.74889754870742,
+        "throughput_ratio": 0.9152845510730828,
+        "throughput_ci95": [
+          0.8763093926001198,
+          0.9535408988098101
+        ],
+        "request_time_ratio": 0.9152845510730827,
+        "request_time_ci95": [
+          0.8763093926001196,
+          0.9535408988098101
+        ],
+        "mean_output_tokens": 471.125,
+        "token_matches": 8,
+        "progress_per_cycle": 7.482213438735178,
+        "request_seconds": 19.156397046986967
+      },
+      "relay_n128_native_columns": {
+        "tokens_per_second": 206.64423378014132,
+        "throughput_ratio": 0.9613180917594443,
+        "throughput_ci95": [
+          0.9287476483207967,
+          0.9991435113308766
+        ],
+        "request_time_ratio": 0.9613180917594443,
+        "request_time_ci95": [
+          0.9287476483207966,
+          0.9991435113308768
+        ],
+        "mean_output_tokens": 471.125,
+        "token_matches": 8,
+        "progress_per_cycle": 7.852697095435684,
+        "request_seconds": 18.239076557103544
+      },
+      "relay_residual_lane0": {
+        "tokens_per_second": 200.15664776798343,
+        "throughput_ratio": 0.9311375554277683,
+        "throughput_ci95": [
+          0.8951552132787699,
+          0.9648675660723859
+        ],
+        "request_time_ratio": 0.9311375554277684,
+        "request_time_ci95": [
+          0.8951552132787699,
+          0.964867566072386
+        ],
+        "mean_output_tokens": 471.125,
+        "token_matches": 8,
+        "progress_per_cycle": 7.600401606425703,
+        "request_seconds": 18.830251415725797
+      },
+      "relay_residual_lane1": {
+        "tokens_per_second": 206.29239982421313,
+        "throughput_ratio": 0.9596813446751346,
+        "throughput_ci95": [
+          0.9311376101079636,
+          0.9878264642905263
+        ],
+        "request_time_ratio": 0.9596813446751347,
+        "request_time_ci95": [
+          0.9311376101079637,
+          0.9878264642905263
+        ],
+        "mean_output_tokens": 471.125,
+        "token_matches": 8,
+        "progress_per_cycle": 7.834368530020704,
+        "request_seconds": 18.270183502696455
+      },
+      "relay_residual_lane2": {
+        "tokens_per_second": 198.48248097515548,
+        "throughput_ratio": 0.9233492576508233,
+        "throughput_ci95": [
+          0.8903647744571856,
+          0.9546796547542576
+        ],
+        "request_time_ratio": 0.9233492576508233,
+        "request_time_ci95": [
+          0.8903647744571856,
+          0.9546796547542578
+        ],
+        "mean_output_tokens": 471.125,
+        "token_matches": 8,
+        "progress_per_cycle": 7.52988047808765,
+        "request_seconds": 18.989081461913884
+      },
+      "relay_residual_lane3": {
+        "tokens_per_second": 204.88565345966612,
+        "throughput_ratio": 0.9531370985279389,
+        "throughput_ci95": [
+          0.9241883956297052,
+          0.9877806526253614
+        ],
+        "request_time_ratio": 0.953137098527939,
+        "request_time_ci95": [
+          0.9241883956297052,
+          0.9877806526253613
+        ],
+        "mean_output_tokens": 471.125,
+        "token_matches": 8,
+        "progress_per_cycle": 7.779835390946502,
+        "request_seconds": 18.39562671352178
+      },
+      "relay_two": {
+        "tokens_per_second": 211.31645260756014,
+        "throughput_ratio": 0.9830534598618783,
+        "throughput_ci95": [
+          0.9564316234503953,
+          1.0116770155678714
+        ],
+        "request_time_ratio": 0.9830534598618783,
+        "request_time_ci95": [
+          0.9564316234503952,
+          1.0116770155678714
+        ],
+        "mean_output_tokens": 471.125,
+        "token_matches": 8,
+        "progress_per_cycle": 8.029723991507431,
+        "request_seconds": 17.83580953348428
+      }
+    }
+  },
+  "scope": "All four rank16/128 and seed1730/1731 fits at lr0.006,128 records and128 updates. Same eight exposed requests per workload512token cap. Paired full-fit, untrained crop and original512-record controls retained. No new confirmation or independent workload sampling. Every lane540seconds."
+}

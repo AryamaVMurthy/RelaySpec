@@ -44,8 +44,15 @@ def analyze(job_id, wave_number, output):
         assert transform["column_selection"]["selected_taps"] == [25, 33]
         assert transform["column_selection"]["selected_blocks"] == [3, 4]
         for cp, sha in spec["checkpoint_sha256"].items():
-            found = [v for v in campaign["variants"].values() if v["checkpoint"] == cp]
-            assert len(found) == 1 and found[0]["sha256"] == sha
+            found = [
+                v
+                for v in campaign["variants"].values()
+                if v.get("checkpoint", v.get("checkpoint_path")) == cp
+            ]
+            assert (
+                len(found) == 1
+                and found[0].get("sha256", found[0].get("checkpoint_sha256")) == sha
+            )
         rows = [json.loads(s) for s in paths[-1].read_text().splitlines()]
         methods = {"relay_base", "relay_cropped", *spec["controls"]}
         ids = {r["problem_id"] for r in rows}
@@ -62,7 +69,11 @@ def analyze(job_id, wave_number, output):
                 full_native_reference=summary,
                 cropped_reference=crop,
                 cap_counts={
-                    m: sum(r["output_tokens"] == 512 for r in rows if r["method"] == m)
+                    m: sum(
+                        r["output_tokens"] == spec.get("max_new_tokens", 512)
+                        for r in rows
+                        if r["method"] == m
+                    )
                     for m in methods
                 },
             )

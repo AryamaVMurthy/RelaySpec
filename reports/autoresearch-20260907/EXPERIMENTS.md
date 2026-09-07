@@ -192,6 +192,26 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 52 / 1 | 28545 | dflash / fit_reduced_taps | pass | 65.1 | 8 | relay_reduced: 97.2% |
 | 52 / 2 | 28545 | dflash / fit_reduced_taps | pass | 70.0 | 8 | relay_reduced: 99.4% |
 | 52 / 3 | 28545 | dflash / fit_reduced_taps | pass | 63.3 | 8 | relay_reduced: 101.2% |
+| 53 / 0 | 28547 | dflash / native_columns | pass | 149.2 | 8 | relay_cropped: 95.9%; relay_n128_native_columns: 100.6%; relay_residual_lane0: 98.6%; relay_residual_lane1: 97.1%; relay_residual_lane2: 99.3%; relay_residual_lane3: 101.2%; relay_two: 99.9% |
+| 53 / 1 | 28547 | dflash / native_columns | pass | 174.3 | 8 | relay_cropped: 90.8%; relay_n128_native_columns: 95.3%; relay_residual_lane0: 90.5%; relay_residual_lane1: 92.6%; relay_residual_lane2: 92.2%; relay_residual_lane3: 94.9%; relay_two: 97.4% |
+| 53 / 2 | 28547 | dflash / native_columns | pass | 137.6 | 8 | relay_cropped: 90.6%; relay_n128_native_columns: 95.0%; relay_residual_lane0: 90.2%; relay_residual_lane1: 90.2%; relay_residual_lane2: 91.4%; relay_residual_lane3: 94.7%; relay_two: 98.0% |
+| 53 / 3 | 28547 | dflash / native_columns | pass | 357.3 | 16 | relay_cropped: 98.4%; relay_n128_native_columns: 99.3%; relay_residual_lane0: 98.3%; relay_residual_lane1: 99.6%; relay_residual_lane2: 99.2%; relay_residual_lane3: 99.5%; relay_two: 98.8% |
+| 54 / 0 | 28549 | eagle3 / native_svd | failed | 23.6 | — | — |
+| 54 / 1 | 28549 | eagle3 / native_svd | failed | 23.8 | — | — |
+| 54 / 2 | 28549 | eagle3 / native_svd | failed | 18.8 | — | — |
+| 54 / 3 | 28549 | eagle3 / native_svd | failed | 18.9 | — | — |
+| 55 / 0 | 28550 | dflash / fit_reduced_taps | pass | 69.8 | 8 | relay_reduced: 97.7% |
+| 55 / 1 | 28550 | dflash / fit_reduced_taps | pass | 71.3 | 8 | relay_reduced: 99.1% |
+| 55 / 2 | 28550 | dflash / fit_reduced_taps | pass | 67.3 | 8 | relay_reduced: 100.3% |
+| 55 / 3 | 28550 | dflash / fit_reduced_taps | pass | 69.0 | 8 | relay_reduced: 99.3% |
+| 56 / 0 | 28551 | eagle3 / native_svd | pass | 40.2 | 4 | relay_svd1536: 81.6% |
+| 56 / 1 | 28551 | eagle3 / native_svd | pass | 41.1 | 4 | relay_svd1536: 92.7% |
+| 56 / 2 | 28551 | eagle3 / native_svd | pass | 44.7 | 4 | relay_svd1536: 97.4% |
+| 56 / 3 | 28551 | eagle3 / native_svd | pass | 63.2 | 8 | relay_svd1536: 81.1% |
+| 57 / 0 | 28552 | eagle3 / fit_reduced_taps | pass | 110.2 | 8 | relay_reduced: 50.6% |
+| 57 / 1 | 28552 | eagle3 / fit_reduced_taps | pass | 87.2 | 8 | relay_reduced: 93.2% |
+| 57 / 2 | 28552 | eagle3 / fit_reduced_taps | pass | 101.5 | 8 | relay_reduced: 62.4% |
+| 57 / 3 | 28552 | eagle3 / fit_reduced_taps | pass | 88.1 | 8 | relay_reduced: 93.4% |
 
 ## Four-GPU pipeline stages
 
