@@ -200,7 +200,8 @@ def matched_full_target_dflash_generate(
                 draft_hidden[:, 1 - block_size :, :]
             )
             draft_cache.crop(start)
-            block_ids[:, 1:] = greedy_sample(draft_logits, temperature)
+            # Match released DFlash: proposals are greedy even when target tokens sample.
+            block_ids[:, 1:] = greedy_sample(draft_logits)
 
         with _profile_region(profile_recorder, "verification_full_target"):
             target_verification = native_target(
@@ -399,7 +400,8 @@ def relay_dflash_generate(
             draft_calls += 1
             draft_logits = source_lm_head(draft_hidden[:, 1 - block_size :, :])
             draft_cache.crop(start)
-            block_ids[:, 1:] = greedy_sample(draft_logits, temperature)
+            # Match released DFlash: proposals are greedy even when target tokens sample.
+            block_ids[:, 1:] = greedy_sample(draft_logits)
 
         with _profile_region(profile_recorder, "verification_full_target"):
             if selective_capture:
