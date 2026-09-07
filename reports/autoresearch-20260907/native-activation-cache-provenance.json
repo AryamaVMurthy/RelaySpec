@@ -1,0 +1,182 @@
+{
+  "numina-dflash8b-27723": {
+    "cache_index_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+    "metadata": {
+      "config": {
+        "protocol_version": 1,
+        "run_name": "qwen3-8b-dflash4b-relay-relative-final",
+        "seed": 1729,
+        "resources": {
+          "gpu_count": 4
+        },
+        "paths": {
+          "scratch": "/scratch/aryama.murthy/relayspec/train"
+        },
+        "target": {
+          "id": "Qwen/Qwen3-8B",
+          "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+        },
+        "proposer": {
+          "family": "dflash",
+          "id": "z-lab/Qwen3-4B-DFlash-b16",
+          "revision": "b74e3a329c4d963783143b1e970d95b002be72bd",
+          "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+        },
+        "source_trunk": {
+          "model": {
+            "id": "Qwen/Qwen3-4B",
+            "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+          },
+          "layers": 34,
+          "tap_layers": [
+            1,
+            9,
+            17,
+            25,
+            33
+          ]
+        }
+      },
+      "relay_training": {
+        "manifest_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/train-32768.json",
+        "fit_examples": 4096,
+        "steps": 1024,
+        "max_length": 192,
+        "learning_rate": 0.0006,
+        "weight_decay": 0.0,
+        "gradient_clip": 1.0,
+        "target_layer_ids": [
+          1,
+          9,
+          17,
+          25,
+          33
+        ],
+        "relay_architecture": "normalized_linear",
+        "feature_objective": "relative_interface_mse",
+        "proposal_kl_weight": 0.0,
+        "validation_manifest_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/validation.json",
+        "feature_cache": {
+          "train_records": 32768,
+          "validation_records": 1024
+        }
+      },
+      "config_sha256": "54c71b6f363c5673acf75b0bdb5d6d1d809cb2e3e34f2df7cc5a604d98c99606",
+      "manifest_sha256": {
+        "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/train-32768.json": "6e3e358415d8a5903b9d005cb6d23334cc5b49aaa1cd45c399cb0daded677d81",
+        "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/validation.json": "dbf0ae502016859540fdf42c31bc1dd69d51cd0fd47b9ef9d681ea63a684dcbe"
+      },
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "target_hidden_size": 4096,
+      "draft_hidden_size": 2560,
+      "rms_norm_eps": 1e-06,
+      "family": "dflash",
+      "split": {
+        "training_records": 32768,
+        "validation_records": 1024,
+        "validation_content_sha256": "f626cf49d7a8500200ecb9f3abf9f28b6f98e6b8058eab3555fb4cf016d42ddb",
+        "scope": "Fitting validation; not untouched decoding evaluation. Exact normalized problem overlap checked; near-overlap audit is separate."
+      },
+      "output_norm_sha256": "2f229279873aec032e948a0dffa2f2d9718652e10c6c16cbad54ee37c5b02492",
+      "torch_version": "2.9.1+cu128",
+      "elapsed_seconds": 712.5808281092905,
+      "normalization": "Raw target taps; teacher includes the released proposer interface. DFlash predictions must use output-norm.pt; EAGLE-3 predictions use identity."
+    }
+  },
+  "numina-eagle3-8b-27783": {
+    "cache_index_sha256": "9c18d186420ff569186fc1232b411cbb984ae05bbe09564a36f6179ceaccad19",
+    "metadata": {
+      "config": {
+        "protocol_version": 1,
+        "run_name": "qwen3-8b-eagle3-4b-relay-scale-linear-selected",
+        "seed": 1729,
+        "resources": {
+          "gpu_count": 4
+        },
+        "paths": {
+          "scratch": "/scratch/aryama.murthy/relayspec/train"
+        },
+        "target": {
+          "id": "Qwen/Qwen3-8B",
+          "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+        },
+        "proposer": {
+          "family": "eagle3",
+          "id": "deepseek-ai/eagle3_qwen3_4b_ttt7",
+          "revision": "b0b90fd15d052217c226be5e46d468d8d129e0cd",
+          "source_commit": "005e03b81cec38b7da6399833d609ee89a2587f2"
+        },
+        "source_trunk": {
+          "model": {
+            "id": "Qwen/Qwen3-4B",
+            "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+          },
+          "layers": 34,
+          "tap_layers": [
+            1,
+            9,
+            17,
+            25,
+            33
+          ]
+        }
+      },
+      "relay_training": {
+        "manifest_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/train-32768.json",
+        "fit_examples": 4096,
+        "steps": 1024,
+        "max_length": 192,
+        "learning_rate": 0.0006,
+        "weight_decay": 0.0,
+        "gradient_clip": 1.0,
+        "target_layer_ids": [
+          1,
+          9,
+          17,
+          25,
+          33
+        ],
+        "relay_architecture": "scale_preserving_linear",
+        "feature_objective": "relative_interface_mse",
+        "proposal_kl_weight": 0.0,
+        "validation_manifest_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/validation.json",
+        "feature_cache": {
+          "train_records": 2048,
+          "validation_records": 1024
+        }
+      },
+      "config_sha256": "e1aff00e4839dd7f2ad9a9aeaa442437d09fa0c128bb2454ee621eeec28a36da",
+      "manifest_sha256": {
+        "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/train-32768.json": "6e3e358415d8a5903b9d005cb6d23334cc5b49aaa1cd45c399cb0daded677d81",
+        "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/validation.json": "dbf0ae502016859540fdf42c31bc1dd69d51cd0fd47b9ef9d681ea63a684dcbe"
+      },
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "target_hidden_size": 4096,
+      "draft_hidden_size": 2560,
+      "rms_norm_eps": 1e-06,
+      "family": "eagle3",
+      "split": {
+        "training_records": 2048,
+        "validation_records": 1024,
+        "validation_content_sha256": "f626cf49d7a8500200ecb9f3abf9f28b6f98e6b8058eab3555fb4cf016d42ddb",
+        "scope": "Fitting validation; not untouched decoding evaluation. Exact normalized problem overlap checked; near-overlap audit is separate."
+      },
+      "output_norm_sha256": "37358737c6d3bbbf8f088bf837dc160719196ec8cc22c30acd7fbd6dfb28af19",
+      "torch_version": "2.9.1+cu128",
+      "elapsed_seconds": 67.41354114469141,
+      "normalization": "Raw target taps; teacher includes the released proposer interface. DFlash predictions must use output-norm.pt; EAGLE-3 predictions use identity."
+    }
+  }
+}

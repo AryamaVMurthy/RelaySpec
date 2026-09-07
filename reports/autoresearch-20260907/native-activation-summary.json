@@ -1,0 +1,1143 @@
+{
+  "results": [
+    {
+      "family": "dflash",
+      "workload": "gsm8k",
+      "native": "native_target_dflash",
+      "max_new_tokens": 2048,
+      "diagnostics": {
+        "cache_index_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+        "train_records": 512,
+        "validation_records": 128,
+        "tokens_per_record_at_most": 8,
+        "seed": 1729,
+        "sampled_train_tokens": 4096,
+        "sampled_validation_tokens": 1024,
+        "heldout_relative_projection_mse": {
+          "1536": 0.00023521347611676902
+        },
+        "scope": "PCA of uncentered mapped training activations, followed by output-subspace projection of W. No drafter update. Errors are pre-output-normalization projection MSE; validation is fitting validation, not fresh decoding data."
+      },
+      "native_reference": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "native_target_dflash",
+        "methods": {
+          "native_target_dflash": {
+            "tokens_per_second": 174.25725765769386,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 248.5,
+            "token_matches": 8,
+            "progress_per_cycle": 6.48051948051948,
+            "request_seconds": 11.408420095220208,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_activation1536": {
+            "tokens_per_second": 176.1834083240384,
+            "throughput_ratio": 1.0110534889176794,
+            "throughput_ci95": [
+              0.9818082072933236,
+              1.0503348960983132
+            ],
+            "request_time_ratio": 1.0110534889176797,
+            "request_time_ci95": [
+              0.9818082072933237,
+              1.0503348960983132
+            ],
+            "mean_output_tokens": 248.5,
+            "token_matches": 8,
+            "progress_per_cycle": 6.587458745874588,
+            "request_seconds": 11.283695887774229,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_base": {
+            "tokens_per_second": 172.64810026184895,
+            "throughput_ratio": 0.9907656219461121,
+            "throughput_ci95": [
+              0.9877584437263538,
+              0.9930074789592281
+            ],
+            "request_time_ratio": 0.9907656219461121,
+            "request_time_ci95": [
+              0.9877584437263538,
+              0.993007478959228
+            ],
+            "mean_output_tokens": 248.5,
+            "token_matches": 8,
+            "progress_per_cycle": 6.48051948051948,
+            "request_seconds": 11.51475166529417,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_two": {
+            "tokens_per_second": 168.25781010604948,
+            "throughput_ratio": 0.9655713189092558,
+            "throughput_ci95": [
+              0.9354535822087283,
+              0.9921580467560699
+            ],
+            "request_time_ratio": 0.965571318909256,
+            "request_time_ci95": [
+              0.9354535822087283,
+              0.9921580467560698
+            ],
+            "mean_output_tokens": 248.5,
+            "token_matches": 8,
+            "progress_per_cycle": 6.356687898089172,
+            "request_seconds": 11.815201913937926,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_weight1536": {
+            "tokens_per_second": 170.6383599806872,
+            "throughput_ratio": 0.9792324421625209,
+            "throughput_ci95": [
+              0.9517824198673103,
+              1.0018464669230513
+            ],
+            "request_time_ratio": 0.9792324421625209,
+            "request_time_ci95": [
+              0.9517824198673103,
+              1.0018464669230513
+            ],
+            "mean_output_tokens": 248.5,
+            "token_matches": 8,
+            "progress_per_cycle": 6.364217252396166,
+            "request_seconds": 11.650369824375957,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "weight_reference": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "relay_weight1536",
+        "methods": {
+          "native_target_dflash": {
+            "tokens_per_second": 174.25725765769386,
+            "throughput_ratio": 1.021207996123593,
+            "throughput_ci95": [
+              0.9981569362529074,
+              1.0506602970660164
+            ],
+            "request_time_ratio": 1.021207996123593,
+            "request_time_ci95": [
+              0.9981569362529072,
+              1.0506602970660162
+            ],
+            "mean_output_tokens": 248.5,
+            "token_matches": 8,
+            "progress_per_cycle": 6.48051948051948,
+            "request_seconds": 11.408420095220208,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_activation1536": {
+            "tokens_per_second": 176.1834083240384,
+            "throughput_ratio": 1.0324959073913906,
+            "throughput_ci95": [
+              1.0002387895578086,
+              1.0824490100708464
+            ],
+            "request_time_ratio": 1.0324959073913909,
+            "request_time_ci95": [
+              1.0002387895578086,
+              1.0824490100708462
+            ],
+            "mean_output_tokens": 248.5,
+            "token_matches": 8,
+            "progress_per_cycle": 6.587458745874588,
+            "request_seconds": 11.283695887774229,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_base": {
+            "tokens_per_second": 172.64810026184895,
+            "throughput_ratio": 1.0117777754157342,
+            "throughput_ci95": [
+              0.9897126964250295,
+              1.0405541301857815
+            ],
+            "request_time_ratio": 1.0117777754157342,
+            "request_time_ci95": [
+              0.9897126964250295,
+              1.0405541301857817
+            ],
+            "mean_output_tokens": 248.5,
+            "token_matches": 8,
+            "progress_per_cycle": 6.48051948051948,
+            "request_seconds": 11.51475166529417,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_two": {
+            "tokens_per_second": 168.25781010604948,
+            "throughput_ratio": 0.9860491516977358,
+            "throughput_ci95": [
+              0.9632165669815937,
+              1.0162479052677014
+            ],
+            "request_time_ratio": 0.9860491516977359,
+            "request_time_ci95": [
+              0.9632165669815937,
+              1.0162479052677014
+            ],
+            "mean_output_tokens": 248.5,
+            "token_matches": 8,
+            "progress_per_cycle": 6.356687898089172,
+            "request_seconds": 11.815201913937926,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_weight1536": {
+            "tokens_per_second": 170.6383599806872,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 248.5,
+            "token_matches": 8,
+            "progress_per_cycle": 6.364217252396166,
+            "request_seconds": 11.650369824375957,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "cap_counts": {
+        "native_target_dflash": 0,
+        "relay_activation1536": 0,
+        "relay_base": 0,
+        "relay_two": 0,
+        "relay_weight1536": 0
+      }
+    },
+    {
+      "family": "dflash",
+      "workload": "mbpp",
+      "native": "native_target_dflash",
+      "max_new_tokens": 1024,
+      "diagnostics": {
+        "cache_index_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+        "train_records": 512,
+        "validation_records": 128,
+        "tokens_per_record_at_most": 8,
+        "seed": 1729,
+        "sampled_train_tokens": 4096,
+        "sampled_validation_tokens": 1024,
+        "heldout_relative_projection_mse": {
+          "1536": 0.00023521347611676902
+        },
+        "scope": "PCA of uncentered mapped training activations, followed by output-subspace projection of W. No drafter update. Errors are pre-output-normalization projection MSE; validation is fitting validation, not fresh decoding data."
+      },
+      "native_reference": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "native_target_dflash",
+        "methods": {
+          "native_target_dflash": {
+            "tokens_per_second": 192.82309104419645,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 313.75,
+            "token_matches": 8,
+            "progress_per_cycle": 7.3841642228739,
+            "request_seconds": 13.017113180831075,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_activation1536": {
+            "tokens_per_second": 191.75635130375122,
+            "throughput_ratio": 0.9944677801052327,
+            "throughput_ci95": [
+              0.9665508382240815,
+              1.0240856414753192
+            ],
+            "request_time_ratio": 0.9944677801052327,
+            "request_time_ci95": [
+              0.9665508382240815,
+              1.0240856414753192
+            ],
+            "mean_output_tokens": 313.75,
+            "token_matches": 8,
+            "progress_per_cycle": 7.298550724637681,
+            "request_seconds": 13.08952732430771,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_base": {
+            "tokens_per_second": 193.40170304336615,
+            "throughput_ratio": 1.0030007401916252,
+            "throughput_ci95": [
+              0.9920520190441956,
+              1.0220680638137107
+            ],
+            "request_time_ratio": 1.003000740191625,
+            "request_time_ci95": [
+              0.9920520190441956,
+              1.0220680638137107
+            ],
+            "mean_output_tokens": 313.75,
+            "token_matches": 8,
+            "progress_per_cycle": 7.3841642228739,
+            "request_seconds": 12.97816906729713,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_two": {
+            "tokens_per_second": 188.64046662710032,
+            "throughput_ratio": 0.9783084878763952,
+            "throughput_ci95": [
+              0.9532436998163644,
+              1.010940070510768
+            ],
+            "request_time_ratio": 0.9783084878763952,
+            "request_time_ci95": [
+              0.9532436998163644,
+              1.010940070510768
+            ],
+            "mean_output_tokens": 313.75,
+            "token_matches": 8,
+            "progress_per_cycle": 7.1737891737891735,
+            "request_seconds": 13.305734686087817,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_weight1536": {
+            "tokens_per_second": 192.17066147414,
+            "throughput_ratio": 0.9966164344398623,
+            "throughput_ci95": [
+              0.9735622484653214,
+              1.0215673260078129
+            ],
+            "request_time_ratio": 0.9966164344398623,
+            "request_time_ci95": [
+              0.9735622484653214,
+              1.0215673260078129
+            ],
+            "mean_output_tokens": 313.75,
+            "token_matches": 8,
+            "progress_per_cycle": 7.319767441860465,
+            "request_seconds": 13.06130696926266,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "weight_reference": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "relay_weight1536",
+        "methods": {
+          "native_target_dflash": {
+            "tokens_per_second": 192.82309104419645,
+            "throughput_ratio": 1.0033950529443552,
+            "throughput_ci95": [
+              0.978888003334732,
+              1.0271556868360023
+            ],
+            "request_time_ratio": 1.0033950529443552,
+            "request_time_ci95": [
+              0.978888003334732,
+              1.0271556868360023
+            ],
+            "mean_output_tokens": 313.75,
+            "token_matches": 8,
+            "progress_per_cycle": 7.3841642228739,
+            "request_seconds": 13.017113180831075,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_activation1536": {
+            "tokens_per_second": 191.75635130375122,
+            "throughput_ratio": 0.9978440508701453,
+            "throughput_ci95": [
+              0.9541273325770412,
+              1.0394937935182413
+            ],
+            "request_time_ratio": 0.9978440508701453,
+            "request_time_ci95": [
+              0.9541273325770413,
+              1.0394937935182413
+            ],
+            "mean_output_tokens": 313.75,
+            "token_matches": 8,
+            "progress_per_cycle": 7.298550724637681,
+            "request_seconds": 13.08952732430771,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_base": {
+            "tokens_per_second": 193.40170304336615,
+            "throughput_ratio": 1.0064059808078032,
+            "throughput_ci95": [
+              0.9728251735089041,
+              1.0405366096934532
+            ],
+            "request_time_ratio": 1.006405980807803,
+            "request_time_ci95": [
+              0.9728251735089041,
+              1.0405366096934532
+            ],
+            "mean_output_tokens": 313.75,
+            "token_matches": 8,
+            "progress_per_cycle": 7.3841642228739,
+            "request_seconds": 12.97816906729713,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_two": {
+            "tokens_per_second": 188.64046662710032,
+            "throughput_ratio": 0.9816298969886477,
+            "throughput_ci95": [
+              0.9506675706294418,
+              1.0184908874798113
+            ],
+            "request_time_ratio": 0.9816298969886477,
+            "request_time_ci95": [
+              0.9506675706294417,
+              1.018490887479811
+            ],
+            "mean_output_tokens": 313.75,
+            "token_matches": 8,
+            "progress_per_cycle": 7.1737891737891735,
+            "request_seconds": 13.305734686087817,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_weight1536": {
+            "tokens_per_second": 192.17066147414,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 313.75,
+            "token_matches": 8,
+            "progress_per_cycle": 7.319767441860465,
+            "request_seconds": 13.06130696926266,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "cap_counts": {
+        "native_target_dflash": 0,
+        "relay_activation1536": 0,
+        "relay_base": 0,
+        "relay_two": 0,
+        "relay_weight1536": 0
+      }
+    },
+    {
+      "family": "eagle3",
+      "workload": "gsm8k",
+      "native": "native_target_eagle3",
+      "max_new_tokens": 2048,
+      "diagnostics": {
+        "cache_index_sha256": "9c18d186420ff569186fc1232b411cbb984ae05bbe09564a36f6179ceaccad19",
+        "train_records": 512,
+        "validation_records": 128,
+        "tokens_per_record_at_most": 8,
+        "seed": 1729,
+        "sampled_train_tokens": 4096,
+        "sampled_validation_tokens": 1024,
+        "heldout_relative_projection_mse": {
+          "1536": 0.0021608532406389713
+        },
+        "scope": "PCA of uncentered mapped training activations, followed by output-subspace projection of W. No drafter update. Errors are pre-output-normalization projection MSE; validation is fitting validation, not fresh decoding data."
+      },
+      "native_reference": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "native_target_eagle3",
+        "methods": {
+          "native_target_eagle3": {
+            "tokens_per_second": 99.83368351938392,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 248.375,
+            "token_matches": 8,
+            "progress_per_cycle": 5.590395480225989,
+            "request_seconds": 19.903102139011025,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_activation1536": {
+            "tokens_per_second": 94.97267550242896,
+            "throughput_ratio": 0.9513089385707065,
+            "throughput_ci95": [
+              0.9262768986881044,
+              0.9786006577284405
+            ],
+            "request_time_ratio": 0.9513089385707065,
+            "request_time_ci95": [
+              0.9262768986881044,
+              0.9786006577284405
+            ],
+            "mean_output_tokens": 248.375,
+            "token_matches": 8,
+            "progress_per_cycle": 5.305630026809651,
+            "request_seconds": 20.92180713545531,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_base": {
+            "tokens_per_second": 98.41014696687739,
+            "throughput_ratio": 0.9857409192737024,
+            "throughput_ci95": [
+              0.956241232269019,
+              0.9989160173354932
+            ],
+            "request_time_ratio": 0.9857409192737026,
+            "request_time_ci95": [
+              0.9562412322690189,
+              0.9989160173354933
+            ],
+            "mean_output_tokens": 248.375,
+            "token_matches": 8,
+            "progress_per_cycle": 5.590395480225989,
+            "request_seconds": 20.19100734265521,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_two": {
+            "tokens_per_second": 98.17005336386603,
+            "throughput_ratio": 0.9833359834389475,
+            "throughput_ci95": [
+              0.9423743577049498,
+              1.0246410106576913
+            ],
+            "request_time_ratio": 0.9833359834389475,
+            "request_time_ci95": [
+              0.9423743577049498,
+              1.0246410106576915
+            ],
+            "mean_output_tokens": 248.375,
+            "token_matches": 8,
+            "progress_per_cycle": 5.481994459833795,
+            "request_seconds": 20.240388304926455,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_weight1536": {
+            "tokens_per_second": 97.48201802268494,
+            "throughput_ratio": 0.9764441678019185,
+            "throughput_ci95": [
+              0.9478476872169369,
+              1.0031402027761518
+            ],
+            "request_time_ratio": 0.9764441678019186,
+            "request_time_ci95": [
+              0.9478476872169369,
+              1.0031402027761518
+            ],
+            "mean_output_tokens": 248.375,
+            "token_matches": 8,
+            "progress_per_cycle": 5.466850828729282,
+            "request_seconds": 20.383246472571045,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "weight_reference": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "relay_weight1536",
+        "methods": {
+          "native_target_eagle3": {
+            "tokens_per_second": 99.83368351938392,
+            "throughput_ratio": 1.0241240953398372,
+            "throughput_ci95": [
+              0.9968696272747545,
+              1.0550218283926154
+            ],
+            "request_time_ratio": 1.0241240953398372,
+            "request_time_ci95": [
+              0.9968696272747544,
+              1.0550218283926154
+            ],
+            "mean_output_tokens": 248.375,
+            "token_matches": 8,
+            "progress_per_cycle": 5.590395480225989,
+            "request_seconds": 19.903102139011025,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_activation1536": {
+            "tokens_per_second": 94.97267550242896,
+            "throughput_ratio": 0.9742584061024256,
+            "throughput_ci95": [
+              0.9474296423619544,
+              1.0020755100752972
+            ],
+            "request_time_ratio": 0.9742584061024255,
+            "request_time_ci95": [
+              0.9474296423619544,
+              1.0020755100752972
+            ],
+            "mean_output_tokens": 248.375,
+            "token_matches": 8,
+            "progress_per_cycle": 5.305630026809651,
+            "request_seconds": 20.92180713545531,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_base": {
+            "tokens_per_second": 98.41014696687739,
+            "throughput_ratio": 1.00952102719064,
+            "throughput_ci95": [
+              0.9651001789457756,
+              1.0467137814260572
+            ],
+            "request_time_ratio": 1.00952102719064,
+            "request_time_ci95": [
+              0.9651001789457755,
+              1.0467137814260572
+            ],
+            "mean_output_tokens": 248.375,
+            "token_matches": 8,
+            "progress_per_cycle": 5.590395480225989,
+            "request_seconds": 20.19100734265521,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_two": {
+            "tokens_per_second": 98.17005336386603,
+            "throughput_ratio": 1.0070580744545212,
+            "throughput_ci95": [
+              0.948264080417257,
+              1.06406064996031
+            ],
+            "request_time_ratio": 1.0070580744545212,
+            "request_time_ci95": [
+              0.948264080417257,
+              1.06406064996031
+            ],
+            "mean_output_tokens": 248.375,
+            "token_matches": 8,
+            "progress_per_cycle": 5.481994459833795,
+            "request_seconds": 20.240388304926455,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_weight1536": {
+            "tokens_per_second": 97.48201802268494,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 248.375,
+            "token_matches": 8,
+            "progress_per_cycle": 5.466850828729282,
+            "request_seconds": 20.383246472571045,
+            "accuracy": 1.0,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "cap_counts": {
+        "native_target_eagle3": 0,
+        "relay_activation1536": 0,
+        "relay_base": 0,
+        "relay_two": 0,
+        "relay_weight1536": 0
+      }
+    },
+    {
+      "family": "eagle3",
+      "workload": "mbpp",
+      "native": "native_target_eagle3",
+      "max_new_tokens": 1024,
+      "diagnostics": {
+        "cache_index_sha256": "9c18d186420ff569186fc1232b411cbb984ae05bbe09564a36f6179ceaccad19",
+        "train_records": 512,
+        "validation_records": 128,
+        "tokens_per_record_at_most": 8,
+        "seed": 1729,
+        "sampled_train_tokens": 4096,
+        "sampled_validation_tokens": 1024,
+        "heldout_relative_projection_mse": {
+          "1536": 0.0021608532406389713
+        },
+        "scope": "PCA of uncentered mapped training activations, followed by output-subspace projection of W. No drafter update. Errors are pre-output-normalization projection MSE; validation is fitting validation, not fresh decoding data."
+      },
+      "native_reference": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "native_target_eagle3",
+        "methods": {
+          "native_target_eagle3": {
+            "tokens_per_second": 92.2479438501862,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 352.5,
+            "token_matches": 8,
+            "progress_per_cycle": 5.159633027522935,
+            "request_seconds": 30.56978705758229,
+            "accuracy": 0.875,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_activation1536": {
+            "tokens_per_second": 81.56464645045699,
+            "throughput_ratio": 0.8841893168147005,
+            "throughput_ci95": [
+              0.8449547677030119,
+              0.922976462830925
+            ],
+            "request_time_ratio": 0.8841893168147005,
+            "request_time_ci95": [
+              0.844954767703012,
+              0.922976462830925
+            ],
+            "mean_output_tokens": 352.5,
+            "token_matches": 8,
+            "progress_per_cycle": 4.520900321543408,
+            "request_seconds": 34.573802777566016,
+            "accuracy": 0.875,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_base": {
+            "tokens_per_second": 91.5773300549986,
+            "throughput_ratio": 0.9927303117316446,
+            "throughput_ci95": [
+              0.9537481838686702,
+              1.0164945552132199
+            ],
+            "request_time_ratio": 0.9927303117316446,
+            "request_time_ci95": [
+              0.9537481838686702,
+              1.0164945552132196
+            ],
+            "mean_output_tokens": 352.5,
+            "token_matches": 8,
+            "progress_per_cycle": 5.159633027522935,
+            "request_seconds": 30.7936472739093,
+            "accuracy": 0.875,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_two": {
+            "tokens_per_second": 87.27664071836759,
+            "throughput_ratio": 0.9461093339934797,
+            "throughput_ci95": [
+              0.9059422609608434,
+              0.9838790107028343
+            ],
+            "request_time_ratio": 0.9461093339934799,
+            "request_time_ci95": [
+              0.9059422609608434,
+              0.9838790107028343
+            ],
+            "mean_output_tokens": 352.5,
+            "token_matches": 8,
+            "progress_per_cycle": 4.839931153184165,
+            "request_seconds": 32.3110511219129,
+            "accuracy": 0.875,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_weight1536": {
+            "tokens_per_second": 85.09698533200705,
+            "throughput_ratio": 0.9224811066814395,
+            "throughput_ci95": [
+              0.8651866569242419,
+              0.9755778180499066
+            ],
+            "request_time_ratio": 0.9224811066814393,
+            "request_time_ci95": [
+              0.8651866569242419,
+              0.9755778180499066
+            ],
+            "mean_output_tokens": 352.5,
+            "token_matches": 8,
+            "progress_per_cycle": 4.718120805369128,
+            "request_seconds": 33.138659248594195,
+            "accuracy": 0.875,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "weight_reference": {
+        "requests": 8,
+        "clusters": 8,
+        "reference": "relay_weight1536",
+        "methods": {
+          "native_target_eagle3": {
+            "tokens_per_second": 92.2479438501862,
+            "throughput_ratio": 1.0840330417144577,
+            "throughput_ci95": [
+              1.0250335560098232,
+              1.1558199516795862
+            ],
+            "request_time_ratio": 1.084033041714458,
+            "request_time_ci95": [
+              1.0250335560098232,
+              1.1558199516795862
+            ],
+            "mean_output_tokens": 352.5,
+            "token_matches": 8,
+            "progress_per_cycle": 5.159633027522935,
+            "request_seconds": 30.56978705758229,
+            "accuracy": 0.875,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_activation1536": {
+            "tokens_per_second": 81.56464645045699,
+            "throughput_ratio": 0.9584904345580681,
+            "throughput_ci95": [
+              0.931459494135336,
+              0.9891248420549881
+            ],
+            "request_time_ratio": 0.9584904345580681,
+            "request_time_ci95": [
+              0.931459494135336,
+              0.989124842054988
+            ],
+            "mean_output_tokens": 352.5,
+            "token_matches": 8,
+            "progress_per_cycle": 4.520900321543408,
+            "request_seconds": 34.573802777566016,
+            "accuracy": 0.875,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_base": {
+            "tokens_per_second": 91.5773300549986,
+            "throughput_ratio": 1.0761524594285965,
+            "throughput_ci95": [
+              1.0176551416362039,
+              1.1472923844936884
+            ],
+            "request_time_ratio": 1.0761524594285967,
+            "request_time_ci95": [
+              1.0176551416362039,
+              1.1472923844936884
+            ],
+            "mean_output_tokens": 352.5,
+            "token_matches": 8,
+            "progress_per_cycle": 5.159633027522935,
+            "request_seconds": 30.7936472739093,
+            "accuracy": 0.875,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_two": {
+            "tokens_per_second": 87.27664071836759,
+            "throughput_ratio": 1.0256137791233917,
+            "throughput_ci95": [
+              0.9951355098164437,
+              1.067936977412396
+            ],
+            "request_time_ratio": 1.025613779123392,
+            "request_time_ci95": [
+              0.9951355098164436,
+              1.067936977412396
+            ],
+            "mean_output_tokens": 352.5,
+            "token_matches": 8,
+            "progress_per_cycle": 4.839931153184165,
+            "request_seconds": 32.3110511219129,
+            "accuracy": 0.875,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          },
+          "relay_weight1536": {
+            "tokens_per_second": 85.09698533200705,
+            "throughput_ratio": 1.0,
+            "throughput_ci95": [
+              1.0,
+              1.0
+            ],
+            "request_time_ratio": 1.0,
+            "request_time_ci95": [
+              1.0,
+              1.0
+            ],
+            "mean_output_tokens": 352.5,
+            "token_matches": 8,
+            "progress_per_cycle": 4.718120805369128,
+            "request_seconds": 33.138659248594195,
+            "accuracy": 0.875,
+            "accuracy_difference": 0.0,
+            "accuracy_difference_ci95": [
+              0.0,
+              0.0
+            ]
+          }
+        }
+      },
+      "cap_counts": {
+        "native_target_eagle3": 0,
+        "relay_activation1536": 0,
+        "relay_base": 0,
+        "relay_two": 0,
+        "relay_weight1536": 0
+      }
+    }
+  ],
+  "input_sha256": {
+    "configs/autoresearch/20260907/wave86.json": "55ef855251f1db06e091660de642512c3a6363d4320332659990fc84eddd9c71",
+    "configs/autoresearch/20260907/native-activation-v1/protocol.json": "6207bdb837fa3d9b7f89be96ca348497c90af6b67ef1690368439136abb59c23",
+    "reports/autoresearch-20260907/run-28581/source-commit.txt": "7ba1640951f7d6b30d8d29dbfe5930f4203a94d7c646be91a8751cedab2dcae8",
+    "reports/autoresearch-20260907/native-activation-cache-provenance.json": "8f3c28f9d853a8a010f8e5fef714e487b03a4cce739d7f9a37b1b1632a81e20e",
+    "reports/autoresearch-20260907/run-28581/lane0/benchmark-rank0.jsonl": "75a9622891b0d51128cb53423f3a8d8ce600a710d8dcfa0c4d1bd3f3f830bd0a",
+    "configs/autoresearch/20260907/sampling-breadth-v1/shard0.json": "ee1f9325f207d7ecf4947b6a7051d0175df4aaa4250b780e67017ad669ebf665",
+    "configs/autoresearch/20260907/native-activation-v1/dflash-gsm8k.yaml": "5024db57285c743f9bd0d4da68bc430bb50cb1982d1af6a826c817e8e556643a",
+    "reports/autoresearch-20260907/run-28581/lane0/config.yaml": "7983f3213a937bcfcc210db3c55ace54cb754714ba2d40e1b3484d0e64e524a1",
+    "reports/autoresearch-20260907/run-28581/lane0/transform.json": "bec8c80fbb70c1141d52be7fe853ee592f33fc6e03c79d56f34393d54c6e62f3",
+    "reports/autoresearch-20260907/run-28581/lane0/mapper-campaign.json": "70e7a3d0fafdb4b7985458ba2ac5e91704e3efda68e82e7e3964d2e3e0cdc9fc",
+    "reports/autoresearch-20260907/run-28581/lane0-status.json": "754314076cf4bef053004efd496c4373ea2c1441df931e0153fb0e0584cf0262",
+    "reports/autoresearch-20260907/run-28581/lane0-spec.json": "e9ce70821f3bd2765b88310d98e3ffba21bb9907e239edce88c91f0b237a6597",
+    "reports/autoresearch-20260907/run-28581/lane0/completion-gate.json": "7f126c838d3355e21b9e7c2a8e3c6610690d97c6389641d4308f7616133658ae",
+    "reports/autoresearch-20260907/run-28581/lane1/benchmark-rank0.jsonl": "5df01d7107f7def7c841f682f7ae8e4031dbeedd6f389713785f654f257f9f63",
+    "configs/autoresearch/20260907/native-code-v1/shard0.json": "7575b2182c148cd1b61a295249714668685662d3e69ae2798ce538b224554cd1",
+    "configs/autoresearch/20260907/native-activation-v1/dflash-mbpp.yaml": "b8403fd5275972e034f63c737777a60a3aa6ead81608acf5365f0deda2ab2355",
+    "reports/autoresearch-20260907/run-28581/lane1/config.yaml": "f0867f17b24ea1483fcac7450237baac8ecd3b702c687b0f8ec2f7d5195f8b9e",
+    "reports/autoresearch-20260907/run-28581/lane1/transform.json": "bec8c80fbb70c1141d52be7fe853ee592f33fc6e03c79d56f34393d54c6e62f3",
+    "reports/autoresearch-20260907/run-28581/lane1/mapper-campaign.json": "59dc99d3046fed38f86da4b205e86d81912201899c7da7980f73c852a188fd7a",
+    "reports/autoresearch-20260907/run-28581/lane1-status.json": "ca1f760258c23f82d0f2fc4cd3fe9f020a83a6a005b3bd3b7eeed6faad703a03",
+    "reports/autoresearch-20260907/run-28581/lane1-spec.json": "342c6af76ad641fa2e690a40c0599d2765194a91822024eb64259742b839c858",
+    "reports/autoresearch-20260907/run-28581/lane1/completion-gate.json": "7f126c838d3355e21b9e7c2a8e3c6610690d97c6389641d4308f7616133658ae",
+    "reports/autoresearch-20260907/run-28581/lane2/benchmark-rank0.jsonl": "b623db6d7d28943ebdc3908fc71b2ff44e99a93fb2dbeec5df3246f6e07fe969",
+    "configs/autoresearch/20260907/native-activation-v1/eagle3-gsm8k.yaml": "d13a9163cae83b3ce7e2905be88dbee76990c47eae0cbd310b19e5ac36605e30",
+    "reports/autoresearch-20260907/run-28581/lane2/config.yaml": "a94a1006ec4e33c1530048d72622df6088ecdfdbf10eb753b6ad7d066675a5cb",
+    "reports/autoresearch-20260907/run-28581/lane2/transform.json": "948d8691cdb7e6468988991bf358ec801ec442977e40392ae1faa40859bde706",
+    "reports/autoresearch-20260907/run-28581/lane2/mapper-campaign.json": "2da77fc091f92532b0996f3ec2237208cb8a109275e874ef640e78438e06ce49",
+    "reports/autoresearch-20260907/run-28581/lane2-status.json": "a9f1bed5d8859ff6fa3ca7d95e98d6588b246da6c70c7089734c4a438316bbe5",
+    "reports/autoresearch-20260907/run-28581/lane2-spec.json": "cdc695baa864163b299536efbf0e546655be3c79850e4e1653d3e10d7af611db",
+    "reports/autoresearch-20260907/run-28581/lane2/completion-gate.json": "7f126c838d3355e21b9e7c2a8e3c6610690d97c6389641d4308f7616133658ae",
+    "reports/autoresearch-20260907/run-28581/lane3/benchmark-rank0.jsonl": "9f1af659cf5c532517ccbd491d724c0e3ebd4b2def63c969b5b14f2e2573db3a",
+    "configs/autoresearch/20260907/native-activation-v1/eagle3-mbpp.yaml": "8daf66f8bf36d3090fad6d41ccfe3d67fb7c324944b84c37bad39f5be6c53c89",
+    "reports/autoresearch-20260907/run-28581/lane3/config.yaml": "f56309c316bc39ed21bd06be23f6c25207c5be4068a1a932ad2e539d6c552b06",
+    "reports/autoresearch-20260907/run-28581/lane3/transform.json": "948d8691cdb7e6468988991bf358ec801ec442977e40392ae1faa40859bde706",
+    "reports/autoresearch-20260907/run-28581/lane3/mapper-campaign.json": "368cd1ea3961c20432a4bd7ca36b854d97cb59b55b7e444d15c356aca7101064",
+    "reports/autoresearch-20260907/run-28581/lane3-status.json": "b39433eacba2fece985811c7f6353f97dc18672b6c312ea4abcad311be49a242",
+    "reports/autoresearch-20260907/run-28581/lane3-spec.json": "6a727a2bb1cc79c3be941c7099120f745bf1a734f8ce12e74da9cda5a2029b5d",
+    "reports/autoresearch-20260907/run-28581/lane3/completion-gate.json": "7f126c838d3355e21b9e7c2a8e3c6610690d97c6389641d4308f7616133658ae"
+  },
+  "scorer": "qwen2.5_math_official",
+  "scorer_provenance_sha256": "c7bfc5ac2fcd80c4edb14f1ec0612de9919b383832f33020e3fbe561e748cd54",
+  "scope": {
+    "wave": 86,
+    "status": "frozen-before-decoding",
+    "methods": [
+      "native",
+      "full_repacked",
+      "weight_svd1536",
+      "activation_svd1536",
+      "fitted_two_layer"
+    ],
+    "purpose": "Fairer native compression control and cross-workload mechanism test, not a new decomposition algorithm.",
+    "expected_outputs": 160,
+    "max_lane_seconds": 540,
+    "calibration_records": 512,
+    "validation_records": 128,
+    "scope": "Exposed development questions, no independent confirmation. Full-answer scoring for math and isolated base-test code execution. Unequal total calibration budgets stated explicitly."
+  }
+}

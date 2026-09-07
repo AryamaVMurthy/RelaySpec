@@ -2240,18 +2240,23 @@ is not pooled into this result. Each family/temperature cell contains 64
 outputs per method, from 32 question clusters. All 768 declared outputs
 are retained and scored, with no 2,048-token cap hits.
 
-RelaySpec achieves 3.72 times AR throughput at temperature 0.6 and 3.20
+RelaySpec achieves 3.90 times AR throughput at temperature 0.6 and 3.79
 at 1.0 with DFlash, and 2.64 and 2.47 times AR with EAGLE-3
-(Table~\ref{tab:sampling-breadth}). Native-throughput retention falls
-from 87.7\% to 80.2\% for DFlash and from 97.7\% to 95.5\% for
-EAGLE-3 between the two temperatures. Thus applicability extends beyond
-greedy decoding in this setting, while the retention gap depends on
-family and sampling temperature. This historical DFlash run samples draft
-proposals, whereas its released-native reference proposes greedily.
-Its native-retention gap therefore also includes a proposal-policy difference.
-We report request-time ratios separately
-because methods can generate different output lengths. These comparisons
-use the original retargeting maps, not the compact native students.
+(Table~\ref{tab:sampling-breadth}). It retains 92.6\% and 94.4\% of native
+DFlash throughput, and 97.7\% and 95.5\% of native EAGLE-3 throughput.
+Thus applicability extends beyond greedy decoding in this setting.
+We report request-time ratios separately because sampled methods can
+generate different output lengths. These comparisons use the original
+retargeting maps, not the compact native students.
+
+A runtime control matters for this comparison. Released DFlash proposes
+greedily even when its target samples. An earlier RelaySpec run instead
+sampled draft proposals and retained 87.7\% and 80.2\% of native throughput.
+The reported DFlash repeat matches the released proposal policy on the
+same 32 questions and both seeds. A separate eight-question full-projection
+control then reproduces all native outputs and acceptance trajectories
+at both temperatures, with approximately 99\% throughput retention.
+The policy correction is not a learned-interface or algorithmic contribution.
 
 The bootstrap resamples questions jointly across both seeds and all
 paired methods, using 10,000 draws at seed 1729. These intervals condition

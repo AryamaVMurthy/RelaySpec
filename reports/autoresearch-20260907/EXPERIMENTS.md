@@ -308,6 +308,26 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 81 / 1 | 28576 | dflash / existing | pass | 77.5 | 8 | relay_svd1536: 103.8%; relay_two: 94.7% |
 | 81 / 2 | 28576 | dflash / existing | pass | 107.8 | 8 | — |
 | 81 / 3 | 28576 | dflash / existing | pass | 96.6 | 8 | — |
+| 82 / 0 | 28577 | dflash / existing | pass | 103.2 | 8 | — |
+| 82 / 1 | 28577 | dflash / existing | pass | 106.6 | 8 | — |
+| 82 / 2 | 28577 | dflash / existing | pass | 107.2 | 8 | — |
+| 82 / 3 | 28577 | dflash / existing | pass | 114.1 | 8 | — |
+| 83 / 0 | 28578 | dflash / existing | pass | 117.1 | 8 | — |
+| 83 / 1 | 28578 | dflash / existing | pass | 123.0 | 8 | — |
+| 83 / 2 | 28578 | dflash / existing | pass | 106.1 | 8 | — |
+| 83 / 3 | 28578 | dflash / existing | pass | 106.7 | 8 | — |
+| 84 / 0 | 28579 | dflash / existing | pass | 99.5 | 8 | — |
+| 84 / 1 | 28579 | dflash / existing | pass | 100.9 | 8 | — |
+| 84 / 2 | 28579 | dflash / existing | pass | 108.9 | 8 | — |
+| 84 / 3 | 28579 | dflash / existing | pass | 120.1 | 8 | — |
+| 85 / 0 | 28580 | dflash / existing | pass | 114.6 | 8 | — |
+| 85 / 1 | 28580 | dflash / existing | pass | 131.5 | 8 | — |
+| 85 / 2 | 28580 | dflash / existing | pass | 108.1 | 8 | — |
+| 85 / 3 | 28580 | dflash / existing | pass | 119.3 | 8 | — |
+| 86 / 0 | 28581 | dflash / activation_svd | pass | 97.0 | 8 | relay_activation1536: 102.0%; relay_two: 97.5%; relay_weight1536: 98.8% |
+| 86 / 1 | 28581 | dflash / activation_svd | pass | 99.5 | 8 | relay_activation1536: 99.1%; relay_two: 97.5%; relay_weight1536: 99.4% |
+| 86 / 2 | 28581 | eagle3 / activation_svd | pass | 131.3 | 8 | relay_activation1536: 96.5%; relay_two: 99.8%; relay_weight1536: 99.1% |
+| 86 / 3 | 28581 | eagle3 / activation_svd | pass | 191.2 | 8 | relay_activation1536: 89.1%; relay_two: 95.3%; relay_weight1536: 92.9% |
 
 ## Four-GPU pipeline stages
 

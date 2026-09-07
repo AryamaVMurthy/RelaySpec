@@ -1,0 +1,97 @@
+{
+  "status": "pass",
+  "hypothesis": "At matched1536 rank, does activation-aware native projection compression recover throughput lost by weight-only SVD, compared with learned two-layer conditioning?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_eagle3": {
+        "tokens_per_second": 92.2479438501862,
+        "throughput_ratio": 1.0073229236404344,
+        "throughput_ci95": [
+          0.9837731003103262,
+          1.0484947881564706
+        ],
+        "request_time_ratio": 1.0073229236404342,
+        "request_time_ci95": [
+          0.9837731003103263,
+          1.0484947881564706
+        ],
+        "mean_output_tokens": 352.5,
+        "token_matches": 8,
+        "progress_per_cycle": 5.159633027522935,
+        "request_seconds": 30.56978705758229
+      },
+      "relay_activation1536": {
+        "tokens_per_second": 81.56464645045699,
+        "throughput_ratio": 0.8906641676654223,
+        "throughput_ci95": [
+          0.852503616505656,
+          0.9232187039253908
+        ],
+        "request_time_ratio": 0.8906641676654223,
+        "request_time_ci95": [
+          0.8525036165056561,
+          0.9232187039253908
+        ],
+        "mean_output_tokens": 352.5,
+        "token_matches": 8,
+        "progress_per_cycle": 4.520900321543408,
+        "request_seconds": 34.573802777566016
+      },
+      "relay_base": {
+        "tokens_per_second": 91.5773300549986,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 352.5,
+        "token_matches": 8,
+        "progress_per_cycle": 5.159633027522935,
+        "request_seconds": 30.7936472739093
+      },
+      "relay_two": {
+        "tokens_per_second": 87.27664071836759,
+        "throughput_ratio": 0.9530376204018162,
+        "throughput_ci95": [
+          0.917470528176191,
+          0.9845923971614131
+        ],
+        "request_time_ratio": 0.9530376204018162,
+        "request_time_ci95": [
+          0.917470528176191,
+          0.9845923971614131
+        ],
+        "mean_output_tokens": 352.5,
+        "token_matches": 8,
+        "progress_per_cycle": 4.839931153184165,
+        "request_seconds": 32.3110511219129
+      },
+      "relay_weight1536": {
+        "tokens_per_second": 85.09698533200705,
+        "throughput_ratio": 0.929236365385411,
+        "throughput_ci95": [
+          0.8716173955181706,
+          0.982651154685056
+        ],
+        "request_time_ratio": 0.9292363653854109,
+        "request_time_ci95": [
+          0.8716173955181706,
+          0.9826511546850561
+        ],
+        "mean_output_tokens": 352.5,
+        "token_matches": 8,
+        "progress_per_cycle": 4.718120805369128,
+        "request_seconds": 33.138659248594195
+      }
+    }
+  },
+  "scope": "Eight exposed GSM8K or MBPP questions, same tasks across two native drafter families. Activation PCA uses512 cached math training records, at most8 positions each,128 fitting-validation records, seed1729. No drafter training. Weight SVD is data-free, two-layer fit inherits512 records8192updates. Different total adaptation budgets, all five methods retained. Every lane540seconds."
+}

@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "hypothesis": "Measure DFlash retargeted sampling with proposal policy matched to the released native drafter.",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.93649854833592,
+        "throughput_ratio": 0.27627903281078653,
+        "throughput_ci95": [
+          0.22931446413937825,
+          0.33497192805309767
+        ],
+        "request_time_ratio": 0.24611707671253102,
+        "request_time_ci95": [
+          0.2163654102545353,
+          0.27094506248751593
+        ],
+        "mean_output_tokens": 308.0,
+        "token_matches": 0,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 64.95064368844032
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 155.84084388785783,
+        "throughput_ratio": 1.1349375738221037,
+        "throughput_ci95": [
+          1.0622342325186656,
+          1.2436366331887028
+        ],
+        "request_time_ratio": 0.9599953659111822,
+        "request_time_ci95": [
+          0.8797830814444689,
+          1.0872984613689767
+        ],
+        "mean_output_tokens": 324.375,
+        "token_matches": 0,
+        "progress_per_cycle": 5.805803571428571,
+        "request_seconds": 16.651603875216097
+      },
+      "relay_base": {
+        "tokens_per_second": 137.31226058807457,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 274.375,
+        "token_matches": 8,
+        "progress_per_cycle": 4.988636363636363,
+        "request_seconds": 15.985462555196136
+      }
+    }
+  },
+  "scope": "Fixed prior32 exposed questions and two seed bases1730/1731. Greedy proposals and sampled target in both DFlash paths. Same original512-record map. Three methods,8 questions per lane,2048cap,540seconds. Historical proposal-sampled cohort remains separate. All cells retained."
+}

@@ -36,8 +36,8 @@ and appendices. The manuscript audit resolves 47 cited sources. The September 5
 citation-status report is historical, while later additions are recorded in
 `reports/citation-expansion-20260905.json`. Current evidence includes native
 interface confirmation in both drafter families, code-capacity controls and
-full-answer 14B development comparisons. Sampling results explicitly identify
-the historical DFlash proposal-policy difference pending matched-policy results.
+full-answer 14B development comparisons. Sampling results use matched DFlash proposal policies, with the historical
+policy difference and the full-projection reproduction control explained.
 
 The scaling branch adds completed fixed-work data and continuous-fitting curves
 and AR-paired EAGLE-3 code quality to the appendix. Regenerate these assets with
