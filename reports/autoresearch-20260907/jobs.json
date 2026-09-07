@@ -646,6 +646,47 @@
       "remote": "/home/aryama.murthy/relayspec-autoresearch-native-activation-breadth-v1/outputs/rs-research-w90-28585",
       "source_commit": "19c3c17ba5b8fe86f44146efee01883926bd2fc0",
       "command": "sbatch --parsable --dependency=afterany:28584 --job-name=rs-research-w90 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-native-activation-breadth-v1,RESEARCH_WAVE=configs/autoresearch/20260907/wave90.json slurm/research_wave.sbatch"
+    },
+    {
+      "id": 28586,
+      "wave": 91,
+      "kind": "code_calibration_pilot",
+      "gate_file": "pilot-gate.json",
+      "remote": "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/outputs/rs-codecal-pilot-28586",
+      "source_commit": "b5d11e4c1c4b3d89feb8efa40c5c8edcdd4f7361",
+      "command": "sbatch --parsable --dependency=afterany:28585 --job-name=rs-codecal-pilot --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1,CACHE_TRAINING_CONFIG=configs/protocol_active/train_eagle3_qwen3_8b_scale_linear_selected_4gpu.yaml,CACHE_CAMPAIGN_CONFIG=configs/submission/scaling/campaign-eagle3-8b-pilot.yaml,CACHE_DATA_ROOT=/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/data/scaling/code-calibration-v1,CACHE_TRAINING_MANIFEST=train-512.json slurm/cached_fit_pilot.sbatch"
+    },
+    {
+      "id": 28587,
+      "wave": 92,
+      "kind": "code_calibration_extraction",
+      "gate_file": "extraction-complete.json",
+      "remote": "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/outputs/rs-codecal-cache-28587",
+      "source_commit": "b5d11e4c1c4b3d89feb8efa40c5c8edcdd4f7361",
+      "command": "sbatch --parsable --dependency=afterok:28586 --job-name=rs-codecal-cache --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1,CACHE_TRAINING_CONFIG=configs/protocol_active/train_eagle3_qwen3_8b_scale_linear_selected_4gpu.yaml,CACHE_DATA_ROOT=/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/data/scaling/code-calibration-v1,CACHE_TRAINING_MANIFEST=train-512.json,RELAYSPEC_PILOT_GATE=/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/outputs/rs-codecal-pilot-28586/pilot-gate.json,RELAYSPEC_CACHE_TAG=codecal-eagle8b,RELAYSPEC_TRAIN_RECORDS=512,RELAYSPEC_VALIDATION_RECORDS=128 slurm/extract_scaling_cache.sbatch"
+    },
+    {
+      "id": 28590,
+      "wave": 93,
+      "kind": "code_calibration_capacity_pilot",
+      "gate_file": "batch-gate.json",
+      "remote": "/home/aryama.murthy/relayspec-autoresearch-codecal-capacity/outputs/rs-codecal-capacity-28590",
+      "source_commit": "39fc313af550ef819d8e67db32ac45e2270f0a24",
+      "command": "sbatch --parsable --dependency=afterok:28587 --job-name=rs-codecal-capacity --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-codecal-capacity,RELAYSPEC_FEATURE_CACHE=/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/codecal-eagle8b-28587,RELAYSPEC_TRIALS=configs/autoresearch/20260907/code-calibration-v1/cache-pilot-trials.json,RELAYSPEC_PILOT_GATE=/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/outputs/rs-codecal-pilot-28586/pilot-gate.json,CACHE_CAMPAIGN_CONFIG=configs/submission/scaling/campaign-eagle3-8b-pilot.yaml slurm/cached_scaling_batch.sbatch"
+    },
+    {
+      "id": 28604,
+      "wave": 94,
+      "remote": "/home/aryama.murthy/relayspec-autoresearch-w94/outputs/rs-research-w94-28604",
+      "source_commit": "795b2012e0c3684e5f4ffa7d8b8333ea9f8fad2d",
+      "command": "sbatch --parsable --dependency=afterok:28590 --job-name=rs-research-w94 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-w94,RESEARCH_WAVE=configs/autoresearch/20260907/wave94.json slurm/research_wave.sbatch"
+    },
+    {
+      "id": 28605,
+      "wave": 95,
+      "remote": "/home/aryama.murthy/relayspec-autoresearch-w95/outputs/rs-research-w95-28605",
+      "source_commit": "7793b3851aca03cf9df6a186db876ee7463cb670",
+      "command": "sbatch --parsable --dependency=afterok:28604 --job-name=rs-research-w95 --export=ALL,RELAYSPEC_PROJECT_DIR=/home/aryama.murthy/relayspec-autoresearch-w95,RESEARCH_WAVE=configs/autoresearch/20260907/wave95.json slurm/research_wave.sbatch"
     }
   ]
 }

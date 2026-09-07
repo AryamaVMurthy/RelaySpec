@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "hypothesis": "Does code-focused calibration improve native EAGLE code decoding, and does a third feature layer reduce sensitivity to calibration domain?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_eagle3": {
+        "tokens_per_second": 92.05214393923345,
+        "throughput_ratio": 0.9949325101716283,
+        "throughput_ci95": [
+          0.9876721884634376,
+          1.0010379124988693
+        ],
+        "request_time_ratio": 0.9949325101716282,
+        "request_time_ci95": [
+          0.9876721884634376,
+          1.0010379124988693
+        ],
+        "mean_output_tokens": 352.5,
+        "token_matches": 8,
+        "progress_per_cycle": 5.159633027522935,
+        "request_seconds": 30.634810655377805
+      },
+      "relay_base": {
+        "tokens_per_second": 92.5209931308348,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 352.5,
+        "token_matches": 8,
+        "progress_per_cycle": 5.159633027522935,
+        "request_seconds": 30.479569063987583
+      },
+      "relay_reduced": {
+        "tokens_per_second": 93.09350674179743,
+        "throughput_ratio": 1.0061879319664568,
+        "throughput_ci95": [
+          0.9916526444670876,
+          1.0225715663293171
+        ],
+        "request_time_ratio": 1.0061879319664568,
+        "request_time_ci95": [
+          0.9916526444670875,
+          1.0225715663293171
+        ],
+        "mean_output_tokens": 352.5,
+        "token_matches": 8,
+        "progress_per_cycle": 5.1881918819188195,
+        "request_seconds": 30.292123464867473
+      }
+    }
+  },
+  "scope": "Four fixed arms: math/code calibration crossed with two/three layers.512 distinct fitting records128 updates seed1729 inherited columns. Eight exposed MBPP tasks1024token cap, all arms retained. Record counts and updates matched, token exposures and data quality not matched. No independent confirmation.540seconds per lane."
+}

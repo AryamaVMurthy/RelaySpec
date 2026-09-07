@@ -1,0 +1,42 @@
+{
+  "parent_sha256": "4bca12596cde37b82da0567724939a4bcfb9a0c81eb0abfcbd264f6d37c89e34",
+  "shape": [
+    4096,
+    20480
+  ],
+  "transform": "fit_reduced_taps",
+  "fit_trial": {
+    "name": "native-eagle-codecal-2layers-n512-u128",
+    "study": "native_eagle_calibration_domain_capacity",
+    "architecture": "dense",
+    "seed": 1729,
+    "steps": 128,
+    "distinct_examples": 512,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      128
+    ],
+    "validation_records": 128,
+    "diagnostic_train_records": 16,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": false,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 128,
+        "presentations": 512
+      }
+    },
+    "target_layer_ids": [
+      25,
+      33
+    ],
+    "cache_backend": "buffer",
+    "device_cache": false,
+    "initialization": "native_columns",
+    "native_teacher": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28604/lane2/native-teacher.pt",
+    "native_teacher_sha256": "2bd6d107eab39ef13f2198cf4313df0c7f6661450c0431fa70e4b92860494dff"
+  },
+  "cache_sha256": "a64f712baaa3ef459cc61cf0e9760f7a0bd83109cd89bc69b3070b28e3eff88c"
+}

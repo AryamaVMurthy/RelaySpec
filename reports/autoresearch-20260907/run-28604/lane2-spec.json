@@ -1,0 +1,50 @@
+{
+  "family": "eagle3",
+  "transform": "fit_reduced_taps",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/native-fc.pt",
+  "config": "configs/autoresearch/20260907/native-activation-breadth-v1/wave87-lane3.yaml",
+  "hypothesis": "Does code-focused calibration improve native EAGLE code decoding, and does a third feature layer reduce sensitivity to calibration domain?",
+  "trial": {
+    "name": "native-eagle-codecal-2layers-n512-u128",
+    "study": "native_eagle_calibration_domain_capacity",
+    "architecture": "dense",
+    "seed": 1729,
+    "steps": 128,
+    "distinct_examples": 512,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      128
+    ],
+    "validation_records": 128,
+    "diagnostic_train_records": 16,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": false,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 128,
+        "presentations": 512
+      }
+    },
+    "target_layer_ids": [
+      25,
+      33
+    ],
+    "cache_backend": "buffer",
+    "device_cache": false,
+    "initialization": "native_columns"
+  },
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/codecal-eagle8b-28587",
+  "pilot_gate": "/home/aryama.murthy/relayspec-autoresearch-codecal-capacity/outputs/rs-codecal-capacity-28590/batch-gate.json",
+  "native_teacher": true,
+  "requests": 8,
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/native-fc.pt": "4bca12596cde37b82da0567724939a4bcfb9a0c81eb0abfcbd264f6d37c89e34"
+  },
+  "max_new_tokens": 1024,
+  "include_ar": false,
+  "include_native": true,
+  "scope": "Four fixed arms: math/code calibration crossed with two/three layers.512 distinct fitting records128 updates seed1729 inherited columns. Eight exposed MBPP tasks1024token cap, all arms retained. Record counts and updates matched, token exposures and data quality not matched. No independent confirmation.540seconds per lane.",
+  "controls": {}
+}

@@ -1,0 +1,24 @@
+{
+  "family": "eagle3",
+  "transform": "existing",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/native-fc.pt",
+  "config": "configs/autoresearch/20260907/native-activation-breadth-v1/wave87-lane3.yaml",
+  "requests": 8,
+  "max_new_tokens": 1024,
+  "include_ar": false,
+  "include_native": true,
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/native-fc.pt": "4bca12596cde37b82da0567724939a4bcfb9a0c81eb0abfcbd264f6d37c89e34",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane3/fitting/native-eagle-late2-n512-native_columns-u8192/step-008192.pt": "2df84d5feb654d4b95200a88c27b52d94fd2195a71233f1944aabbbba919b9cb",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/relay_svd1536.pt": "781a86f84fb14318158d6d0d20a2da20f48b28e3ac12f442de246ec972f0d981",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28581/lane2/relay_weight1536.pt": "038a1163f97532d14519070cdcdc8463c71157eb2cb5aa937d2072398b2739ec",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28581/lane2/relay_activation1536.pt": "6220c095ae6d3f899cde7d9f3ec7554d8b4cd27eeeccfa0c0d858f1fecb2a88e"
+  },
+  "hypothesis": "At matched1536 rank, does activation-aware native projection compression recover throughput lost by weight-only SVD, compared with learned two-layer conditioning?",
+  "scope": "Fixed32 previously exposed GSM8K questions and32 previously exposed MBPP tasks, four disjoint8-question shards per workload, both native drafter families. Five frozen methods retained, no primary selection or independent confirmation. Greedy decoding,2048math/1024code cap. Weight versus activation SVD matched rank1536, two-layer original512record8192update fit. Different calibration budgets. Every lane540seconds.",
+  "candidates": {
+    "relay_two": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane3/fitting/native-eagle-late2-n512-native_columns-u8192/step-008192.pt",
+    "relay_weight1536": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28581/lane2/relay_weight1536.pt",
+    "relay_activation1536": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28581/lane2/relay_activation1536.pt"
+  }
+}

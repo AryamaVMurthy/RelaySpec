@@ -1,0 +1,130 @@
+{
+  "status": "pass",
+  "trial": {
+    "name": "dense",
+    "architecture": "dense",
+    "seed": 1729,
+    "steps": 16,
+    "distinct_examples": 64,
+    "learning_rate": 0.0006,
+    "l2_weight": 0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      8,
+      16
+    ],
+    "validation_records": 16
+  },
+  "parameters": 52428800,
+  "trainable_parameters": 52428800,
+  "steps": 16,
+  "start_step": 0,
+  "updates_this_job": 16,
+  "tokens_seen": 5207,
+  "record_presentations": 64,
+  "epochs": 1.0,
+  "distinct_records_seen": 64,
+  "loop_seconds": 1.9058060478419065,
+  "training_update_seconds": 0.30951576959341764,
+  "previous_update_seconds": 0.29465318471193314,
+  "warm_time_budget_seconds": null,
+  "initial_validation_seconds": 0.1212426139973104,
+  "checkpoint_export_seconds": 1.4191423379816115,
+  "worker_total_seconds": 4.505430203862488,
+  "timing_scope": "Training-update time includes data access, loss/gradient computation, optimizer steps and training-log writes. It excludes validation and checkpoint export. Worker total includes model/cache setup and initial validation, but excludes Python import startup and this completion-record/hash write. Outer batch wall time records the full launched process cost.",
+  "validation_seconds": 0.1768224136903882,
+  "input_io_seconds": 0.08618451608344913,
+  "setup_seconds": 0.45151817984879017,
+  "cache_backend": "buffer",
+  "device_cache": false,
+  "peak_gpu_bytes": 1508174336,
+  "feature_cache_index_sha256": "e2549748f90478f4427c38f0fa7a0b29a7551b37f324fabf448a9afb43b8f14e",
+  "cache_extraction_metadata": {
+    "config": {
+      "protocol_version": 1,
+      "run_name": "qwen3-8b-eagle3-4b-relay-scale-linear-selected",
+      "seed": 1729,
+      "resources": {
+        "gpu_count": 4
+      },
+      "paths": {
+        "scratch": "/scratch/aryama.murthy/relayspec/train"
+      },
+      "target": {
+        "id": "Qwen/Qwen3-8B",
+        "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+      },
+      "proposer": {
+        "family": "eagle3",
+        "id": "deepseek-ai/eagle3_qwen3_4b_ttt7",
+        "revision": "b0b90fd15d052217c226be5e46d468d8d129e0cd",
+        "source_commit": "005e03b81cec38b7da6399833d609ee89a2587f2"
+      },
+      "source_trunk": {
+        "model": {
+          "id": "Qwen/Qwen3-4B",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        "layers": 34,
+        "tap_layers": [
+          1,
+          9,
+          17,
+          25,
+          33
+        ]
+      }
+    },
+    "relay_training": {
+      "manifest_path": "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/data/scaling/code-calibration-v1/train-512.json",
+      "fit_examples": 4096,
+      "steps": 1024,
+      "max_length": 192,
+      "learning_rate": 0.0006,
+      "weight_decay": 0.0,
+      "gradient_clip": 1.0,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "relay_architecture": "scale_preserving_linear",
+      "feature_objective": "relative_interface_mse",
+      "proposal_kl_weight": 0.0,
+      "validation_manifest_path": "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/data/scaling/code-calibration-v1/validation.json",
+      "feature_cache": {
+        "train_records": 64,
+        "validation_records": 16
+      }
+    },
+    "config_sha256": "d7655e222b523ce2b20c3e76d360866e45af4c73f0c73a9d5145475e3a2b3b9e",
+    "manifest_sha256": {
+      "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/data/scaling/code-calibration-v1/train-512.json": "da869b0d7dee30f3fdc43bd2548092893d98e8ebe80c46809fca8eed3ddb16dc",
+      "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/data/scaling/code-calibration-v1/validation.json": "805af8e85d3a4449acdada598ea6926dcb3dee397d7378ae664bc09299019df0"
+    },
+    "target_layer_ids": [
+      1,
+      9,
+      17,
+      25,
+      33
+    ],
+    "target_hidden_size": 4096,
+    "draft_hidden_size": 2560,
+    "rms_norm_eps": 1e-06,
+    "family": "eagle3",
+    "split": {
+      "training_records": 64,
+      "validation_records": 16,
+      "validation_content_sha256": "d66d352adf81cdbbdc772f762cae9894274b932c8dddb48db95b519114cede49",
+      "scope": "Fitting validation; not untouched decoding evaluation. Exact normalized problem overlap checked; near-overlap audit is separate."
+    },
+    "output_norm_sha256": "37358737c6d3bbbf8f088bf837dc160719196ec8cc22c30acd7fbd6dfb28af19",
+    "torch_version": "2.9.1+cu128",
+    "elapsed_seconds": 1.9247561269439757,
+    "normalization": "Raw target taps; teacher includes the released proposer interface. DFlash predictions must use output-norm.pt; EAGLE-3 predictions use identity."
+  },
+  "continuation_sha256": "4bcea01ce81ab0106c08159dce979d39f67c485332a8931127de98ff53f73e16"
+}

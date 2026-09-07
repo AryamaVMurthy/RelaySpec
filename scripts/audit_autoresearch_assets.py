@@ -13,7 +13,7 @@ BUILDERS = [
     "crossdomain_depth", "downscale", "downscale_depth", "downscale_nonlinearity",
     "early_nonlinearity", "head_extension", "head_precision", "interface_confirmation",
     "interface_profile", "layer_depth", "native_student", "precision_breadth",
-    "research_screen", "small_record_paper", "rate_check", "native_code", "compact_interface_data", "native_initialization", "native_correction", "native_eagle", "sampling_breadth", "native_eagle_code", "capacity14_full_answer",
+    "research_screen", "small_record_paper", "rate_check", "native_code", "compact_interface_data", "native_initialization", "native_correction", "native_eagle", "sampling_breadth", "native_eagle_code", "capacity14_full_answer", "native_activation",
 ]
 
 

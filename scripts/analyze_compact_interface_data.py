@@ -51,7 +51,9 @@ def analyze(
         ):
             raise ValueError("Executed fitting trial differs from declaration")
         fit = audit_fit_artifacts(
-            lane / "fitting" / trial["name"], trial, cache_sha256=cache_sha
+            lane / "fitting" / trial["name"],
+            trial,
+            cache_sha256=(cache_sha[i] if isinstance(cache_sha, list) else cache_sha),
         )
         for cp, sha in spec["checkpoint_sha256"].items():
             found = [
@@ -67,6 +69,12 @@ def analyze(
         rows = [json.loads(x) for x in paths[-1].read_text().splitlines()]
         ids = {r["problem_id"] for r in rows}
         expected_methods = {"relay_base", "relay_reduced", *spec.get("controls", {})}
+        if spec.get("include_native", False):
+            expected_methods.add(
+                "native_target_eagle3"
+                if spec["family"] == "eagle3"
+                else "native_target_dflash"
+            )
         if (
             len(rows) != 8 * len(expected_methods)
             or len(ids) != 8

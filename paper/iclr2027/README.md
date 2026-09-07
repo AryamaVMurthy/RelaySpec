@@ -31,7 +31,7 @@ LaTeX intermediate files are ignored by Git and rebuilt locally. Official
 style files retain their original notices.
 
 The current draft uses the unmodified official ICLR 2027 review style and
-bibliography style. It has nine main-text pages and 52 pages including references
+bibliography style. It has nine main-text pages and 53 pages including references
 and appendices. The manuscript audit resolves 47 cited sources. The September 5
 citation-status report is historical, while later additions are recorded in
 `reports/citation-expansion-20260905.json`. Current evidence includes native
@@ -47,6 +47,3 @@ registry records the raw root, and the manuscript auditor regenerates these
 assets too. New capacity, regularization and multi-epoch studies remain in
 progress and are not represented as completed results in the paper.
 
-The updated draft has20pages and retains the9-page main-text boundary. New
-appendix pages were inspected, but the complete color/grayscale review record
-must be renewed after the final experimental update.

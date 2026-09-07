@@ -1,0 +1,24 @@
+{
+  "family": "dflash",
+  "transform": "existing",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28400/lane3/native-fc.pt",
+  "config": "configs/autoresearch/20260907/native-activation-breadth-v1/wave87-lane0.yaml",
+  "requests": 8,
+  "max_new_tokens": 2048,
+  "include_ar": false,
+  "include_native": true,
+  "hypothesis": "At matched1536 rank, does activation-aware native projection compression recover throughput lost by weight-only SVD, compared with learned two-layer conditioning?",
+  "scope": "Fixed32 previously exposed GSM8K questions and32 previously exposed MBPP tasks, four disjoint8-question shards per workload, both native drafter families. Five frozen methods retained, no primary selection or independent confirmation. Greedy decoding,2048math/1024code cap. Weight versus activation SVD matched rank1536, two-layer original512record8192update fit. Different calibration budgets. Every lane540seconds.",
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28400/lane3/native-fc.pt": "ece1269540becf19b73b75b0ca48a5dfd6178ffe372c6606870efbbab8ae580a",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28400/lane3/relay_svd1536.pt": "16cf8c2000e8b55e51ce3c60c7707d0a98229e4818cf9471a234fa20e7bc660b",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28428/lane2/fitting/native-dflash-taps-25-33/step-008192.pt": "a53b21494b39f7139d3a04b206a5698dbf22fbd0fa7192f8f9cc577bcf4a59e9",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28581/lane0/relay_weight1536.pt": "044134103e0118de088370259081aa2b8a5590279fc18aa4ef60fc10ed64f821",
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28581/lane0/relay_activation1536.pt": "48bff1be49b3fee1150a187a28c08be5dab65567aee1734d6b84d4edd12e1ee7"
+  },
+  "candidates": {
+    "relay_two": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28428/lane2/fitting/native-dflash-taps-25-33/step-008192.pt",
+    "relay_weight1536": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28581/lane0/relay_weight1536.pt",
+    "relay_activation1536": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28581/lane0/relay_activation1536.pt"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "status": "pass",
+  "data_inputs": {
+    "manifest_gate_sha256": "9c8ed2f20d370287469602ac73774ff326ab31d49b7673408a1f65aa065fb8b5",
+    "report_domain_diagnostics": false,
+    "files": {
+      "train": {
+        "name": "train-512.json",
+        "sha256": "da869b0d7dee30f3fdc43bd2548092893d98e8ebe80c46809fca8eed3ddb16dc",
+        "available_records": 512
+      },
+      "validation": {
+        "name": "validation.json",
+        "sha256": "805af8e85d3a4449acdada598ea6926dcb3dee397d7378ae664bc09299019df0",
+        "available_records": 128
+      }
+    }
+  },
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-28586",
+  "feature_cache_index_sha256": "e2549748f90478f4427c38f0fa7a0b29a7551b37f324fabf448a9afb43b8f14e",
+  "training_config_sha256": "3db95d891f9545d8251eafd0106dc547a2fdda023b71bd605c9ce352e6eb31ea",
+  "models": {
+    "target": {
+      "id": "Qwen/Qwen3-8B",
+      "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+    },
+    "proposer": {
+      "family": "eagle3",
+      "id": "deepseek-ai/eagle3_qwen3_4b_ttt7",
+      "revision": "b0b90fd15d052217c226be5e46d468d8d129e0cd",
+      "source_commit": "005e03b81cec38b7da6399833d609ee89a2587f2"
+    }
+  },
+  "fitted_maps": [
+    "dense",
+    "factor512",
+    "mlp512",
+    "mlp512-l2"
+  ],
+  "evaluation": "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/outputs/rs-codecal-pilot-28586/evaluation",
+  "scope": "Cache integrity, BF16 gradient equivalence within declared tolerances, independent four-GPU fitting, finite checkpoints, paired decoding and duplicate-map isolation. No full-answer quality or scaling claim."
+}

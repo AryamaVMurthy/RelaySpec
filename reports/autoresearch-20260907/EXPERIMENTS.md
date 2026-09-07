@@ -328,6 +328,26 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 86 / 1 | 28581 | dflash / activation_svd | pass | 99.5 | 8 | relay_activation1536: 99.1%; relay_two: 97.5%; relay_weight1536: 99.4% |
 | 86 / 2 | 28581 | eagle3 / activation_svd | pass | 131.3 | 8 | relay_activation1536: 96.5%; relay_two: 99.8%; relay_weight1536: 99.1% |
 | 86 / 3 | 28581 | eagle3 / activation_svd | pass | 191.2 | 8 | relay_activation1536: 89.1%; relay_two: 95.3%; relay_weight1536: 92.9% |
+| 87 / 0 | 28582 | dflash / existing | pass | 81.8 | 8 | relay_activation1536: 102.0%; relay_two: 98.6%; relay_weight1536: 98.9% |
+| 87 / 1 | 28582 | dflash / existing | pass | 89.1 | 8 | relay_activation1536: 99.2%; relay_two: 97.5%; relay_weight1536: 99.5% |
+| 87 / 2 | 28582 | eagle3 / existing | pass | 125.7 | 8 | relay_activation1536: 95.2%; relay_two: 98.1%; relay_weight1536: 97.8% |
+| 87 / 3 | 28582 | eagle3 / existing | pass | 183.3 | 8 | relay_activation1536: 87.9%; relay_two: 94.0%; relay_weight1536: 91.8% |
+| 88 / 0 | 28583 | dflash / existing | pass | 90.7 | 8 | relay_activation1536: 99.7%; relay_two: 97.9%; relay_weight1536: 98.6% |
+| 88 / 1 | 28583 | dflash / existing | pass | 110.4 | 8 | relay_activation1536: 97.2%; relay_two: 97.0%; relay_weight1536: 97.7% |
+| 88 / 2 | 28583 | eagle3 / existing | pass | 131.4 | 8 | relay_activation1536: 95.1%; relay_two: 96.9%; relay_weight1536: 98.8% |
+| 88 / 3 | 28583 | eagle3 / existing | pass | 192.1 | 8 | relay_activation1536: 82.5%; relay_two: 92.1%; relay_weight1536: 89.5% |
+| 89 / 0 | 28584 | dflash / existing | pass | 97.4 | 8 | relay_activation1536: 99.8%; relay_two: 100.3%; relay_weight1536: 101.7% |
+| 89 / 1 | 28584 | dflash / existing | pass | 90.1 | 8 | relay_activation1536: 97.4%; relay_two: 94.7%; relay_weight1536: 98.8% |
+| 89 / 2 | 28584 | eagle3 / existing | pass | 148.4 | 8 | relay_activation1536: 88.9%; relay_two: 95.7%; relay_weight1536: 90.2% |
+| 89 / 3 | 28584 | eagle3 / existing | pass | 163.1 | 8 | relay_activation1536: 84.1%; relay_two: 93.4%; relay_weight1536: 87.3% |
+| 90 / 0 | 28585 | dflash / existing | pass | 90.2 | 8 | relay_activation1536: 100.0%; relay_two: 95.2%; relay_weight1536: 97.0% |
+| 90 / 1 | 28585 | dflash / existing | pass | 105.9 | 8 | relay_activation1536: 98.8%; relay_two: 95.1%; relay_weight1536: 99.0% |
+| 90 / 2 | 28585 | eagle3 / existing | pass | 124.5 | 8 | relay_activation1536: 96.2%; relay_two: 93.5%; relay_weight1536: 93.2% |
+| 90 / 3 | 28585 | eagle3 / existing | pass | 206.7 | 8 | relay_activation1536: 89.5%; relay_two: 92.4%; relay_weight1536: 90.8% |
+| 94 / 0 | 28604 | eagle3 / fit_reduced_taps | pass | 130.0 | 8 | relay_reduced: 94.2% |
+| 94 / 1 | 28604 | eagle3 / fit_reduced_taps | pass | 137.7 | 8 | relay_reduced: 100.2% |
+| 94 / 2 | 28604 | eagle3 / fit_reduced_taps | pass | 131.0 | 8 | relay_reduced: 94.1% |
+| 94 / 3 | 28604 | eagle3 / fit_reduced_taps | pass | 125.0 | 8 | relay_reduced: 100.6% |
 
 ## Four-GPU pipeline stages
 
@@ -340,3 +360,6 @@ These use stage-specific completion gates, not independent lane summaries.
 | 22 | 28455 | boundary_capacity_pilot | pass | 00:01:25 | batch-gate.json |
 | 23 | 28457 | boundary_full_fit | pass | 00:01:20 | batch-gate.json |
 | 24 | 28458 | boundary_evaluation | pass | 00:01:30 | campaign-gate.json |
+| 91 | 28586 | code_calibration_pilot | pass | 00:02:17 | pilot-gate.json |
+| 92 | 28587 | code_calibration_extraction | pass | 00:00:34 | extraction-complete.json |
+| 93 | 28590 | code_calibration_capacity_pilot | pass | 00:02:08 | batch-gate.json |

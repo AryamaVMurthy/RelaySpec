@@ -581,7 +581,7 @@ Native two-layer students retain 97.1\% (DFlash) and 98.8\% (EAGLE-3)
 throughput with 60\% fewer projection parameters in separate frozen tests. These findings motivate inspecting the inherited interface before retraining.
 
 Tests use shared-vocabulary Qwen3 models and one request per worker.
-A smaller sampled-GSM8K study also yields 2.47--3.72 times AR throughput
+A smaller sampled-GSM8K study also yields 2.47--3.90 times AR throughput
 (Appendix~\ref{app:sampling}). Code workloads can favor source reuse,
 and EAGLE-3 optimization depends on the recipe. Frozen GSM8K confirmation
 supports speed retention but not tight accuracy noninferiority.
@@ -1309,8 +1309,8 @@ produce identical outputs and avoid the 2,048-token cap. The conservative
 paired accuracy interval is still $[-6.62,+6.62]$ percentage points.
 The shorter inherited fit and weight-SVD remain descriptive controls.
 Weight-SVD retains 92.44\% with 37.75M parameters, versus 33.55M for
-the calibrated map, but requires no calibration data. We have not tested
-activation-aware SVD for this native EAGLE-3 comparison. The result
+the calibrated map, but requires no calibration data. Activation-aware
+compression is evaluated separately on exposed development tasks below. The result
 supports compact native conditioning in both tested drafter families,
 without claiming a generally optimal compression method.
 
@@ -1374,6 +1374,48 @@ on the same fixed 16-task subset. Every layer choice is retained.
 Fitted/crop ratios are paired within worker, with 95\% question-bootstrap
 intervals. This subset does not add 64 independent questions.}
 \label{tab:native-eagle-code-crops}
+\end{table}
+
+\paragraph{Native compression with calibration activations.}
+A stronger low-rank control projects the native weight matrix onto the
+leading output subspace of mapped calibration activations, using the
+same construction described above. It uses 512 math records, at most
+eight sampled positions per record, and rank 1,536. Weight-only SVD has
+the same 37.75M projection parameters but uses no calibration data.
+The original two-layer maps have 33.55M parameters and inherit 512-record,
+8,192-update fitting. These comparisons match deployment rank for the two
+SVD methods, not total adaptation work.
+
+After an eight-question screen, we retain all five frozen methods on
+32 exposed GSM8K questions and 32 MBPP tasks in both families
+(Table~\ref{tab:native-activation}). The eight-question screen is a subset,
+not an additional independent sample. Activation-aware SVD retains
+99.5\% and 98.0\% of native DFlash throughput on math and code, versus
+98.3\% and 98.6\% for weight-only SVD. Their paired differences remain
+unresolved. In native EAGLE-3, activation-aware SVD retains 94.1\% on
+math and 86.1\% on code, versus 95.3\% and 90.0\% for weight-only SVD.
+On code its activation/weight ratio is 0.957 [0.938,0.977], whereas the
+two-layer map retains 93.0\% of native throughput with fewer weights.
+Thus accounting for calibration activations does not consistently improve
+native decoding, and the relative merits of layer reduction and low-rank
+compression depend on drafter family and workload.
+
+All methods share correctness counts within each cell: 30/32 on GSM8K,
+28/32 on DFlash code, and 27/32 on EAGLE-3 code. Every EAGLE-3 code arm
+has one cap-length output. All other cells avoid the cap. Equal scores
+on these reused questions do not establish quality noninferiority.
+
+\begin{table}[H]
+\centering\footnotesize
+\input{generated/native_activation_table.tex}
+\caption{Native-interface compression on 32 development questions per
+workload and family. Intervals use 10,000 paired question bootstrap draws.
+Both SVD methods use rank 1,536. The two-layer maps retain layers 25 and 33.
+Caps are 2,048 tokens on GSM8K and 1,024 on MBPP. Every EAGLE-3 MBPP
+arm reaches the cap once, with no cap hits elsewhere. Code scores use
+published base-test suites. No multiplicity correction or new confirmation
+sample is claimed.}
+\label{tab:native-activation}
 \end{table}
 
 \paragraph{A smaller-verifier boundary.}

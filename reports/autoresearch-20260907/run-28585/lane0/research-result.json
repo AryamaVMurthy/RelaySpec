@@ -1,0 +1,97 @@
+{
+  "status": "pass",
+  "hypothesis": "At matched1536 rank, does activation-aware native projection compression recover throughput lost by weight-only SVD, compared with learned two-layer conditioning?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_dflash": {
+        "tokens_per_second": 166.2272987160854,
+        "throughput_ratio": 1.007914529032419,
+        "throughput_ci95": [
+          1.0065930636130602,
+          1.008831592013522
+        ],
+        "request_time_ratio": 1.007914529032419,
+        "request_time_ci95": [
+          1.0065930636130602,
+          1.008831592013522
+        ],
+        "mean_output_tokens": 267.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.160919540229885,
+        "request_seconds": 12.849874939303845
+      },
+      "relay_activation1536": {
+        "tokens_per_second": 164.9519306373971,
+        "throughput_ratio": 1.0001813707226659,
+        "throughput_ci95": [
+          0.9809483921653567,
+          1.0240824228634002
+        ],
+        "request_time_ratio": 1.0001813707226659,
+        "request_time_ci95": [
+          0.9809483921653567,
+          1.0240824228634005
+        ],
+        "mean_output_tokens": 267.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.143266475644699,
+        "request_seconds": 12.949227036908269
+      },
+      "relay_base": {
+        "tokens_per_second": 164.92201861169798,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 267.0,
+        "token_matches": 8,
+        "progress_per_cycle": 6.160919540229885,
+        "request_seconds": 12.951575647573918
+      },
+      "relay_two": {
+        "tokens_per_second": 156.98528321620873,
+        "throughput_ratio": 0.951875829180966,
+        "throughput_ci95": [
+          0.9244120970638401,
+          0.9750296430715416
+        ],
+        "request_time_ratio": 0.951875829180966,
+        "request_time_ci95": [
+          0.9244120970638399,
+          0.9750296430715416
+        ],
+        "mean_output_tokens": 267.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.8419618528610355,
+        "request_seconds": 13.606370968278497
+      },
+      "relay_weight1536": {
+        "tokens_per_second": 159.96222421279268,
+        "throughput_ratio": 0.9699264268006389,
+        "throughput_ci95": [
+          0.9467308793346031,
+          0.9969791185845706
+        ],
+        "request_time_ratio": 0.9699264268006389,
+        "request_time_ci95": [
+          0.946730879334603,
+          0.9969791185845707
+        ],
+        "mean_output_tokens": 267.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.955555555555556,
+        "request_seconds": 13.353152661584318
+      }
+    }
+  },
+  "scope": "Fixed32 previously exposed GSM8K questions and32 previously exposed MBPP tasks, four disjoint8-question shards per workload, both native drafter families. Five frozen methods retained, no primary selection or independent confirmation. Greedy decoding,2048math/1024code cap. Weight versus activation SVD matched rank1536, two-layer original512record8192update fit. Different calibration budgets. Every lane540seconds."
+}

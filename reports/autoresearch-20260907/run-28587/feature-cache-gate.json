@@ -1,0 +1,98 @@
+{
+  "status": "pass",
+  "cache_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/codecal-eagle8b-28587",
+  "counts": {
+    "train": 512,
+    "validation": 128
+  },
+  "total_bytes": 2583860480,
+  "total_tokens": 56036,
+  "cache_index_sha256": "a64f712baaa3ef459cc61cf0e9760f7a0bd83109cd89bc69b3070b28e3eff88c",
+  "metadata": {
+    "config": {
+      "protocol_version": 1,
+      "run_name": "qwen3-8b-eagle3-4b-relay-scale-linear-selected",
+      "seed": 1729,
+      "resources": {
+        "gpu_count": 4
+      },
+      "paths": {
+        "scratch": "/scratch/aryama.murthy/relayspec/train"
+      },
+      "target": {
+        "id": "Qwen/Qwen3-8B",
+        "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+      },
+      "proposer": {
+        "family": "eagle3",
+        "id": "deepseek-ai/eagle3_qwen3_4b_ttt7",
+        "revision": "b0b90fd15d052217c226be5e46d468d8d129e0cd",
+        "source_commit": "005e03b81cec38b7da6399833d609ee89a2587f2"
+      },
+      "source_trunk": {
+        "model": {
+          "id": "Qwen/Qwen3-4B",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        "layers": 34,
+        "tap_layers": [
+          1,
+          9,
+          17,
+          25,
+          33
+        ]
+      }
+    },
+    "relay_training": {
+      "manifest_path": "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/data/scaling/code-calibration-v1/train-512.json",
+      "fit_examples": 4096,
+      "steps": 1024,
+      "max_length": 192,
+      "learning_rate": 0.0006,
+      "weight_decay": 0.0,
+      "gradient_clip": 1.0,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "relay_architecture": "scale_preserving_linear",
+      "feature_objective": "relative_interface_mse",
+      "proposal_kl_weight": 0.0,
+      "validation_manifest_path": "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/data/scaling/code-calibration-v1/validation.json",
+      "feature_cache": {
+        "train_records": 512,
+        "validation_records": 128
+      }
+    },
+    "config_sha256": "db9047195cfa1bb2936d38342d1f14dbabecaf214e1f807f74d7d38a32ac3157",
+    "manifest_sha256": {
+      "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/data/scaling/code-calibration-v1/train-512.json": "da869b0d7dee30f3fdc43bd2548092893d98e8ebe80c46809fca8eed3ddb16dc",
+      "/home/aryama.murthy/relayspec-autoresearch-code-calibration-v1/data/scaling/code-calibration-v1/validation.json": "805af8e85d3a4449acdada598ea6926dcb3dee397d7378ae664bc09299019df0"
+    },
+    "target_layer_ids": [
+      1,
+      9,
+      17,
+      25,
+      33
+    ],
+    "target_hidden_size": 4096,
+    "draft_hidden_size": 2560,
+    "rms_norm_eps": 1e-06,
+    "family": "eagle3",
+    "split": {
+      "training_records": 512,
+      "validation_records": 128,
+      "validation_content_sha256": "13cfb9b4427b42396a851e26178626cc691adae9f91cdddfe10667fe721af612",
+      "scope": "Fitting validation; not untouched decoding evaluation. Exact normalized problem overlap checked; near-overlap audit is separate."
+    },
+    "output_norm_sha256": "37358737c6d3bbbf8f088bf837dc160719196ec8cc22c30acd7fbd6dfb28af19",
+    "torch_version": "2.9.1+cu128",
+    "elapsed_seconds": 12.32622827263549,
+    "normalization": "Raw target taps; teacher includes the released proposer interface. DFlash predictions must use output-norm.pt; EAGLE-3 predictions use identity."
+  }
+}
