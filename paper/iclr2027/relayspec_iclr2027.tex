@@ -456,9 +456,9 @@ by 60\%, retaining 97.63\% [96.23,99.03]\% and 97.05\%
 [95.93,98.21]\% throughput on disjoint 64-question GSM8K sets.
 Outputs match their respective full-interface references
 (Appendix~\ref{app:interface-compression}).
-A matched development intervention also shows that inheriting native
-projection columns substantially reduces the calibration needed relative
-to random initialization (Table~\ref{tab:native-initialization}).
+Inherited native columns reduce calibration needs in matched development
+tests, but a fresh 16-record fit fails the fixed retention criterion
+(Tables~\ref{tab:native-initialization} and~\ref{tab:native-short-confirmation}).
 
 EAGLE-3 repeats the dense data-count contrast on the same development
 questions, retaining 98.28\% [97.59, 99.01]\%. Its matched MLP remains
@@ -1191,6 +1191,47 @@ of 83.89M. Each row pairs all seven methods. Short and long budgets are
 separate campaigns on the same exposed requests, with a 512-token cap.
 Full paired request intervals are retained in the accompanying artifacts.}
 \label{tab:native-initialization}
+\end{table}
+
+\paragraph{A scalar-reweighting control.}
+We freeze the cropped native columns and learn only one gain per retained
+layer, folding both gains into the exported projection. All four settings
+(16/128 records, 128 updates, learning rates 0.003/0.03) are paired with
+untrained cropping and full-matrix fits on the same four development
+workloads. Scalar/crop throughput ratios range from 99.8\% to 100.8\%.
+All 16 paired 95\% intervals include one. On MATH, scalar fits retain
+95.7--96.6\% of full-matrix fitting throughput at the same record count,
+with all four paired intervals below one. These exposed, capped screens
+suggest that the fitted feature transformation adds more than layer
+reweighting in this setting. They do not establish superiority over all
+scalar optimizers: full fits use learning rate 0.0006, and intervals
+exclude selection and multiple-comparison uncertainty.
+
+\paragraph{A separately frozen short-fit test.}
+Before decoding, we fix the 16-record, 128-update inherited map as the
+primary candidate on 64 further GSM8K questions (sorted reserve positions
+128--191). An exact-ID audit finds no matches in 2,726 prior local result
+files. This is not a global or pretraining exposure guarantee. The
+predeclared criterion requires the lower paired 95\% throughput-retention
+bound against released native to reach 95\%. The primary candidate retains
+95.09\% [94.03,96.13]\% and \emph{fails} this criterion
+(Table~\ref{tab:native-short-confirmation}). The 128-record control retains
+96.60\% [95.48,97.70]\%, but remains descriptive rather than replacing
+the primary candidate. All five methods produce identical outputs,
+score 62/64, and avoid the 2,048-token cap. The conservative paired
+accuracy interval remains $[-6.62,+6.62]$ percentage points. No optional
+extension or refitting uses these outcomes. Thus the short fits support
+efficient calibration, while the fresh test limits a 16-record sufficiency
+claim inferred from the smaller development screen.
+
+\begin{table}[H]
+\centering\small
+\input{generated/native_short_confirmation_table.tex}
+\caption{Frozen short-fit comparison on 64 additional GSM8K questions.
+Only the 16-record map is primary. All fitted compact maps inherit native
+columns and use 128 updates. Intervals use 10,000 paired question bootstrap
+replicates, seed 1729, and exclude fitting-data and fitting-seed variation.}
+\label{tab:native-short-confirmation}
 \end{table}
 
 
@@ -2222,9 +2263,11 @@ and seed 1729 before generating confirmation outputs. The fixed test
 contains 256 GSM8K questions, sampled after exact and lexical exclusion
 against fitting data and collected evaluation history. A separate
 256-question reserve was left unused by this experiment. Subsequently,
-128 reserve questions were consumed by two separately frozen studies:
+192 reserve questions were consumed by three separately frozen studies:
 64 for the interface/SVD comparison and 64 different questions for native
-student confirmation (Appendix~\ref{app:interface-compression}).
+student confirmation, followed by 64 further questions for short-fit
+native confirmation (Appendix~\ref{app:interface-compression}).
+64 reserve questions remain unused.
 Operational pilots use eight
 previously exposed GSM8K questions, not confirmation requests.
 The same confirmation questions are evaluated in both drafter families,

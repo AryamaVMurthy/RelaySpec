@@ -136,6 +136,62 @@ All collected terminal lanes, including failures and negative results. Missing l
 | 38 / 1 | 28528 | eagle3 / existing | pass | 133.9 | 8 | relay_lower_rate: 103.7% |
 | 38 / 2 | 28528 | eagle3 / existing | pass | 243.4 | 8 | relay_dense2048: 105.3%; relay_lower_rate: 109.1%; relay_original_matched: 107.3% |
 | 38 / 3 | 28528 | eagle3 / existing | pass | 246.4 | 8 | relay_dense2048: 104.9%; relay_lower_rate: 108.1%; relay_original_matched: 103.5% |
+| 39 / 0 | 28529 | dflash / existing | pass | 99.9 | 8 | relay_one: 69.3%; relay_svd1536: 101.4%; relay_two: 97.4% |
+| 39 / 1 | 28529 | dflash / existing | pass | 117.8 | 8 | relay_one: 76.0%; relay_svd1536: 96.4%; relay_two: 97.2% |
+| 39 / 2 | 28529 | dflash / existing | pass | 100.2 | 8 | relay_one: 70.6%; relay_svd1536: 99.1%; relay_two: 94.7% |
+| 39 / 3 | 28529 | dflash / existing | pass | 116.4 | 8 | relay_one: 72.0%; relay_svd1536: 98.0%; relay_two: 95.4% |
+| 40 / 0 | 28530 | dflash / fit_reduced_taps | pass | 164.8 | 8 | relay_reduced: 66.7% |
+| 40 / 1 | 28530 | dflash / fit_reduced_taps | pass | 159.5 | 8 | relay_reduced: 97.2% |
+| 40 / 2 | 28530 | dflash / fit_reduced_taps | pass | 151.7 | 8 | relay_reduced: 46.3% |
+| 40 / 3 | 28530 | dflash / fit_reduced_taps | pass | 137.2 | 8 | relay_reduced: 87.7% |
+| 41 / 0 | 28531 | dflash / fit_reduced_taps | pass | 162.2 | 8 | relay_reduced: 67.0% |
+| 41 / 1 | 28531 | dflash / fit_reduced_taps | pass | 159.4 | 8 | relay_reduced: 97.9% |
+| 41 / 2 | 28531 | dflash / fit_reduced_taps | pass | 153.9 | 8 | relay_reduced: 47.1% |
+| 41 / 3 | 28531 | dflash / fit_reduced_taps | pass | 127.1 | 8 | relay_reduced: 88.9% |
+| 42 / 0 | 28532 | dflash / fit_reduced_taps | pass | 166.7 | 8 | relay_reduced: 67.0% |
+| 42 / 1 | 28532 | dflash / fit_reduced_taps | pass | 155.0 | 8 | relay_reduced: 100.7% |
+| 42 / 2 | 28532 | dflash / fit_reduced_taps | pass | 163.9 | 8 | relay_reduced: 96.7% |
+| 42 / 3 | 28532 | dflash / fit_reduced_taps | pass | 164.2 | 8 | relay_reduced: 100.6% |
+| 43 / 0 | 28533 | dflash / native_columns | pass | 141.5 | 8 | relay_cropped: 95.7%; relay_n128_native_columns: 100.6%; relay_n128_random: 96.7%; relay_n16_native_columns: 99.8%; relay_n16_random: 66.6%; relay_two: 99.8% |
+| 43 / 1 | 28533 | dflash / native_columns | pass | 162.4 | 8 | relay_cropped: 90.8%; relay_n128_native_columns: 96.2%; relay_n128_random: 95.5%; relay_n16_native_columns: 93.5%; relay_n16_random: 69.0%; relay_two: 97.4% |
+| 43 / 2 | 28533 | dflash / native_columns | pass | 133.2 | 8 | relay_cropped: 90.6%; relay_n128_native_columns: 94.2%; relay_n128_random: 92.6%; relay_n16_native_columns: 92.6%; relay_n16_random: 52.6%; relay_two: 98.0% |
+| 43 / 3 | 28533 | dflash / native_columns | pass | 338.4 | 16 | relay_cropped: 98.4%; relay_n128_native_columns: 98.1%; relay_n128_random: 96.2%; relay_n16_native_columns: 98.4%; relay_n16_random: 72.7%; relay_two: 98.8% |
+| 44 / 0 | 28535 | dflash / fit_reduced_taps | pass | 67.4 | 8 | relay_reduced: 99.3% |
+| 44 / 1 | 28535 | dflash / fit_reduced_taps | pass | 80.0 | 8 | relay_reduced: 98.6% |
+| 44 / 2 | 28535 | dflash / fit_reduced_taps | pass | 71.9 | 8 | relay_reduced: 101.0% |
+| 44 / 3 | 28535 | dflash / fit_reduced_taps | pass | 77.3 | 8 | relay_reduced: 100.7% |
+| 45 / 0 | 28536 | dflash / fit_reduced_taps | pass | 78.0 | 8 | relay_reduced: 51.7% |
+| 45 / 1 | 28536 | dflash / fit_reduced_taps | pass | 70.2 | 8 | relay_reduced: 72.4% |
+| 45 / 2 | 28536 | dflash / fit_reduced_taps | pass | 64.8 | 8 | relay_reduced: 98.7% |
+| 45 / 3 | 28536 | dflash / fit_reduced_taps | pass | 65.4 | 8 | relay_reduced: 100.7% |
+| 46 / 0 | 28537 | dflash / native_columns | pass | 152.7 | 8 | relay_cropped: 95.9%; relay_n128_native_columns: 100.6%; relay_n128_random: 72.4%; relay_n16_native_columns: 98.6%; relay_n16_random: 51.6%; relay_two: 99.9% |
+| 46 / 1 | 28537 | dflash / native_columns | pass | 177.8 | 8 | relay_cropped: 90.8%; relay_n128_native_columns: 95.2%; relay_n128_random: 76.2%; relay_n16_native_columns: 94.5%; relay_n16_random: 52.0%; relay_two: 97.4% |
+| 46 / 2 | 28537 | dflash / native_columns | pass | 148.6 | 8 | relay_cropped: 90.8%; relay_n128_native_columns: 95.2%; relay_n128_random: 56.2%; relay_n16_native_columns: 94.4%; relay_n16_random: 36.8%; relay_two: 98.2% |
+| 46 / 3 | 28537 | dflash / native_columns | pass | 353.6 | 16 | relay_cropped: 98.4%; relay_n128_native_columns: 99.2%; relay_n128_random: 75.0%; relay_n16_native_columns: 97.7%; relay_n16_random: 63.1%; relay_two: 98.8% |
+| 47 / 0 | 28538 | dflash / fit_reduced_taps | pass | 69.2 | 8 | relay_reduced: 100.0% |
+| 47 / 1 | 28538 | dflash / fit_reduced_taps | pass | 68.5 | 8 | relay_reduced: 99.1% |
+| 47 / 2 | 28538 | dflash / fit_reduced_taps | pass | 64.6 | 8 | relay_reduced: 100.0% |
+| 47 / 3 | 28538 | dflash / fit_reduced_taps | pass | 68.4 | 8 | relay_reduced: 99.1% |
+| 48 / 0 | 28539 | dflash / fit_reduced_taps | pass | 68.9 | 8 | relay_reduced: 95.8% |
+| 48 / 1 | 28539 | dflash / fit_reduced_taps | pass | 66.4 | 8 | relay_reduced: 97.4% |
+| 48 / 2 | 28539 | dflash / fit_reduced_taps | pass | 67.6 | 8 | relay_reduced: 95.9% |
+| 48 / 3 | 28539 | dflash / fit_reduced_taps | pass | 69.8 | 8 | relay_reduced: 96.5% |
+| 49 / 0 | 28540 | dflash / native_columns | pass | 166.4 | 8 | relay_cropped: 95.9%; relay_gains_lane0: 95.8%; relay_gains_lane1: 95.8%; relay_gains_lane2: 95.7%; relay_gains_lane3: 96.4%; relay_n128_native_columns: 100.6%; relay_n16_native_columns: 98.6%; relay_two: 99.8% |
+| 49 / 1 | 28540 | dflash / native_columns | pass | 199.7 | 8 | relay_cropped: 90.8%; relay_gains_lane0: 91.3%; relay_gains_lane1: 91.1%; relay_gains_lane2: 91.2%; relay_gains_lane3: 91.5%; relay_n128_native_columns: 95.2%; relay_n16_native_columns: 94.5%; relay_two: 97.3% |
+| 49 / 2 | 28540 | dflash / native_columns | pass | 148.7 | 8 | relay_cropped: 90.7%; relay_gains_lane0: 91.1%; relay_gains_lane1: 90.4%; relay_gains_lane2: 90.7%; relay_gains_lane3: 90.7%; relay_n128_native_columns: 95.0%; relay_n16_native_columns: 94.2%; relay_two: 98.0% |
+| 49 / 3 | 28540 | dflash / native_columns | pass | 401.7 | 16 | relay_cropped: 98.4%; relay_gains_lane0: 98.2%; relay_gains_lane1: 98.6%; relay_gains_lane2: 98.4%; relay_gains_lane3: 98.4%; relay_n128_native_columns: 99.2%; relay_n16_native_columns: 97.7%; relay_two: 98.8% |
+| 50 / 0 | 28543 | dflash / existing | pass | 186.8 | 16 | relay_cropped: 94.6%; relay_short128: 97.9%; relay_short16: 96.7% |
+| 50 / 1 | 28543 | dflash / existing | pass | 168.8 | 16 | relay_cropped: 92.9%; relay_short128: 96.8%; relay_short16: 94.7% |
+| 50 / 2 | 28543 | dflash / existing | pass | 158.0 | 16 | relay_cropped: 92.8%; relay_short128: 97.3%; relay_short16: 95.4% |
+| 50 / 3 | 28543 | dflash / existing | pass | 190.7 | 16 | relay_cropped: 93.7%; relay_short128: 97.5%; relay_short16: 96.5% |
+| 51 / 0 | 28544 | dflash / fit_reduced_taps | pass | 81.9 | 8 | relay_reduced: 53.4% |
+| 51 / 1 | 28544 | dflash / fit_reduced_taps | pass | 78.6 | 8 | relay_reduced: 64.3% |
+| 51 / 2 | 28544 | dflash / fit_reduced_taps | pass | 74.1 | 8 | relay_reduced: 80.0% |
+| 51 / 3 | 28544 | dflash / fit_reduced_taps | pass | 75.7 | 8 | relay_reduced: 85.6% |
+| 52 / 0 | 28545 | dflash / fit_reduced_taps | pass | 64.4 | 8 | relay_reduced: 98.6% |
+| 52 / 1 | 28545 | dflash / fit_reduced_taps | pass | 65.1 | 8 | relay_reduced: 97.2% |
+| 52 / 2 | 28545 | dflash / fit_reduced_taps | pass | 70.0 | 8 | relay_reduced: 99.4% |
+| 52 / 3 | 28545 | dflash / fit_reduced_taps | pass | 63.3 | 8 | relay_reduced: 101.2% |
 
 ## Four-GPU pipeline stages
 
