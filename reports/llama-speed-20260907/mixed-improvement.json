@@ -1,0 +1,43 @@
+{
+  "comparison": "matched eight prompts/cap1024/output hashes; full FP32 job28885 versus mixed job28922; not independent timing repeats",
+  "results": [
+    {
+      "family": "llama",
+      "requests": 8,
+      "same_token_outputs": true,
+      "decode_seconds": {
+        "speedup": 1.1622809625782253,
+        "paired_request_ci95": [
+          1.1550853379814847,
+          1.1666149308894378
+        ]
+      },
+      "request_seconds": {
+        "speedup": 1.1609903440041336,
+        "paired_request_ci95": [
+          1.153424695911635,
+          1.165454667732608
+        ]
+      }
+    },
+    {
+      "family": "cross",
+      "requests": 8,
+      "same_token_outputs": true,
+      "decode_seconds": {
+        "speedup": 1.0423763964514792,
+        "paired_request_ci95": [
+          1.0356806426835794,
+          1.0493310404100085
+        ]
+      },
+      "request_seconds": {
+        "speedup": 1.0420236263316394,
+        "paired_request_ci95": [
+          1.0353188672216884,
+          1.0490403534614883
+        ]
+      }
+    }
+  ]
+}

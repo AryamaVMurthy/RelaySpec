@@ -1,0 +1,20 @@
+{
+  "loads": [
+    {
+      "role": "source",
+      "model": "Qwen/Qwen3-4B",
+      "dtype": "torch.bfloat16"
+    },
+    {
+      "role": "target",
+      "model": "unsloth/Llama-3.1-8B-Instruct",
+      "dtype": "torch.float32"
+    }
+  ],
+  "target": "float32",
+  "mapper": "float32",
+  "source_embedding_and_head": "bfloat16",
+  "drafter": "bfloat16",
+  "mapper_output_cast": "bfloat16",
+  "verifier_changed": false
+}
