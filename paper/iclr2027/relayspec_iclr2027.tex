@@ -579,11 +579,11 @@ regularization and token-prediction adaptation. The interface also exposes
 which target features sustain drafting: late-layer selection cuts mapper
 parameters by 60\% while retaining 97.6\% throughput in a fixed comparison.
 Native two-layer students retain 97.1\% (DFlash) and 98.8\% (EAGLE-3)
-throughput with 60\% fewer projection parameters in separate frozen tests. These findings motivate adapting and inspecting
-the inherited interface before investing in a new drafter.
+throughput with 60\% fewer projection parameters in separate frozen tests. These findings motivate inspecting the inherited interface before retraining.
 
-These conclusions concern shared-vocabulary Qwen3 models, greedy decoding
-and one request per worker. Code workloads can favor source reuse,
+Tests use shared-vocabulary Qwen3 models and one request per worker.
+A smaller sampled-GSM8K study also yields 2.47--3.72 times AR throughput
+(Appendix~\ref{app:sampling}). Code workloads can favor source reuse,
 and EAGLE-3 optimization depends on the recipe. Frozen GSM8K confirmation
 supports speed retention but not tight accuracy noninferiority.
 Development exposure, possible shared math templates and limited fitting
@@ -2148,6 +2148,51 @@ or changed ordering with gaps up to 0.25 at those positions. Such traces
 identify numerical score differences in the selected cases. They do not
 establish that all mismatches have the same cause. The task-quality
 intervals in Table~\ref{tab:quality} remain the empirical quality evidence.
+
+\subsection{Sampled decoding with frozen interfaces}
+\label{app:sampling}
+We test whether the frozen 512-record retargeting maps also support
+nonzero-temperature generation. A seeded operational pilot checks
+byte-identical checkpoint controls in both families at temperatures
+0.6 and 1.0: tokens, acceptance and verifier-call trajectories reproduce.
+An earlier unseeded pilot is excluded from reproducible sampling evidence.
+The measurement cohort is fixed before decoding: 32 previously exposed
+GSM8K questions, two sampling seed bases, both families and both
+temperatures. These questions are disjoint from the entire 256-question
+reserve and a separate initial eight-question sampling study. The latter
+is not pooled into this result. Each family/temperature cell contains 64
+outputs per method, from 32 question clusters. All 768 declared outputs
+are retained and scored, with no 2,048-token cap hits.
+
+RelaySpec achieves 3.72 times AR throughput at temperature 0.6 and 3.20
+at 1.0 with DFlash, and 2.64 and 2.47 times AR with EAGLE-3
+(Table~\ref{tab:sampling-breadth}). Native-throughput retention falls
+from 87.7\% to 80.2\% for DFlash and from 97.7\% to 95.5\% for
+EAGLE-3 between the two temperatures. Thus applicability extends beyond
+greedy decoding in this setting, while the retention gap depends on
+family and sampling temperature. We report request-time ratios separately
+because methods can generate different output lengths. These comparisons
+use the original retargeting maps, not the compact native students.
+
+The bootstrap resamples questions jointly across both seeds and all
+paired methods, using 10,000 draws at seed 1729. These intervals condition
+on two sampled seeds and do not measure fitting-seed or development
+selection uncertainty. Sparse correctness discordances can produce
+zero-width empirical bootstrap intervals, which cannot establish tight
+quality noninferiority. Observed scores and the operational reproduction
+check also do not prove distributional exactness. This remains a small,
+exposed development study with one request per worker.
+
+\begin{table}[H]
+\centering\small
+\input{generated/sampling_breadth_table.tex}
+\caption{Sampled GSM8K decoding, 32 fixed questions and two sampling seeds.
+Each row has 64 scored outputs. Time ratio is summed AR request time
+relative to method time, while Tokens is mean output length. Native is
+target-specific and RelaySpec retargets the released 4B drafter. Paired
+95\% intervals cluster both seeds by question. All methods avoid the cap.}
+\label{tab:sampling-breadth}
+\end{table}
 
 \section{Matched-count training composition}
 \label{app:composition}

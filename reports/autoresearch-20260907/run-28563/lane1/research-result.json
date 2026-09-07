@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "hypothesis": "Does sampled RelaySpec applicability repeat across32 fixed development questions and two independent sampling seeds in both drafter families?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.34764729255436,
+        "throughput_ratio": 0.3290418371254695,
+        "throughput_ci95": [
+          0.2844935029755224,
+          0.37781640806318756
+        ],
+        "request_time_ratio": 0.31853294806751326,
+        "request_time_ci95": [
+          0.28248524851390605,
+          0.35925178289632576
+        ],
+        "mean_output_tokens": 289.625,
+        "token_matches": 0,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 62.03871376020834
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 137.0746607375383,
+        "throughput_ratio": 1.20766102986685,
+        "throughput_ci95": [
+          1.1269784282774267,
+          1.3188851835285174
+        ],
+        "request_time_ratio": 1.0096100223598004,
+        "request_time_ci95": [
+          0.8212066362778986,
+          1.317238037990744
+        ],
+        "mean_output_tokens": 335.375,
+        "token_matches": 0,
+        "progress_per_cycle": 5.106261859582543,
+        "request_seconds": 19.57327478006482
+      },
+      "relay_base": {
+        "tokens_per_second": 113.50425106675124,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 280.375,
+        "token_matches": 8,
+        "progress_per_cycle": 4.1402214022140225,
+        "request_seconds": 19.76137438835576
+      }
+    }
+  },
+  "scope": "Fixed sampling-breadth-v1 shard with8 questions,2 temperatures and2 families across the four lanes. One of two predeclared sampling_seed_bases. Frozen512-record mappers with native/AR controls,2048token cap. All32 questions previously exposed, distinct from initial8 sampling questions and entire reserve. All lanes540seconds."
+}

@@ -1,0 +1,52 @@
+protocol_version: 1
+run_name: confirmation-eagle3-full
+seed: 1729
+resources:
+  gpu_count: 1
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target: &id001
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: eagle3
+  id: deepseek-ai/eagle3_qwen3_8b_ttt7
+  revision: f6485ba8d21e11942958617dbe7e71b467f38f38
+  source_commit: 005e03b81cec38b7da6399833d609ee89a2587f2
+native_target_proposer:
+  id: deepseek-ai/eagle3_qwen3_8b_ttt7
+  revision: f6485ba8d21e11942958617dbe7e71b467f38f38
+generation:
+  enable_thinking: false
+  max_new_tokens: 256
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/eval_manifest_full_v4.json
+  benchmarks:
+  - mbpp
+  methods:
+  - relay_base
+  - relay_reduced
+  - relay_two_control
+  max_prompts: 8
+  warmups: 1
+  draft_length: 7
+  profile_regions: true
+  research_single_gpu: true
+source_trunk:
+  model: *id001
+  layers: 36
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants:
+    relay_base: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28551/lane0/native-fc.pt
+    relay_reduced: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28569/lane0/fitting/native-eagle-code-taps25-33-n512-u128/step-000128.pt
+    relay_two_control: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28556/lane1/fitting/native-eagle-late2-n512-native_columns-u128/step-000128.pt
