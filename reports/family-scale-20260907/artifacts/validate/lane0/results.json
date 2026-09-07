@@ -1,0 +1,39 @@
+[
+  {
+    "config": "/scratch/aryama.murthy/family-scale-20260907/selection/validate/validate-llama-lane0-b10.yaml",
+    "output": "/scratch/aryama.murthy/family-scale-20260907/validate/lane0/validate-llama-lane0-b10",
+    "exact_gate": true,
+    "methods": {
+      "native_ar": {
+        "decode_seconds": 57.249901877716184,
+        "decode_tokens_per_second": 46.81230730708303,
+        "exact_sequence_match_rate": 1.0,
+        "exact_sequence_matches": 8,
+        "mean_acceptance_length": 1.0,
+        "output_tokens": 2680,
+        "requests": 8,
+        "speedup_vs_native_ar": 1.0
+      },
+      "relay_p": {
+        "decode_seconds": 22.163722615223378,
+        "decode_tokens_per_second": 120.91831532665071,
+        "exact_sequence_match_rate": 1.0,
+        "exact_sequence_matches": 8,
+        "mean_acceptance_length": 3.855462230574063,
+        "output_tokens": 2680,
+        "requests": 8,
+        "speedup_vs_native_ar": 2.583045405846828
+      }
+    },
+    "paired_requests": 8,
+    "pairwise": {
+      "relay_p_vs_native_ar": {
+        "candidate_method": "relay_p",
+        "exact_sequence_match_rate": 1.0,
+        "exact_sequence_matches": 8,
+        "reference_method": "native_ar",
+        "throughput_speedup": 2.583045405846828
+      }
+    }
+  }
+]

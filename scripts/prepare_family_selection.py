@@ -6,7 +6,7 @@ from pathlib import Path
 import yaml
 
 p = argparse.ArgumentParser()
-p.add_argument('--stage',choices=['blocks','final'],required=True)
+p.add_argument('--stage',choices=['blocks','validate','final'],required=True)
 a = p.parse_args()
 root = Path(os.environ['FAMILY_SCALE_CACHE'])
 report = Path('reports/family-scale-20260907')
@@ -18,7 +18,10 @@ if a.stage == 'blocks':
              for n in [4096,8192,16384] for lane in range(4)]
     paths += [root/'refine-screen'/f'lane{lane}'/'results.json' for lane in range(4)]
 else:
-    paths = [root/'blocks'/f'lane{lane}'/'results.json' for lane in range(4)]
+    previous='blocks' if a.stage=='validate' else 'validate'
+    paths = [root/previous/f'lane{lane}'/'results.json' for lane in range(4)]
+    if a.stage=='final':
+        paths += [root/'fine'/f'lane{lane}'/'results.json' for lane in range(4)]
 for path in paths:
     assert (path.parent/'COMPLETE').exists(),path
     for result in json.loads(path.read_text()):
@@ -36,6 +39,11 @@ for family,base_lane in [('llama',0),('cross',2)]:
         candidates = [r for r in candidates if '/family-scale-20260907/fits/' in r['config']['relay_probe']['checkpoint_path']]
         winner = max(candidates,key=lambda r:r['tps'])
         configs = [baseline,winner['config']]
+    elif a.stage=='validate':
+        leaders=sorted(candidates,key=lambda r:r['tps'],reverse=True)[:2]
+        assert len(leaders)==2
+        winner=leaders[0]
+        configs=[r['config'] for r in leaders]
     else:
         winner = max(candidates,key=lambda r:r['tps'])
         configs = [baseline,winner['config']]
@@ -46,9 +54,11 @@ for family,base_lane in [('llama',0),('cross',2)]:
         for block in blocks:
             c=json.loads(json.dumps(cfg))
             c['run_name']=f'{a.stage}-{family}-lane{lane}-b{block}'
-            c['benchmark'].update(block_size=block,max_prompts=2 if a.stage=='blocks' else 16,
-                manifest_path=str(report/('pilot-manifest.json' if a.stage=='blocks' else 'final-manifest.json')))
-            c['generation']['max_new_tokens']=256 if a.stage=='blocks' else 1024
+            manifest={'blocks':report/'pilot-manifest.json','validate':Path('reports/llama-speed-20260907/fresh-manifest.json'),
+                      'final':report/'final-manifest.json'}[a.stage]
+            c['benchmark'].update(block_size=block,max_prompts={'blocks':2,'validate':8,'final':16}[a.stage],
+                manifest_path=str(manifest))
+            c['generation']['max_new_tokens']={'blocks':256,'validate':512,'final':1024}[a.stage]
             path=generated/(c['run_name']+'.yaml')
             path.write_text(yaml.safe_dump(c,sort_keys=False));lists.append(str(path))
         (generated/f'lane{lane}.json').write_text(json.dumps(lists,indent=2))

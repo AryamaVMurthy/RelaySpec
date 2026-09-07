@@ -1,0 +1,99 @@
+{
+  "variants": {
+    "relay_candidate_1": {
+      "checkpoint": "/scratch/aryama.murthy/family-scale-20260907/fits/n8192-llama-dense/epoch-1.pt",
+      "sha256": "87a4b3f1909db01cf67a63956491266d5263560d6b53eebc3414f91d1bbe7b84",
+      "parameters": 62914560,
+      "resident_parameter_bytes": 251658240,
+      "target_layer_ids": [
+        1,
+        7,
+        13,
+        19,
+        25
+      ]
+    },
+    "relay_candidate_2": {
+      "checkpoint": "/scratch/aryama.murthy/family-scale-20260907/fits/n8192-llama-dense/epoch-3.pt",
+      "sha256": "aa128b6c7500086a66042dc330a4dbf8d621e609fe96ccc4434c8126b2b0c426",
+      "parameters": 62914560,
+      "resident_parameter_bytes": 251658240,
+      "target_layer_ids": [
+        1,
+        7,
+        13,
+        19,
+        25
+      ]
+    },
+    "relay_candidate_3": {
+      "checkpoint": "/scratch/aryama.murthy/family-scale-20260907/fits/n8192-llama-dense/epoch-6.pt",
+      "sha256": "bdfd474a5252d0cb0a3964f0212c1b0c01ff91d7dfb0500c5a0d02b5642e8bc1",
+      "parameters": 62914560,
+      "resident_parameter_bytes": 251658240,
+      "target_layer_ids": [
+        1,
+        7,
+        13,
+        19,
+        25
+      ]
+    },
+    "relay_candidate_4": {
+      "checkpoint": "/scratch/aryama.murthy/family-scale-20260907/fits/n8192-llama-dense/epoch-12.pt",
+      "sha256": "a9d61d7c92ada8f16e7eeb5fdc722d137e4c36bec7ae84ac674325dacc8a9e69",
+      "parameters": 62914560,
+      "resident_parameter_bytes": 251658240,
+      "target_layer_ids": [
+        1,
+        7,
+        13,
+        19,
+        25
+      ]
+    }
+  },
+  "adapted_drafter_variants": [],
+  "methods": [
+    "native_ar",
+    "relay_p",
+    "relay_candidate_1",
+    "relay_candidate_2",
+    "relay_candidate_3",
+    "relay_candidate_4"
+  ],
+  "selective_capture": {},
+  "release_capture_buffers": {},
+  "cross_family_variants": false,
+  "variant_block_sizes": {
+    "relay_candidate_1": 10,
+    "relay_candidate_2": 10,
+    "relay_candidate_3": 10,
+    "relay_candidate_4": 10
+  },
+  "runtime_precision": "float32",
+  "target_head_precision": "float32",
+  "target_head_diagnostic": null,
+  "matmul_allow_tf32": false,
+  "target_parameter_dtypes": [
+    "torch.float32"
+  ],
+  "drafter_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "mapper_parameter_dtypes": {
+    "relay_candidate_1": [
+      "torch.float32"
+    ],
+    "relay_candidate_2": [
+      "torch.float32"
+    ],
+    "relay_candidate_3": [
+      "torch.float32"
+    ],
+    "relay_candidate_4": [
+      "torch.float32"
+    ]
+  },
+  "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+}

@@ -7,7 +7,7 @@
 #SBATCH --gres=gpu:4
 #SBATCH --mem=160G
 #SBATCH --nodelist=node07
-#SBATCH --time=00:15:00
+#SBATCH --time=00:25:00
 #SBATCH --job-name=rs-family-scale
 #SBATCH --output=/home/aryama.murthy/rs-zip-family-20260907/logs/%x-%j.out
 #SBATCH --error=/home/aryama.murthy/rs-zip-family-20260907/logs/%x-%j.err

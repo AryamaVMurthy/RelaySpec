@@ -22,6 +22,7 @@ for c in configs:
         assert c[key]==cfg[key],key
     for key in ['manifest_path','max_prompts','precision','target_head_precision','warmups']:
         assert c['benchmark'][key]==cfg['benchmark'][key],key
+    assert c['benchmark'].get('drafter_precision','bfloat16') == cfg['benchmark'].get('drafter_precision','bfloat16')
 cfg['benchmark']['methods']=['native_ar',*methods]
 cfg['relay_probe']['variants']={name:c['relay_probe']['checkpoint_path'] for name,c in zip(methods[1:],configs[1:])}
 cfg['relay_probe']['variant_block_sizes']={name:c['benchmark']['block_size'] for name,c in zip(methods[1:],configs[1:])}

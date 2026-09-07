@@ -1,0 +1,45 @@
+{
+  "variants": {
+    "relay_candidate_1": {
+      "checkpoint": "/scratch/aryama.murthy/family-scale-20260907/fits/pilot2-llama-zip/epoch-1.pt",
+      "sha256": "aca0e158a40ec7c71f8d3e286d93d5a6cbd31d0dccddc6dbe90ba2281c78c8e7",
+      "parameters": 62914560,
+      "resident_parameter_bytes": 251658240,
+      "target_layer_ids": [
+        1,
+        7,
+        13,
+        19,
+        25
+      ]
+    }
+  },
+  "adapted_drafter_variants": [],
+  "methods": [
+    "native_ar",
+    "relay_p",
+    "relay_candidate_1"
+  ],
+  "selective_capture": {},
+  "release_capture_buffers": {},
+  "cross_family_variants": false,
+  "variant_block_sizes": {
+    "relay_candidate_1": 10
+  },
+  "runtime_precision": "float32",
+  "target_head_precision": "float32",
+  "target_head_diagnostic": null,
+  "matmul_allow_tf32": false,
+  "target_parameter_dtypes": [
+    "torch.float32"
+  ],
+  "drafter_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "mapper_parameter_dtypes": {
+    "relay_candidate_1": [
+      "torch.float32"
+    ]
+  },
+  "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+}

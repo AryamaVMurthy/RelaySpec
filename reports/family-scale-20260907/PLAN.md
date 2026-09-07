@@ -70,3 +70,10 @@ After initial screens, choose the strongest new configuration in each family. Re
 Job 28956 checks shared-model candidate evaluation against standalone job 28947: exact outputs and full acceptance trajectories must match. After its gate passes, candidate batches reuse frozen models and one AR reference, rotate method order, and preserve raw per-method rows. Final confirmation remains standalone per configuration, avoiding candidate-residency effects. Restore raw ZIP maps without input normalization; route cross-family variants through the existing cross-family verifier.
 
 Unit checks: 14 mapper-campaign / research-transform tests pass.
+
+## Final selection refinement
+
+- 28957: two leading coarse configurations per family on 8 development requests, cap 512.
+- 28960: old and new mapper, neighboring blocks 9/10/11 for Llama and 15/16/17 for cross; 8 development requests, cap 512.
+- 28952 now depends on 28960 and selects using these 8-request results before the reserved 16-request, cap-1024 confirmation. Its pending time limit was increased to 25 minutes to avoid truncating long answers; actual time may be shorter.
+- BF16/FP16 drafter pilots used idle GPUs 0 and 2 within allocation 28953. They preserve exact FP32 AR outputs, but overlap fitting, so their timing is exploratory; BF16 remains selected.

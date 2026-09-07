@@ -1,0 +1,39 @@
+[
+  {
+    "config": "/scratch/aryama.murthy/family-scale-20260907/selection/final/final-cross-lane2-b16.yaml",
+    "output": "/scratch/aryama.murthy/family-scale-20260907/final/lane2/final-cross-lane2-b16",
+    "exact_gate": true,
+    "methods": {
+      "native_ar": {
+        "decode_seconds": 384.22393165901303,
+        "decode_tokens_per_second": 22.062654877841076,
+        "exact_sequence_match_rate": 1.0,
+        "exact_sequence_matches": 16,
+        "mean_acceptance_length": 1.0,
+        "output_tokens": 8477,
+        "requests": 16,
+        "speedup_vs_native_ar": 1.0
+      },
+      "relay_p_cross_family": {
+        "decode_seconds": 144.03674816712737,
+        "decode_tokens_per_second": 58.85303651929191,
+        "exact_sequence_match_rate": 1.0,
+        "exact_sequence_matches": 16,
+        "mean_acceptance_length": 3.494872025502919,
+        "output_tokens": 8477,
+        "requests": 16,
+        "speedup_vs_native_ar": 2.6675410028918027
+      }
+    },
+    "paired_requests": 16,
+    "pairwise": {
+      "relay_p_cross_family_vs_native_ar": {
+        "candidate_method": "relay_p_cross_family",
+        "exact_sequence_match_rate": 1.0,
+        "exact_sequence_matches": 16,
+        "reference_method": "native_ar",
+        "throughput_speedup": 2.6675410028918027
+      }
+    }
+  }
+]
