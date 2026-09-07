@@ -1,0 +1,29 @@
+{
+  "status": "frozen-before-decoding",
+  "waves": [
+    87,
+    88,
+    89,
+    90
+  ],
+  "questions_per_workload": 32,
+  "workloads": [
+    "gsm8k",
+    "mbpp"
+  ],
+  "families": [
+    "dflash",
+    "eagle3"
+  ],
+  "expected_outputs": 640,
+  "methods": [
+    "native",
+    "repacked",
+    "two-layer",
+    "weight1536",
+    "activation1536"
+  ],
+  "analysis": "All frozen arms. Paired question bootstrap within family and workload,10000 draws seed1729. Math scoring and isolated code base tests for all outputs. No quality NI, multiple-selection-adjusted inference, or fresh confirmation. Reuse earlier exposed cohorts, including initial8, so no extra independent sample claim.",
+  "purpose": "Check whether activation-aware native compression outperforms weight-only SVD and how the choice compares with fitted layer reduction. Established compression construction, no new algorithm claim.",
+  "max_lane_seconds": 540
+}
