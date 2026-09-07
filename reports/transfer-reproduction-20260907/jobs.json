@@ -26,6 +26,21 @@
       "gpus": 4,
       "timeout_seconds_per_lane": 540,
       "script_sha256": "793e7812eaabc8c7111367a31f6e01a00cf8c83c2eb37e734d4dd6ed939acca3"
+    },
+    {
+      "id": 28618,
+      "stage": "complete_exact_runtime_install",
+      "command": "sbatch --parsable --dependency=afterany:28613 /home/aryama.murthy/relayspec-transfer-reproduction/setup_complete.sbatch",
+      "gpus": 0,
+      "reason": "Original30minute setup cannot have its wall limit extended. Preserve current download and allow remaining exact locked dependencies to finish in CPU-only continuation.",
+      "script_sha256": "6c415c4c32f3c30a8381a68257254a3eb1ad5a35c2e9fb6da632c126f077687d"
+    }
+  ],
+  "dependency_updates": [
+    {
+      "job": 28614,
+      "command": "scontrol update JobId=28614 Dependency=afterok:28618",
+      "reason": "Preparation requires successful complete exact environment verification."
     }
   ]
 }

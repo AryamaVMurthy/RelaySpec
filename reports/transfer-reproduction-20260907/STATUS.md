@@ -22,7 +22,7 @@ The prior negative result is not a reproduction of this recipe. Both results mus
 ## Execution
 
 1. Job28613 installs exact pinned dependencies into an isolated scratch environment and runs pip/environment/tests checks.
-2. Job28614 depends on successful setup, reuses only exact pinned base/drafter HF snapshots, downloads the pinned dataset shard, and recreates/verifies split and evaluation prompt hashes.
+2. Job28618 completes the exact pinned installation using persistent download caches if the initial30minute allocation is insufficient; it requests2CPUs and no GPUs. Job28614 depends on successful environment verification, reuses only exact pinned base/drafter HF snapshots, downloads the pinned dataset shard, and recreates/verifies split and evaluation prompt hashes.
 3. Job28615 depends on successful preparation. Four independent <=540second operational probes: eight training continuations, AR short evaluation, native short evaluation, and synthetic GPU mapper math/folding verification.
 4. Inspect actual generation samples and gates before the full two-worker generation. Preserve original queue windows and128 active sequences. No historical outputs used as generated training data.
 5. Compare rollout hashes. Any mismatch must be inspected and reported before deciding whether only a new-data realization can be reproduced.
