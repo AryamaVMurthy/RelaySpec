@@ -1,0 +1,224 @@
+{
+  "dataset_revisions": {
+    "evalplus_mbpp": "26d6d00bb1fd0fa37f39c99d5290da67891d1c5e",
+    "gsm8k": "740312add88f781978c0658806c59bc2815b9866",
+    "humaneval": "7dce6050a7d6d172f3cc5c32aa97f52fa1a2e544",
+    "math500": "6e4ed1a2a79af7d8630a6b768ec859cb5af4d3be",
+    "mtbench": "e3a795c5e9a82ee40611c416b8a7786c73198991"
+  },
+  "records": [
+    {
+      "answer": {
+        "entry_point": "count_Pairs",
+        "tests": [
+          "assert count_Pairs([1,2,1],3) == 2",
+          "assert count_Pairs([1,1,1,1],4) == 0",
+          "assert count_Pairs([1,2,3,4,5],5) == 10"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/564",
+      "prompt": "\"\"\"\nWrite a python function which takes a list of integers and counts the number of possible unordered pairs where both elements are unequal.\nassert count_Pairs([1,2,1],3) == 2\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert count_Pairs([1,2,1],3) == 2\nassert count_Pairs([1,1,1,1],4) == 0\nassert count_Pairs([1,2,3,4,5],5) == 10\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "sum_of_digits",
+        "tests": [
+          "assert sum_of_digits([10,2,56])==14",
+          "assert sum_of_digits([[10,20,4,5,'b',70,'a']])==19",
+          "assert sum_of_digits([10,20,-4,5,-70])==19"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/398",
+      "prompt": "\"\"\"\nWrite a function to compute the sum of digits of each number of a given list.\nassert sum_of_digits([10,2,56])==14\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert sum_of_digits([10,2,56])==14\nassert sum_of_digits([[10,20,4,5,'b',70,'a']])==19\nassert sum_of_digits([10,20,-4,5,-70])==19\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "count_X",
+        "tests": [
+          "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),4) == 0",
+          "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),10) == 3",
+          "assert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),8) == 4"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/250",
+      "prompt": "\"\"\"\nWrite a python function that takes in a tuple and an element and counts the occcurences of the element in the tuple.\nassert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),4) == 0\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),4) == 0\nassert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),10) == 3\nassert count_X((10, 8, 5, 2, 10, 15, 10, 8, 5, 8, 8, 2),8) == 4\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "first_non_repeating_character",
+        "tests": [
+          "assert first_non_repeating_character(\"abcabc\") == None",
+          "assert first_non_repeating_character(\"abc\") == \"a\"",
+          "assert first_non_repeating_character(\"ababc\") == \"c\""
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/395",
+      "prompt": "\"\"\"\nWrite a python function to find the first non-repeated character in a given string.\nassert first_non_repeating_character(\"abcabc\") == None\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert first_non_repeating_character(\"abcabc\") == None\nassert first_non_repeating_character(\"abc\") == \"a\"\nassert first_non_repeating_character(\"ababc\") == \"c\"\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "get_coordinates",
+        "tests": [
+          "assert get_coordinates((3, 4)) == [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5], [4, 3], [4, 4], [4, 5]]",
+          "assert get_coordinates((4, 5)) ==[[3, 4], [3, 5], [3, 6], [4, 4], [4, 5], [4, 6], [5, 4], [5, 5], [5, 6]]",
+          "assert get_coordinates((5, 6)) == [[4, 5], [4, 6], [4, 7], [5, 5], [5, 6], [5, 7], [6, 5], [6, 6], [6, 7]]"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/630",
+      "prompt": "\"\"\"\nWrite a function to extract all the adjacent coordinates of the given coordinate tuple.\nassert get_coordinates((3, 4)) == [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5], [4, 3], [4, 4], [4, 5]]\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert get_coordinates((3, 4)) == [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5], [4, 3], [4, 4], [4, 5]]\nassert get_coordinates((4, 5)) ==[[3, 4], [3, 5], [3, 6], [4, 4], [4, 5], [4, 6], [5, 4], [5, 5], [5, 6]]\nassert get_coordinates((5, 6)) == [[4, 5], [4, 6], [4, 7], [5, 5], [5, 6], [5, 7], [6, 5], [6, 6], [6, 7]]\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "max_length",
+        "tests": [
+          "assert max_length([[0], [1, 3], [5, 7], [9, 11], [13, 15, 17]])==(3, [13, 15, 17])",
+          "assert max_length([[1], [5, 7], [10, 12, 14,15]])==(4, [10, 12, 14,15])",
+          "assert max_length([[5], [15,20,25]])==(3, [15,20,25])"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/290",
+      "prompt": "\"\"\"\nWrite a function to find the list of maximum length in a list of lists.\nassert max_length([[0], [1, 3], [5, 7], [9, 11], [13, 15, 17]])==(3, [13, 15, 17])\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert max_length([[0], [1, 3], [5, 7], [9, 11], [13, 15, 17]])==(3, [13, 15, 17])\nassert max_length([[1], [5, 7], [10, 12, 14,15]])==(4, [10, 12, 14,15])\nassert max_length([[5], [15,20,25]])==(3, [15,20,25])\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "get_pairs_count",
+        "tests": [
+          "assert get_pairs_count([1,1,1,1],2) == 6",
+          "assert get_pairs_count([1,5,7,-1,5],6) == 3",
+          "assert get_pairs_count([1,-2,3],1) == 1",
+          "assert get_pairs_count([-1,-2,3],-3) == 1"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/767",
+      "prompt": "\"\"\"\nWrite a python function to count the number of pairs whose sum is equal to \u2018sum\u2019. The funtion gets as input a list of numbers and the sum,\nassert get_pairs_count([1,1,1,1],2) == 6\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert get_pairs_count([1,1,1,1],2) == 6\nassert get_pairs_count([1,5,7,-1,5],6) == 3\nassert get_pairs_count([1,-2,3],1) == 1\nassert get_pairs_count([-1,-2,3],-3) == 1\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "division_elements",
+        "tests": [
+          "assert division_elements((10, 4, 6, 9),(5, 2, 3, 3)) == (2, 2, 2, 3)",
+          "assert division_elements((12, 6, 8, 16),(6, 3, 4, 4)) == (2, 2, 2, 4)",
+          "assert division_elements((20, 14, 36, 18),(5, 7, 6, 9)) == (4, 2, 6, 2)"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/261",
+      "prompt": "\"\"\"\nWrite a function that takes in two tuples and performs mathematical division operation element-wise across the given tuples.\nassert division_elements((10, 4, 6, 9),(5, 2, 3, 3)) == (2, 2, 2, 3)\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert division_elements((10, 4, 6, 9),(5, 2, 3, 3)) == (2, 2, 2, 3)\nassert division_elements((12, 6, 8, 16),(6, 3, 4, 4)) == (2, 2, 2, 4)\nassert division_elements((20, 14, 36, 18),(5, 7, 6, 9)) == (4, 2, 6, 2)\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "is_perfect_square",
+        "tests": [
+          "assert not is_perfect_square(10)",
+          "assert is_perfect_square(36)",
+          "assert not is_perfect_square(14)",
+          "assert is_perfect_square(14*14)",
+          "assert not is_perfect_square(125)",
+          "assert is_perfect_square(125*125)"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/803",
+      "prompt": "\"\"\"\nWrite a function to check whether the given number is a perfect square or not. \nassert not is_perfect_square(10)\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert not is_perfect_square(10)\nassert is_perfect_square(36)\nassert not is_perfect_square(14)\nassert is_perfect_square(14*14)\nassert not is_perfect_square(125)\nassert is_perfect_square(125*125)\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "max_Product",
+        "tests": [
+          "assert max_Product([1,2,3,4,7,0,8,4]) == (7,8)",
+          "assert max_Product([0,-1,-2,-4,5,0,-6]) == (-4,-6)",
+          "assert max_Product([1,2,3]) == (2,3)"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/415",
+      "prompt": "\"\"\"\nWrite a python function to find a pair with highest product from a given array of integers.\nassert max_Product([1,2,3,4,7,0,8,4]) == (7,8)\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert max_Product([1,2,3,4,7,0,8,4]) == (7,8)\nassert max_Product([0,-1,-2,-4,5,0,-6]) == (-4,-6)\nassert max_Product([1,2,3]) == (2,3)\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "remove_odd",
+        "tests": [
+          "assert remove_odd([1,2,3]) == [2]",
+          "assert remove_odd([2,4,6]) == [2,4,6]",
+          "assert remove_odd([10,20,3]) == [10,20]"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/412",
+      "prompt": "\"\"\"\nWrite a python function to remove odd numbers from a given list.\nassert remove_odd([1,2,3]) == [2]\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert remove_odd([1,2,3]) == [2]\nassert remove_odd([2,4,6]) == [2,4,6]\nassert remove_odd([10,20,3]) == [10,20]\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "replace_blank",
+        "tests": [
+          "assert replace_blank(\"hello people\",'@')==(\"hello@people\")",
+          "assert replace_blank(\"python program language\",'$')==(\"python$program$language\")",
+          "assert replace_blank(\"blank space\",\"-\")==(\"blank-space\")"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/230",
+      "prompt": "\"\"\"\nWrite a function that takes in a string and character, replaces blank spaces in the string with the character, and returns the string.\nassert replace_blank(\"hello people\",'@')==(\"hello@people\")\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert replace_blank(\"hello people\",'@')==(\"hello@people\")\nassert replace_blank(\"python program language\",'$')==(\"python$program$language\")\nassert replace_blank(\"blank space\",\"-\")==(\"blank-space\")\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "find_remainder",
+        "tests": [
+          "assert find_remainder([ 100, 10, 5, 25, 35, 14 ],11) ==9",
+          "assert find_remainder([1,1,1],1) == 0",
+          "assert find_remainder([1,2,1],2) == 0"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/471",
+      "prompt": "\"\"\"\nWrite a python function to find the product of the array multiplication modulo n.\nassert find_remainder([ 100, 10, 5, 25, 35, 14 ],11) ==9\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert find_remainder([ 100, 10, 5, 25, 35, 14 ],11) ==9\nassert find_remainder([1,1,1],1) == 0\nassert find_remainder([1,2,1],2) == 0\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "surfacearea_cube",
+        "tests": [
+          "assert surfacearea_cube(5)==150",
+          "assert surfacearea_cube(3)==54",
+          "assert surfacearea_cube(10)==600"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/441",
+      "prompt": "\"\"\"\nWrite a function to find the surface area of a cube of a given size.\nassert surfacearea_cube(5)==150\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert surfacearea_cube(5)==150\nassert surfacearea_cube(3)==54\nassert surfacearea_cube(10)==600\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "dif_Square",
+        "tests": [
+          "assert dif_Square(5) == True",
+          "assert dif_Square(10) == False",
+          "assert dif_Square(15) == True"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/72",
+      "prompt": "\"\"\"\nWrite a python function to check whether the given number can be represented as the difference of two squares or not.\nassert dif_Square(5) == True\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert dif_Square(5) == True\nassert dif_Square(10) == False\nassert dif_Square(15) == True\n```"
+    },
+    {
+      "answer": {
+        "entry_point": "triangle_area",
+        "tests": [
+          "assert triangle_area(-1) == None",
+          "assert triangle_area(0) == 0",
+          "assert triangle_area(2) == 4"
+        ]
+      },
+      "benchmark": "mbpp",
+      "problem_id": "Mbpp/626",
+      "prompt": "\"\"\"\nWrite a python function to find the area of the largest triangle that can be inscribed in a semicircle with a given radius.\nassert triangle_area(-1) == None\n\"\"\"\n\nYour code must satisfy all base tests:\n```python\nassert triangle_area(-1) == None\nassert triangle_area(0) == 0\nassert triangle_area(2) == 4\n```"
+    }
+  ],
+  "seed": 42
+}
