@@ -24,7 +24,10 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     spec = json.loads(args.config.read_text())
+    from confirmation_protocol import validate_protocol
+    protocol = validate_protocol(spec, Path(__file__).resolve().parent, TARGET, DRAFT, COMMIT)
     args.output.mkdir(parents=True, exist_ok=False)
+    (args.output/"evaluation-protocol.json").write_text(json.dumps(protocol, indent=2))
     if torch.cuda.device_count() != 1:
         raise RuntimeError("One GPU per screening lane")
     torch.manual_seed(1729)
@@ -43,7 +46,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(TARGET["id"], revision=TARGET["revision"], cache_dir=os.environ["HF_HUB_CACHE"], local_files_only=True)
     manifest = json.loads(Path(spec["eval_manifest"]).read_text())
     records = [record for benchmark in spec["benchmarks"] for record in [r for r in manifest["records"] if r["benchmark"] == benchmark][spec.get("eval_offset", 0):spec.get("eval_offset", 0)+spec["requests_per_benchmark"]]]
-    if len(records) != len(spec["benchmarks"])*spec["requests_per_benchmark"]:
+    if len(records) != len(spec["benchmarks"])*spec["requests_per_benchmark"] or len({r["problem_id"] for r in records}) != len(records):
         raise RuntimeError("Incomplete screening coverage")
     eos = target.generation_config.eos_token_id
     eos = [eos] if isinstance(eos, int) else eos
@@ -127,7 +130,7 @@ def main():
                             result = decode_variant(official, candidate, candidate_target, ids, spec["output_cap"], eos, variant)
                         torch.cuda.synchronize(); seconds = time.perf_counter()-begin
                         tokens = result.output_ids[0, ids.shape[1]:].tolist()
-                        row = {"repeat": repeat, "method": name, "problem_id": record["problem_id"], "benchmark": record["benchmark"], "seconds": seconds, "output_tokens": len(tokens), "tokens": tokens, "capped": len(tokens) >= spec["output_cap"], "acceptance_lengths": result.acceptance_lengths, "trace": getattr(result, "trace", None)}
+                        row = {"repeat": repeat, "method": name, "problem_id": record["problem_id"], "benchmark": record["benchmark"], "seconds": seconds, "output_tokens": len(tokens), "tokens": tokens, "capped": len(tokens) >= spec["output_cap"], "input_tokens": ids.shape[1], "completion": tokenizer.decode(tokens, skip_special_tokens=True), "acceptance_lengths": result.acceptance_lengths, "trace": getattr(result, "trace", None)}
                         rows.append(row)
                         stream.write(json.dumps(row)+"\n"); stream.flush()
             baselines = {(r["repeat"], r["problem_id"]): r for r in rows if r["method"] == "native"}

@@ -1,0 +1,38 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 2,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "history_tree_suffix2",
+  "reference_variant": {
+    "kind": "ddtree",
+    "tree_budget": 63,
+    "block_size": 16
+  },
+  "variants": [
+    {
+      "name": "ddtree47_history_s2_len8",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 16,
+      "history_suffix": 2,
+      "history_length": 8
+    },
+    {
+      "name": "ddtree47_history_s2_len15",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 16,
+      "history_suffix": 2,
+      "history_length": 15
+    }
+  ]
+}

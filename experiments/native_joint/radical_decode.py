@@ -269,7 +269,10 @@ def decode_variant(official, model, target, input_ids, max_new_tokens, stop_toke
                 verify_length = proposal.shape[1]
             elif kind == "ddtree":
                 from ddtree_baseline import pack_ddtree
-                target_input, depths, tree_paths, visible, tree_lengths, proposal = pack_ddtree(proposal[0, 0], draft_logits[0].float()/variant.get("selection_temperature", 1.), variant["tree_budget"])
+                extra_path = None
+                if variant.get("history_suffix"):
+                    extra_path = lookup_continuation(output_ids[0, :start+1].tolist(), variant["history_suffix"], variant.get("history_length", 8))
+                target_input, depths, tree_paths, visible, tree_lengths, proposal = pack_ddtree(proposal[0, 0], draft_logits[0].float()/variant.get("selection_temperature", 1.), variant["tree_budget"], extra_path, variant.get("budget_policy"))
                 verify_length = proposal.shape[1]
             else:
                 target_input, depths, tree_paths, visible, tree_lengths = pack_branches(proposal, branch_forks, variant.get("branch_length"), variant.get("tree_style") == "leaves")
@@ -315,6 +318,8 @@ def decode_variant(official, model, target, input_ids, max_new_tokens, stop_toke
             refine_pending = refine_features if refined else torch.cat([refine_pending, refine_features], dim=1)
         progress_ema = .7*progress_ema+.3*(acceptance_length+1)
         trace.append({"draft_call": bool(used_draft), "refined": refined, "verify_tokens": target_input.shape[1], "branches": target_input.shape[0], "proposal_branches": proposal.shape[0], "winner": winner, "progress": acceptance_length+1, "draft_context_tokens": draft_cache.get_seq_length(), "vocabulary": len(vocabulary) if used_draft and vocabulary is not None else target.lm_head.weight.shape[0]})
+        if kind == "ddtree":
+            trace[-1]["history_proposal_tokens"] = len(extra_path or [])
         trace[-1]["verification_head_tokens"] = output.logits.shape[1] if tree_paths is not None else posterior.shape[1]
         if stop_token_ids is not None and any(token in output_ids[:, num_input_tokens:] for token in stop_token_ids):
             break

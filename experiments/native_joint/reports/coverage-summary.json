@@ -1,0 +1,434 @@
+[
+  {
+    "run": "run-29379",
+    "lane": "lane0",
+    "name": "tree_kl_control",
+    "config": {
+      "seed": 1729,
+      "train_records": 187,
+      "val_records": 48,
+      "sequence_length": 512,
+      "block_size": 16,
+      "data_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1",
+      "eval_manifest": "data/screening.json",
+      "benchmark": "gsm8k",
+      "eval_requests": 8,
+      "output_cap": 512,
+      "learning_rate": 1e-05,
+      "weight_decay": 0.01,
+      "loss": "kl",
+      "gamma": 7.0,
+      "temperature": 1.0,
+      "steps": 512,
+      "validate_every": 128,
+      "accumulation": 2,
+      "gradient_clip": 1.0,
+      "name": "tree_kl_control",
+      "taps": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "layers": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "train_mode": "joint",
+      "teacher": "target",
+      "timeout_seconds": 540,
+      "prepared_index": "data/onpolicy-mixed.json",
+      "require_all_records": true,
+      "save_best": true,
+      "lane_script": "run_lane.py",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "decode_variant": {
+        "kind": "ddtree",
+        "tree_budget": 47,
+        "block_size": 16
+      }
+    },
+    "stages": {
+      "before": {
+        "native_tps": 121.31822122570173,
+        "full_tree_tps": 153.90765253807393,
+        "student_tps": 153.92675867543517,
+        "original_ratio": 1.268785159560394,
+        "full_tree_ratio": 1.000124140268831,
+        "student_progress": 6.342925659472422,
+        "full_tree_progress": 6.342925659472422,
+        "exact_native": 4,
+        "requests": 8
+      },
+      "after": {
+        "native_tps": 120.9881496693173,
+        "full_tree_tps": 152.62854113963107,
+        "student_tps": 152.51744105861354,
+        "original_ratio": 1.2605981782139124,
+        "full_tree_ratio": 0.999272088429936,
+        "student_progress": 6.280397022332506,
+        "full_tree_progress": 6.342925659472422,
+        "exact_native": 3,
+        "requests": 8
+      }
+    },
+    "validation_initial": {
+      "step": 0,
+      "loss": 1.7022847660997893,
+      "kl": 1.7022847660997893,
+      "data_ce": 1.8839725283432927,
+      "token_agreement": 0.4722222432804604,
+      "teacher_forced_prefix_matches": 5.6875
+    },
+    "validation_final": {
+      "step": 512,
+      "loss": 1.6636128468138243,
+      "kl": 1.6636128468138243,
+      "data_ce": 1.845609515892041,
+      "token_agreement": 0.46944446365038556,
+      "teacher_forced_prefix_matches": 5.729166666666667
+    },
+    "seconds": 343.08998503210023
+  },
+  {
+    "run": "run-29379",
+    "lane": "lane1",
+    "name": "tree_coverage_full",
+    "config": {
+      "seed": 1729,
+      "train_records": 187,
+      "val_records": 48,
+      "sequence_length": 512,
+      "block_size": 16,
+      "data_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1",
+      "eval_manifest": "data/screening.json",
+      "benchmark": "gsm8k",
+      "eval_requests": 8,
+      "output_cap": 512,
+      "learning_rate": 1e-05,
+      "weight_decay": 0.01,
+      "loss": "kl",
+      "gamma": 7.0,
+      "temperature": 1.0,
+      "steps": 512,
+      "validate_every": 128,
+      "accumulation": 2,
+      "gradient_clip": 1.0,
+      "name": "tree_coverage_full",
+      "taps": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "layers": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "train_mode": "joint",
+      "teacher": "target",
+      "timeout_seconds": 540,
+      "prepared_index": "data/onpolicy-mixed.json",
+      "require_all_records": true,
+      "save_best": true,
+      "lane_script": "run_lane.py",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "decode_variant": {
+        "kind": "ddtree",
+        "tree_budget": 47,
+        "block_size": 16
+      },
+      "tree_coverage": {
+        "topk": 5,
+        "margin": 0.2,
+        "weight": 1.0
+      }
+    },
+    "stages": {
+      "before": {
+        "native_tps": 119.20360984175949,
+        "full_tree_tps": 152.22251838074882,
+        "student_tps": 151.35415319729566,
+        "original_ratio": 1.2697111555448313,
+        "full_tree_ratio": 0.9942954223022302,
+        "student_progress": 6.342925659472422,
+        "full_tree_progress": 6.342925659472422,
+        "exact_native": 4,
+        "requests": 8
+      },
+      "after": {
+        "native_tps": 119.43868560117458,
+        "full_tree_tps": 151.1540796386512,
+        "student_tps": 148.41841238646492,
+        "original_ratio": 1.2426326666224243,
+        "full_tree_ratio": 0.9819014659827497,
+        "student_progress": 6.210161662817552,
+        "full_tree_progress": 6.342925659472422,
+        "exact_native": 4,
+        "requests": 8
+      }
+    },
+    "validation_initial": {
+      "step": 0,
+      "loss": 2.3388505954165644,
+      "kl": 1.7022847660997893,
+      "data_ce": 1.8839725283432927,
+      "token_agreement": 0.4722222432804604,
+      "teacher_forced_prefix_matches": 5.6875,
+      "target_topk_coverage": 0.693055578507483,
+      "coverage_margin_loss": 0.63656580762472
+    },
+    "validation_final": {
+      "step": 512,
+      "loss": 2.2519586677966195,
+      "kl": 1.6612657055872357,
+      "data_ce": 1.8429741046384152,
+      "token_agreement": 0.4666666880560418,
+      "teacher_forced_prefix_matches": 5.666666666666667,
+      "target_topk_coverage": 0.6972222461675605,
+      "coverage_margin_loss": 0.5906929804405081
+    },
+    "seconds": 350.7887087450363
+  },
+  {
+    "run": "run-29379",
+    "lane": "lane2",
+    "name": "tree_coverage_two_tap",
+    "config": {
+      "seed": 1729,
+      "train_records": 187,
+      "val_records": 48,
+      "sequence_length": 512,
+      "block_size": 16,
+      "data_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1",
+      "eval_manifest": "data/screening.json",
+      "benchmark": "gsm8k",
+      "eval_requests": 8,
+      "output_cap": 512,
+      "learning_rate": 1e-05,
+      "weight_decay": 0.01,
+      "loss": "kl",
+      "gamma": 7.0,
+      "temperature": 1.0,
+      "steps": 512,
+      "validate_every": 128,
+      "accumulation": 2,
+      "gradient_clip": 1.0,
+      "name": "tree_coverage_two_tap",
+      "taps": [
+        25,
+        33
+      ],
+      "layers": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "train_mode": "joint",
+      "teacher": "target",
+      "timeout_seconds": 540,
+      "prepared_index": "data/onpolicy-mixed.json",
+      "require_all_records": true,
+      "save_best": true,
+      "lane_script": "run_lane.py",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "decode_variant": {
+        "kind": "ddtree",
+        "tree_budget": 47,
+        "block_size": 16
+      },
+      "tree_coverage": {
+        "topk": 5,
+        "margin": 0.2,
+        "weight": 1.0
+      },
+      "initial_checkpoint": {
+        "path": "/scratch/aryama.murthy/native-joint/29162/lane0/student.pt",
+        "sha256": "83dd90d3590d27bca26245e49b9ae71133626df327b279ac062a16a86be226c5"
+      }
+    },
+    "stages": {
+      "before": {
+        "native_tps": 121.22170129427138,
+        "full_tree_tps": 153.77544703911582,
+        "student_tps": 144.84545875733318,
+        "original_ratio": 1.1948805965502334,
+        "full_tree_ratio": 0.9419283867891398,
+        "student_progress": 5.972027972027972,
+        "full_tree_progress": 6.342925659472422,
+        "exact_native": 3,
+        "requests": 8
+      },
+      "after": {
+        "native_tps": 121.10428093021268,
+        "full_tree_tps": 152.78251363891852,
+        "student_tps": 144.3176004021981,
+        "original_ratio": 1.1916804203260354,
+        "full_tree_ratio": 0.9445950126417862,
+        "student_progress": 5.947963800904978,
+        "full_tree_progress": 6.342925659472422,
+        "exact_native": 3,
+        "requests": 8
+      }
+    },
+    "validation_initial": {
+      "step": 0,
+      "loss": 2.458631568294853,
+      "kl": 1.7970025895022748,
+      "data_ce": 1.9836416651814943,
+      "token_agreement": 0.4333333511215945,
+      "teacher_forced_prefix_matches": 5.020833333333333,
+      "target_topk_coverage": 0.6791666972761353,
+      "coverage_margin_loss": 0.6616289791612265
+    },
+    "validation_final": {
+      "step": 512,
+      "loss": 2.3654783939782646,
+      "kl": 1.7511411402835317,
+      "data_ce": 1.9370331544244739,
+      "token_agreement": 0.43750001722946763,
+      "teacher_forced_prefix_matches": 5.041666666666667,
+      "target_topk_coverage": 0.6791666972761353,
+      "coverage_margin_loss": 0.6143372576140488
+    },
+    "seconds": 344.8415347971022
+  },
+  {
+    "run": "run-29379",
+    "lane": "lane3",
+    "name": "tree_coverage_four_layer",
+    "config": {
+      "seed": 1729,
+      "train_records": 187,
+      "val_records": 48,
+      "sequence_length": 512,
+      "block_size": 16,
+      "data_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1",
+      "eval_manifest": "data/screening.json",
+      "benchmark": "gsm8k",
+      "eval_requests": 8,
+      "output_cap": 512,
+      "learning_rate": 1e-05,
+      "weight_decay": 0.01,
+      "loss": "kl",
+      "gamma": 7.0,
+      "temperature": 1.0,
+      "steps": 512,
+      "validate_every": 128,
+      "accumulation": 2,
+      "gradient_clip": 1.0,
+      "name": "tree_coverage_four_layer",
+      "taps": [
+        25,
+        33
+      ],
+      "layers": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "train_mode": "joint",
+      "teacher": "target",
+      "timeout_seconds": 540,
+      "prepared_index": "data/onpolicy-mixed.json",
+      "require_all_records": true,
+      "save_best": true,
+      "lane_script": "run_lane.py",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "decode_variant": {
+        "kind": "ddtree",
+        "tree_budget": 47,
+        "block_size": 16
+      },
+      "tree_coverage": {
+        "topk": 5,
+        "margin": 0.2,
+        "weight": 1.0
+      },
+      "initial_checkpoint": {
+        "path": "/scratch/aryama.murthy/native-joint/29162/lane2/student.pt",
+        "sha256": "c9ccb1ca76edf67a4e7d27adbfadb2d8f86c75231443ab89a752b9aaeaa7310f"
+      }
+    },
+    "stages": {
+      "before": {
+        "native_tps": 121.65738597766862,
+        "full_tree_tps": 153.99838742573903,
+        "student_tps": 124.88855361190956,
+        "original_ratio": 1.026559568153421,
+        "full_tree_ratio": 0.810973125755185,
+        "student_progress": 5.005607476635514,
+        "full_tree_progress": 6.342925659472422,
+        "exact_native": 3,
+        "requests": 8
+      },
+      "after": {
+        "native_tps": 118.56425250324146,
+        "full_tree_tps": 153.91170208766033,
+        "student_tps": 122.11519666096433,
+        "original_ratio": 1.0299495343895986,
+        "full_tree_ratio": 0.7934107348862511,
+        "student_progress": 4.975517890772128,
+        "full_tree_progress": 6.342925659472422,
+        "exact_native": 3,
+        "requests": 8
+      }
+    },
+    "validation_initial": {
+      "step": 0,
+      "loss": 2.9852884355932474,
+      "kl": 2.1993280351161957,
+      "data_ce": 2.3894583669801555,
+      "token_agreement": 0.35138890861223143,
+      "teacher_forced_prefix_matches": 3.8333333333333335,
+      "target_topk_coverage": 0.6152778069178263,
+      "coverage_margin_loss": 0.7859604159796921
+    },
+    "validation_final": {
+      "step": 512,
+      "loss": 2.8738824675480523,
+      "kl": 2.157918174440662,
+      "data_ce": 2.3448591313014426,
+      "token_agreement": 0.3513889059734841,
+      "teacher_forced_prefix_matches": 3.9791666666666665,
+      "target_topk_coverage": 0.6236111394440135,
+      "coverage_margin_loss": 0.7159643012564629
+    },
+    "seconds": 319.4030996966176
+  }
+]

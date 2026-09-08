@@ -326,3 +326,52 @@ def test_tree_coverage_margin_pushes_missed_target_into_candidate_set():
     loss,_=tree_coverage_loss(safe,teacher,topk=2,margin=.2)
     loss.backward()
     assert float(loss.detach())==0 and torch.count_nonzero(safe.grad)==0
+
+
+def test_reserved_confirmation_rejects_unfrozen_or_changed_decoder(tmp_path):
+    import json
+    from confirmation_protocol import file_sha, protocol_signature, validate_protocol
+    source=tmp_path/'source';source.mkdir();(source/'decoder.py').write_text('pinned')
+    manifest=tmp_path/'confirmation.json'
+    ids=[str(i) for i in range(128)]
+    manifest.write_text(json.dumps({'provenance':{'selection':'confirmation'},'records':[{'problem_id':i} for i in ids]}))
+    spec={'eval_manifest':str(manifest),'variants':[{'kind':'ddtree','tree_budget':47}],'output_cap':2048,'repeats':2}
+    import pytest
+    with pytest.raises(ValueError,match='explicit frozen'):validate_protocol(spec,source,{}, {},'commit')
+    spec['phase']='confirmation'
+    with pytest.raises(ValueError,match='Freeze selection'):validate_protocol(spec,source,{}, {},'commit')
+    freeze=tmp_path/'freeze.json';freeze.write_text(json.dumps({'protocol':protocol_signature(spec,source,{}, {},'commit'),'problem_ids':ids}))
+    spec.update(frozen_selection=str(freeze),frozen_selection_sha256=file_sha(freeze))
+    assert validate_protocol(spec,source,{}, {},'commit')['phase']=='confirmation'
+    (source/'decoder.py').write_text('changed')
+    with pytest.raises(ValueError,match='differs'):validate_protocol(spec,source,{}, {},'commit')
+
+
+def test_history_tree_merges_existing_prefix_without_duplicate_nodes():
+    from ddtree_baseline import pack_ddtree
+    logits=torch.tensor([[9.,0.,-1.],[8.,0.,-1.],[7.,0.,-1.]])
+    root=torch.tensor(99)
+    base=pack_ddtree(root,logits,3)
+    same=pack_ddtree(root,logits,3,[0,0,0])
+    assert all(torch.equal(a,b) for a,b in zip(base,same))
+    packed,depths,paths,mask,lengths,proposal=pack_ddtree(root,logits,3,[0,2,1])
+    assert packed.shape==(1,6)  # root + primary3 + two new suffix nodes
+    found=False
+    for path,length in zip(paths,lengths):
+        path=path[:length]
+        tokens=packed[0,path].tolist()
+        found |= tokens==[99,0,2,1]
+        assert set(mask[path[-1]].nonzero().flatten().tolist())==set(path.tolist())
+        assert depths[path].tolist()==list(range(int(length)))
+    assert found
+
+
+def test_adaptive_budget_truncation_equals_independent_fixed_budget_tree():
+    from ddtree_baseline import choose_budget, pack_ddtree
+    assert choose_budget([-.1,-.2,-.3,-.4],[1,2,4],.001)==4
+    assert choose_budget([-.1,-20.,-30.,-40.],[1,2,4],1.)==1
+    logits=torch.randn(4,8,generator=torch.Generator().manual_seed(19))
+    policy={'choices':[3,7,15,23],'node_cost':.03}
+    adaptive=pack_ddtree(torch.tensor(99),logits,23,budget_policy=policy)
+    fixed=pack_ddtree(torch.tensor(99),logits,adaptive[0].shape[1]-1)
+    assert all(torch.equal(a,b) for a,b in zip(adaptive,fixed))

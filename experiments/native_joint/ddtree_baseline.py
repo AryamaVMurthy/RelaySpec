@@ -1,6 +1,7 @@
 """DDTree builder adapted from https://github.com/liranringel/ddtree
 Commit c96427a185677bf4133ed865dd1626a5041aef9b (ddtree.py).
-Ringel and Romano, arXiv:2604.12989. Only instrumentation removed.
+Ringel and Romano, arXiv:2604.12989. Instrumentation removed; optional
+node-score recording added without changing fixed-budget tree selection.
 Matched-runtime algorithm baseline, not the full upstream runtime.
 
 MIT License
@@ -32,6 +33,7 @@ import torch
 def build_ddtree_tree(
     draft_logits: torch.Tensor,
     budget: int,
+    node_log_weights=None,
 ) -> tuple[torch.Tensor, torch.Tensor, list[int], list[dict[int, int]], torch.Tensor]:
 
     if budget <= 0 or draft_logits.shape[0] == 0:
@@ -78,6 +80,8 @@ def build_ddtree_tree(
         child_maps.append(dict())
         child_maps[parent_index][token_id] = current_index
         node_count += 1
+        if node_log_weights is not None:
+            node_log_weights.append(logw)
 
         if rank + 1 < topk:
             sibling_ranks = ranks[:-1] + (rank + 1,)
@@ -106,10 +110,53 @@ def build_ddtree_tree(
     return node_token_ids, node_depths, parents, child_maps, visibility
 
 
-def pack_ddtree(root, draft_logits, budget):
+def choose_budget(node_log_weights, choices, node_cost):
+    """Greedy-throughput heuristic using DDTree factorized mass and affine cost.
+
+    Not an estimator of actual target acceptance. node_cost is relative to the
+    per-round fixed cost; both are tuning assumptions, not measured latency.
+    """
+    if node_cost <= 0 or not choices or any(b <= 0 or b > len(node_log_weights) for b in choices):
+        raise ValueError("Invalid adaptive budget or relative cost")
+    mass=np.cumsum(np.exp(np.asarray(node_log_weights)))
+    return max(sorted(set(choices)), key=lambda b: (1.+mass[b-1])/(1.+node_cost*b))
+
+
+def pack_ddtree(root, draft_logits, budget, extra_path=None, budget_policy=None):
     if budget < 0:
         raise ValueError("Node budget must be nonnegative (excludes root)")
-    ids, depths, parents, children, visible = build_ddtree_tree(draft_logits, budget)
+    weights = [] if budget_policy else None
+    ids, depths, parents, children, visible = build_ddtree_tree(draft_logits, budget, weights)
+    if budget_policy:
+        selected = choose_budget(weights, budget_policy["choices"], budget_policy["node_cost"])
+        ids, depths = ids[:selected], depths[:selected]
+        parents = parents[:selected+1]
+        children = [{token:child for token,child in row.items() if child<=selected} for row in children[:selected+1]]
+        visible = visible[:selected+1, :selected+1]
+    if extra_path:
+        # Experimental augmentation, separate from the unchanged DDTree builder:
+        # merge one already-observed in-context continuation with shared prefixes.
+        token_list, depth_list = ids.tolist(), depths.tolist()
+        current = 0
+        for depth, token in enumerate(extra_path[:len(draft_logits)], 1):
+            token = int(token)
+            if token in children[current]:
+                current = children[current][token]
+                continue
+            index = len(parents)
+            parents.append(current)
+            children[current][token] = index
+            children.append({})
+            token_list.append(token); depth_list.append(depth)
+            current = index
+        ids = torch.tensor(token_list, dtype=torch.long)
+        depths = torch.tensor(depth_list, dtype=torch.long)
+        visible = torch.zeros(len(parents), len(parents), dtype=torch.bool)
+        for node in range(len(parents)):
+            current = node
+            while current >= 0:
+                visible[node, current] = True
+                current = parents[current]
     leaf_paths = []
     for node, child_map in enumerate(children):
         if not child_map:

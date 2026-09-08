@@ -1,0 +1,29 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 1,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "ddtree_horizon_8_12",
+  "variants": [
+    {
+      "name": "ddtree47_block8",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 8
+    },
+    {
+      "name": "ddtree47_block12",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 12
+    }
+  ]
+}
