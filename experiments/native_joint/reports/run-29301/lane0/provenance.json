@@ -1,0 +1,152 @@
+{
+  "spec": {
+    "eval_manifest": "data/screening.json",
+    "benchmarks": [
+      "gsm8k",
+      "math500",
+      "humaneval",
+      "mtbench"
+    ],
+    "requests_per_benchmark": 2,
+    "output_cap": 512,
+    "repeats": 2,
+    "timeout_seconds": 540,
+    "lane_script": "run_radical.py",
+    "name": "compiled_bf16_draft_only",
+    "quantization": {
+      "group_size": 128,
+      "quantize_head": false,
+      "precision": "bf16",
+      "compile_linears": true,
+      "package_path": "/home/aryama.murthy/native-joint-deps/torchao0150"
+    },
+    "variants": [
+      {
+        "name": "compiled_bf16_draft_only",
+        "kind": "fixed",
+        "block_size": 16,
+        "quantization": {
+          "group_size": 128,
+          "quantize_head": false,
+          "precision": "bf16",
+          "compile_linears": true,
+          "package_path": "/home/aryama.murthy/native-joint-deps/torchao0150"
+        }
+      }
+    ]
+  },
+  "target": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+  },
+  "draft": {
+    "id": "z-lab/Qwen3-8B-DFlash-b16",
+    "revision": "9b41424b7109f9c5413454f481b09a82b85333f4"
+  },
+  "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756",
+  "source_file_sha256": "6dfb12d0eeebe085d78d23fc816a481a8b25257fd76891e939a41423c29c697b",
+  "eval_manifest_sha256": "dfd6e9198af03ab08475e2a8b6fc918dd8eedd15a9c617ccae9dd03d552abe72",
+  "torch": "2.9.1+cu128",
+  "transformers": "5.3.0",
+  "gpu": "NVIDIA L40S",
+  "job": "29301",
+  "scope": "Native draft and optional draft-only head quantization. Frozen BF16 target verifies every token. No training updates; original native and target controls are preserved. Full latency includes prefill and quantized inference overhead; one-time packing/reload is reported separately.",
+  "quantization": {
+    "config": {
+      "group_size": 128,
+      "quantize_head": false,
+      "precision": "bf16",
+      "compile_linears": true,
+      "package_path": "/home/aryama.murthy/native-joint-deps/torchao0150"
+    },
+    "version": "0.15.0",
+    "package_init_sha256": "eeb3bfcd7d2c87367815f2bd17e426dc8d018209cc8d17c04312eb844ad3e3d2",
+    "quant_api_sha256": "46e13a8d33dd5c7eee5cff09e5fbb240fa75d871d0e7ffd7db6ae29a8edbe23d",
+    "checkpoint": {
+      "path": "/scratch/aryama.murthy/native-joint/29301/lane0/quantized-draft.pt",
+      "sha256": "239b8fe178ec26e3ff593087e507a64e88f28a2417ddc0f3997c38559b6522c8"
+    },
+    "quantized_modules": {
+      "layers.0.self_attn.q_proj": "Parameter",
+      "layers.0.self_attn.k_proj": "Parameter",
+      "layers.0.self_attn.v_proj": "Parameter",
+      "layers.0.self_attn.o_proj": "Parameter",
+      "layers.0.mlp.gate_proj": "Parameter",
+      "layers.0.mlp.up_proj": "Parameter",
+      "layers.0.mlp.down_proj": "Parameter",
+      "layers.1.self_attn.q_proj": "Parameter",
+      "layers.1.self_attn.k_proj": "Parameter",
+      "layers.1.self_attn.v_proj": "Parameter",
+      "layers.1.self_attn.o_proj": "Parameter",
+      "layers.1.mlp.gate_proj": "Parameter",
+      "layers.1.mlp.up_proj": "Parameter",
+      "layers.1.mlp.down_proj": "Parameter",
+      "layers.2.self_attn.q_proj": "Parameter",
+      "layers.2.self_attn.k_proj": "Parameter",
+      "layers.2.self_attn.v_proj": "Parameter",
+      "layers.2.self_attn.o_proj": "Parameter",
+      "layers.2.mlp.gate_proj": "Parameter",
+      "layers.2.mlp.up_proj": "Parameter",
+      "layers.2.mlp.down_proj": "Parameter",
+      "layers.3.self_attn.q_proj": "Parameter",
+      "layers.3.self_attn.k_proj": "Parameter",
+      "layers.3.self_attn.v_proj": "Parameter",
+      "layers.3.self_attn.o_proj": "Parameter",
+      "layers.3.mlp.gate_proj": "Parameter",
+      "layers.3.mlp.up_proj": "Parameter",
+      "layers.3.mlp.down_proj": "Parameter",
+      "layers.4.self_attn.q_proj": "Parameter",
+      "layers.4.self_attn.k_proj": "Parameter",
+      "layers.4.self_attn.v_proj": "Parameter",
+      "layers.4.self_attn.o_proj": "Parameter",
+      "layers.4.mlp.gate_proj": "Parameter",
+      "layers.4.mlp.up_proj": "Parameter",
+      "layers.4.mlp.down_proj": "Parameter",
+      "fc": "Parameter"
+    },
+    "reload_gate": "pass",
+    "copy_gate": "pass",
+    "frozen_control_gate": "pass",
+    "preparation_seconds": 13.066454978194088,
+    "compiled": true,
+    "compiled_modules": [
+      "draft.layers.0.self_attn.q_proj",
+      "draft.layers.0.self_attn.k_proj",
+      "draft.layers.0.self_attn.v_proj",
+      "draft.layers.0.self_attn.o_proj",
+      "draft.layers.0.mlp.gate_proj",
+      "draft.layers.0.mlp.up_proj",
+      "draft.layers.0.mlp.down_proj",
+      "draft.layers.1.self_attn.q_proj",
+      "draft.layers.1.self_attn.k_proj",
+      "draft.layers.1.self_attn.v_proj",
+      "draft.layers.1.self_attn.o_proj",
+      "draft.layers.1.mlp.gate_proj",
+      "draft.layers.1.mlp.up_proj",
+      "draft.layers.1.mlp.down_proj",
+      "draft.layers.2.self_attn.q_proj",
+      "draft.layers.2.self_attn.k_proj",
+      "draft.layers.2.self_attn.v_proj",
+      "draft.layers.2.self_attn.o_proj",
+      "draft.layers.2.mlp.gate_proj",
+      "draft.layers.2.mlp.up_proj",
+      "draft.layers.2.mlp.down_proj",
+      "draft.layers.3.self_attn.q_proj",
+      "draft.layers.3.self_attn.k_proj",
+      "draft.layers.3.self_attn.v_proj",
+      "draft.layers.3.self_attn.o_proj",
+      "draft.layers.3.mlp.gate_proj",
+      "draft.layers.3.mlp.up_proj",
+      "draft.layers.3.mlp.down_proj",
+      "draft.layers.4.self_attn.q_proj",
+      "draft.layers.4.self_attn.k_proj",
+      "draft.layers.4.self_attn.v_proj",
+      "draft.layers.4.self_attn.o_proj",
+      "draft.layers.4.mlp.gate_proj",
+      "draft.layers.4.mlp.up_proj",
+      "draft.layers.4.mlp.down_proj",
+      "draft.fc"
+    ],
+    "scope": "Proposal precision/linear-compilation experiment. Int4 uses TorchAO0.15 weight-only TensorCoreTiledLayout with groupwise default qparams; BF16 arms are compilation controls. Target weights, target vocabulary head and verification precision remain BF16 and uncompiled. Packing/reload/initial compilation time is separate; any later compilation is included in timed generation."
+  }
+}

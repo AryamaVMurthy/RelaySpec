@@ -94,3 +94,11 @@ Adaptive development screens with one training seed unless explicitly varied. In
 | run-29290/lane2 | onpolicy_full_native_sequence_ce | 512 | after | 120.2 | 121.3 | 0.991 [0.973, 1.013] | 8/8 |
 | run-29290/lane3 | onpolicy_two_tap_target_kl | 512 | before | 115.2 | 121.3 | 0.950 [0.909, 0.973] | 8/8 |
 | run-29290/lane3 | onpolicy_two_tap_target_kl | 512 | after | 113.1 | 119.8 | 0.945 [0.889, 0.979] | 8/8 |
+| run-29303/lane0 | midpoint_smoke_0 | 8 | before | 114.1 | 114.3 | 0.998 [0.994, 1.000] | 4/4 |
+| run-29303/lane0 | midpoint_smoke_0 | 8 | after | 114.2 | 114.3 | 1.000 [0.999, 1.002] | 4/4 |
+| run-29303/lane1 | midpoint_smoke_1 | 8 | before | 109.0 | 114.3 | 0.954 [0.953, 0.955] | 4/4 |
+| run-29303/lane1 | midpoint_smoke_1 | 8 | after | 109.0 | 114.4 | 0.953 [0.952, 0.955] | 4/4 |
+| run-29303/lane2 | midpoint_smoke_2 | 8 | before | 109.1 | 114.1 | 0.956 [0.955, 0.958] | 4/4 |
+| run-29303/lane2 | midpoint_smoke_2 | 8 | after | 109.2 | 114.4 | 0.954 [0.953, 0.956] | 4/4 |
+| run-29303/lane3 | midpoint_smoke_3 | 8 | before | 108.8 | 114.0 | 0.955 [0.954, 0.956] | 4/4 |
+| run-29303/lane3 | midpoint_smoke_3 | 8 | after | 108.9 | 112.9 | 0.964 [0.952, 1.003] | 4/4 |

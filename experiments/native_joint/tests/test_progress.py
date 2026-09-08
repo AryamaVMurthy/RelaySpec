@@ -137,3 +137,31 @@ def test_shared_compiled_linear_handles_more_than_32_distinct_modules():
     names = attach_shared_linears([("test", modules)], shared)
     assert len(names) == 40
     assert all(torch.equal(module(x), reference) for module, reference in zip(modules, expected))
+
+
+def test_midpoint_straight_through_matches_hard_forward_and_freezes_embeddings():
+    from midpoint_conditioning import predicted_embedding
+    embedding = torch.nn.Embedding(7, 4).requires_grad_(False)
+    logits = torch.randn(2, 2, 7, requires_grad=True)
+    hard = predicted_embedding(logits, embedding)
+    trained = predicted_embedding(logits, embedding, straight_through=True)
+    assert torch.equal(hard, trained)
+    trained.square().sum().backward()
+    assert logits.grad.abs().sum() > 0
+    assert embedding.weight.grad is None
+
+
+def test_midpoint_only_injects_predicted_slots_and_zero_strength_is_exact():
+    from types import SimpleNamespace
+    from midpoint_conditioning import MidpointConditioning
+    student = SimpleNamespace(layers=[torch.nn.Identity() for _ in range(5)], norm=torch.nn.Identity(), mask_token_id=6, block_size=16)
+    target = SimpleNamespace(lm_head=torch.nn.Linear(4, 7, bias=False).requires_grad_(False), model=SimpleNamespace(embed_tokens=torch.nn.Embedding(7, 4).requires_grad_(False)))
+    midpoint = MidpointConditioning(student, target, dict(prefix=2, after_layers=2, strength=.5))
+    hidden = torch.randn(1, 16, 4)
+    changed = student.layers[1](hidden)
+    assert torch.equal(changed[:, :1], hidden[:, :1])
+    assert torch.equal(changed[:, 3:], hidden[:, 3:])
+    assert not torch.equal(changed[:, 1:3], hidden[:, 1:3])
+    midpoint.strength = 0.
+    assert torch.equal(student.layers[1](hidden), hidden)
+    midpoint.handle.remove()

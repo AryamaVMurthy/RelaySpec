@@ -220,6 +220,21 @@ def main():
             return decode_variant(official, native, target, ids, cap, eos, {"kind": "refine", "block_size": cfg["block_size"], "prefix": cfg["conditioning_prefix"], "threshold": cfg.get("refine_threshold", 0.)}, refiner=model)
         return official.dflash_generate(model, target, ids, cap, eos, 0., block_size=cfg["block_size"], return_stats=True)
 
+    midpoint = None
+    if cfg.get("midpoint"):
+        from midpoint_conditioning import MidpointConditioning
+        if cfg.get("conditioning_prefix"):
+            raise ValueError("Midpoint and second-pass refinement are separate protocols")
+        probe = encode(evaluation[0])
+        plain = generate(student, probe, 64)
+        midpoint = MidpointConditioning(student, target, cfg["midpoint"])
+        strength, midpoint.strength = midpoint.strength, 0.
+        zero = generate(student, probe, 64)
+        if not torch.equal(plain.output_ids, zero.output_ids) or plain.acceptance_lengths != zero.acceptance_lengths:
+            raise RuntimeError("Zero midpoint injection changed native architecture")
+        midpoint.strength = strength
+        (args.output/"midpoint-zero-gate.json").write_text(json.dumps({"status": "pass", "cap": 64, "config": cfg["midpoint"]}, indent=2))
+
     def decode(stage):
         rows = []
         for model in {id(m): m for m in models.values()}.values():
@@ -281,17 +296,30 @@ def main():
             elif teacher_kind != "target":
                 raise ValueError("Invalid distillation teacher")
         with torch.autocast("cuda", dtype=torch.bfloat16):
-            hidden = student(target_hidden=view["context"].cuda(), noise_embedding=noise, **kwargs)
+            if midpoint is not None:
+                midpoint.capture = True
+            try:
+                hidden = student(target_hidden=view["context"].cuda(), noise_embedding=noise, **kwargs)
+            finally:
+                if midpoint is not None:
+                    midpoint.capture = False
             logits = target.lm_head(hidden[:, 1:])
         labels = view["labels"].cuda()[:, prefix:]
         logits, teacher = logits[:, prefix:], teacher[:, prefix:]
         target_loss, values = prediction_loss(logits, teacher, labels, cfg["loss"], cfg["gamma"], cfg["temperature"])
-        if native_logits is None:
-            return target_loss, values
-        native_loss, native_values = prediction_loss(logits, native_logits[:, prefix:], labels, "kl", cfg["gamma"], cfg["temperature"])
-        values["native_kl"] = native_values["kl"]
-        values["native_token_agreement"] = native_values["token_agreement"]
-        return (native_loss if teacher_kind == "native" else .5*(target_loss+native_loss)), values
+        loss = target_loss
+        if native_logits is not None:
+            native_loss, native_values = prediction_loss(logits, native_logits[:, prefix:], labels, "kl", cfg["gamma"], cfg["temperature"])
+            values["native_kl"] = native_values["kl"]
+            values["native_token_agreement"] = native_values["token_agreement"]
+            loss = native_loss if teacher_kind == "native" else .5*(target_loss+native_loss)
+        if midpoint is not None:
+            middle = midpoint.take_logits()
+            auxiliary, auxiliary_values = prediction_loss(middle, teacher[:, :midpoint.prefix], labels[:, :midpoint.prefix], cfg["midpoint"].get("auxiliary_loss", "ce"), cfg["gamma"], cfg["temperature"])
+            loss = loss+cfg["midpoint"].get("auxiliary_weight", 1.)*auxiliary
+            values["auxiliary_loss"] = float(auxiliary.detach())
+            values["auxiliary_agreement"] = auxiliary_values["token_agreement"]
+        return loss, values
 
     @torch.no_grad()
     def validate(step):
@@ -377,6 +405,8 @@ def main():
             raise RuntimeError("Untouched native control changed across training")
     restored = compact_student(native, cfg["taps"], cfg["layers"]).eval().requires_grad_(False)
     restored.load_state_dict(torch.load(checkpoint, map_location="cpu", weights_only=True)["state_dict"])
+    if cfg.get("midpoint"):
+        restored_midpoint = MidpointConditioning(restored, target, cfg["midpoint"])
     probe_cap = min(cfg["output_cap"], 64)
     live = generate(student, encode(evaluation[0]), probe_cap)
     reloaded = generate(restored, encode(evaluation[0]), probe_cap)
