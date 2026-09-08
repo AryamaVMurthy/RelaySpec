@@ -61,6 +61,13 @@ def main():
         if not torch.equal(baseline.output_ids, noop.output_ids) or baseline.acceptance_lengths != noop.acceptance_lengths:
             raise RuntimeError("Unmodified custom decoder failed original-equivalence gate")
     (args.output/"noop-gate.json").write_text(json.dumps({"status": "pass", "requests": len(records), "output_cap": 64}, indent=2))
+    candidate, candidate_target = native, target
+    if spec.get("quantization"):
+        from quantized_draft import build_candidate
+        candidate, candidate_target, quantization = build_candidate(native, target, spec["quantization"], args.output, official, encode(records[0]), eos)
+        provenance["quantization"] = quantization
+        provenance["scope"] = "Native draft and optional draft-only head quantization. Frozen BF16 target verifies every token. No training updates; original native and target controls are preserved. Full latency includes prefill and quantized inference overhead; one-time packing/reload is reported separately."
+        (args.output/"provenance.json").write_text(json.dumps(provenance, indent=2))
     outcomes = []
     for variant in spec["variants"]:
         start = time.perf_counter()
@@ -70,14 +77,14 @@ def main():
         try:
             probe = encode(records[0])
             original(probe, 16)
-            decode_variant(official, native, target, probe, 16, eos, variant)
+            decode_variant(official, candidate, candidate_target, probe, 16, eos, variant)
             with (directory/"evaluation.jsonl").open("w") as stream:
                 for repeat, i, record in [(repeat, i, record) for repeat in range(spec.get("repeats", 1)) for i, record in enumerate(records)]:
                     ids = encode(record)
                     names = ["native", "candidate"] if (i+repeat)%2 == 0 else ["candidate", "native"]
                     for name in names:
                         torch.cuda.synchronize(); begin = time.perf_counter()
-                        result = original(ids, spec["output_cap"]) if name == "native" else decode_variant(official, native, target, ids, spec["output_cap"], eos, variant)
+                        result = original(ids, spec["output_cap"]) if name == "native" else decode_variant(official, candidate, candidate_target, ids, spec["output_cap"], eos, variant)
                         torch.cuda.synchronize(); seconds = time.perf_counter()-begin
                         tokens = result.output_ids[0, ids.shape[1]:].tolist()
                         row = {"repeat": repeat, "method": name, "problem_id": record["problem_id"], "benchmark": record["benchmark"], "seconds": seconds, "output_tokens": len(tokens), "tokens": tokens, "capped": len(tokens) >= spec["output_cap"], "acceptance_lengths": result.acceptance_lengths, "trace": getattr(result, "trace", None)}

@@ -1,0 +1,36 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 4,
+  "output_cap": 256,
+  "timeout_seconds": 540,
+  "name": "history_extended",
+  "variants": [
+    {
+      "name": "lookup_s2_b32",
+      "kind": "history",
+      "suffix": 2,
+      "lookup_block": 32,
+      "minimum_lookup": 4
+    },
+    {
+      "name": "lookup_s3_b48",
+      "kind": "history",
+      "suffix": 3,
+      "lookup_block": 48,
+      "minimum_lookup": 4
+    },
+    {
+      "name": "lookup_s4_b32",
+      "kind": "history",
+      "suffix": 4,
+      "lookup_block": 32,
+      "minimum_lookup": 4
+    }
+  ]
+}

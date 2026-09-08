@@ -1,0 +1,871 @@
+[
+  {
+    "run": "run-29228",
+    "lane": "lane0",
+    "name": "progress_r16_e1",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-native.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "progress_r16_e1",
+      "rank": 16,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0
+    },
+    "counts": {
+      "parameters": 131072,
+      "train_questions": 64,
+      "distinct_questions_consumed": 64,
+      "val_questions": 16,
+      "train_blocks": 2435,
+      "distinct_blocks_consumed": 1980,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 121.52259448266354,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 121.32748798007682,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.9983944837302289,
+    "ci95": [
+      0.9878298259209201,
+      1.0042987270853079
+    ],
+    "repaired": 36,
+    "first_errors": 451,
+    "broken": 70,
+    "originally_correct": 3536,
+    "post_eos_masked": false,
+    "post_eos_positions_removed": null,
+    "elapsed_seconds": 105.27989395009354,
+    "workload_ratios": {
+      "gsm8k": 0.9994190293982236,
+      "math500": 0.9986819400966775,
+      "humaneval": 0.9984279824150234,
+      "mtbench": 0.9980883661034202
+    }
+  },
+  {
+    "run": "run-29228",
+    "lane": "lane1",
+    "name": "progress_r64_e1",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-native.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "progress_r64_e1",
+      "rank": 64,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0
+    },
+    "counts": {
+      "parameters": 524288,
+      "train_questions": 64,
+      "distinct_questions_consumed": 64,
+      "val_questions": 16,
+      "train_blocks": 2435,
+      "distinct_blocks_consumed": 1980,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 121.77281940219956,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 120.1826493517348,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.9869415025596752,
+    "ci95": [
+      0.9772435544272874,
+      0.9940274392314536
+    ],
+    "repaired": 49,
+    "first_errors": 451,
+    "broken": 87,
+    "originally_correct": 3536,
+    "post_eos_masked": false,
+    "post_eos_positions_removed": null,
+    "elapsed_seconds": 105.47432469204068,
+    "workload_ratios": {
+      "gsm8k": 0.9990353840105035,
+      "math500": 0.9765312036011269,
+      "humaneval": 0.9920370251010983,
+      "mtbench": 0.9853180233274886
+    }
+  },
+  {
+    "run": "run-29228",
+    "lane": "lane2",
+    "name": "progress_r64_e4",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-native.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "progress_r64_e4",
+      "rank": 64,
+      "error_weight": 4,
+      "learning_rate": 0.0001,
+      "regularization": 1.0
+    },
+    "counts": {
+      "parameters": 524288,
+      "train_questions": 64,
+      "distinct_questions_consumed": 64,
+      "val_questions": 16,
+      "train_blocks": 2435,
+      "distinct_blocks_consumed": 1980,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 121.75373003400641,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 118.31244487734813,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.971735690104138,
+    "ci95": [
+      0.9476675400038229,
+      0.9833639599464034
+    ],
+    "repaired": 59,
+    "first_errors": 451,
+    "broken": 117,
+    "originally_correct": 3536,
+    "post_eos_masked": false,
+    "post_eos_positions_removed": null,
+    "elapsed_seconds": 106.44412361690775,
+    "workload_ratios": {
+      "gsm8k": 0.9990053888870809,
+      "math500": 0.9357896651060178,
+      "humaneval": 0.9710793713706667,
+      "mtbench": 0.9785132750028781
+    }
+  },
+  {
+    "run": "run-29228",
+    "lane": "lane3",
+    "name": "progress_r64_e4",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-native.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "progress_r64_e4",
+      "rank": 64,
+      "error_weight": 4,
+      "learning_rate": 0.0005,
+      "regularization": 1.0
+    },
+    "counts": {
+      "parameters": 524288,
+      "train_questions": 64,
+      "distinct_questions_consumed": 64,
+      "val_questions": 16,
+      "train_blocks": 2435,
+      "distinct_blocks_consumed": 1980,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 121.59500145466698,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 110.00286311035447,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.9046659960883812,
+    "ci95": [
+      0.866756157399992,
+      0.9257863933094899
+    ],
+    "repaired": 88,
+    "first_errors": 451,
+    "broken": 301,
+    "originally_correct": 3536,
+    "post_eos_masked": false,
+    "post_eos_positions_removed": null,
+    "elapsed_seconds": 109.50946967722848,
+    "workload_ratios": {
+      "gsm8k": 0.9488295166482992,
+      "math500": 0.8637741491630613,
+      "humaneval": 0.8762030251733128,
+      "mtbench": 0.9249640706840548
+    }
+  },
+  {
+    "run": "run-29235",
+    "lane": "lane0",
+    "name": "first_position_r16",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-native.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "first_position_r16",
+      "rank": 16,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0,
+      "positions": [
+        0
+      ]
+    },
+    "counts": {
+      "parameters": 131072,
+      "train_questions": 64,
+      "distinct_questions_consumed": 64,
+      "val_questions": 16,
+      "train_blocks": 2435,
+      "distinct_blocks_consumed": 1980,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 121.16637244087242,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 119.7543926775174,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.9883467687039649,
+    "ci95": [
+      0.9855234158393581,
+      0.9929789016254158
+    ],
+    "repaired": 5,
+    "first_errors": 43,
+    "broken": 18,
+    "originally_correct": 492,
+    "post_eos_masked": false,
+    "post_eos_positions_removed": null,
+    "elapsed_seconds": 106.61288958508521,
+    "workload_ratios": {
+      "gsm8k": 0.985532737112519,
+      "math500": 0.9946075277824056,
+      "humaneval": 0.9872997786124248,
+      "mtbench": 0.9875166147353142
+    }
+  },
+  {
+    "run": "run-29235",
+    "lane": "lane1",
+    "name": "first_position_r64",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-native.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "first_position_r64",
+      "rank": 64,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0,
+      "positions": [
+        0
+      ]
+    },
+    "counts": {
+      "parameters": 524288,
+      "train_questions": 64,
+      "distinct_questions_consumed": 64,
+      "val_questions": 16,
+      "train_blocks": 2435,
+      "distinct_blocks_consumed": 1980,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 121.77330338294449,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 120.45544285962853,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.9891777550029037,
+    "ci95": [
+      0.9826846215744373,
+      0.9928092076625246
+    ],
+    "repaired": 4,
+    "first_errors": 43,
+    "broken": 18,
+    "originally_correct": 492,
+    "post_eos_masked": false,
+    "post_eos_positions_removed": null,
+    "elapsed_seconds": 106.58868398377672,
+    "workload_ratios": {
+      "gsm8k": 0.9927394040499633,
+      "math500": 0.9832479601375826,
+      "humaneval": 0.987456182673256,
+      "mtbench": 0.991208010658429
+    }
+  },
+  {
+    "run": "run-29235",
+    "lane": "lane2",
+    "name": "margin_preservation_1.0",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-native.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "margin_preservation_1.0",
+      "rank": 64,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0,
+      "loss_kind": "margin_kl",
+      "preserve_weight": 1.0,
+      "margin": 0.1
+    },
+    "counts": {
+      "parameters": 524288,
+      "train_questions": 64,
+      "distinct_questions_consumed": 64,
+      "val_questions": 16,
+      "train_blocks": 2435,
+      "distinct_blocks_consumed": 1980,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 121.28652004474964,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 119.14348306695277,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.9823307901240288,
+    "ci95": [
+      0.9507147649384642,
+      1.0026655650650167
+    ],
+    "repaired": 49,
+    "first_errors": 451,
+    "broken": 86,
+    "originally_correct": 3536,
+    "post_eos_masked": false,
+    "post_eos_positions_removed": null,
+    "elapsed_seconds": 110.094115214888,
+    "workload_ratios": {
+      "gsm8k": 0.9836562136286862,
+      "math500": 0.9987976008835515,
+      "humaneval": 0.9523610969424801,
+      "mtbench": 0.9926981794040306
+    }
+  },
+  {
+    "run": "run-29235",
+    "lane": "lane3",
+    "name": "margin_preservation_10.0",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-native.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "margin_preservation_10.0",
+      "rank": 64,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0,
+      "loss_kind": "margin_kl",
+      "preserve_weight": 10.0,
+      "margin": 0.1
+    },
+    "counts": {
+      "parameters": 524288,
+      "train_questions": 64,
+      "distinct_questions_consumed": 64,
+      "val_questions": 16,
+      "train_blocks": 2435,
+      "distinct_blocks_consumed": 1980,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 121.58392547942981,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 121.30777522921711,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.9977287273040102,
+    "ci95": [
+      0.9838526077380646,
+      1.0057017733495155
+    ],
+    "repaired": 29,
+    "first_errors": 451,
+    "broken": 42,
+    "originally_correct": 3536,
+    "post_eos_masked": false,
+    "post_eos_positions_removed": null,
+    "elapsed_seconds": 110.07988624786958,
+    "workload_ratios": {
+      "gsm8k": 1.0169936719682617,
+      "math500": 0.9779206681251913,
+      "humaneval": 0.9919772208421219,
+      "mtbench": 1.0032493799004587
+    }
+  },
+  {
+    "run": "run-29271",
+    "lane": "lane0",
+    "name": "mixed_progress_ce_r16",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-mixed.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "mixed_progress_ce_r16",
+      "rank": 16,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0,
+      "sampling": "question_uniform",
+      "lane_script": "train_progress_head.py"
+    },
+    "counts": {
+      "parameters": 131072,
+      "train_questions": 192,
+      "distinct_questions_consumed": 192,
+      "val_questions": 48,
+      "train_blocks": 9311,
+      "distinct_blocks_consumed": 3182,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 120.5082990730183,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 119.37073043867926,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.990560246529994,
+    "ci95": [
+      0.9775812071940225,
+      0.9983124919462935
+    ],
+    "repaired": 67,
+    "first_errors": 2185,
+    "broken": 116,
+    "originally_correct": 8318,
+    "post_eos_masked": true,
+    "post_eos_positions_removed": 159,
+    "elapsed_seconds": 112.0290049710311,
+    "workload_ratios": {
+      "gsm8k": 0.9939186406784578,
+      "math500": 1.0031069172926161,
+      "humaneval": 0.972739532026424,
+      "mtbench": 0.9951488186634978
+    }
+  },
+  {
+    "run": "run-29271",
+    "lane": "lane1",
+    "name": "mixed_progress_margin_r64",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-mixed.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "mixed_progress_margin_r64",
+      "rank": 64,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0,
+      "loss_kind": "margin_kl",
+      "preserve_weight": 10.0,
+      "margin": 0.1,
+      "sampling": "question_uniform",
+      "lane_script": "train_progress_head.py"
+    },
+    "counts": {
+      "parameters": 524288,
+      "train_questions": 192,
+      "distinct_questions_consumed": 192,
+      "val_questions": 48,
+      "train_blocks": 9311,
+      "distinct_blocks_consumed": 3182,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 120.68483600321687,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 119.7329209768725,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.9921123891130863,
+    "ci95": [
+      0.9785241399673981,
+      1.011181117025412
+    ],
+    "repaired": 70,
+    "first_errors": 2185,
+    "broken": 99,
+    "originally_correct": 8318,
+    "post_eos_masked": true,
+    "post_eos_positions_removed": 159,
+    "elapsed_seconds": 120.1983330277726,
+    "workload_ratios": {
+      "gsm8k": 1.014610220331071,
+      "math500": 0.9684177165798411,
+      "humaneval": 1.0006866989586667,
+      "mtbench": 0.9910803850044797
+    }
+  },
+  {
+    "run": "run-29282",
+    "lane": "lane0",
+    "name": "soft_progress_t0.1",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-mixed.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "soft_progress_t0.1",
+      "rank": 64,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0,
+      "sampling": "question_uniform",
+      "lane_script": "train_progress_head.py",
+      "loss_kind": "soft_progress",
+      "soft_temperature": 0.1,
+      "scratch_tag": "soft_progress_fast0"
+    },
+    "counts": {
+      "parameters": 524288,
+      "train_questions": 192,
+      "distinct_questions_consumed": 192,
+      "val_questions": 48,
+      "train_blocks": 9311,
+      "distinct_blocks_consumed": 3182,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 121.05836020676531,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 120.16378106996927,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.9926103481389628,
+    "ci95": [
+      0.9731045086846511,
+      1.0034588166321659
+    ],
+    "repaired": 75,
+    "first_errors": 2185,
+    "broken": 117,
+    "originally_correct": 8318,
+    "post_eos_masked": true,
+    "post_eos_positions_removed": 159,
+    "elapsed_seconds": 114.95128772500902,
+    "workload_ratios": {
+      "gsm8k": 0.953971938036768,
+      "math500": 0.9992404842836023,
+      "humaneval": 1.0053226869059892,
+      "mtbench": 0.9923143849360048
+    }
+  },
+  {
+    "run": "run-29282",
+    "lane": "lane1",
+    "name": "soft_progress_t0.5",
+    "config": {
+      "seed": 1729,
+      "progress_index": "data/progress-mixed.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "soft_progress_t0.5",
+      "rank": 64,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0,
+      "sampling": "question_uniform",
+      "lane_script": "train_progress_head.py",
+      "loss_kind": "soft_progress",
+      "soft_temperature": 0.5,
+      "scratch_tag": "soft_progress_fast1"
+    },
+    "counts": {
+      "parameters": 524288,
+      "train_questions": 192,
+      "distinct_questions_consumed": 192,
+      "val_questions": 48,
+      "train_blocks": 9311,
+      "distinct_blocks_consumed": 3182,
+      "sampled_blocks": 4096
+    },
+    "summary": {
+      "native": {
+        "tps": 121.28546196377434,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      },
+      "candidate": {
+        "tps": 120.42254203634741,
+        "exact_native": 16,
+        "requests": 8,
+        "timed_generations": 16
+      }
+    },
+    "native_ratio": 0.992885215478796,
+    "ci95": [
+      0.9753959436681979,
+      1.0049465704611746
+    ],
+    "repaired": 101,
+    "first_errors": 2185,
+    "broken": 138,
+    "originally_correct": 8318,
+    "post_eos_masked": true,
+    "post_eos_positions_removed": 159,
+    "elapsed_seconds": 114.36184582579881,
+    "workload_ratios": {
+      "gsm8k": 0.9732619692477733,
+      "math500": 1.0111311408220507,
+      "humaneval": 0.9923914804681641,
+      "mtbench": 0.9916413989255162
+    }
+  }
+]

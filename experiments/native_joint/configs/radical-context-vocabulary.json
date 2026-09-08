@@ -1,0 +1,124 @@
+{
+  "lanes": [
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "timeout_seconds": 540,
+      "name": "draft_vocabulary",
+      "variants": [
+        {
+          "name": "vocab_top16",
+          "kind": "shortlist",
+          "topk": 16
+        },
+        {
+          "name": "vocab_top64",
+          "kind": "shortlist",
+          "topk": 64
+        },
+        {
+          "name": "vocab_top256",
+          "kind": "shortlist",
+          "topk": 256
+        },
+        {
+          "name": "vocab_top1024",
+          "kind": "shortlist",
+          "topk": 1024
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "timeout_seconds": 540,
+      "name": "bounded_context",
+      "variants": [
+        {
+          "name": "context_w16",
+          "kind": "window",
+          "window": 16
+        },
+        {
+          "name": "context_w32",
+          "kind": "window",
+          "window": 32
+        },
+        {
+          "name": "context_w64",
+          "kind": "window",
+          "window": 64
+        },
+        {
+          "name": "context_w128",
+          "kind": "window",
+          "window": 128
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 2048,
+      "timeout_seconds": 540,
+      "name": "long_context",
+      "variants": [
+        {
+          "name": "long_context_w32",
+          "kind": "window",
+          "window": 32
+        },
+        {
+          "name": "long_context_w128",
+          "kind": "window",
+          "window": 128
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 2048,
+      "timeout_seconds": 540,
+      "name": "long_vocabulary",
+      "variants": [
+        {
+          "name": "long_vocab_top64",
+          "kind": "shortlist",
+          "topk": 64
+        },
+        {
+          "name": "long_vocab_top512",
+          "kind": "shortlist",
+          "topk": 512
+        }
+      ]
+    }
+  ]
+}

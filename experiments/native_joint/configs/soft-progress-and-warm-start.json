@@ -1,0 +1,136 @@
+{
+  "lanes": [
+    {
+      "seed": 1729,
+      "progress_index": "data/progress-mixed.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "soft_progress_t0.1",
+      "rank": 64,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0,
+      "sampling": "question_uniform",
+      "lane_script": "train_progress_head.py",
+      "loss_kind": "soft_progress",
+      "soft_temperature": 0.1,
+      "scratch_tag": "soft_progress_fast0"
+    },
+    {
+      "seed": 1729,
+      "progress_index": "data/progress-mixed.json",
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "steps": 512,
+      "validate_every": 128,
+      "batch_size": 8,
+      "weight_decay": 0.0,
+      "timeout_seconds": 540,
+      "name": "soft_progress_t0.5",
+      "rank": 64,
+      "error_weight": 1,
+      "learning_rate": 0.0001,
+      "regularization": 1.0,
+      "sampling": "question_uniform",
+      "lane_script": "train_progress_head.py",
+      "loss_kind": "soft_progress",
+      "soft_temperature": 0.5,
+      "scratch_tag": "soft_progress_fast1"
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 1,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "warm_hints_0",
+      "variants": [
+        {
+          "name": "warm_0.0",
+          "kind": "warm_start",
+          "strength": 0.0
+        },
+        {
+          "name": "warm_0.05",
+          "kind": "warm_start",
+          "strength": 0.05
+        },
+        {
+          "name": "warm_0.1",
+          "kind": "warm_start",
+          "strength": 0.1
+        },
+        {
+          "name": "warm_0.2",
+          "kind": "warm_start",
+          "strength": 0.2
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 1,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "warm_hints_1",
+      "variants": [
+        {
+          "name": "warm_0.35",
+          "kind": "warm_start",
+          "strength": 0.35
+        },
+        {
+          "name": "warm_0.5",
+          "kind": "warm_start",
+          "strength": 0.5
+        },
+        {
+          "name": "warm_0.75",
+          "kind": "warm_start",
+          "strength": 0.75
+        },
+        {
+          "name": "warm_1.0",
+          "kind": "warm_start",
+          "strength": 1.0
+        }
+      ]
+    }
+  ]
+}

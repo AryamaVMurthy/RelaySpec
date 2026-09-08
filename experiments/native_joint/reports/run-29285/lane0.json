@@ -1,0 +1,35 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 1,
+  "timeout_seconds": 360,
+  "lane_script": "run_radical.py",
+  "name": "target_hints_0",
+  "variants": [
+    {
+      "name": "target_warm_0.05",
+      "kind": "warm_start",
+      "tail_source": "target",
+      "strength": 0.05
+    },
+    {
+      "name": "target_warm_0.1",
+      "kind": "warm_start",
+      "tail_source": "target",
+      "strength": 0.1
+    },
+    {
+      "name": "target_warm_0.2",
+      "kind": "warm_start",
+      "tail_source": "target",
+      "strength": 0.2
+    }
+  ]
+}

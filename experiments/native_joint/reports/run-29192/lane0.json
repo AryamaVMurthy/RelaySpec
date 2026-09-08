@@ -1,0 +1,26 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "humaneval"
+  ],
+  "requests_per_benchmark": 8,
+  "output_cap": 512,
+  "timeout_seconds": 540,
+  "name": "code_recheck",
+  "repeats": 2,
+  "variants": [
+    {
+      "name": "lookup_s3_b32_code8",
+      "kind": "history",
+      "suffix": 3,
+      "lookup_block": 32,
+      "minimum_lookup": 3
+    },
+    {
+      "name": "confidence03_code8",
+      "kind": "confidence",
+      "threshold": 0.3,
+      "minimum": 4
+    }
+  ]
+}

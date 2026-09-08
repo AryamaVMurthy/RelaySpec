@@ -1,0 +1,37 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 1,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "warm_hints_1",
+  "variants": [
+    {
+      "name": "warm_0.35",
+      "kind": "warm_start",
+      "strength": 0.35
+    },
+    {
+      "name": "warm_0.5",
+      "kind": "warm_start",
+      "strength": 0.5
+    },
+    {
+      "name": "warm_0.75",
+      "kind": "warm_start",
+      "strength": 0.75
+    },
+    {
+      "name": "warm_1.0",
+      "kind": "warm_start",
+      "strength": 1.0
+    }
+  ]
+}

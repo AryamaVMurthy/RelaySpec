@@ -15,7 +15,7 @@ import torch
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from core import TAPS, block_view, block_batch, compact_student, prediction_loss, token_ids, cast_parameters
+from core import TAPS, block_view, block_batch, compact_student, prediction_loss, token_ids, cast_parameters, conditioned_noise
 
 TARGET = {"id": "Qwen/Qwen3-8B", "revision": "b968826d9c46dd6066d109eabc6255188de91218"}
 DRAFT = {"id": "z-lab/Qwen3-8B-DFlash-b16", "revision": "9b41424b7109f9c5413454f481b09a82b85333f4"}
@@ -204,24 +204,33 @@ def main():
         raise RuntimeError("Student shares parameter storage with a frozen model")
     models = {"native": native, "duplicate": native, "student": student}
     eval_manifest = json.loads(Path(cfg["eval_manifest"]).read_text())
-    evaluation = [r for r in eval_manifest["records"] if r["benchmark"] == cfg["benchmark"]][cfg.get("eval_offset", 0):][:cfg["eval_requests"]]
+    if cfg.get("benchmarks"):
+        evaluation = [r for benchmark in cfg["benchmarks"] for r in [r for r in eval_manifest["records"] if r["benchmark"] == benchmark][cfg.get("eval_offset", 0):][:cfg["requests_per_benchmark"]]]
+    else:
+        evaluation = [r for r in eval_manifest["records"] if r["benchmark"] == cfg["benchmark"]][cfg.get("eval_offset", 0):][:cfg["eval_requests"]]
     if len(evaluation) != cfg["eval_requests"]:
         raise RuntimeError("Incomplete evaluation coverage")
     def encode(record):
         prompt = record.get("prompt") or record["turns"][0]
         return torch.tensor(token_ids(tokenizer.apply_chat_template([{"role": "user", "content": prompt}], tokenize=True, add_generation_prompt=True, enable_thinking=False)), device="cuda").unsqueeze(0)
 
+    def generate(model, ids, cap):
+        if cfg.get("conditioning_prefix") and model is not native:
+            from radical_decode import decode_variant
+            return decode_variant(official, native, target, ids, cap, eos, {"kind": "refine", "block_size": cfg["block_size"], "prefix": cfg["conditioning_prefix"], "threshold": cfg.get("refine_threshold", 0.)}, refiner=model)
+        return official.dflash_generate(model, target, ids, cap, eos, 0., block_size=cfg["block_size"], return_stats=True)
+
     def decode(stage):
         rows = []
         for model in {id(m): m for m in models.values()}.values():
-            official.dflash_generate(model, target, encode(evaluation[0]), 16, eos, 0., block_size=cfg["block_size"], return_stats=True)
+            generate(model, encode(evaluation[0]), 16)
         for i, record in enumerate(evaluation):
             names = list(models)
             names = names[i % len(names):]+names[:i % len(names)]
             ids = encode(record)
             for name in names:
                 torch.cuda.synchronize(); begin = time.perf_counter()
-                result = official.dflash_generate(models[name], target, ids, cfg["output_cap"], eos, 0., block_size=cfg["block_size"], return_stats=True)
+                result = generate(models[name], ids, cfg["output_cap"])
                 torch.cuda.synchronize(); seconds = time.perf_counter()-begin
                 output = result.output_ids[0, ids.shape[1]:].tolist()
                 rows.append({"stage": stage, "method": name, "benchmark": record["benchmark"], "problem_id": record["problem_id"], "seconds": seconds, "input_tokens": ids.shape[1], "output_tokens": len(output), "tokens": output, "acceptance_lengths": result.acceptance_lengths, "completion": tokenizer.decode(output, skip_special_tokens=True), "capped": len(output) >= cfg["output_cap"]})
@@ -255,8 +264,8 @@ def main():
 
     def objective(records, anchors):
         view = block_batch(records, anchors, cfg["taps"], cfg["block_size"])
-        tokens = torch.full((len(records), cfg["block_size"]), native.mask_token_id, dtype=torch.long, device="cuda")
-        tokens[:, 0] = view["anchor_token"].cuda()
+        prefix = cfg.get("conditioning_prefix", 0)
+        tokens = conditioned_noise(view, native.mask_token_id, prefix).cuda()
         kwargs = dict(position_ids=view["positions"].cuda(), use_cache=False, is_causal=False)
         if len(records) > 1:
             kwargs["attention_mask"] = view["attention_mask"].cuda()
@@ -274,10 +283,12 @@ def main():
         with torch.autocast("cuda", dtype=torch.bfloat16):
             hidden = student(target_hidden=view["context"].cuda(), noise_embedding=noise, **kwargs)
             logits = target.lm_head(hidden[:, 1:])
-        target_loss, values = prediction_loss(logits, teacher, view["labels"].cuda(), cfg["loss"], cfg["gamma"], cfg["temperature"])
+        labels = view["labels"].cuda()[:, prefix:]
+        logits, teacher = logits[:, prefix:], teacher[:, prefix:]
+        target_loss, values = prediction_loss(logits, teacher, labels, cfg["loss"], cfg["gamma"], cfg["temperature"])
         if native_logits is None:
             return target_loss, values
-        native_loss, native_values = prediction_loss(logits, native_logits, view["labels"].cuda(), "kl", cfg["gamma"], cfg["temperature"])
+        native_loss, native_values = prediction_loss(logits, native_logits[:, prefix:], labels, "kl", cfg["gamma"], cfg["temperature"])
         values["native_kl"] = native_values["kl"]
         values["native_token_agreement"] = native_values["token_agreement"]
         return (native_loss if teacher_kind == "native" else .5*(target_loss+native_loss)), values
@@ -342,6 +353,7 @@ def main():
                 retain_best(validations[-1])
     counts["distinct_records_consumed"] = len(visited_records)
     counts["supervised_blocks"] = cfg["steps"]*cfg["accumulation"]*batch_size
+    counts["supervised_token_positions"] = counts["supervised_blocks"]*(cfg["block_size"]-1-cfg.get("conditioning_prefix", 0))
     if cfg.get("require_all_records") and len(visited_records) != cfg["train_records"]:
         raise RuntimeError("Not all requested training records were consumed")
     changes = {"interface_l2": float((student.fc.weight.detach()-projection_start).norm()), "draft_l2": float((student.layers[0].mlp.down_proj.weight.detach()-draft_start).norm())}
@@ -365,12 +377,12 @@ def main():
             raise RuntimeError("Untouched native control changed across training")
     restored = compact_student(native, cfg["taps"], cfg["layers"]).eval().requires_grad_(False)
     restored.load_state_dict(torch.load(checkpoint, map_location="cpu", weights_only=True)["state_dict"])
-    probe_args = dict(target=target, input_ids=encode(evaluation[0]), max_new_tokens=min(cfg["output_cap"], 64), stop_token_ids=eos, temperature=0., block_size=cfg["block_size"], return_stats=True)
-    live = official.dflash_generate(student, **probe_args)
-    reloaded = official.dflash_generate(restored, **probe_args)
+    probe_cap = min(cfg["output_cap"], 64)
+    live = generate(student, encode(evaluation[0]), probe_cap)
+    reloaded = generate(restored, encode(evaluation[0]), probe_cap)
     if not torch.equal(live.output_ids, reloaded.output_ids) or live.acceptance_lengths != reloaded.acceptance_lengths:
         raise RuntimeError("Saved checkpoint failed decode reproduction")
-    (args.output/"reload-gate.json").write_text(json.dumps({"status": "pass", "cap": probe_args["max_new_tokens"], "output_tokens": live.num_output_tokens, "checkpoint_sha256": sha(checkpoint)}, indent=2))
+    (args.output/"reload-gate.json").write_text(json.dumps({"status": "pass", "cap": probe_cap, "output_tokens": live.num_output_tokens, "checkpoint_sha256": sha(checkpoint)}, indent=2))
     result = {"status": "pass", "before": before, "after": after, "validation": validations, "best_validation": best_validation, "evaluated_checkpoint": "final", "updates": changes, "counts": counts, "elapsed_seconds": time.perf_counter()-started, "cuda_max_allocated": torch.cuda.max_memory_allocated()}
     (args.output/"result.json").write_text(json.dumps(result, indent=2))
     log("complete", summary=result)

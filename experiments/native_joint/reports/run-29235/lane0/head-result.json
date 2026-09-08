@@ -1,0 +1,127 @@
+{
+  "status": "pass",
+  "config": {
+    "seed": 1729,
+    "progress_index": "data/progress-native.json",
+    "eval_manifest": "data/screening.json",
+    "benchmarks": [
+      "gsm8k",
+      "math500",
+      "humaneval",
+      "mtbench"
+    ],
+    "requests_per_benchmark": 2,
+    "output_cap": 512,
+    "repeats": 2,
+    "steps": 512,
+    "validate_every": 128,
+    "batch_size": 8,
+    "weight_decay": 0.0,
+    "timeout_seconds": 540,
+    "name": "first_position_r16",
+    "rank": 16,
+    "error_weight": 1,
+    "learning_rate": 0.0001,
+    "regularization": 1.0,
+    "positions": [
+      0
+    ]
+  },
+  "target": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+  },
+  "draft": {
+    "id": "z-lab/Qwen3-8B-DFlash-b16",
+    "revision": "9b41424b7109f9c5413454f481b09a82b85333f4"
+  },
+  "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756",
+  "source_file_sha256": "6dfb12d0eeebe085d78d23fc816a481a8b25257fd76891e939a41423c29c697b",
+  "gpu": "NVIDIA L40S",
+  "job": "29235",
+  "eval_manifest_sha256": "dfd6e9198af03ab08475e2a8b6fc918dd8eedd15a9c617ccae9dd03d552abe72",
+  "progress_index_sha256": "c3908d8959c9381f9a3ecf85be30faffb393adabe80dc755bb65009e160cfa38",
+  "checkpoint": {
+    "path": "/scratch/aryama.murthy/native-joint/29235/lane0/progress-head.pt",
+    "sha256": "0e798ceecebc79b1a73b0611099c56742e46c7aa9fbbfa6a8e57ebf922944271"
+  },
+  "zero_gate": "pass",
+  "reload_gate": "pass",
+  "validation": [
+    {
+      "step": 0,
+      "loss": 0.3052396830109331,
+      "valid_positions": 535,
+      "correct_valid": 492,
+      "first_errors": 43,
+      "first_errors_repaired": 0,
+      "preserved": 492,
+      "originally_correct": 492
+    },
+    {
+      "step": 128,
+      "loss": 0.30448551737713175,
+      "valid_positions": 535,
+      "correct_valid": 487,
+      "first_errors": 43,
+      "first_errors_repaired": 2,
+      "preserved": 485,
+      "originally_correct": 492
+    },
+    {
+      "step": 256,
+      "loss": 0.31330959100312133,
+      "valid_positions": 535,
+      "correct_valid": 479,
+      "first_errors": 43,
+      "first_errors_repaired": 2,
+      "preserved": 477,
+      "originally_correct": 492
+    },
+    {
+      "step": 384,
+      "loss": 0.3126073472090849,
+      "valid_positions": 535,
+      "correct_valid": 480,
+      "first_errors": 43,
+      "first_errors_repaired": 3,
+      "preserved": 477,
+      "originally_correct": 492
+    },
+    {
+      "step": 512,
+      "loss": 0.32111577081007703,
+      "valid_positions": 535,
+      "correct_valid": 479,
+      "first_errors": 43,
+      "first_errors_repaired": 5,
+      "preserved": 474,
+      "originally_correct": 492
+    }
+  ],
+  "summary": {
+    "native": {
+      "tps": 121.16637244087242,
+      "exact_native": 16,
+      "requests": 8,
+      "timed_generations": 16
+    },
+    "candidate": {
+      "tps": 119.7543926775174,
+      "exact_native": 16,
+      "requests": 8,
+      "timed_generations": 16
+    }
+  },
+  "native_ratio": 0.9883467687039649,
+  "counts": {
+    "parameters": 131072,
+    "train_questions": 64,
+    "distinct_questions_consumed": 64,
+    "val_questions": 16,
+    "train_blocks": 2435,
+    "distinct_blocks_consumed": 1980,
+    "sampled_blocks": 4096
+  },
+  "elapsed_seconds": 106.61288958508521
+}

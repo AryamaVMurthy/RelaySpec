@@ -10,6 +10,62 @@ from torch.nn import functional as F
 TAPS = [1, 9, 17, 25, 33]
 
 
+class ProgressHead(nn.Module):
+    """Zero-initialized residual correction of native draft output features."""
+    def __init__(self, width, rank, positions=None):
+        super().__init__()
+        self.positions = positions
+        self.down = nn.Linear(width, rank, bias=False)
+        self.up = nn.Linear(rank, width, bias=False)
+        nn.init.zeros_(self.up.weight)
+
+    def forward(self, hidden):
+        if self.positions is not None:
+            selected = hidden[..., self.positions, :]
+            result = hidden.clone()
+            result[..., self.positions, :] = selected+self.up(self.down(selected))
+            return result
+        return hidden+self.up(self.down(hidden))
+
+
+def progress_loss(logits, labels, valid, native_tokens, error_weight=1., kind="ce", native_logits=None, margin=.1, preserve_weight=1., soft_temperature=.1):
+    """Supervise accepted proposals and their first rejection, never later labels."""
+    losses = F.cross_entropy(logits.float().flatten(0, 1), labels.flatten(), reduction="none").reshape(labels.shape)
+    errors = valid & (native_tokens != labels)
+    weights = valid.float()*(1+(error_weight-1)*errors.float())
+    loss = ((losses*weights).sum(-1)/weights.sum(-1).clamp_min(1)).mean()
+    if kind == "margin_kl":
+        if native_logits is None:
+            raise ValueError("Native distributions are needed for preservation")
+        top = logits.float().topk(2, dim=-1)
+        competitor = torch.where(top.indices[..., 0] == labels, top.values[..., 1], top.values[..., 0])
+        correct = logits.float().gather(-1, labels.unsqueeze(-1)).squeeze(-1)
+        margin_loss = (F.relu(competitor-correct+margin)*errors).sum(-1)/errors.sum(-1).clamp_min(1)
+        logq = F.log_softmax(native_logits.detach().float(), dim=-1)
+        logp = F.log_softmax(logits.float(), dim=-1)
+        kl = (logq.exp()*(logq-logp)).sum(-1)
+        keep = valid & ~errors
+        preservation = (kl*keep).sum(-1)/keep.sum(-1).clamp_min(1)
+        loss = (margin_loss+preserve_weight*preservation).mean()
+    elif kind == "soft_progress":
+        top = logits.float().topk(2, dim=-1)
+        competitor = torch.where(top.indices[..., 0] == labels, top.values[..., 1], top.values[..., 0])
+        correct = logits.float().gather(-1, labels.unsqueeze(-1)).squeeze(-1)
+        soft_match = torch.sigmoid((correct-competitor)/soft_temperature)*valid
+        loss = -soft_match.cumprod(-1).sum(-1).mean()
+    elif kind != "ce":
+        raise ValueError("Unknown progress objective")
+    predictions = logits.argmax(-1)
+    return loss, {"valid_positions": int(valid.sum()), "correct_valid": int(((predictions == labels)&valid).sum()), "first_errors": int(errors.sum()), "first_errors_repaired": int(((predictions == labels)&errors).sum()), "preserved": int(((predictions == labels)&valid&~errors).sum()), "originally_correct": int((valid&~errors).sum())}
+
+
+def stop_aware_prefix_mask(valid, native_tokens, stop_ids):
+    """EOS itself can be a label, but a position conditioned after EOS cannot."""
+    stops = torch.isin(native_tokens, torch.tensor(stop_ids, device=native_tokens.device))
+    active = torch.cat([torch.ones_like(valid[:, :1]), ~stops.cummax(-1).values[:, :-1]], dim=-1)
+    return valid & active
+
+
 @torch.no_grad()
 def cast_parameters(model, dtype):
     """Change trainable weight storage without rounding nonpersistent RoPE buffers."""
@@ -86,6 +142,17 @@ def block_batch(records, anchors, taps, block_size=16):
             "anchor_token": torch.cat([v["anchor_token"] for v in views]),
             "labels": torch.stack([v["labels"] for v in views]),
             "teacher_hidden": torch.stack([v["teacher_hidden"] for v in views])}
+
+
+def conditioned_noise(view, mask_token_id, prefix=0):
+    """Reveal a training prefix; its copied labels must be excluded from loss."""
+    if not 0 <= prefix < view["labels"].shape[-1]:
+        raise ValueError("Conditioned prefix leaves no prediction target")
+    labels = view["labels"]
+    noise = torch.full((len(labels), labels.shape[-1]+1), mask_token_id, dtype=labels.dtype, device=labels.device)
+    noise[:, 0] = view["anchor_token"]
+    noise[:, 1:prefix+1] = labels[:, :prefix]
+    return noise
 
 
 def prediction_loss(student_logits, teacher_logits, labels, kind="kl", gamma=7.0, temperature=1.0):

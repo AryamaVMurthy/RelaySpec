@@ -1,0 +1,25 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 2048,
+  "timeout_seconds": 540,
+  "name": "long_vocabulary",
+  "variants": [
+    {
+      "name": "long_vocab_top64",
+      "kind": "shortlist",
+      "topk": 64
+    },
+    {
+      "name": "long_vocab_top512",
+      "kind": "shortlist",
+      "topk": 512
+    }
+  ]
+}

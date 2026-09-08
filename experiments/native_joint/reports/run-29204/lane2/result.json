@@ -1,0 +1,113 @@
+{
+  "status": "pass",
+  "before": {
+    "native": {
+      "tps": 167.02087355492566,
+      "progress": 6.27906976744186,
+      "exact_native": 4,
+      "requests": 4,
+      "capped": 1,
+      "native_ratio": 1.0
+    },
+    "duplicate": {
+      "tps": 167.11444160250974,
+      "progress": 6.27906976744186,
+      "exact_native": 4,
+      "requests": 4,
+      "capped": 1,
+      "native_ratio": 1.000560217687721
+    },
+    "student": {
+      "tps": 93.28625024210265,
+      "progress": 3.8373205741626792,
+      "exact_native": 4,
+      "requests": 4,
+      "capped": 1,
+      "native_ratio": 0.5585304893727849
+    }
+  },
+  "after": {
+    "native": {
+      "tps": 167.16107846069465,
+      "progress": 6.27906976744186,
+      "exact_native": 4,
+      "requests": 4,
+      "capped": 1,
+      "native_ratio": 1.0
+    },
+    "duplicate": {
+      "tps": 166.97495054497125,
+      "progress": 6.27906976744186,
+      "exact_native": 4,
+      "requests": 4,
+      "capped": 1,
+      "native_ratio": 0.9988865355653519
+    },
+    "student": {
+      "tps": 99.26441168271302,
+      "progress": 4.107142857142857,
+      "exact_native": 4,
+      "requests": 4,
+      "capped": 1,
+      "native_ratio": 0.5938249058739682
+    }
+  },
+  "validation": [
+    {
+      "step": 0,
+      "loss": 3.7181971818208694,
+      "kl": 3.7181971818208694,
+      "data_ce": 4.271041974425316,
+      "token_agreement": 0.13461539009585977,
+      "teacher_forced_prefix_matches": 0.875
+    },
+    {
+      "step": 64,
+      "loss": 3.2294136732816696,
+      "kl": 3.2294136732816696,
+      "data_ce": 3.715390130877495,
+      "token_agreement": 0.19230770180001855,
+      "teacher_forced_prefix_matches": 1.1875
+    },
+    {
+      "step": 128,
+      "loss": 3.169511616230011,
+      "kl": 3.169511616230011,
+      "data_ce": 3.5987497568130493,
+      "token_agreement": 0.1923076994717121,
+      "teacher_forced_prefix_matches": 1.25
+    },
+    {
+      "step": 192,
+      "loss": 2.996221698820591,
+      "kl": 2.996221698820591,
+      "data_ce": 3.4164496809244156,
+      "token_agreement": 0.22115385485813022,
+      "teacher_forced_prefix_matches": 1.4375
+    },
+    {
+      "step": 256,
+      "loss": 2.898130401968956,
+      "kl": 2.898130401968956,
+      "data_ce": 3.3248230889439583,
+      "token_agreement": 0.21634616376832128,
+      "teacher_forced_prefix_matches": 1.5
+    }
+  ],
+  "best_validation": null,
+  "evaluated_checkpoint": "final",
+  "updates": {
+    "interface_l2": 5.087126731872559,
+    "draft_l2": 5.8759846687316895
+  },
+  "counts": {
+    "native_parameters": 1048626432,
+    "student_parameters": 612401920,
+    "trainable_parameters": 612401920,
+    "distinct_records_consumed": 512,
+    "supervised_blocks": 512,
+    "supervised_token_positions": 6656
+  },
+  "elapsed_seconds": 104.20135062979534,
+  "cuda_max_allocated": 30065075712
+}

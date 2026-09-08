@@ -35,15 +35,19 @@ for run in sorted(root.glob("run-*")):
                 ratios = (tokens[indices].sum(1)/times[indices].sum(1))/(base_tokens[indices].sum(1)/base_times[indices].sum(1))
                 row = {"run": run.name, "lane": lane.name, "name": config["name"], "config": config, "stage": stage, "method": name, "eligible_for_claim": not (run.name[4:] in issues["affected_jobs"] and stage == "after"), **d[stage][name], "ci95": np.quantile(ratios, [.025, .975]).tolist()}
                 rows.append(row)
-        if config["steps"] >= 128:
+        # Plot one matched objective/protocol only. CE, target KL, native KL,
+        # position weighting and prefix conditioning have incomparable scales.
+        if (config["steps"] >= 128 and config.get("teacher") == "native"
+                and config.get("loss") == "kl" and config.get("gamma") == 7.
+                and not config.get("conditioning_prefix") and config.get("val_records") == 32):
             trajectory = d["validation"]
             label = f"{run.name[4:]}/{lane.name}: {config['name']}"
             axes[0].plot([r["step"] for r in trajectory], [r["loss"] for r in trajectory], marker=".", label=label)
             after = next(r for r in reversed(rows) if r["stage"] == "after" and r["method"] == "student")
             if after["eligible_for_claim"]:
                 axes[1].scatter(trajectory[-1]["loss"], after["native_ratio"], label=label)
-axes[0].set(xlabel="Optimizer updates", ylabel="Validation prediction loss", title="Fitting trajectories")
-axes[1].set(xlabel="Final validation prediction loss", ylabel="Throughput / original DFlash", title="Decoding decides performance")
+axes[0].set(xlabel="Optimizer updates", ylabel="Validation native-teacher KL", title="Native KL, gamma=7, 32 validation records")
+axes[1].set(xlabel="Final validation native-teacher KL", ylabel="Throughput / original DFlash", title="Same objective; decoding decides performance")
 axes[1].axhline(1, color="black", ls="--", lw=1)
 for ax in axes:
     ax.grid(alpha=.2)

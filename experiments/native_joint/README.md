@@ -42,10 +42,22 @@ The native-teacher arm distills the frozen original drafter on identical prefix 
 
 Use at most four GPUs concurrently. Initial four-GPU jobs have independent lanes capped at 540 seconds. Keep at least two lanes as experiments completing within ten minutes, including during longer follow-up training.
 
+## Additional rapid directions
+
+- `collect_progress.py` records native rollout draft features and target labels through the first rejection. `train_progress_head.py` fits small residual heads with CE, a margin plus native-preservation loss, or a differentiable prefix-progress surrogate. Post-rejection and post-EOS positions are masked. `analyze_progress.py` reports paired TPS, repair/break rates and protocol differences for every completed head fit.
+- Prefix-conditioned refiners jointly train a second drafter pass on the tail after a known prefix. Copied prefix tokens are excluded from the loss. At inference only predicted prefixes are available; all proposals still go through target verification.
+- Warm starts blend unverified previous draft or target-prediction tails into masked inputs. Target-tail recycling proposes previously computed target predictions directly, with fresh verification. These hypotheses do not treat rejected-prefix predictions as correct labels.
+- Lazy target-head verification computes full-vocabulary logits in chunks until the first rejection is known, preserving its corrective token and the fully verified transformer cache. This changes matrix shapes and synchronization; numerical agreement and full latency are measured, not assumed.
+- `profile_native.py` attributes instrumented native time with CUDA events; `analyze_profile.py` subtracts nested vocabulary-head spans to avoid double-counting. `collect_progress.py --config ...` can additionally save causal target features on native-generated sequences; `merge_rollout_sequences.py` merges only completed, disjoint caches for full-drafter fitting.
+- `quantized_draft.py` packs an independent drafter and optionally a separate draft vocabulary head into int4. Its proxy routes target verification through the original BF16 target/head. Copy, frozen-control and checkpoint-reload gates precede timing. This tests standard quantization as a proposal-computation tradeoff, not an architectural novelty claim.
+
+Run `analyze_radical.py` and `analyze_progress.py` from this folder to regenerate all positive and negative screens. `reports/PROGRESS.md` records the current queue and decisions. None of the completed adaptive screens yet establishes the required10% gain.
+
 ## Sources
 
 - Native implementation: https://github.com/z-lab/dflash, pinned commit `94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756`.
 - Native training reference: https://docs.nvidia.com/nemo/automodel/recipes-e2e-examples/dflash-speculative-decoding (official software documentation, accessed 2026-09-08). We implement the documented anchor/mask alignment in the pinned inference backbone; this is not a reproduction of its full training pipeline.
+- Quantization implementation: [TorchAO0.15.0 quantization API](https://github.com/pytorch/ao/blob/v0.15.0/torchao/quantization/quant_api.py), pinned to the [official Torch2.9.1 compatibility entry](https://github.com/pytorch/ao/issues/2919). The private dependency directory is separate from the shared training environment.
 
 ## Run
 

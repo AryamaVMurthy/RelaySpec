@@ -1,7 +1,20 @@
 import torch
 from torch import nn
 
-from core import TAPS, block_view, block_batch, compact_student, prediction_loss, token_ids, cast_parameters
+from core import TAPS, block_view, block_batch, compact_student, prediction_loss, token_ids, cast_parameters, conditioned_noise
+
+
+def test_conditioned_prefix_is_input_only_and_excluded_from_loss():
+    view = {"labels": torch.arange(1, 16).unsqueeze(0), "anchor_token": torch.tensor([0])}
+    noise = conditioned_noise(view, 99, prefix=2)
+    assert noise[0, :3].tolist() == [0, 1, 2]
+    assert noise[0, 3:].tolist() == [99]*13
+    student = torch.randn(1, 15, 17, requires_grad=True)
+    teacher = torch.randn_like(student)
+    loss, _ = prediction_loss(student[:, 2:], teacher[:, 2:], view["labels"][:, 2:])
+    loss.backward()
+    assert student.grad[:, :2].abs().sum() == 0
+    assert student.grad[:, 2:].abs().sum() > 0
 
 
 def test_batched_objective_equals_mean_of_individual_values_and_gradients():

@@ -1,0 +1,32 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 2,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "int4_g32_draft_and_head",
+  "quantization": {
+    "group_size": 32,
+    "quantize_head": true,
+    "package_path": "/home/aryama.murthy/native-joint-deps/torchao0150"
+  },
+  "variants": [
+    {
+      "name": "int4_g32_draft_and_head",
+      "kind": "fixed",
+      "block_size": 16,
+      "quantization": {
+        "group_size": 32,
+        "quantize_head": true,
+        "package_path": "/home/aryama.murthy/native-joint-deps/torchao0150"
+      }
+    }
+  ]
+}

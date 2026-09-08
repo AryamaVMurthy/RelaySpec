@@ -1,0 +1,38 @@
+{
+  "seed": 1729,
+  "train_records": 512,
+  "val_records": 16,
+  "sequence_length": 512,
+  "block_size": 16,
+  "data_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1",
+  "eval_manifest": "data/development.json",
+  "benchmark": "gsm8k",
+  "eval_requests": 4,
+  "output_cap": 256,
+  "learning_rate": 5e-05,
+  "weight_decay": 0.01,
+  "loss": "kl",
+  "gamma": 7.0,
+  "temperature": 1.0,
+  "steps": 256,
+  "validate_every": 64,
+  "accumulation": 2,
+  "gradient_clip": 1.0,
+  "name": "prefix_refiner_d3_p4",
+  "taps": [
+    25,
+    33
+  ],
+  "layers": [
+    0,
+    2,
+    4
+  ],
+  "train_mode": "joint",
+  "teacher": "target",
+  "timeout_seconds": 540,
+  "prepared_index": "data/prepared-8192.json",
+  "require_all_records": true,
+  "conditioning_prefix": 4,
+  "refine_threshold": 0.5
+}

@@ -23,7 +23,8 @@ def run(i):
         raise ValueError("Two lanes must remain within ten minutes")
     start = time.perf_counter()
     with (output/f"lane{i}.log").open("w") as log:
-        result = subprocess.run(["timeout", "--signal=TERM", "--kill-after=10s", f"{limit}s", sys.executable, os.environ.get("LANE_SCRIPT", "run_lane.py"), "--config", str(config), "--output", str(output/f"lane{i}")], env=env, stdout=log, stderr=subprocess.STDOUT)
+        lane_script = specs[i].get("lane_script", os.environ.get("LANE_SCRIPT", "run_lane.py"))
+        result = subprocess.run(["timeout", "--signal=TERM", "--kill-after=10s", f"{limit}s", sys.executable, lane_script, "--config", str(config), "--output", str(output/f"lane{i}")], env=env, stdout=log, stderr=subprocess.STDOUT)
     status = {"lane": i, "exit_code": result.returncode, "seconds": time.perf_counter()-start}
     (output/f"lane{i}-status.json").write_text(json.dumps(status, indent=2))
     return status

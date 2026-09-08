@@ -1,0 +1,29 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 1,
+  "timeout_seconds": 360,
+  "lane_script": "run_radical.py",
+  "name": "lazy_target_head_1",
+  "variants": [
+    {
+      "name": "lazy_head_b16_c2",
+      "kind": "lazy_head",
+      "block_size": 16,
+      "chunk": 2
+    },
+    {
+      "name": "lazy_head_b16_c4",
+      "kind": "lazy_head",
+      "block_size": 16,
+      "chunk": 4
+    }
+  ]
+}

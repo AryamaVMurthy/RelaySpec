@@ -1,0 +1,35 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "timeout_seconds": 540,
+  "name": "draft_vocabulary",
+  "variants": [
+    {
+      "name": "vocab_top16",
+      "kind": "shortlist",
+      "topk": 16
+    },
+    {
+      "name": "vocab_top64",
+      "kind": "shortlist",
+      "topk": 64
+    },
+    {
+      "name": "vocab_top256",
+      "kind": "shortlist",
+      "topk": 256
+    },
+    {
+      "name": "vocab_top1024",
+      "kind": "shortlist",
+      "topk": 1024
+    }
+  ]
+}

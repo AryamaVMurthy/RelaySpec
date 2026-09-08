@@ -1,0 +1,127 @@
+{
+  "status": "pass",
+  "config": {
+    "seed": 1729,
+    "progress_index": "data/progress-native.json",
+    "eval_manifest": "data/screening.json",
+    "benchmarks": [
+      "gsm8k",
+      "math500",
+      "humaneval",
+      "mtbench"
+    ],
+    "requests_per_benchmark": 2,
+    "output_cap": 512,
+    "repeats": 2,
+    "steps": 512,
+    "validate_every": 128,
+    "batch_size": 8,
+    "weight_decay": 0.0,
+    "timeout_seconds": 540,
+    "name": "margin_preservation_1.0",
+    "rank": 64,
+    "error_weight": 1,
+    "learning_rate": 0.0001,
+    "regularization": 1.0,
+    "loss_kind": "margin_kl",
+    "preserve_weight": 1.0,
+    "margin": 0.1
+  },
+  "target": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+  },
+  "draft": {
+    "id": "z-lab/Qwen3-8B-DFlash-b16",
+    "revision": "9b41424b7109f9c5413454f481b09a82b85333f4"
+  },
+  "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756",
+  "source_file_sha256": "6dfb12d0eeebe085d78d23fc816a481a8b25257fd76891e939a41423c29c697b",
+  "gpu": "NVIDIA L40S",
+  "job": "29235",
+  "eval_manifest_sha256": "dfd6e9198af03ab08475e2a8b6fc918dd8eedd15a9c617ccae9dd03d552abe72",
+  "progress_index_sha256": "c3908d8959c9381f9a3ecf85be30faffb393adabe80dc755bb65009e160cfa38",
+  "checkpoint": {
+    "path": "/scratch/aryama.murthy/native-joint/29235/lane2/progress-head.pt",
+    "sha256": "a508ce7678f5973933c319832fff258b8836b9a6c9f8216100f837fe876c4267"
+  },
+  "zero_gate": "pass",
+  "reload_gate": "pass",
+  "validation": [
+    {
+      "step": 0,
+      "loss": 1.321565378157892,
+      "valid_positions": 3987,
+      "correct_valid": 3536,
+      "first_errors": 451,
+      "first_errors_repaired": 0,
+      "preserved": 3536,
+      "originally_correct": 3536
+    },
+    {
+      "step": 128,
+      "loss": 1.3292503099575221,
+      "valid_positions": 3987,
+      "correct_valid": 3510,
+      "first_errors": 451,
+      "first_errors_repaired": 42,
+      "preserved": 3468,
+      "originally_correct": 3536
+    },
+    {
+      "step": 256,
+      "loss": 1.3383542220169138,
+      "valid_positions": 3987,
+      "correct_valid": 3509,
+      "first_errors": 451,
+      "first_errors_repaired": 48,
+      "preserved": 3461,
+      "originally_correct": 3536
+    },
+    {
+      "step": 384,
+      "loss": 1.3319517581262321,
+      "valid_positions": 3987,
+      "correct_valid": 3499,
+      "first_errors": 451,
+      "first_errors_repaired": 59,
+      "preserved": 3440,
+      "originally_correct": 3536
+    },
+    {
+      "step": 512,
+      "loss": 1.3481644803118482,
+      "valid_positions": 3987,
+      "correct_valid": 3499,
+      "first_errors": 451,
+      "first_errors_repaired": 49,
+      "preserved": 3450,
+      "originally_correct": 3536
+    }
+  ],
+  "summary": {
+    "native": {
+      "tps": 121.28652004474964,
+      "exact_native": 16,
+      "requests": 8,
+      "timed_generations": 16
+    },
+    "candidate": {
+      "tps": 119.14348306695277,
+      "exact_native": 16,
+      "requests": 8,
+      "timed_generations": 16
+    }
+  },
+  "native_ratio": 0.9823307901240288,
+  "counts": {
+    "parameters": 524288,
+    "train_questions": 64,
+    "distinct_questions_consumed": 64,
+    "val_questions": 16,
+    "train_blocks": 2435,
+    "distinct_blocks_consumed": 1980,
+    "sampled_blocks": 4096
+  },
+  "elapsed_seconds": 110.094115214888
+}

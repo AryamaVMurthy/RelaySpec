@@ -1,0 +1,42 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 256,
+  "timeout_seconds": 540,
+  "name": "conditional_branches",
+  "variants": [
+    {
+      "name": "conditional_branch_0.5",
+      "kind": "branches",
+      "block_size": 16,
+      "fork": "first",
+      "branch_margin": 0.5
+    },
+    {
+      "name": "conditional_branch_1.0",
+      "kind": "branches",
+      "block_size": 16,
+      "fork": "first",
+      "branch_margin": 1.0
+    },
+    {
+      "name": "conditional_branch_2.0",
+      "kind": "branches",
+      "block_size": 16,
+      "fork": "first",
+      "branch_margin": 2.0
+    },
+    {
+      "name": "four_branches",
+      "kind": "branches",
+      "block_size": 16,
+      "branches": 4
+    }
+  ]
+}

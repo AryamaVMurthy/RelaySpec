@@ -1,0 +1,25 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 2048,
+  "timeout_seconds": 540,
+  "name": "long_context",
+  "variants": [
+    {
+      "name": "long_context_w32",
+      "kind": "window",
+      "window": 32
+    },
+    {
+      "name": "long_context_w128",
+      "kind": "window",
+      "window": 128
+    }
+  ]
+}

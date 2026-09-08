@@ -1,0 +1,122 @@
+{
+  "status": "pass",
+  "before": {
+    "native": {
+      "tps": 121.38526084929921,
+      "progress": 4.520282186948854,
+      "exact_native": 8,
+      "requests": 8,
+      "capped": 2,
+      "native_ratio": 1.0
+    },
+    "duplicate": {
+      "tps": 121.39756595947243,
+      "progress": 4.520282186948854,
+      "exact_native": 8,
+      "requests": 8,
+      "capped": 2,
+      "native_ratio": 1.0001013723584489
+    },
+    "student": {
+      "tps": 121.49316787613529,
+      "progress": 4.520282186948854,
+      "exact_native": 8,
+      "requests": 8,
+      "capped": 2,
+      "native_ratio": 1.0008889631746152
+    }
+  },
+  "after": {
+    "native": {
+      "tps": 121.7160794722494,
+      "progress": 4.520282186948854,
+      "exact_native": 8,
+      "requests": 8,
+      "capped": 2,
+      "native_ratio": 1.0
+    },
+    "duplicate": {
+      "tps": 121.74864721597888,
+      "progress": 4.520282186948854,
+      "exact_native": 8,
+      "requests": 8,
+      "capped": 2,
+      "native_ratio": 1.00026757141596
+    },
+    "student": {
+      "tps": 121.2310437104321,
+      "progress": 4.502636203866432,
+      "exact_native": 8,
+      "requests": 8,
+      "capped": 2,
+      "native_ratio": 0.9960150231266044
+    }
+  },
+  "validation": [
+    {
+      "step": 0,
+      "loss": 1.1523603392570294,
+      "kl": 1.1523603392570294,
+      "data_ce": 1.3287911195529887,
+      "token_agreement": 0.5812500244937837,
+      "teacher_forced_prefix_matches": 7.34375
+    },
+    {
+      "step": 128,
+      "loss": 1.1447113253943826,
+      "kl": 1.1447113253943826,
+      "data_ce": 1.3211806781200721,
+      "token_agreement": 0.5729166893288493,
+      "teacher_forced_prefix_matches": 7.34375
+    },
+    {
+      "step": 256,
+      "loss": 1.1405895925508958,
+      "kl": 1.1405895925508958,
+      "data_ce": 1.3169711585960613,
+      "token_agreement": 0.5729166897945106,
+      "teacher_forced_prefix_matches": 7.34375
+    },
+    {
+      "step": 384,
+      "loss": 1.1436568092058224,
+      "kl": 1.1436568092058224,
+      "data_ce": 1.320060132553408,
+      "token_agreement": 0.5729166902601719,
+      "teacher_forced_prefix_matches": 7.3125
+    },
+    {
+      "step": 512,
+      "loss": 1.1440387287375415,
+      "kl": 1.1440387287375415,
+      "data_ce": 1.319653583210311,
+      "token_agreement": 0.5708333561196923,
+      "teacher_forced_prefix_matches": 7.3125
+    }
+  ],
+  "best_validation": {
+    "step": 256,
+    "loss": 1.1405895925508958,
+    "kl": 1.1405895925508958,
+    "data_ce": 1.3169711585960613,
+    "token_agreement": 0.5729166897945106,
+    "teacher_forced_prefix_matches": 7.34375,
+    "path": "/scratch/aryama.murthy/native-joint/29290/lane1/best-validation.pt",
+    "sha256": "1b09ddf8d37b3a0f32d78d1e930b02f119bbcaffe6e75c0091ba77af78bc1880"
+  },
+  "evaluated_checkpoint": "final",
+  "updates": {
+    "interface_l2": 2.2311904430389404,
+    "draft_l2": 1.6438945531845093
+  },
+  "counts": {
+    "native_parameters": 1048626432,
+    "student_parameters": 1048626432,
+    "trainable_parameters": 1048626432,
+    "distinct_records_consumed": 128,
+    "supervised_blocks": 1024,
+    "supervised_token_positions": 15360
+  },
+  "elapsed_seconds": 300.3755386406556,
+  "cuda_max_allocated": 38063269376
+}
