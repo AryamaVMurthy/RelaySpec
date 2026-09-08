@@ -1,0 +1,32 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 2,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "compact_four_drop3",
+  "candidate_checkpoint": {
+    "path": "/scratch/aryama.murthy/native-joint/29162/lane2/student.pt",
+    "sha256": "c9ccb1ca76edf67a4e7d27adbfadb2d8f86c75231443ab89a752b9aaeaa7310f"
+  },
+  "reference_variant": {
+    "kind": "ddtree",
+    "tree_budget": 47,
+    "block_size": 16
+  },
+  "variants": [
+    {
+      "name": "compact_four_drop3_ddtree47",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 16
+    }
+  ]
+}

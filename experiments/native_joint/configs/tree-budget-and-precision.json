@@ -1,0 +1,158 @@
+{
+  "lanes": [
+    {
+      "name": "tree_bf16_fp32_diagnostic",
+      "lane_script": "diagnose_tree_precision.py",
+      "reference_rows": "/home/aryama.murthy/native-joint-20260908-v37/outputs/29315/lane0/tree4_b16_breadth/evaluation.jsonl",
+      "reference_sha256": "5f4de08fde69d3de9353a7389e309416252f15d0321b1fb2930eb3487f2005d4",
+      "requests": 4,
+      "output_cap": 512,
+      "eval_manifest": "data/screening.json",
+      "variant": {
+        "kind": "tree_branches",
+        "branches": 4,
+        "block_size": 16,
+        "fork": "first"
+      },
+      "timeout_seconds": 540
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 8,
+      "output_cap": 512,
+      "repeats": 2,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "tree4_suffix8_breadth",
+      "variants": [
+        {
+          "name": "tree4_suffix8_breadth",
+          "kind": "tree_branches",
+          "branches": 4,
+          "block_size": 16,
+          "branch_length": 8
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 1,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "tree_shape_budgets",
+      "variants": [
+        {
+          "name": "budget_tree3_main16_alt8",
+          "kind": "tree_branches",
+          "branches": 3,
+          "block_size": 16,
+          "main_length": 16,
+          "branch_length": 8
+        },
+        {
+          "name": "budget_tree4_main14_alt8",
+          "kind": "tree_branches",
+          "branches": 4,
+          "block_size": 16,
+          "main_length": 14,
+          "branch_length": 8
+        },
+        {
+          "name": "budget_tree4_main12_alt8",
+          "kind": "tree_branches",
+          "branches": 4,
+          "block_size": 16,
+          "main_length": 12,
+          "branch_length": 8
+        },
+        {
+          "name": "budget_tree5_main16_alt6",
+          "kind": "tree_branches",
+          "branches": 5,
+          "block_size": 16,
+          "main_length": 16,
+          "branch_length": 6
+        },
+        {
+          "name": "budget_tree8_main16_alt4",
+          "kind": "tree_branches",
+          "branches": 8,
+          "block_size": 16,
+          "main_length": 16,
+          "branch_length": 4
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 1,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "leaf_rank_budgets",
+      "variants": [
+        {
+          "name": "leaf_top4_p4_main16",
+          "kind": "tree_branches",
+          "branches": 2,
+          "block_size": 16,
+          "main_length": 16,
+          "tree_style": "leaves",
+          "leaf_positions": 4,
+          "draft_topk": 4
+        },
+        {
+          "name": "leaf_top4_p5_main16",
+          "kind": "tree_branches",
+          "branches": 2,
+          "block_size": 16,
+          "main_length": 16,
+          "tree_style": "leaves",
+          "leaf_positions": 5,
+          "draft_topk": 4
+        },
+        {
+          "name": "leaf_top4_p6_main14",
+          "kind": "tree_branches",
+          "branches": 2,
+          "block_size": 16,
+          "main_length": 14,
+          "tree_style": "leaves",
+          "leaf_positions": 6,
+          "draft_topk": 4
+        },
+        {
+          "name": "leaf_top5_p4_main16",
+          "kind": "tree_branches",
+          "branches": 2,
+          "block_size": 16,
+          "main_length": 16,
+          "tree_style": "leaves",
+          "leaf_positions": 4,
+          "draft_topk": 5
+        }
+      ]
+    }
+  ]
+}

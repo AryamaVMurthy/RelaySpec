@@ -1,0 +1,56 @@
+{
+  "seed": 1729,
+  "train_records": 187,
+  "val_records": 48,
+  "sequence_length": 512,
+  "block_size": 16,
+  "data_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1",
+  "eval_manifest": "data/screening.json",
+  "benchmark": "gsm8k",
+  "eval_requests": 8,
+  "output_cap": 512,
+  "learning_rate": 1e-05,
+  "weight_decay": 0.01,
+  "loss": "kl",
+  "gamma": 7.0,
+  "temperature": 1.0,
+  "steps": 512,
+  "validate_every": 128,
+  "accumulation": 2,
+  "gradient_clip": 1.0,
+  "name": "midpoint_d3_p2_a0.5",
+  "taps": [
+    1,
+    9,
+    17,
+    25,
+    33
+  ],
+  "layers": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "train_mode": "joint",
+  "teacher": "target",
+  "timeout_seconds": 540,
+  "prepared_index": "data/onpolicy-mixed.json",
+  "require_all_records": true,
+  "save_best": true,
+  "lane_script": "run_lane.py",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "midpoint": {
+    "prefix": 2,
+    "after_layers": 3,
+    "strength": 0.5,
+    "auxiliary_weight": 1.0
+  }
+}

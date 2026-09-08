@@ -1,0 +1,47 @@
+{
+  "spec": {
+    "eval_manifest": "data/screening.json",
+    "benchmarks": [
+      "gsm8k",
+      "math500",
+      "humaneval",
+      "mtbench"
+    ],
+    "requests_per_benchmark": 2,
+    "output_cap": 512,
+    "repeats": 2,
+    "timeout_seconds": 540,
+    "lane_script": "run_radical.py",
+    "name": "ddtree_budget15",
+    "variants": [
+      {
+        "name": "ddtree_adapted_budget15",
+        "kind": "ddtree",
+        "tree_budget": 15,
+        "block_size": 16
+      }
+    ]
+  },
+  "target": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+  },
+  "draft": {
+    "id": "z-lab/Qwen3-8B-DFlash-b16",
+    "revision": "9b41424b7109f9c5413454f481b09a82b85333f4"
+  },
+  "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756",
+  "source_file_sha256": "6dfb12d0eeebe085d78d23fc816a481a8b25257fd76891e939a41423c29c697b",
+  "eval_manifest_sha256": "dfd6e9198af03ab08475e2a8b6fc918dd8eedd15a9c617ccae9dd03d552abe72",
+  "torch": "2.9.1+cu128",
+  "transformers": "5.3.0",
+  "gpu": "NVIDIA L40S",
+  "job": "29350",
+  "scope": "Inference-only adaptive development. No weights updated. Every proposal is greedily verified by the frozen target. Numerical agreement with the original block16 decoder is measured, not assumed. All latency includes prefill and policy overhead.",
+  "ddtree_baseline": {
+    "upstream": "https://github.com/liranringel/ddtree",
+    "commit": "c96427a185677bf4133ed865dd1626a5041aef9b",
+    "scope": "Adapted heap builder in shared pinned runtime; instrumentation removed; vectorized leaf-path acceptance and shared cache compaction."
+  },
+  "allow_bf16_reduced_precision_reduction": true
+}

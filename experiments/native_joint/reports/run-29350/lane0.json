@@ -1,0 +1,23 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 2,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "ddtree_budget15",
+  "variants": [
+    {
+      "name": "ddtree_adapted_budget15",
+      "kind": "ddtree",
+      "tree_budget": 15,
+      "block_size": 16
+    }
+  ]
+}

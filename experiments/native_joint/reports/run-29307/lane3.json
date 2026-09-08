@@ -1,0 +1,31 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 1,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "packed_tree_3",
+  "variants": [
+    {
+      "name": "tree4_b8_first_mNone",
+      "kind": "tree_branches",
+      "branches": 4,
+      "block_size": 8,
+      "fork": "first"
+    },
+    {
+      "name": "tree4_b24_first_mNone",
+      "kind": "tree_branches",
+      "branches": 4,
+      "block_size": 24,
+      "fork": "first"
+    }
+  ]
+}

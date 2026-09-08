@@ -165,3 +165,164 @@ def test_midpoint_only_injects_predicted_slots_and_zero_strength_is_exact():
     midpoint.strength = 0.
     assert torch.equal(student.layers[1](hidden), hidden)
     midpoint.handle.remove()
+
+
+def test_packed_tree_preserves_branch_tokens_depths_and_causal_attention():
+    from radical_decode import pack_branches
+    proposal = torch.tensor([[0, 1, 2, 3, 4], [0, 9, 2, 3, 4], [0, 1, 8, 3, 4]])
+    packed, depths, paths, visible, lengths = pack_branches(proposal, [1, 2])
+    assert lengths.tolist() == [5, 5, 5]
+    assert packed.shape[1] == 12
+    assert torch.equal(packed[0, paths], proposal)
+    assert torch.equal(depths[paths], torch.arange(5).expand_as(proposal))
+    torch.manual_seed(13)
+    embedding = torch.randn(10, 8)
+    positional = torch.randn(5, 8)
+    hidden = embedding[packed]+positional[depths]
+    tree = torch.nn.functional.scaled_dot_product_attention(hidden[:, None], hidden[:, None], hidden[:, None], visible[None, None])
+    for i, branch in enumerate(proposal):
+        separate = (embedding[branch]+positional)[None, None]
+        expected = torch.nn.functional.scaled_dot_product_attention(separate, separate, separate, is_causal=True)
+        assert torch.allclose(tree[:, :, paths[i]], expected, atol=1e-6)
+        for depth, node in enumerate(paths[i].tolist()):
+            assert set(visible[node].nonzero().flatten().tolist()) == set(paths[i, :depth+1].tolist())
+
+
+def test_tree_cache_compaction_preserves_prefix_and_selected_ancestry():
+    from types import SimpleNamespace
+    from radical_decode import compact_tree_cache
+    class Cache:
+        def __init__(self):
+            self.layers = [SimpleNamespace(keys=torch.arange(60.).reshape(1, 2, 15, 2), values=-torch.arange(60.).reshape(1, 2, 15, 2))]
+        def crop(self, length):
+            for layer in self.layers:
+                layer.keys = layer.keys[..., :length, :]
+                layer.values = layer.values[..., :length, :]
+    for path in [torch.tensor([0, 1, 2]), torch.tensor([0, 5, 6]), torch.tensor([0, 1, 9])]:
+        cache = Cache()
+        prefix = cache.layers[0].keys[..., :4, :].clone()
+        expected = cache.layers[0].keys.index_select(-2, torch.cat([torch.arange(4), 4+path]))
+        compact_tree_cache(cache, 4, path, main_path=torch.equal(path, torch.arange(3)))
+        assert torch.equal(cache.layers[0].keys, expected)
+        assert torch.equal(cache.layers[0].values, -expected)
+        assert torch.equal(cache.layers[0].keys[..., :4, :], prefix)
+
+
+def test_leaf_tree_has_one_new_node_per_alternative_and_masks_padding():
+    from radical_decode import pack_branches
+    proposal = torch.tensor([[0, 1, 2, 3, 4], [0, 9, 2, 3, 4], [0, 8, 2, 3, 4], [0, 1, 2, 7, 4]])
+    packed, depths, paths, visible, lengths = pack_branches(proposal, [1, 1, 3], leaves=True)
+    assert packed.shape == (1, 8)
+    assert lengths.tolist() == [5, 2, 2, 4]
+    for i, length in enumerate(lengths.tolist()):
+        assert torch.equal(packed[0, paths[i, :length]], proposal[i, :length])
+        assert depths[paths[i, length-1]] == length-1
+        assert visible[paths[i, length-1]].sum() == length
+    # Even if every padded proposal appears to match, it cannot be accepted.
+    matches = torch.ones(4, 4, dtype=torch.bool) & (torch.arange(4)[None] < lengths[:, None]-1)
+    assert matches.cumprod(1).sum(1).tolist() == [4, 1, 1, 3]
+
+
+def test_prediction_source_includes_previous_steps_corrective_token():
+    from diagnose_tree_precision import prediction_step, first_difference
+    assert prediction_step([4, 2, 5], 1) == (0, 0, 0)
+    assert prediction_step([4, 2, 5], 4) == (0, 0, 3)
+    assert prediction_step([4, 2, 5], 5) == (1, 4, 0)
+    assert prediction_step([4, 2, 5], 6) == (1, 4, 1)
+    assert prediction_step([4, 2, 5], 7) == (2, 6, 0)
+    assert first_difference([1, 2], [1, 3]) == 1
+    assert first_difference([1], [1, 2]) == 1
+    assert first_difference([1, 2], [1, 2]) is None
+
+
+def test_ddtree_heap_matches_exhaustive_prefix_mass_and_ancestors():
+    import itertools
+    from ddtree_baseline import build_ddtree_tree, pack_ddtree
+    logits = torch.tensor([[1.7, .2, -.6], [.9, .5, -.8], [.4, .1, -1.2]])
+    logp = logits.log_softmax(-1)
+    exhaustive = []
+    for depth in range(1, 4):
+        for path in itertools.product(range(3), repeat=depth):
+            exhaustive.append((sum(float(logp[i, token]) for i, token in enumerate(path)), path))
+    expected = {path for score, path in sorted(exhaustive, reverse=True)[:10]}
+    ids, depths, parents, children, visible = build_ddtree_tree(logits, 10)
+    observed = set()
+    for node in range(1, len(parents)):
+        path, ancestors, index = [], {0}, node
+        while index:
+            path.append(int(ids[index-1])); ancestors.add(index); index = parents[index]
+        observed.add(tuple(path[::-1]))
+        assert set(visible[node].nonzero().flatten().tolist()) == ancestors
+    assert observed == expected
+    packed, depth, paths, mask, lengths, proposal = pack_ddtree(torch.tensor(99), logits, 10)
+    assert packed.shape == (1, 11)
+    assert torch.equal(proposal, packed[0, paths])
+    assert any(sum(token != int(logits[i].argmax()) for i, token in enumerate(path)) >= 2 for path in observed)
+    # Every leaf path includes precisely its ancestors; padding cannot be accepted.
+    for path, length in zip(paths, lengths):
+        path = path[:length]
+        assert mask[path[-1]].nonzero().flatten().tolist() == sorted(path.tolist())
+        assert depth[path].tolist() == list(range(int(length)))
+
+
+def test_ddtree_zero_budget_contains_only_verified_bonus_root():
+    from ddtree_baseline import pack_ddtree
+    packed, depths, paths, visible, lengths, proposal = pack_ddtree(torch.tensor(99), torch.randn(3, 5), 0)
+    assert packed.tolist() == [[99]] and paths.tolist() == [[0]]
+    assert visible.tolist() == [[True]] and lengths.tolist() == [1]
+
+
+def test_adaptive_leaves_have_correct_parent_prefix_and_selected_score():
+    from radical_decode import pack_adaptive_leaves
+    logits=torch.tensor([[2.,1.,0.,-1.],[1.7,1.5,.2,-.9],[3.,.4,.1,-2.],[1.,.9,.7,.4]])
+    packed,depths,paths,mask,lengths,proposal=pack_adaptive_leaves(torch.tensor(99),logits,budget=4,topk=3,prefix_weight=1.)
+    assert packed.shape==(1,9) and paths.shape==(5,5)
+    assert packed[0,:5].tolist()==[99]+logits.argmax(-1).tolist()
+    for path,length in zip(paths,lengths):
+        path=path[:length]
+        assert set(mask[path[-1]].nonzero().flatten().tolist())==set(path.tolist())
+        assert depths[path].tolist()==list(range(int(length)))
+    # Compute restricted-prefix candidate scores independently.
+    probabilities=logits.softmax(-1)
+    values=[];mass=1.
+    for i in range(4):
+        for token in logits[i].topk(3).indices[1:].tolist():
+            values.append((mass*float(probabilities[i,token]),i+1,token))
+        mass*=float(probabilities[i].max())
+    expected={(pos,token) for score,pos,token in sorted(values,reverse=True)[:4]}
+    actual=set(zip(depths[5:].tolist(),packed[0,5:].tolist()))
+    assert actual==expected
+
+
+def test_vectorized_ddtree_acceptance_matches_independent_greedy_walk():
+    from ddtree_baseline import build_ddtree_tree, pack_ddtree
+    generator=torch.Generator().manual_seed(73)
+    for _ in range(20):
+        logits=torch.randn(4,5,generator=generator)
+        packed,depths,paths,mask,lengths,proposal=pack_ddtree(torch.tensor(99),logits,20)
+        _,_,parents,children,_=build_ddtree_tree(logits,20)
+        for _ in range(10):
+            posterior=torch.randint(0,5,(packed.shape[1],),generator=generator)
+            path=[0]
+            while int(posterior[path[-1]]) in children[path[-1]]:
+                path.append(children[path[-1]][int(posterior[path[-1]])])
+            gathered=posterior[paths]
+            matches=(proposal[:,1:]==gathered[:,:-1]) & (torch.arange(paths.shape[1]-1)[None]<lengths[:,None]-1)
+            accepted=matches.cumprod(1).sum(1)
+            winner=int(accepted.argmax()); count=int(accepted[winner])+1
+            assert paths[winner,:count].tolist()==path
+            assert int(gathered[winner,count-1])==int(posterior[path[-1]])
+
+
+def test_tree_coverage_margin_pushes_missed_target_into_candidate_set():
+    from core import tree_coverage_loss
+    logits=torch.tensor([[[4.,3.,2.,1.,0.]]],requires_grad=True)
+    teacher=torch.tensor([[[0.,0.,0.,0.,9.]]],requires_grad=True)
+    loss,metrics=tree_coverage_loss(logits,teacher,topk=2,margin=.2)
+    loss.backward()
+    assert logits.grad[0,0,4]<0 and logits.grad[0,0,1]>0
+    assert teacher.grad is None and metrics['target_topk_coverage']==0
+    safe=torch.tensor([[[0.,3.,1.,2.,5.]]],requires_grad=True)
+    loss,_=tree_coverage_loss(safe,teacher,topk=2,margin=.2)
+    loss.backward()
+    assert float(loss.detach())==0 and torch.count_nonzero(safe.grad)==0

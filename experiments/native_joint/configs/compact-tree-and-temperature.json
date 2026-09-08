@@ -1,0 +1,145 @@
+{
+  "lanes": [
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "compact_two_tap_5layer",
+      "candidate_checkpoint": {
+        "path": "/scratch/aryama.murthy/native-joint/29162/lane0/student.pt",
+        "sha256": "83dd90d3590d27bca26245e49b9ae71133626df327b279ac062a16a86be226c5"
+      },
+      "reference_variant": {
+        "kind": "ddtree",
+        "tree_budget": 47,
+        "block_size": 16
+      },
+      "variants": [
+        {
+          "name": "compact_two_tap_5layer_ddtree47",
+          "kind": "ddtree",
+          "tree_budget": 47,
+          "block_size": 16
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "compact_four_drop3",
+      "candidate_checkpoint": {
+        "path": "/scratch/aryama.murthy/native-joint/29162/lane2/student.pt",
+        "sha256": "c9ccb1ca76edf67a4e7d27adbfadb2d8f86c75231443ab89a752b9aaeaa7310f"
+      },
+      "reference_variant": {
+        "kind": "ddtree",
+        "tree_budget": 47,
+        "block_size": 16
+      },
+      "variants": [
+        {
+          "name": "compact_four_drop3_ddtree47",
+          "kind": "ddtree",
+          "tree_budget": 47,
+          "block_size": 16
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "compact_four_drop2",
+      "candidate_checkpoint": {
+        "path": "/scratch/aryama.murthy/native-joint/29162/lane3/student.pt",
+        "sha256": "73767c020bff05d53a3c8d6f7458c184868e71dcadb1c8ed2d569aa6ed4a520d"
+      },
+      "reference_variant": {
+        "kind": "ddtree",
+        "tree_budget": 47,
+        "block_size": 16
+      },
+      "variants": [
+        {
+          "name": "compact_four_drop2_ddtree47",
+          "kind": "ddtree",
+          "tree_budget": 47,
+          "block_size": 16
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 1,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "tree_probability_calibration",
+      "variants": [
+        {
+          "name": "ddtree47_temperature0.5",
+          "kind": "ddtree",
+          "tree_budget": 47,
+          "block_size": 16,
+          "selection_temperature": 0.5
+        },
+        {
+          "name": "ddtree47_temperature0.75",
+          "kind": "ddtree",
+          "tree_budget": 47,
+          "block_size": 16,
+          "selection_temperature": 0.75
+        },
+        {
+          "name": "ddtree47_temperature1.25",
+          "kind": "ddtree",
+          "tree_budget": 47,
+          "block_size": 16,
+          "selection_temperature": 1.25
+        },
+        {
+          "name": "ddtree47_temperature1.5",
+          "kind": "ddtree",
+          "tree_budget": 47,
+          "block_size": 16,
+          "selection_temperature": 1.5
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 2,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "compact_two_tap_5layer",
+  "candidate_checkpoint": {
+    "path": "/scratch/aryama.murthy/native-joint/29162/lane0/student.pt",
+    "sha256": "83dd90d3590d27bca26245e49b9ae71133626df327b279ac062a16a86be226c5"
+  },
+  "reference_variant": {
+    "kind": "ddtree",
+    "tree_budget": 47,
+    "block_size": 16
+  },
+  "variants": [
+    {
+      "name": "compact_two_tap_5layer_ddtree47",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 16
+    }
+  ]
+}

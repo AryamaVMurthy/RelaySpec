@@ -1,0 +1,120 @@
+{
+  "lanes": [
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 4,
+      "output_cap": 2048,
+      "repeats": 2,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "ddtree_budget31_long_breadth",
+      "variants": [
+        {
+          "name": "ddtree_budget31_16requests_cap2048",
+          "kind": "ddtree",
+          "tree_budget": 31,
+          "block_size": 16
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 4,
+      "output_cap": 2048,
+      "repeats": 2,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "ddtree_budget47_long_breadth",
+      "variants": [
+        {
+          "name": "ddtree_budget47_16requests_cap2048",
+          "kind": "ddtree",
+          "tree_budget": 47,
+          "block_size": 16
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 2,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "ddtree_larger",
+      "variants": [
+        {
+          "name": "ddtree_budget63_pilot",
+          "kind": "ddtree",
+          "tree_budget": 63,
+          "block_size": 16
+        },
+        {
+          "name": "ddtree_budget95_pilot",
+          "kind": "ddtree",
+          "tree_budget": 95,
+          "block_size": 16
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 512,
+      "repeats": 1,
+      "timeout_seconds": 540,
+      "lane_script": "run_radical.py",
+      "name": "gpu_adaptive_leaves",
+      "variants": [
+        {
+          "name": "gpu_leaf16_prefix0.0",
+          "kind": "adaptive_leaves",
+          "leaf_budget": 16,
+          "draft_topk": 5,
+          "prefix_weight": 0.0,
+          "block_size": 16
+        },
+        {
+          "name": "gpu_leaf16_prefix0.5",
+          "kind": "adaptive_leaves",
+          "leaf_budget": 16,
+          "draft_topk": 5,
+          "prefix_weight": 0.5,
+          "block_size": 16
+        },
+        {
+          "name": "gpu_leaf16_prefix1.0",
+          "kind": "adaptive_leaves",
+          "leaf_budget": 16,
+          "draft_topk": 5,
+          "prefix_weight": 1.0,
+          "block_size": 16
+        }
+      ]
+    }
+  ]
+}

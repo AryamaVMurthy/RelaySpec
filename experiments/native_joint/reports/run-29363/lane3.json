@@ -1,0 +1,45 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 1,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "tree_probability_calibration",
+  "variants": [
+    {
+      "name": "ddtree47_temperature0.5",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 16,
+      "selection_temperature": 0.5
+    },
+    {
+      "name": "ddtree47_temperature0.75",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 16,
+      "selection_temperature": 0.75
+    },
+    {
+      "name": "ddtree47_temperature1.25",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 16,
+      "selection_temperature": 1.25
+    },
+    {
+      "name": "ddtree47_temperature1.5",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 16,
+      "selection_temperature": 1.5
+    }
+  ]
+}

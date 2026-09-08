@@ -1,0 +1,57 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 1,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "tree_shape_budgets",
+  "variants": [
+    {
+      "name": "budget_tree3_main16_alt8",
+      "kind": "tree_branches",
+      "branches": 3,
+      "block_size": 16,
+      "main_length": 16,
+      "branch_length": 8
+    },
+    {
+      "name": "budget_tree4_main14_alt8",
+      "kind": "tree_branches",
+      "branches": 4,
+      "block_size": 16,
+      "main_length": 14,
+      "branch_length": 8
+    },
+    {
+      "name": "budget_tree4_main12_alt8",
+      "kind": "tree_branches",
+      "branches": 4,
+      "block_size": 16,
+      "main_length": 12,
+      "branch_length": 8
+    },
+    {
+      "name": "budget_tree5_main16_alt6",
+      "kind": "tree_branches",
+      "branches": 5,
+      "block_size": 16,
+      "main_length": 16,
+      "branch_length": 6
+    },
+    {
+      "name": "budget_tree8_main16_alt4",
+      "kind": "tree_branches",
+      "branches": 8,
+      "block_size": 16,
+      "main_length": 16,
+      "branch_length": 4
+    }
+  ]
+}

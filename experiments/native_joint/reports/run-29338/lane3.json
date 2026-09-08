@@ -1,0 +1,53 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 1,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "leaf_wider_ranks",
+  "variants": [
+    {
+      "name": "leaf_top6_p3_budget",
+      "kind": "tree_branches",
+      "branches": 2,
+      "block_size": 16,
+      "tree_style": "leaves",
+      "leaf_positions": 3,
+      "draft_topk": 6
+    },
+    {
+      "name": "leaf_top6_p4_budget",
+      "kind": "tree_branches",
+      "branches": 2,
+      "block_size": 16,
+      "tree_style": "leaves",
+      "leaf_positions": 4,
+      "draft_topk": 6
+    },
+    {
+      "name": "leaf_top8_p3_budget",
+      "kind": "tree_branches",
+      "branches": 2,
+      "block_size": 16,
+      "tree_style": "leaves",
+      "leaf_positions": 3,
+      "draft_topk": 8
+    },
+    {
+      "name": "leaf_top8_p4_budget",
+      "kind": "tree_branches",
+      "branches": 2,
+      "block_size": 16,
+      "tree_style": "leaves",
+      "leaf_positions": 4,
+      "draft_topk": 8
+    }
+  ]
+}

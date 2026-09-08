@@ -1,0 +1,24 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 8,
+  "output_cap": 512,
+  "repeats": 2,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "tree4_suffix8_breadth",
+  "variants": [
+    {
+      "name": "tree4_suffix8_breadth",
+      "kind": "tree_branches",
+      "branches": 4,
+      "block_size": 16,
+      "branch_length": 8
+    }
+  ]
+}

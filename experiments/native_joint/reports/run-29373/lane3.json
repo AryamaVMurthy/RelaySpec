@@ -1,0 +1,60 @@
+{
+  "seed": 1729,
+  "train_records": 16,
+  "val_records": 4,
+  "sequence_length": 512,
+  "block_size": 16,
+  "data_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1",
+  "eval_manifest": "data/screening.json",
+  "benchmark": "gsm8k",
+  "eval_requests": 4,
+  "output_cap": 128,
+  "learning_rate": 1e-05,
+  "weight_decay": 0.01,
+  "loss": "kl",
+  "gamma": 7.0,
+  "temperature": 1.0,
+  "steps": 8,
+  "validate_every": 8,
+  "accumulation": 2,
+  "gradient_clip": 1.0,
+  "name": "tree_coverage_four_layer",
+  "taps": [
+    25,
+    33
+  ],
+  "layers": [
+    0,
+    1,
+    2,
+    4
+  ],
+  "train_mode": "joint",
+  "teacher": "target",
+  "timeout_seconds": 540,
+  "prepared_index": "data/onpolicy-mixed.json",
+  "require_all_records": true,
+  "save_best": true,
+  "lane_script": "run_lane.py",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 1,
+  "decode_variant": {
+    "kind": "ddtree",
+    "tree_budget": 47,
+    "block_size": 16
+  },
+  "tree_coverage": {
+    "topk": 5,
+    "margin": 0.2,
+    "weight": 1.0
+  },
+  "initial_checkpoint": {
+    "path": "/scratch/aryama.murthy/native-joint/29162/lane2/student.pt",
+    "sha256": "c9ccb1ca76edf67a4e7d27adbfadb2d8f86c75231443ab89a752b9aaeaa7310f"
+  }
+}

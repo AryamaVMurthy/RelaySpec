@@ -15,7 +15,7 @@ import torch
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from core import TAPS, block_view, block_batch, compact_student, prediction_loss, token_ids, cast_parameters, conditioned_noise
+from core import TAPS, block_view, block_batch, compact_student, prediction_loss, token_ids, cast_parameters, conditioned_noise, tree_coverage_loss
 
 TARGET = {"id": "Qwen/Qwen3-8B", "revision": "b968826d9c46dd6066d109eabc6255188de91218"}
 DRAFT = {"id": "z-lab/Qwen3-8B-DFlash-b16", "revision": "9b41424b7109f9c5413454f481b09a82b85333f4"}
@@ -153,6 +153,15 @@ def main():
         record["anchor_max"] = len(record["input_ids"])-cfg["block_size"]
         return record
     student = compact_student(native, cfg["taps"], cfg["layers"]).eval()
+    if cfg.get("initial_checkpoint"):
+        initial = cfg["initial_checkpoint"]
+        if sha(initial["path"]) != initial["sha256"]:
+            raise RuntimeError("Initial checkpoint hash mismatch")
+        checkpoint = torch.load(initial["path"], map_location="cpu", weights_only=True)
+        if any(checkpoint["config"][key] != cfg[key] for key in ["taps", "layers"]):
+            raise RuntimeError("Initial architecture differs from training config")
+        student.load_state_dict(checkpoint["state_dict"])
+        del checkpoint
     batch_size = cfg.get("batch_size", 1)
     if not isinstance(batch_size, int) or batch_size < 1:
         raise ValueError("batch_size must be a positive integer")
@@ -214,12 +223,24 @@ def main():
         prompt = record.get("prompt") or record["turns"][0]
         return torch.tensor(token_ids(tokenizer.apply_chat_template([{"role": "user", "content": prompt}], tokenize=True, add_generation_prompt=True, enable_thinking=False)), device="cuda").unsqueeze(0)
 
-    def generate(model, ids, cap):
+    def generate(model, ids, cap, tree_reference=False):
+        if cfg.get("decode_variant") and (model is not native or tree_reference):
+            from radical_decode import decode_variant
+            return decode_variant(official, model, target, ids, cap, eos, cfg["decode_variant"])
         if cfg.get("conditioning_prefix") and model is not native:
             from radical_decode import decode_variant
             return decode_variant(official, native, target, ids, cap, eos, {"kind": "refine", "block_size": cfg["block_size"], "prefix": cfg["conditioning_prefix"], "threshold": cfg.get("refine_threshold", 0.)}, refiner=model)
         return official.dflash_generate(model, target, ids, cap, eos, 0., block_size=cfg["block_size"], return_stats=True)
 
+    if cfg.get("decode_variant"):
+        from radical_decode import decode_variant
+        probe = encode(evaluation[0])
+        baseline = generate(native, probe, 64)
+        noop = decode_variant(official, native, target, probe, 64, eos, {"kind": "tree_branches", "branches": 1, "block_size": 16})
+        if not torch.equal(baseline.output_ids, noop.output_ids) or baseline.acceptance_lengths != noop.acceptance_lengths:
+            raise RuntimeError("Training evaluation tree no-op gate failed")
+        models["tree_reference"] = native
+        (args.output/"tree-noop-gate.json").write_text(json.dumps({"status": "pass", "cap": 64}))
     midpoint = None
     if cfg.get("midpoint"):
         from midpoint_conditioning import MidpointConditioning
@@ -239,13 +260,15 @@ def main():
         rows = []
         for model in {id(m): m for m in models.values()}.values():
             generate(model, encode(evaluation[0]), 16)
+        if cfg.get("decode_variant"):
+            generate(native, encode(evaluation[0]), 16, tree_reference=True)
         for i, record in enumerate(evaluation):
             names = list(models)
             names = names[i % len(names):]+names[:i % len(names)]
             ids = encode(record)
             for name in names:
                 torch.cuda.synchronize(); begin = time.perf_counter()
-                result = generate(models[name], ids, cfg["output_cap"])
+                result = generate(models[name], ids, cfg["output_cap"], tree_reference=name == "tree_reference")
                 torch.cuda.synchronize(); seconds = time.perf_counter()-begin
                 output = result.output_ids[0, ids.shape[1]:].tolist()
                 rows.append({"stage": stage, "method": name, "benchmark": record["benchmark"], "problem_id": record["problem_id"], "seconds": seconds, "input_tokens": ids.shape[1], "output_tokens": len(output), "tokens": output, "acceptance_lengths": result.acceptance_lengths, "completion": tokenizer.decode(output, skip_special_tokens=True), "capped": len(output) >= cfg["output_cap"]})
@@ -313,6 +336,11 @@ def main():
             values["native_kl"] = native_values["kl"]
             values["native_token_agreement"] = native_values["token_agreement"]
             loss = native_loss if teacher_kind == "native" else .5*(target_loss+native_loss)
+        if cfg.get("tree_coverage"):
+            coverage_cfg = cfg["tree_coverage"]
+            coverage, coverage_values = tree_coverage_loss(logits, teacher, coverage_cfg.get("topk", 5), coverage_cfg.get("margin", .2), cfg["gamma"])
+            loss = loss+coverage_cfg.get("weight", 1.)*coverage
+            values.update(coverage_values)
         if midpoint is not None:
             middle = midpoint.take_logits()
             auxiliary, auxiliary_values = prediction_loss(middle, teacher[:, :midpoint.prefix], labels[:, :midpoint.prefix], cfg["midpoint"].get("auxiliary_loss", "ce"), cfg["gamma"], cfg["temperature"])
@@ -399,9 +427,9 @@ def main():
     after = decode("after")
     before_rows = json.loads((args.output/"decode-before.json").read_text())
     after_rows = json.loads((args.output/"decode-after.json").read_text())
-    baseline_before = {r["problem_id"]: r for r in before_rows if r["method"] == "native"}
+    baseline_before = {(r["method"], r["problem_id"]): r for r in before_rows if r["method"] in {"native", "tree_reference"}}
     for row in after_rows:
-        if row["method"] == "native" and any(row[k] != baseline_before[row["problem_id"]][k] for k in ["tokens", "acceptance_lengths"]):
+        if row["method"] in {"native", "tree_reference"} and any(row[k] != baseline_before[row["method"], row["problem_id"]][k] for k in ["tokens", "acceptance_lengths"]):
             raise RuntimeError("Untouched native control changed across training")
     restored = compact_student(native, cfg["taps"], cfg["layers"]).eval().requires_grad_(False)
     restored.load_state_dict(torch.load(checkpoint, map_location="cpu", weights_only=True)["state_dict"])

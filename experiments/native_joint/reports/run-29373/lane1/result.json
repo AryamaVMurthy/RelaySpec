@@ -1,0 +1,120 @@
+{
+  "status": "pass",
+  "before": {
+    "native": {
+      "tps": 114.1964694123906,
+      "progress": 4.396694214876033,
+      "exact_native": 4,
+      "requests": 4,
+      "capped": 4,
+      "native_ratio": 1.0
+    },
+    "duplicate": {
+      "tps": 113.99513962627314,
+      "progress": 4.396694214876033,
+      "exact_native": 4,
+      "requests": 4,
+      "capped": 4,
+      "native_ratio": 0.9982369876480996
+    },
+    "student": {
+      "tps": 139.2732778212369,
+      "progress": 5.966292134831461,
+      "exact_native": 1,
+      "requests": 4,
+      "capped": 4,
+      "native_ratio": 1.2195935525667434
+    },
+    "tree_reference": {
+      "tps": 139.47777161174574,
+      "progress": 5.966292134831461,
+      "exact_native": 1,
+      "requests": 4,
+      "capped": 4,
+      "native_ratio": 1.2213842715930066
+    }
+  },
+  "after": {
+    "native": {
+      "tps": 113.9732192627088,
+      "progress": 4.396694214876033,
+      "exact_native": 4,
+      "requests": 4,
+      "capped": 4,
+      "native_ratio": 1.0
+    },
+    "duplicate": {
+      "tps": 113.86525430686149,
+      "progress": 4.396694214876033,
+      "exact_native": 4,
+      "requests": 4,
+      "capped": 4,
+      "native_ratio": 0.9990527164491296
+    },
+    "student": {
+      "tps": 137.21595721640966,
+      "progress": 5.966666666666667,
+      "exact_native": 3,
+      "requests": 4,
+      "capped": 4,
+      "native_ratio": 1.2039315736105185
+    },
+    "tree_reference": {
+      "tps": 139.70996705064792,
+      "progress": 5.966292134831461,
+      "exact_native": 1,
+      "requests": 4,
+      "capped": 4,
+      "native_ratio": 1.2258139934488979
+    }
+  },
+  "validation": [
+    {
+      "step": 0,
+      "loss": 3.3212096840143204,
+      "kl": 2.427385151386261,
+      "data_ce": 2.621242344379425,
+      "token_agreement": 0.25000001303851604,
+      "teacher_forced_prefix_matches": 2.75,
+      "target_topk_coverage": 0.5166666954755783,
+      "coverage_margin_loss": 0.8938244739547372
+    },
+    {
+      "step": 8,
+      "loss": 3.316584065556526,
+      "kl": 2.4257990419864655,
+      "data_ce": 2.62030228972435,
+      "token_agreement": 0.26666668616235256,
+      "teacher_forced_prefix_matches": 2.75,
+      "target_topk_coverage": 0.5166666954755783,
+      "coverage_margin_loss": 0.8907850924879313
+    }
+  ],
+  "best_validation": {
+    "step": 8,
+    "loss": 3.316584065556526,
+    "kl": 2.4257990419864655,
+    "data_ce": 2.62030228972435,
+    "token_agreement": 0.26666668616235256,
+    "teacher_forced_prefix_matches": 2.75,
+    "target_topk_coverage": 0.5166666954755783,
+    "coverage_margin_loss": 0.8907850924879313,
+    "path": "/scratch/aryama.murthy/native-joint/29373/lane1/best-validation.pt",
+    "sha256": "f794be47bd4a0f46a960d171e027e484c6fd9f87a228f3729264b12f6cd2dce5"
+  },
+  "evaluated_checkpoint": "final",
+  "updates": {
+    "interface_l2": 0.3100602328777313,
+    "draft_l2": 0.23193639516830444
+  },
+  "counts": {
+    "native_parameters": 1048626432,
+    "student_parameters": 1048626432,
+    "trainable_parameters": 1048626432,
+    "distinct_records_consumed": 16,
+    "supervised_blocks": 16,
+    "supervised_token_positions": 240
+  },
+  "elapsed_seconds": 66.46748557128012,
+  "cuda_max_allocated": 38061485056
+}

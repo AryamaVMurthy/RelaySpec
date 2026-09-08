@@ -6,6 +6,8 @@ A separate experiment investigating whether joint token-prediction training of a
 
 The user requires at least10% end-to-end speedup over original DFlash and has prioritized rapid, radical decoding ideas after joint training reached only near parity. `radical_decode.py` and `run_radical.py` test inference policies with the unchanged native weights: verification length, history lookup, conditional multi-branch verification, and recycling unused proposals. These screens extend the separate native study; they are not RelaySpec results. Every proposed token is still target-verified, and numerical output differences are measured explicitly. A small-screen gain is only a promotion signal: repeated broader tests and the reserved128-request/2,048-token comparison are required.
 
+Current evidence: adapted DDTree47 reached150.4 versus125.1 TPS (+20.2%) on16 development requests with two timing repeats atcap2048. Our compact two-tap drafter with the same tree is19.2% faster than original DFlash on eight short requests, but6.0% slower than full DDTree. The fixed leaf policy's12.0% gain on32 requests atcap512 dropped to7.6% in a longer-output pilot. See `reports/TREE_REFERENCES.md` for the direct comparison; do not attribute DDTree's established tree method to this experiment.
+
 ## Question and comparison
 
 The target is frozen Qwen3-8B. The baseline is its pinned released native DFlash-b16 drafter. Students initialize from that native checkpoint, reduce the conditioning taps and/or draft depth, and train both the conditioning projection and draft transformer. This is native compression fine-tuning, not training from scratch or a claim of architectural novelty.
@@ -52,7 +54,7 @@ Use at most four GPUs concurrently. Initial four-GPU jobs have independent lanes
 - `quantized_draft.py` packs an independent drafter and optionally a separate draft vocabulary head into int4. Its proxy routes target verification through the original BF16 target/head. Copy, frozen-control and checkpoint-reload gates precede timing. This tests standard quantization as a proposal-computation tradeoff, not an architectural novelty claim.
 - `midpoint_conditioning.py` injects1–2 internally predicted token embeddings after an intermediate draft layer, allowing remaining layers to refine within one pass. Hard argmax inference matches the straight-through training forward exactly at fixed logits. Auxiliary intermediate CE and final target KL train the shared interface/drafter. Alpha0 has an exact native-path gate; saved checkpoints require the same hook configuration on reload.
 
-Run `analyze_radical.py` and `analyze_progress.py` from this folder to regenerate all positive and negative screens. `reports/PROGRESS.md` records the current queue and decisions. None of the completed adaptive screens yet establishes the required10% gain.
+Run `analyze_radical.py` and `analyze_progress.py` from this folder to regenerate all positive and negative screens. `reports/PROGRESS.md` records the current queue and decisions. Adaptive DDTree development tests exceed10%, but no reserved128-request confirmation is complete and none of our changes has yet improved on full DDTree.
 
 ## Sources
 
@@ -62,6 +64,11 @@ Run `analyze_radical.py` and `analyze_progress.py` from this folder to regenerat
 
 ## Run
 
-Local tests: `PYTHONPATH=. /home/aryamavmurthy/work/RelaySpec/.venv/bin/python -m pytest tests -q` from this folder.
+Local CPU tests: `CUDA_VISIBLE_DEVICES='' PYTHONPATH=. /home/aryamavmurthy/work/RelaySpec/.venv/bin/python -m pytest tests -q` from this folder. Hiding CUDA prevents the CPU compiler regression test from initializing an unrelated busy local GPU. GPU equivalence and reload gates run inside each allocated cluster lane.
 
 Cluster launch: `sbatch --export=ALL,WAVE=configs/pilot.json run.sbatch` from an immutable uploaded source snapshot. The launcher creates separate per-lane configs and logs. Check every lane result, not only the Slurm exit status.
+
+
+Recent native decoding result: the fixed top5/first4 leaf tree reached1.1196× original DFlash on32 development requests with two repeats, cap512 (144.0 vs128.6 TPS). Exact BF16 output agreement14/32; selected-case FP32 diagnostics support numerical tie sensitivity. This is not reserved confirmation. See `reports/PROGRESS.md` and `reports/RADICAL_RESULTS.md` for negative results and raw provenance.
+
+DDTree (Ringel and Romano, https://arxiv.org/abs/2604.12989) is direct prior work for DFlash tree construction. `ddtree_baseline.py` adapts its MIT-licensed heap builder from upstream commit c96427a185677bf4133ed865dd1626a5041aef9b into our matched runtime. Upstream license is included in that module. No general tree novelty is claimed. The baseline's node budget excludes the root; the leaf policy's32 total nodes match DDTree budget31. Training and target parameters remain unchanged in these inference-only experiments.

@@ -177,3 +177,26 @@ def prediction_loss(student_logits, teacher_logits, labels, kind="kl", gamma=7.0
         "token_agreement": float(match.float().mean()),
         "teacher_forced_prefix_matches": float(match.long().cumprod(-1).sum(-1).float().mean()),
     }
+
+
+def tree_coverage_loss(logits, teacher_logits, topk=5, margin=.2, gamma=7.):
+    """Heuristic target-token top-k coverage, not differentiable tree acceptance.
+
+    Frozen causal target argmax is encouraged to enter the local top-k set.
+    The caller retains its original KL objective to preserve calibration.
+    """
+    if not 1 <= topk < logits.shape[-1]:
+        raise ValueError("Coverage rank must lie within the vocabulary")
+    values=logits.float()
+    labels=teacher_logits.detach().argmax(-1)
+    correct=values.gather(-1,labels.unsqueeze(-1)).squeeze(-1)
+    competitors=values.scatter(-1,labels.unsqueeze(-1),float('-inf')).topk(topk,dim=-1).values[...,-1]
+    penalties=F.relu(competitors-correct+margin)
+    weights=torch.ones(values.shape[-2],device=values.device)
+    if gamma:
+        weights=torch.exp(-torch.arange(len(weights),device=values.device)/gamma)
+    weights=weights/weights.sum()
+    return (penalties*weights).sum(-1).mean(), {
+        "target_topk_coverage": float((correct>=competitors).float().mean().detach()),
+        "coverage_margin_loss": float((penalties*weights).sum(-1).mean().detach()),
+    }
