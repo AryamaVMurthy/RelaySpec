@@ -18,3 +18,10 @@ JetSpec's official repository documents both an HF reference path and an optimiz
 
 
 JetSpec source inspection is pinned to commit2c7b3fae75690dfe9a188a37d7fdfd43ee0e032f, cloned read-only under `/tmp/native-jetspec-reference`. In `bench/reference/benchmark.py`, the optional linear “DFlash” comparison receives the **same selected drafter object** as the JetSpec tree path. With a JetSpec checkpoint selected, that is a same-head linear-vs-tree comparison, not a separately loaded original released DFlash checkpoint. A direct reproduction must explicitly retain our original released-DFlash control. No JetSpec model has been downloaded or benchmarked in this study yet.
+
+
+## Expanded publication assessment, 2026-09-08
+
+The follow-up check identifies additional direct overlap: [CaDDTree](https://arxiv.org/abs/2606.01813) for cost-aware node budgets, [VAT](https://arxiv.org/abs/2608.30135) for verification-aware training, [TAPS](https://arxiv.org/abs/2606.00487) for target-aware prefix selection, and [LLM-42](https://arxiv.org/abs/2601.17768) for deterministic verification/replay. These were not reproduced locally. Generic acceptance-aware training, cost-aware budgeting, and numerical determinism should not be pitched as unoccupied directions. See [publication assessment](publication-review/ASSESSMENT.md), [source log](publication-review/SOURCE_LOG.md), and publication-review/references.bib for scope, evidence and status.
+
+Current recommendation: the standalone package does not yet support a new ICLR methods paper. The strongest local speed result is the adapted DDTree baseline. A separate analysis or methods paper needs a specific new validated contribution; the existing negative results and partial numerical diagnoses are starting evidence. No new experiments or manuscript changes were made in this assessment.
