@@ -1,0 +1,51 @@
+{
+  "spec": {
+    "family": "dflash",
+    "seed": 1729,
+    "config": "configs/autoresearch/20260907/native-gsm8k-screen.yaml",
+    "manifest": "configs/eval_manifest_full_v4.json",
+    "requests": 8,
+    "max_new_tokens": 512,
+    "calibration_records": 64,
+    "calibration_output_cap": 64,
+    "calibration_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+    "hypothesis": "Share a single native context projection across draft layers; retain separate nonlinear prediction and noise projections. Test exact fusion and calibrated low-rank factorization.",
+    "candidates": {
+      "shared_exact": {
+        "kind": "shared_context",
+        "rank": 0
+      },
+      "shared_r256": {
+        "kind": "shared_context",
+        "rank": 256
+      },
+      "shared_r512": {
+        "kind": "shared_context",
+        "rank": 512
+      }
+    },
+    "benchmark": "math500"
+  },
+  "spec_sha256": "3c8f8a06f3225687bd8c4fb9c95a2664201dc1fcbdd30c1b43bb9e573dadeb1f",
+  "manifest_sha256": "9f6e5bf446aa45f1e939751e068c071e8e541f5d56f4029bb013f0a1bc9628ea",
+  "target": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+  },
+  "proposer": {
+    "family": "dflash",
+    "id": "z-lab/Qwen3-8B-DFlash-b16",
+    "revision": "9b41424b7109f9c5413454f481b09a82b85333f4",
+    "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+  },
+  "torch": "2.9.1+cu128",
+  "transformers": "5.3.0",
+  "cuda": "12.8",
+  "gpu": "NVIDIA L40S",
+  "host": "node07",
+  "job": "29142",
+  "draft_layers": 5,
+  "draft_parameters": 1048626432,
+  "precision": "BF16 target and draft, SDPA, TF32 disabled",
+  "scope": "Native same-target exploration. Development requests, capped outputs, one fit seed. No full-answer quality or exact-AR guarantee. All original weights remain resident during paired timing, so memory is not isolated deployment."
+}

@@ -1,0 +1,74 @@
+{
+  "spec": {
+    "family": "dflash",
+    "seed": 1729,
+    "config": "configs/autoresearch/20260907/native-gsm8k-screen.yaml",
+    "manifest": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full-manifest.json",
+    "requests": 8,
+    "max_new_tokens": 512,
+    "calibration_records": 64,
+    "calibration_output_cap": 64,
+    "calibration_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+    "hypothesis": "Can a smaller nonlinear native MLP plus a fitted linear residual preserve acceptance while reducing native drafting compute?",
+    "candidates": {
+      "keep50_r0": {
+        "kind": "pruned_mlp",
+        "layers": [
+          3,
+          4
+        ],
+        "fraction": 0.5,
+        "rank": 0
+      },
+      "keep50_r64": {
+        "kind": "pruned_mlp",
+        "layers": [
+          3,
+          4
+        ],
+        "fraction": 0.5,
+        "rank": 64
+      },
+      "keep75_r0": {
+        "kind": "pruned_mlp",
+        "layers": [
+          3,
+          4
+        ],
+        "fraction": 0.75,
+        "rank": 0
+      },
+      "keep75_r64": {
+        "kind": "pruned_mlp",
+        "layers": [
+          3,
+          4
+        ],
+        "fraction": 0.75,
+        "rank": 64
+      }
+    }
+  },
+  "spec_sha256": "c92d3db6d3f0c1541c70c104628b942f69f1473aca1a26ae71bd5cd88edd5089",
+  "manifest_sha256": "cb88d7207290d007a197e21a7b98b32422a69b87f27d173fc5576faa814d2906",
+  "target": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+  },
+  "proposer": {
+    "family": "dflash",
+    "id": "z-lab/Qwen3-8B-DFlash-b16",
+    "revision": "9b41424b7109f9c5413454f481b09a82b85333f4",
+    "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+  },
+  "torch": "2.9.1+cu128",
+  "transformers": "5.3.0",
+  "cuda": "12.8",
+  "gpu": "NVIDIA L40S",
+  "host": "node07",
+  "job": "29140",
+  "draft_layers": 5,
+  "draft_parameters": 1048626432,
+  "precision": "BF16 target and draft, SDPA, TF32 disabled",
+  "scope": "Native same-target exploration. Development requests, capped outputs, one fit seed. No full-answer quality or exact-AR guarantee. All original weights remain resident during paired timing, so memory is not isolated deployment."
+}

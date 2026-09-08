@@ -1,0 +1,154 @@
+{
+  "lanes": [
+    {
+      "family": "dflash",
+      "seed": 1729,
+      "config": "configs/autoresearch/20260907/native-gsm8k-screen.yaml",
+      "manifest": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full-manifest.json",
+      "requests": 2,
+      "max_new_tokens": 64,
+      "calibration_records": 4,
+      "calibration_output_cap": 64,
+      "calibration_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+      "hypothesis": "Can draft attention/MLP blocks be removed while retaining enough acceptance to accelerate native decoding?",
+      "candidates": {
+        "drop1": {
+          "kind": "drop_layers",
+          "layers": [
+            1
+          ]
+        },
+        "drop2": {
+          "kind": "drop_layers",
+          "layers": [
+            2
+          ]
+        },
+        "drop3": {
+          "kind": "drop_layers",
+          "layers": [
+            3
+          ]
+        },
+        "drop4": {
+          "kind": "drop_layers",
+          "layers": [
+            4
+          ]
+        }
+      }
+    },
+    {
+      "family": "dflash",
+      "seed": 1729,
+      "config": "configs/autoresearch/20260907/native-gsm8k-screen.yaml",
+      "manifest": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full-manifest.json",
+      "requests": 2,
+      "max_new_tokens": 64,
+      "calibration_records": 4,
+      "calibration_output_cap": 64,
+      "calibration_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+      "hypothesis": "Which native draft MLPs are redundant?",
+      "candidates": {
+        "zero0": {
+          "kind": "zero_mlp",
+          "layers": [
+            0
+          ]
+        },
+        "zero1": {
+          "kind": "zero_mlp",
+          "layers": [
+            1
+          ]
+        },
+        "zero2": {
+          "kind": "zero_mlp",
+          "layers": [
+            2
+          ]
+        },
+        "zero3": {
+          "kind": "zero_mlp",
+          "layers": [
+            3
+          ]
+        },
+        "zero4": {
+          "kind": "zero_mlp",
+          "layers": [
+            4
+          ]
+        }
+      }
+    },
+    {
+      "family": "dflash",
+      "seed": 1729,
+      "config": "configs/autoresearch/20260907/native-gsm8k-screen.yaml",
+      "manifest": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full-manifest.json",
+      "requests": 2,
+      "max_new_tokens": 64,
+      "calibration_records": 4,
+      "calibration_output_cap": 64,
+      "calibration_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+      "hypothesis": "Can cheap fitted linear operators replace native draft nonlinear MLP computation?",
+      "candidates": {
+        "linear3_r64": {
+          "kind": "linear_mlp",
+          "layers": [
+            3
+          ],
+          "rank": 64
+        },
+        "linear3_r256": {
+          "kind": "linear_mlp",
+          "layers": [
+            3
+          ],
+          "rank": 256
+        },
+        "linear4_r64": {
+          "kind": "linear_mlp",
+          "layers": [
+            4
+          ],
+          "rank": 64
+        },
+        "linear4_r256": {
+          "kind": "linear_mlp",
+          "layers": [
+            4
+          ],
+          "rank": 256
+        }
+      }
+    },
+    {
+      "family": "dflash",
+      "seed": 1729,
+      "config": "configs/autoresearch/20260907/native-gsm8k-screen.yaml",
+      "manifest": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full-manifest.json",
+      "requests": 2,
+      "max_new_tokens": 64,
+      "calibration_records": 4,
+      "calibration_output_cap": 64,
+      "calibration_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+      "hypothesis": "Can bounded attention over target-context features improve native drafting latency?",
+      "candidates": {
+        "window64": {
+          "kind": "window",
+          "window": 64
+        },
+        "window128": {
+          "kind": "window",
+          "window": 128
+        },
+        "window256": {
+          "kind": "window",
+          "window": 256
+        }
+      }
+    }
+  ]
+}

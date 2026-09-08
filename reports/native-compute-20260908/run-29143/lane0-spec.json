@@ -1,0 +1,58 @@
+{
+  "family": "dflash",
+  "seed": 1729,
+  "config": "configs/autoresearch/20260907/native-gsm8k-screen.yaml",
+  "manifest": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full-manifest.json",
+  "requests": 8,
+  "max_new_tokens": 512,
+  "calibration_records": 128,
+  "calibration_output_cap": 64,
+  "calibration_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+  "hypothesis": "Reconstruct omitted nonlinear MLP contributions from retained neurons and fold the fitted correction into their existing output weights; no additional inference projection. Width rounded down to a multiple of 256.",
+  "candidates": {
+    "fold_keep75_r0": {
+      "kind": "folded_mlp",
+      "layers": [
+        0,
+        1,
+        2
+      ],
+      "fraction": 0.75,
+      "rank": 0
+    },
+    "fold_keep75_r64": {
+      "kind": "folded_mlp",
+      "layers": [
+        0,
+        1,
+        2
+      ],
+      "fraction": 0.75,
+      "rank": 64
+    },
+    "fold_keep75_r256": {
+      "kind": "folded_mlp",
+      "layers": [
+        0,
+        1,
+        2
+      ],
+      "fraction": 0.75,
+      "rank": 256
+    },
+    "fold_keep90_r256": {
+      "kind": "folded_mlp",
+      "layers": [
+        0,
+        1,
+        2
+      ],
+      "fraction": 0.9,
+      "rank": 256
+    }
+  },
+  "profile_methods": [
+    "native",
+    "fold_keep75_r256"
+  ]
+}

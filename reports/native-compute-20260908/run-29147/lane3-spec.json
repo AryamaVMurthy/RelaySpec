@@ -1,0 +1,35 @@
+{
+  "family": "dflash",
+  "seed": 1729,
+  "config": "configs/autoresearch/20260907/native-gsm8k-screen.yaml",
+  "manifest": "configs/eval_manifest_full_v4.json",
+  "requests": 8,
+  "max_new_tokens": 512,
+  "calibration_records": 64,
+  "calibration_output_cap": 64,
+  "calibration_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+  "hypothesis": "The target dominates runtime. Pay for a second native draft pass with a guessed prefix to improve suffix proposals and accepted progress before unchanged target verification.",
+  "candidates": {
+    "refine_prefix1": {
+      "kind": "prefix_refine",
+      "prefix": 1
+    },
+    "refine_prefix2": {
+      "kind": "prefix_refine",
+      "prefix": 2
+    },
+    "refine_prefix4": {
+      "kind": "prefix_refine",
+      "prefix": 4
+    },
+    "refine_prefix8": {
+      "kind": "prefix_refine",
+      "prefix": 8
+    }
+  },
+  "benchmark": "mtbench",
+  "profile_methods": [
+    "native",
+    "refine_prefix2"
+  ]
+}
