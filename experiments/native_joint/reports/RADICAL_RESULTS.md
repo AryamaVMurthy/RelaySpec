@@ -86,8 +86,12 @@ Selection decision: the run29184 two-code-request history-lookup pilot showed1.3
 
 Failed hypotheses: 0. Error traces are retained in radical-summary.json and the raw run folders.
 
-Lanes failing before hypothesis timing: 4. These are preparation/engineering failures, not measured regressions.
+Lanes failing before hypothesis timing: 8. These are preparation/engineering failures, not measured regressions.
 - run-29296/lane0: exit1; log `reports/run-29296/lane0.log`.
 - run-29296/lane1: exit1; log `reports/run-29296/lane1.log`.
 - run-29296/lane2: exit1; log `reports/run-29296/lane2.log`.
 - run-29296/lane3: exit1; log `reports/run-29296/lane3.log`.
+- run-29298/lane0: exit1; log `reports/run-29298/lane0.log`.
+- run-29298/lane1: exit1; log `reports/run-29298/lane1.log`.
+- run-29298/lane2: exit1; log `reports/run-29298/lane2.log`.
+- run-29298/lane3: exit1; log `reports/run-29298/lane3.log`.

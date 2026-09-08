@@ -24,6 +24,21 @@ class DraftHeadTarget:
         return self._target(*args, **kwargs)
 
 
+def attach_shared_linears(modules, linear):
+    """Share a compiled functional entry point instead of guarding each bound method."""
+    names = []
+    def bind(module):
+        def forward(inputs):
+            return linear(inputs, module.weight, module.bias)
+        return forward
+    for prefix, model in modules:
+        for name, module in model.named_modules():
+            if isinstance(module, torch.nn.Linear):
+                module.forward = bind(module)
+                names.append(f"{prefix}.{name}")
+    return names
+
+
 def build_candidate(native, target, config, output, official, probe, eos):
     started = time.perf_counter()
     sys.path.insert(0, config["package_path"])
@@ -77,11 +92,8 @@ def build_candidate(native, target, config, output, official, probe, eos):
     compiled_modules = []
     if config.get("compile_linears"):
         torch._dynamo.config.recompile_limit = 32
-        for prefix, model in [("draft", student)]+([("draft_head", draft_head)] if config["quantize_head"] else []):
-            for name, module in model.named_modules():
-                if isinstance(module, torch.nn.Linear):
-                    module.forward = torch.compile(module.forward, dynamic=True, fullgraph=True)
-                    compiled_modules.append(f"{prefix}.{name}")
+        shared_linear = torch.compile(torch.nn.functional.linear, dynamic=True, fullgraph=True)
+        compiled_modules = attach_shared_linears([("draft", student)]+([("draft_head", draft_head)] if config["quantize_head"] else []), shared_linear)
         compiled = official.dflash_generate(student, proxy, probe, 64, eos, 0., block_size=16, return_stats=True)
         if not torch.equal(live.output_ids, compiled.output_ids) or live.acceptance_lengths != compiled.acceptance_lengths:
             raise RuntimeError("Compiled proposal linear layers changed probe tokens or acceptance")

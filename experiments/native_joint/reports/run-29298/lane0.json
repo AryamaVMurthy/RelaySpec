@@ -1,0 +1,36 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 2,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "name": "compiled_bf16_draft_only",
+  "quantization": {
+    "group_size": 128,
+    "quantize_head": false,
+    "precision": "bf16",
+    "compile_linears": true,
+    "package_path": "/home/aryama.murthy/native-joint-deps/torchao0150"
+  },
+  "variants": [
+    {
+      "name": "compiled_bf16_draft_only",
+      "kind": "fixed",
+      "block_size": 16,
+      "quantization": {
+        "group_size": 128,
+        "quantize_head": false,
+        "precision": "bf16",
+        "compile_linears": true,
+        "package_path": "/home/aryama.murthy/native-joint-deps/torchao0150"
+      }
+    }
+  ]
+}

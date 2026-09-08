@@ -126,3 +126,14 @@ def test_draft_head_proxy_never_changes_target_verification_head():
     assert torch.equal(proxy.lm_head(x), draft_head(x))
     assert proxy._target.lm_head is target.lm_head
     assert proxy.lm_head is not target.lm_head
+
+
+def test_shared_compiled_linear_handles_more_than_32_distinct_modules():
+    from quantized_draft import attach_shared_linears
+    modules = torch.nn.ModuleList([torch.nn.Linear(8, 8).requires_grad_(False) for _ in range(40)])
+    x = torch.randn(1, 5, 8)
+    expected = [module(x) for module in modules]
+    shared = torch.compile(torch.nn.functional.linear, backend="eager", dynamic=True, fullgraph=True)
+    names = attach_shared_linears([("test", modules)], shared)
+    assert len(names) == 40
+    assert all(torch.equal(module(x), reference) for module, reference in zip(modules, expected))
