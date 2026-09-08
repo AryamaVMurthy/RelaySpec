@@ -1,0 +1,39 @@
+{
+  "phase": "confirmation",
+  "eval_manifest": "data/confirmation.json",
+  "benchmarks": [
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 2048,
+  "repeats": 2,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "required_runtime": {
+    "torch": "2.9.1+cu128",
+    "transformers": "5.3.0"
+  },
+  "candidate_checkpoint": {
+    "path": "/scratch/aryama.murthy/native-joint/29162/lane0/student.pt",
+    "sha256": "83dd90d3590d27bca26245e49b9ae71133626df327b279ac062a16a86be226c5"
+  },
+  "reference_variant": {
+    "kind": "ddtree",
+    "tree_budget": 63,
+    "block_size": 16
+  },
+  "variants": [
+    {
+      "name": "compact_joint_ddtree47",
+      "kind": "ddtree",
+      "tree_budget": 47,
+      "block_size": 16
+    }
+  ],
+  "include_compact_linear": true,
+  "include_ar_quality": true,
+  "name": "confirmation_06_mtbench",
+  "frozen_selection": "data/frozen-native-confirmation.json",
+  "frozen_selection_sha256": "688c439bfe20978f5ea2155f33e955bb6ff36a2762cfb078f4a5b0d4cb779db5",
+  "eval_offset": 12
+}

@@ -5,6 +5,9 @@ import numpy as np
 root=Path('reports')
 rows=[]
 for path in sorted(root.glob('run-*/lane[0-3]/*/result.json')):
+    lane_config=path.parents[2]/(path.parents[1].name+'.json')
+    if lane_config.exists() and json.loads(lane_config.read_text()).get('phase')=='confirmation':
+        continue
     result=json.loads(path.read_text())
     if result.get('status')!='pass' or 'reference_ratio' not in result:continue
     raw=[json.loads(line) for line in (path.parent/'evaluation.jsonl').read_text().splitlines()]

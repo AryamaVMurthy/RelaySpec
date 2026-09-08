@@ -18,6 +18,9 @@ for status_path in sorted(root.glob("run-*/lane[0-3]-status.json")):
     if status["exit_code"] and config.get("variants") and not list((status_path.parent/lane).glob("*/result.json")):
         preparation_failures.append({"run": status_path.parent.name, "lane": lane, "status": status, "config": config, "log": str(status_path.parent/f"{lane}.log")})
 for path in sorted(root.glob("run-*/lane[0-3]/*/result.json")):
+    lane_config=path.parents[2]/(path.parents[1].name+'.json')
+    if lane_config.exists() and json.loads(lane_config.read_text()).get('phase')=='confirmation':
+        continue
     result = json.loads(path.read_text())
     if "variant" not in result:
         continue

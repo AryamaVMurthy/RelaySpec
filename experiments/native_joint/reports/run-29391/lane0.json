@@ -1,0 +1,37 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 512,
+  "repeats": 2,
+  "timeout_seconds": 540,
+  "lane_script": "run_radical.py",
+  "reference_variant": {
+    "kind": "ddtree",
+    "tree_budget": 63,
+    "block_size": 16
+  },
+  "name": "adaptive_tree_cost0.001",
+  "variants": [
+    {
+      "name": "adaptive_ddtree_cost0.001",
+      "kind": "ddtree",
+      "tree_budget": 95,
+      "block_size": 16,
+      "budget_policy": {
+        "choices": [
+          15,
+          31,
+          63,
+          95
+        ],
+        "node_cost": 0.001
+      }
+    }
+  ]
+}

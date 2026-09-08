@@ -1,0 +1,106 @@
+{
+  "spec": {
+    "phase": "confirmation",
+    "eval_manifest": "data/confirmation.json",
+    "benchmarks": [
+      "humaneval"
+    ],
+    "requests_per_benchmark": 2,
+    "output_cap": 2048,
+    "repeats": 2,
+    "timeout_seconds": 540,
+    "lane_script": "run_radical.py",
+    "required_runtime": {
+      "torch": "2.9.1+cu128",
+      "transformers": "5.3.0"
+    },
+    "candidate_checkpoint": {
+      "path": "/scratch/aryama.murthy/native-joint/29162/lane0/student.pt",
+      "sha256": "83dd90d3590d27bca26245e49b9ae71133626df327b279ac062a16a86be226c5"
+    },
+    "reference_variant": {
+      "kind": "ddtree",
+      "tree_budget": 63,
+      "block_size": 16
+    },
+    "variants": [
+      {
+        "name": "compact_joint_ddtree47",
+        "kind": "ddtree",
+        "tree_budget": 47,
+        "block_size": 16
+      }
+    ],
+    "include_compact_linear": true,
+    "include_ar_quality": true,
+    "name": "confirmation_08_humaneval",
+    "frozen_selection": "data/frozen-native-confirmation.json",
+    "frozen_selection_sha256": "688c439bfe20978f5ea2155f33e955bb6ff36a2762cfb078f4a5b0d4cb779db5",
+    "eval_offset": 16
+  },
+  "target": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+  },
+  "draft": {
+    "id": "z-lab/Qwen3-8B-DFlash-b16",
+    "revision": "9b41424b7109f9c5413454f481b09a82b85333f4"
+  },
+  "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756",
+  "source_file_sha256": "6dfb12d0eeebe085d78d23fc816a481a8b25257fd76891e939a41423c29c697b",
+  "eval_manifest_sha256": "3e1af1d416ed37cc7440675ba49850e6c259f187bb7def88589477b0eb8d3a5d",
+  "torch": "2.9.1+cu128",
+  "transformers": "5.3.0",
+  "gpu": "NVIDIA L40S",
+  "job": "29415",
+  "scope": "Previously jointly trained compact interface/drafter, now tested with packed verification. Frozen original target. Native single-path and optional released-drafter tree references share the runtime and hardware.",
+  "ddtree_baseline": {
+    "upstream": "https://github.com/liranringel/ddtree",
+    "commit": "c96427a185677bf4133ed865dd1626a5041aef9b",
+    "scope": "Adapted heap builder in shared pinned runtime; instrumentation removed; vectorized leaf-path acceptance and shared cache compaction."
+  },
+  "allow_bf16_reduced_precision_reduction": true,
+  "candidate_checkpoint": {
+    "path": "/scratch/aryama.murthy/native-joint/29162/lane0/student.pt",
+    "sha256": "83dd90d3590d27bca26245e49b9ae71133626df327b279ac062a16a86be226c5",
+    "training_config": {
+      "seed": 1729,
+      "train_records": 2048,
+      "val_records": 32,
+      "sequence_length": 512,
+      "block_size": 16,
+      "data_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1",
+      "eval_manifest": "data/development.json",
+      "benchmark": "gsm8k",
+      "eval_requests": 8,
+      "output_cap": 512,
+      "learning_rate": 1e-05,
+      "weight_decay": 0.01,
+      "loss": "kl",
+      "gamma": 7.0,
+      "temperature": 1.0,
+      "steps": 1024,
+      "validate_every": 256,
+      "accumulation": 2,
+      "gradient_clip": 1.0,
+      "name": "joint_N2048",
+      "taps": [
+        25,
+        33
+      ],
+      "layers": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "train_mode": "joint",
+      "teacher": "native",
+      "timeout_seconds": 540,
+      "prepared_index": "data/prepared-8192.json",
+      "require_all_records": true
+    },
+    "reload_gate": "pass"
+  }
+}

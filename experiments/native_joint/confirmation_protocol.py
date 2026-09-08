@@ -15,15 +15,24 @@ def protocol_signature(spec, source_directory, target, draft, source_commit):
         'reference_variant': spec.get('reference_variant'),
         'candidate_checkpoint': spec.get('candidate_checkpoint'),
         'quantization': spec.get('quantization'),
+        'include_compact_linear': spec.get('include_compact_linear', False),
+        'include_ar_quality': spec.get('include_ar_quality', False),
+        'required_runtime': spec.get('required_runtime'),
         'output_cap': spec['output_cap'],
         'repeats': spec.get('repeats', 1),
         'allow_bf16_reduction': spec.get('allow_bf16_reduction', True),
         'target': target, 'draft': draft, 'source_commit': source_commit,
+        'local_launch_sha256': {p.name:file_sha(p) for p in sorted(Path(source_directory).glob('*.sbatch'))},
         'local_source_sha256': {p.name:file_sha(p) for p in sorted(Path(source_directory).glob('*.py'))},
     }
 
 
 def validate_protocol(spec, source_directory, target, draft, source_commit):
+    if spec.get('required_runtime'):
+        import torch, transformers
+        actual={'torch':torch.__version__,'transformers':transformers.__version__}
+        if actual != spec['required_runtime']:
+            raise ValueError('Runtime differs from frozen versions')
     manifest=json.loads(Path(spec['eval_manifest']).read_text())
     phase=spec.get('phase','development')
     if phase not in {'development','confirmation'}:

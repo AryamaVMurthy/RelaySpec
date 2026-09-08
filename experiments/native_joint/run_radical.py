@@ -102,6 +102,9 @@ def main():
         provenance["quantization"] = quantization
         provenance["scope"] = "Native draft and optional draft-only head quantization. Frozen BF16 target verifies every token. No training updates; original native and target controls are preserved. Full latency includes prefill and quantized inference overhead; one-time packing/reload is reported separately."
         (args.output/"provenance.json").write_text(json.dumps(provenance, indent=2))
+    if spec.get("include_compact_linear") and not spec.get("candidate_checkpoint"):
+        raise ValueError("Compact linear arm requires an explicit checkpoint")
+    timed_names = ["native", "candidate"]+(["reference"] if spec.get("reference_variant") else [])+(["compact_linear"] if spec.get("include_compact_linear") else [])
     outcomes = []
     for variant in spec["variants"]:
         start = time.perf_counter()
@@ -112,18 +115,22 @@ def main():
             probe = encode(records[0])
             original(probe, 16)
             decode_variant(official, candidate, candidate_target, probe, 16, eos, variant)
+            if spec.get("include_compact_linear"):
+                official.dflash_generate(candidate, target, probe, 16, eos, 0., block_size=16, return_stats=True)
             if spec.get("reference_variant"):
                 decode_variant(official, native, target, probe, 16, eos, spec["reference_variant"])
             with (directory/"evaluation.jsonl").open("w") as stream:
                 for repeat, i, record in [(repeat, i, record) for repeat in range(spec.get("repeats", 1)) for i, record in enumerate(records)]:
                     ids = encode(record)
-                    names = ["native", "candidate"]+(["reference"] if spec.get("reference_variant") else [])
+                    names = list(timed_names)
                     rotate = (i+repeat)%len(names)
                     names = names[rotate:]+names[:rotate]
                     for name in names:
                         torch.cuda.synchronize(); begin = time.perf_counter()
                         if name == "native":
                             result = original(ids, spec["output_cap"])
+                        elif name == "compact_linear":
+                            result = official.dflash_generate(candidate, target, ids, spec["output_cap"], eos, 0., block_size=16, return_stats=True)
                         elif name == "reference":
                             result = decode_variant(official, native, target, ids, spec["output_cap"], eos, spec["reference_variant"])
                         else:
@@ -138,7 +145,7 @@ def main():
             if any(any(r[key] != first[r["method"], r["problem_id"]][key] for key in ["tokens", "acceptance_lengths"]) for r in rows):
                 raise RuntimeError("Repeated inference changed output or acceptance")
             summary = {}
-            for name in ["native", "candidate"]+(["reference"] if spec.get("reference_variant") else []):
+            for name in timed_names:
                 arm = [r for r in rows if r["method"] == name]
                 summary[name] = {"tps": sum(r["output_tokens"] for r in arm)/sum(r["seconds"] for r in arm), "exact_native": sum(r["tokens"] == baselines[r["repeat"], r["problem_id"]]["tokens"] for r in arm), "requests": len(records), "timed_generations": len(arm), "progress": sum(sum(r["acceptance_lengths"]) for r in arm)/sum(len(r["acceptance_lengths"]) for r in arm)}
             result = {"status": "pass", "variant": variant, "summary": summary, "native_ratio": summary["candidate"]["tps"]/summary["native"]["tps"], "elapsed_seconds": time.perf_counter()-start}
@@ -154,6 +161,21 @@ def main():
         outcomes.append(result)
         print(json.dumps(result), flush=True)
     (args.output/"radical-result.json").write_text(json.dumps(outcomes, indent=2))
+    if any(r["status"] != "pass" for r in outcomes):
+        raise SystemExit(1)
+    if spec.get("include_ar_quality"):
+        # Once per request, outside repeated speed comparisons. Exact token
+        # agreement and task-quality review use this original block1 AR path.
+        with (args.output/"ar-quality.jsonl").open("w") as stream:
+            for record in records:
+                ids = encode(record)
+                torch.cuda.synchronize(); begin = time.perf_counter()
+                result = official.dflash_generate(native, target, ids, spec["output_cap"], eos, 0., block_size=1, return_stats=True)
+                torch.cuda.synchronize(); elapsed = time.perf_counter()-begin
+                tokens = result.output_ids[0, ids.shape[1]:].tolist()
+                stream.write(json.dumps({"method":"ar", "problem_id":record["problem_id"], "benchmark":record["benchmark"], "tokens":tokens, "output_tokens":len(tokens), "input_tokens":ids.shape[1], "capped":len(tokens)>=spec["output_cap"], "completion":tokenizer.decode(tokens,skip_special_tokens=True), "diagnostic_seconds":elapsed})+"\n")
+                stream.flush()
+        (args.output/"ar-quality-complete.json").write_text(json.dumps({"status":"pass", "requests":len(records), "output_cap":spec["output_cap"]}))
 
 
 if __name__ == "__main__":
