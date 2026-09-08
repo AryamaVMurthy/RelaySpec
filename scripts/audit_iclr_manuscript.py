@@ -259,9 +259,18 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
     research_pass, research_evidence = research.audit(root)
     if not research_pass:
         return False, research_evidence
+    extension = _load_script(
+        root / "scripts/build_family_extension_paper_assets.py", "family_extension_assets"
+    )
+    with tempfile.TemporaryDirectory(prefix="relayspec-family-paper-audit-") as directory:
+        expected = Path(directory)
+        extension.build(root, expected)
+        for path in (expected / "generated").iterdir():
+            if (paper / "generated" / path.name).read_bytes() != path.read_bytes():
+                return False, f"stale family extension asset {path.name}"
     return (
         True,
-        "registered core assets match validated evidence; " + research_evidence,
+        "registered core and family extension assets match validated raw evidence; " + research_evidence,
     )
 
 

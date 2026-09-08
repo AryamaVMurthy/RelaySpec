@@ -1,49 +1,24 @@
 # RelaySpec manuscript
 
-This is the single current manuscript directory. The September 5 rewrite uses
-paired AR throughput as the primary comparison, native-drafter throughput
-retention as the reuse reference, and source reuse as a secondary control.
+Current version: **8 September 2026**, anonymous ICLR 2027 format, nine main-text pages and 56 total pages with statements, references and appendices. This is the current manuscript directory.
 
-- `relayspec_iclr2027.tex`: anonymous manuscript source.
-- `references.bib`: bibliography.
-- `generated/`: evidence-derived tables and the input-hash registry.
-- `figures/`: generated vector figures, including the method and decoding flows.
-- `relayspec_iclr2027.pdf`: current anonymous reading draft, nine main pages.
+The paper centers on reusing frozen drafters through a learned linear interface. It distinguishes inexpensive calibration from the larger generated-rollout recipe, and separates historical BF16 Qwen measurements from the batch-invariant BF16 and FP32-target extensions. The main text includes the 128-question Llama/cross-tokenizer comparison at a 2,048-token cap, repeated native-throughput comparison, small-data confirmation, capacity findings, matched adaptation controls and public-runtime baselines. Detailed trajectories, negative results and implementation provenance remain in the appendix.
 
-From the repository root, `make paper` compiles the source and checked-in assets.
-`make paper-assets` regenerates the assets through
-`scripts/build_iclr_paper_assets.py`, `src/relayspec/paper_evidence.py` and
-`src/relayspec/ar_paper_evidence.py`.
-The builder validates the paired raw records and recorded task scores before
-producing the current tables. Exploratory transfer builders remain separate.
+- `relayspec_iclr2027.tex`: manuscript source.
+- `relayspec_iclr2027.pdf`: complete reading draft.
+- `references.bib`: 50 cited sources, with current status inventory in `reports/paper-rebuild-20260908/`.
+- `generated/` and `figures/`: reproducible result assets, with source fingerprints.
 
-The [current execution record](../../reports/ar-revision-20260905/EXECUTION.md)
-and [24-hour plan](../../docs/plans/2026-09-05-relayspec-next-24-hours.md)
-explain evidence selection, corrected comparisons and next experiments.
-The [submission review](../../reports/ICLR_SUBMISSION_REVIEW_2026-09-05.md)
-and research execution plan retain the outstanding scientific requirements.
-Compilation and presentation checks do not establish submission readiness.
+From the repository root, in the installed project environment:
 
-`make audit-paper` compiles and runs the strict artifact checks. A visual-review
-record covers the current PDF in color and grayscale. Rebuilding can change its
-hash, requiring inspection and an updated record before the audit passes.
-LaTeX intermediate files are ignored by Git and rebuilt locally. Official
-style files retain their original notices.
+```bash
+make paper
+make paper-family-assets
+make audit-paper
+```
 
-The current draft uses the unmodified official ICLR 2027 review style and
-bibliography style. It has nine main-text pages and 53 pages including references
-and appendices. The manuscript audit resolves 47 cited sources. The September 5
-citation-status report is historical, while later additions are recorded in
-`reports/citation-expansion-20260905.json`. Current evidence includes native
-interface confirmation in both drafter families, code-capacity controls and
-full-answer 14B development comparisons. Sampling results use matched DFlash proposal policies, with the historical
-policy difference and the full-projection reproduction control explained.
+For this shared-environment worktree, use `PYTHON=/home/aryamavmurthy/work/RelaySpec/.venv/bin/python` with the asset/audit targets. The Makefile puts this worktree's `src` first in `PYTHONPATH` so an editable installation from another checkout cannot silently supply stale evidence code.
 
-The scaling branch adds completed fixed-work data and continuous-fitting curves
-and AR-paired EAGLE-3 code quality to the appendix. Regenerate these assets with
-`make paper-scaling-assets SCALING_RAW_ROOT=/path/to/collected/repository`.
-The builder verifies original benchmark/scorer file hashes. The additional
-registry records the raw root, and the manuscript auditor regenerates these
-assets too. New capacity, regularization and multi-epoch studies remain in
-progress and are not represented as completed results in the paper.
+`make paper-assets` rebuilds the primary AR/quality/source/native assets. Other specialized asset targets are listed in the Makefile. The manuscript audit regenerates registered core, scaling, autoresearch and new family-extension assets from their recorded raw inputs. The extension builder checks 128 unique requests per arm, direct token equality, hashes, numerical configurations, rollout source provenance, timing validity, both speculative repeats and paired request intervals.
 
+Writer and reviewer rounds, current claim scope, source verification, visual review and final completion evidence are in `reports/paper-rebuild-20260908/`. The current visual-review record is tied to the PDF hash. Recompilation can change that hash and requires rechecking the rendered pages before updating its signoff. Presentation and artifact checks do not guarantee acceptance or resolve the explicitly stated experimental limitations.

@@ -105,6 +105,7 @@ def run_method(
     row = {
         "method": name,
         "output_hash": token_hash(generated),
+        "output_token_ids": generated.detach().to(device="cpu", dtype=torch.int32).tolist(),
         "completion": tokenizer.decode(generated, skip_special_tokens=True),
         "input_tokens": int(stats.num_input_tokens),
         "output_tokens": int(stats.num_output_tokens),

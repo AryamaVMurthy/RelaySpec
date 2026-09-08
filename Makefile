@@ -3,6 +3,7 @@ RUFF ?= .venv/bin/ruff
 PAPER_DIR := paper/iclr2027
 PAPER_NAME := relayspec_iclr2027
 SCALING_RAW_ROOT ?= .
+export PYTHONPATH := $(CURDIR)/src:$(PYTHONPATH)
 
 .PHONY: help install test test-all lint format check paper paper-assets audit-paper clean research-plan submission-ready
 
@@ -79,6 +80,9 @@ paper-task-complexity-assets:
 
 paper-target14-assets:
 	$(PYTHON) scripts/build_target14_paper_assets.py --raw-root $(SCALING_RAW_ROOT) --output $(PAPER_DIR)
+
+paper-family-assets:
+	$(PYTHON) scripts/build_family_extension_paper_assets.py --root $(CURDIR) --output $(PAPER_DIR)
 
 paper:
 	cd $(PAPER_DIR) && pdflatex -interaction=nonstopmode -halt-on-error $(PAPER_NAME).tex

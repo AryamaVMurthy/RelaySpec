@@ -1,11 +1,11 @@
 # RelaySpec ICLR 2027 manuscript QA
 
-Generated 2026-09-07 from the compiled anonymous manuscript and recorded result artifacts.
+Generated 2026-09-08 from the compiled anonymous manuscript and recorded result artifacts.
 
 - Overall: **PASS**
 - Main-text boundary: page 9 of the allowed 9
-- Complete PDF: 52 pages including references and appendix
-- Resolved citation keys: 47
+- Complete PDF: 56 pages including references and appendix
+- Resolved citation keys: 50
 
 | Check | Status | Evidence |
 |---|---|---|
@@ -15,16 +15,16 @@ Generated 2026-09-07 from the compiled anonymous manuscript and recorded result 
 | reader-facing scientific detail | PASS | main prose omits internal engineering records, while appendix retains reproducibility settings |
 | nine-page main-text limit | PASS | main-text boundary is on page 9 |
 | required sections and order | PASS | all main sections and policy statements are present before references and appendix |
-| citation resolution | PASS | 47 unique citation keys resolve |
-| generated result assets | PASS | registered core assets match validated evidence; 30 autoresearch tables/raster plots reproduce from 26 isolated builders |
+| citation resolution | PASS | 50 unique citation keys resolve |
+| generated result assets | PASS | registered core and family extension assets match validated raw evidence; 31 autoresearch tables/raster plots reproduce from 27 isolated builders |
 | prompt separation audits | PASS | exact-overlap and unique-token similarity artifacts reproduce from the fixed manifests |
 | language constraints | PASS | no semicolon, em dash, banned phrase, or placeholder appears in manuscript source |
 | paragraph overlap | PASS | no exact or at least 0.90 Jaccard duplicate among paragraphs of 35 or more words |
 | fit and evaluation exact-overlap audit | PASS | 0 normalized exact matches across 4,096 fit and 1,250 evaluation records |
 | compiled LaTeX log | PASS | no undefined citation, undefined reference, or overfull box |
-| PDF parse and page format | PASS | 52 pages, US Letter, unencrypted, and identity scan clean |
-| embedded fonts and PDF parser | PASS | 35 font records are embedded and Ghostscript parses every page |
-| recorded visual review | PASS | manual color and grayscale review covers all 52 rendered pages |
+| PDF parse and page format | PASS | 56 pages, US Letter, unencrypted, and identity scan clean |
+| embedded fonts and PDF parser | PASS | 36 font records are embedded and Ghostscript parses every page |
+| recorded visual review | PASS | manual color and grayscale review covers all 56 rendered pages |
 
 ## Scientific review remains separate
 

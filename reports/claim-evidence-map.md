@@ -1,3 +1,5 @@
+> Current manuscript scope (8 September 2026): [updated claim–evidence map](paper-rebuild-20260908/CLAIM-EVIDENCE.md). The inventory below is historical and is superseded where newer experiments are identified.
+
 # RelaySpec claim–evidence map
 
 Updated after the authorized post-window confirmation and composition studies on 2026-09-06. “Observed” means measured in the stated completed experiment, not a universal claim. Generated paper assets replay the corresponding raw-evidence audits. The timebox inventory is historical. Current resumption protocols and job ledgers are under `reports/mapper-scaling-20260905/resumed-*` and `docs/plans/2026-09-06-resumed-cross-domain.md`.
