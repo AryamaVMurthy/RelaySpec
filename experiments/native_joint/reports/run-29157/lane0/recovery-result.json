@@ -1,0 +1,87 @@
+{
+  "status": "pass",
+  "config": {
+    "seed": 1729,
+    "train_records": 128,
+    "val_records": 16,
+    "sequence_length": 512,
+    "block_size": 16,
+    "data_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1",
+    "eval_manifest": "data/development.json",
+    "benchmark": "gsm8k",
+    "eval_requests": 8,
+    "output_cap": 512,
+    "learning_rate": 2e-06,
+    "weight_decay": 0.01,
+    "loss": "kl",
+    "gamma": 7.0,
+    "temperature": 1.0,
+    "steps": 512,
+    "validate_every": 64,
+    "accumulation": 2,
+    "gradient_clip": 1.0,
+    "name": "joint_two_taps_lr2e-06",
+    "taps": [
+      25,
+      33
+    ],
+    "layers": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "train_mode": "joint"
+  },
+  "recovery": {
+    "source_job": "29155",
+    "source_lane": 0,
+    "checkpoint": "/scratch/aryama.murthy/native-joint/29155/lane0/student.pt",
+    "checkpoint_sha256": "307be5bcfd6d1111592668a499a20d18b23f380eea0c270fa4f357b289870329"
+  },
+  "buffers": {
+    "rotary_emb.inv_freq": {
+      "native_dtype": "torch.float32",
+      "rounded_dtype": "torch.bfloat16",
+      "max_rounding_error": 0.0011547207832336426
+    },
+    "rotary_emb.original_inv_freq": {
+      "native_dtype": "torch.float32",
+      "rounded_dtype": "torch.bfloat16",
+      "max_rounding_error": 0.0011547207832336426
+    }
+  },
+  "reload_gate": "pass",
+  "summary": {
+    "native": {
+      "tps": 184.3534956872488,
+      "progress": 6.864661654135339,
+      "exact_native": 8,
+      "requests": 8,
+      "native_ratio": 1.0
+    },
+    "duplicate": {
+      "tps": 184.52293720567567,
+      "progress": 6.864661654135339,
+      "exact_native": 8,
+      "requests": 8,
+      "native_ratio": 1.0009191120450156
+    },
+    "correct_student": {
+      "tps": 175.43387311040954,
+      "progress": 6.507142857142857,
+      "exact_native": 8,
+      "requests": 8,
+      "native_ratio": 0.951616742912371
+    },
+    "rounded_buffers": {
+      "tps": 175.5165537183435,
+      "progress": 6.507142857142857,
+      "exact_native": 8,
+      "requests": 8,
+      "native_ratio": 0.9520652324168728
+    }
+  },
+  "scope": "Correct student uses original FP32 nonpersistent RoPE buffers. Rounded buffer arm diagnoses the earlier casting issue. Single-seed development comparison, no independent AR guarantee."
+}

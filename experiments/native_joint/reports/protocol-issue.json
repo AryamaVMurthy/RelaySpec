@@ -1,0 +1,11 @@
+{
+  "issue": "Whole-model BF16 conversion rounds nonpersistent RoPE frequency buffers; loading state_dict reconstructs the original FP32 buffers instead.",
+  "affected_jobs": [
+    "29153",
+    "29154",
+    "29155"
+  ],
+  "status": "Training weights retained; original post-training performance is provisional and excluded from promotion. Re-evaluation with original positional buffers is required.",
+  "evidence": "Local Qwen3RotaryEmbedding reproduction: both frequency buffers start FP32, are absent from state_dict, and change after float().bfloat16(). Job29155/lane2 checkpoint reload gate failed.",
+  "fix": "Cast only parameters; preserve buffers. Paired recovery runs compare original FP32 buffers with rounded-buffer diagnostic arms."
+}

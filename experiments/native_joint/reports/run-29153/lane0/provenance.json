@@ -1,0 +1,49 @@
+{
+  "config": {
+    "seed": 1729,
+    "train_records": 8,
+    "val_records": 2,
+    "sequence_length": 256,
+    "block_size": 16,
+    "data_root": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1",
+    "eval_manifest": "data/development.json",
+    "benchmark": "gsm8k",
+    "eval_requests": 2,
+    "output_cap": 64,
+    "learning_rate": 1e-05,
+    "weight_decay": 0.01,
+    "loss": "kl",
+    "gamma": 7.0,
+    "temperature": 1.0,
+    "steps": 4,
+    "validate_every": 4,
+    "accumulation": 1,
+    "gradient_clip": 1.0,
+    "name": "interface_only",
+    "taps": [
+      25,
+      33
+    ],
+    "layers": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "train_mode": "interface"
+  },
+  "target": {
+    "id": "Qwen/Qwen3-8B",
+    "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+  },
+  "draft": {
+    "id": "z-lab/Qwen3-8B-DFlash-b16",
+    "revision": "9b41424b7109f9c5413454f481b09a82b85333f4"
+  },
+  "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756",
+  "torch": "2.9.1+cu128",
+  "gpu": "NVIDIA L40S",
+  "job": "29153",
+  "scope": "Separate native compression/joint fine-tuning study. Target, embedding and head frozen. Student initialized from native same-target weights. Paired wall time includes prefill. All models remain resident during evaluation; memory is not isolated deployment."
+}
