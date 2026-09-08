@@ -69,60 +69,89 @@ def main():
     # Cache the frozen target once for each training sequence. Only raw corpus
     # records are read; all activations are created for this separate experiment.
     cache_manifest, datasets, seen = [], {}, set()
-    for split, count in [("train", cfg["train_records"]), ("validation", cfg["val_records"])]:
-        path = Path(cfg["data_root"])/("train-32768.json" if split == "train" else "validation.json")
-        manifest = json.loads(path.read_text())
-        datasets[split] = []
-        rejected = []
-        for index, record in enumerate(manifest["records"]):
-            if index % cfg.get("data_shards", 1) != cfg.get("data_shard", 0):
-                continue
-            key = record["normalized_problem_sha256"]
-            if key in seen:
-                raise RuntimeError("Training/validation question overlap")
-            prompt = token_ids(tokenizer.apply_chat_template([{"role": "user", "content": record["problem"]}], tokenize=True, add_generation_prompt=True, enable_thinking=False))
-            ids = prompt + tokenizer.encode(record["solution"], add_special_tokens=False)
-            ids = ids[:cfg["sequence_length"]]
-            lo, hi = len(prompt), len(ids)-cfg["block_size"]
-            if lo > hi:
-                rejected.append({"index": index, "reason": "No complete answer block within sequence cap", "question_sha": key})
-                continue
-            seen.add(key)
-            ids = torch.tensor(ids, dtype=torch.long)
-            with torch.no_grad():
-                output = target.model(input_ids=ids.unsqueeze(0).cuda(), use_cache=False, output_hidden_states=True)
-                taps = torch.stack([output.hidden_states[i+1][0] for i in TAPS]).cpu()
-                final_hidden = output.last_hidden_state[0].cpu()
-                if split == "train" and not datasets[split]:
-                    altered = ids.clone()
-                    altered[lo+1:] = 0
-                    probe = target.model(input_ids=altered.unsqueeze(0).cuda(), use_cache=False, output_hidden_states=True)
-                    causal = torch.equal(probe.last_hidden_state[0, :lo+1].cpu(), final_hidden[:lo+1]) and all(torch.equal(probe.hidden_states[t+1][0, :lo].cpu(), taps[j, :lo]) for j, t in enumerate(TAPS))
-                    if not causal:
-                        raise RuntimeError("Future tokens affected prefix target features")
-                    (args.output/"causality-gate.json").write_text(json.dumps({"status": "pass", "anchor": lo, "tokens": len(ids), "test": "Alter all tokens after the anchor at fixed tensor shape; compare all conditioning taps and target next-token hidden state exactly."}, indent=2))
-                    del probe
-            payload = {"input_ids": ids, "taps": taps, "final_hidden": final_hidden, "anchor_min": lo, "anchor_max": hi, "question_sha": key}
-            cache_path = scratch/f"{split}-{index:06}.pt"
-            torch.save(payload, cache_path)
-            datasets[split].append(str(cache_path))
-            cache_manifest.append({"split": split, "index": index, "question_sha": key, "path": str(cache_path), "sha256": sha(cache_path), "tokens": len(ids), "input_ids": ids.tolist(), "anchor_min": lo, "anchor_max": hi})
-            del output
-            if len(datasets[split]) == count:
-                break
-        if len(datasets[split]) != count:
-            raise RuntimeError("Not enough eligible sequences")
-        (args.output/f"{split}-data.json").write_text(json.dumps({"source": str(path), "manifest_sha256": sha(path), "provenance": manifest["provenance"], "eligible_records": count, "excluded": rejected}, indent=2))
-        log("cache_split", split=split, records=count)
+    if cfg.get("prepared_index"):
+        prepared_path = Path(cfg["prepared_index"])
+        prepared = json.loads(prepared_path.read_text())
+        if prepared["status"] != "pass" or prepared["target"] != TARGET or prepared["sequence_length"] != cfg["sequence_length"]:
+            raise RuntimeError("Prepared feature cache provenance mismatch")
+        for split, count in [("train", cfg["train_records"]), ("validation", cfg["val_records"])]:
+            selected = sorted([e for e in prepared["entries"] if e["split"] == split and e["tokens"]-e["anchor_min"] >= cfg["block_size"]], key=lambda e: e["index"])[:count]
+            if len(selected) != count:
+                raise RuntimeError("Insufficient prepared records")
+            datasets[split] = []
+            for entry in selected:
+                if entry["question_sha"] in seen:
+                    raise RuntimeError("Prepared training/validation overlap")
+                seen.add(entry["question_sha"])
+                datasets[split].append(entry["path"])
+                cache_manifest.append(entry)
+        (args.output/"prepared-source.json").write_text(json.dumps({"path": str(prepared_path), "sha256": sha(prepared_path), "source_job": prepared["source_job"]}, indent=2))
+        log("prepared_cache", train=len(datasets["train"]), validation=len(datasets["validation"]))
+    else:
+        for split, count in [("train", cfg["train_records"]), ("validation", cfg["val_records"])]:
+            path = Path(cfg["data_root"])/("train-32768.json" if split == "train" else "validation.json")
+            manifest = json.loads(path.read_text())
+            datasets[split] = []
+            rejected = []
+            for index, record in enumerate(manifest["records"]):
+                if index % cfg.get("data_shards", 1) != cfg.get("data_shard", 0):
+                    continue
+                key = record["normalized_problem_sha256"]
+                if key in seen:
+                    raise RuntimeError("Training/validation question overlap")
+                prompt = token_ids(tokenizer.apply_chat_template([{"role": "user", "content": record["problem"]}], tokenize=True, add_generation_prompt=True, enable_thinking=False))
+                ids = prompt + tokenizer.encode(record["solution"], add_special_tokens=False)
+                ids = ids[:cfg["sequence_length"]]
+                lo, hi = len(prompt), len(ids)-cfg["block_size"]
+                if lo > hi:
+                    rejected.append({"index": index, "reason": "No complete answer block within sequence cap", "question_sha": key})
+                    continue
+                seen.add(key)
+                ids = torch.tensor(ids, dtype=torch.long)
+                with torch.no_grad():
+                    output = target.model(input_ids=ids.unsqueeze(0).cuda(), use_cache=False, output_hidden_states=True)
+                    taps = torch.stack([output.hidden_states[i+1][0] for i in TAPS]).cpu()
+                    final_hidden = output.last_hidden_state[0].cpu()
+                    if split == "train" and not datasets[split]:
+                        altered = ids.clone()
+                        altered[lo+1:] = 0
+                        probe = target.model(input_ids=altered.unsqueeze(0).cuda(), use_cache=False, output_hidden_states=True)
+                        causal = torch.equal(probe.last_hidden_state[0, :lo+1].cpu(), final_hidden[:lo+1]) and all(torch.equal(probe.hidden_states[t+1][0, :lo].cpu(), taps[j, :lo]) for j, t in enumerate(TAPS))
+                        if not causal:
+                            raise RuntimeError("Future tokens affected prefix target features")
+                        (args.output/"causality-gate.json").write_text(json.dumps({"status": "pass", "anchor": lo, "tokens": len(ids), "test": "Alter all tokens after the anchor at fixed tensor shape; compare all conditioning taps and target next-token hidden state exactly."}, indent=2))
+                        del probe
+                payload = {"input_ids": ids, "taps": taps, "final_hidden": final_hidden, "anchor_min": lo, "anchor_max": hi, "question_sha": key}
+                cache_path = scratch/f"{split}-{index:06}.pt"
+                torch.save(payload, cache_path)
+                datasets[split].append(str(cache_path))
+                cache_manifest.append({"split": split, "index": index, "question_sha": key, "path": str(cache_path), "sha256": sha(cache_path), "tokens": len(ids), "input_ids": ids.tolist(), "anchor_min": lo, "anchor_max": hi})
+                del output
+                if len(datasets[split]) == count:
+                    break
+            if len(datasets[split]) != count:
+                raise RuntimeError("Not enough eligible sequences")
+            (args.output/f"{split}-data.json").write_text(json.dumps({"source": str(path), "manifest_sha256": sha(path), "provenance": manifest["provenance"], "eligible_records": count, "excluded": rejected}, indent=2))
+            log("cache_split", split=split, records=count)
     (args.output/"cache.json").write_text(json.dumps(cache_manifest, indent=2))
     if cfg.get("prepare_only"):
         result = {"status": "prepared", "train_records": len(datasets["train"]), "validation_records": len(datasets["validation"]), "elapsed_seconds": time.perf_counter()-started}
         (args.output/"prepared-result.json").write_text(json.dumps(result, indent=2))
         log("prepared", summary=result)
         return
+    expected_cache = {entry["path"]: entry for entry in cache_manifest}
+    verified_cache = set()
     @lru_cache(maxsize=8)
     def load_record(path):
-        return torch.load(path, map_location="cpu", weights_only=True)
+        if path not in verified_cache:
+            if sha(path) != expected_cache[path]["sha256"]:
+                raise RuntimeError("Prepared feature cache hash mismatch")
+            verified_cache.add(path)
+        record = torch.load(path, map_location="cpu", weights_only=True)
+        if record["question_sha"] != expected_cache[path]["question_sha"] or len(record["input_ids"]) != expected_cache[path]["tokens"]:
+            raise RuntimeError("Prepared feature cache content mismatch")
+        record["anchor_max"] = len(record["input_ids"])-cfg["block_size"]
+        return record
     student = compact_student(native, cfg["taps"], cfg["layers"]).eval()
     frozen_pointers = {p.data_ptr() for model in [native, target] for p in model.parameters()}
     if any(p.data_ptr() in frozen_pointers for p in student.parameters()):
@@ -217,12 +246,14 @@ def main():
         return {"step": step, **summary}
 
     validations = [validate(0)]
+    visited_records = set()
     with (args.output/"training.jsonl").open("w") as stream:
         for step in range(1, cfg["steps"]+1):
             optimizer.zero_grad(set_to_none=True)
             loss_total = 0.
             for micro in range(cfg["accumulation"]):
                 record = load_record(datasets["train"][((step-1)*cfg["accumulation"]+micro) % len(datasets["train"])])
+                visited_records.add(record["question_sha"])
                 anchor = random.randint(record["anchor_min"], record["anchor_max"])
                 loss, values = objective(record, anchor)
                 if not torch.isfinite(loss):
@@ -241,6 +272,10 @@ def main():
             stream.write(json.dumps({"step": step, "loss": loss_total, "gradient_norm": float(norm), **values})+"\n"); stream.flush()
             if step % cfg["validate_every"] == 0 or step == cfg["steps"]:
                 validations.append(validate(step))
+    counts["distinct_records_consumed"] = len(visited_records)
+    counts["supervised_blocks"] = cfg["steps"]*cfg["accumulation"]
+    if cfg.get("require_all_records") and len(visited_records) != cfg["train_records"]:
+        raise RuntimeError("Not all requested training records were consumed")
     changes = {"interface_l2": float((student.fc.weight.detach()-projection_start).norm()), "draft_l2": float((student.layers[0].mlp.down_proj.weight.detach()-draft_start).norm())}
     if changes["interface_l2"] == 0 or (cfg["train_mode"] == "joint" and changes["draft_l2"] == 0):
         raise RuntimeError("Requested trainable component did not update")

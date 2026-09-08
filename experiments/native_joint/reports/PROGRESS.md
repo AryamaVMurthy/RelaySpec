@@ -24,12 +24,21 @@ Job **29160** passed all four lanes: native-KL joint five-layer at rate5e-5 reta
 
 ## Active
 
-Job **29161**, project `/home/aryama.murthy/native-joint-20260908-v7` on Turing, prepares 8,192 training and256 validation examples in four disjoint source-index shards (2,048 train +64 validation per GPU). It creates new frozen target features from raw Numina solutions, at a512-token sequence cap, with recorded input token IDs, hashes and causal checks. This is feature preparation, not an8,192-example fit. Check `squeue` and each `prepared-result.json`; do not restart while the job is live.
+Job **29161** completed feature preparation: all four lanes passed in approximately three minutes. Merged `data/prepared-8192.json` verifies8,192 training +256 validation records, unique normalized questions and cross-split disjointness. Exact token IDs and cache hashes are preserved in run29161 artifacts. This is prepared data, not yet an8,192-record fit.
+
+Job **29162**, project `/home/aryama.murthy/native-joint-20260908-v8` on Turing, is the active four-GPU wave:
+
+- lane0: native-KL joint two-tap/five-layer,2,048 records,1,024 updates, rate1e-5.
+- lane1: matched interface-only,2,048 records,1,024 updates, rate5e-5.
+- lane2: native-KL four-layer/drop3,512 records,2,048 updates, rate5e-5.
+- lane3: native-KL four-layer/drop2,512 records,2,048 updates, rate1e-5.
+
+The first two lanes are capped at540seconds; the longer fits at900seconds. All use the prepared cache. The runner now validates hashes on first access, bounds activation RAM, tracks actual distinct records consumed, and requires all requested records to be used. `data-and-long-fit.json` is the exact wave. Check Slurm and lane statuses before taking further action; no restart based only on absent logs.
 
 ## Next required implementation and experiments
 
-1. Collect job29161 and merge its four cache manifests; verify counts, unique question hashes, cross-split disjointness and target/config identity. All cached paths are on `/scratch/aryama.murthy/native-joint/29161/laneN` (login access adds `/scratch/node07`). Preserve hashes and IDs locally.
-2. Add a prepared-cache input path to `run_lane.py` so later hyperparameter runs reuse these features. It currently always constructs caches itself; only prepare-only mode and source-index sharding have been added. Validate file hashes on first load and bound CPU activation RAM.
+1. Collect and analyze job29162, including every lane result, validation trajectory, frozen controls and checkpoint reload gate. The8192-record cache is already collected/audited; cached tensors remain on `/scratch/aryama.murthy/native-joint/29161/laneN` (login access adds `/scratch/node07`).
+2. Prepared-cache loading is implemented in v8. Reuse `data/prepared-8192.json` in subsequent configs. Investigate any failure before restarting; preserve learned checkpoints and partial curves.
 3. Track actual distinct records consumed. Current accumulation2 ×2,048updates consumes at most4,096 records; do not call that an8,192-record fit. Add correctly masked variable-prefix batching or enough updates/accumulation to actually fit all requested records. Batched positional IDs must place masked queries at each example's true anchor; padding keys must be masked. Validate against separate single-block forwards.
 4. Continue N2,048/N8,192 and longer-optimization studies with native-KL and original training controls, plus position-loss weighting and CE/mixed objectives as justified. Save validation-selected checkpoints for longer runs. Explore four-layer recovery before concluding it cannot work. Consider width/factorized-interface variations if they offer materially greater compute savings than dropping feature taps alone.
 5. Multiple seeds, broader workloads, block-size tuning on development, and a frozen128-request/2,048-token final comparison remain required. No supported faster-native result yet; the goal remains active.

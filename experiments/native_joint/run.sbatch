@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --gres=gpu:4
 #SBATCH --mem=160G
-#SBATCH --time=00:10:00
+#SBATCH --time=00:16:00
 #SBATCH --nodelist=node07
 #SBATCH --job-name=native-joint
 #SBATCH --output=logs/%x-%j.out

@@ -1,0 +1,48 @@
+{
+  "source": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/scaling-data/numina-v1/validation.json",
+  "manifest_sha256": "dbf0ae502016859540fdf42c31bc1dd69d51cd0fd47b9ef9d681ea63a684dcbe",
+  "provenance": {
+    "source": {
+      "id": "AI-MO/NuminaMath-CoT",
+      "revision": "9d8d210c9f6a36c8f3cd84045668c9b7800ef517",
+      "split": "train",
+      "shard": "data/train-00000-of-00005.parquet",
+      "allowed_sources": [
+        "cn_k12",
+        "orca_math",
+        "synthetic_math"
+      ]
+    },
+    "reference_math": {
+      "id": "DigitalLearningGmbH/MATH-lighteval",
+      "revision": "0530c78699ea5e8eb5530600900e1f328b48acad",
+      "split": "test"
+    },
+    "seed": 1729,
+    "eligible_source_records_before_audit": 119604,
+    "reference_records": 9656,
+    "exclusions": {
+      "near": 527,
+      "duplicate_problem": 252,
+      "exact": 17
+    },
+    "lexical_filter": "Exact normalized problem/solution; 5-shingle Jaccard >= 0.6 for texts with >= 10 unique shingles. Validation also excluded from training. Does not guarantee semantic/template independence.",
+    "scope": "Separate expanded-data study; do not pool with historical MATH-only fitting curves. Nested source-stratified prefixes. Fitting-validation is not confirmatory decoding evaluation.",
+    "input_sha256": {
+      "data/scaling/numina/data/train-00000-of-00005.parquet": "25c0fa2ca96dd8078470ad1bbc439d0d211fd8b7d22e04abf7f61e9be9bf9ec3",
+      "data/scaling/math-reference/data/test-00000-of-00001.parquet": "7dca8d6e41af88ecf82f2b5f36eb5530e083aaaa86ee325f62bd5c31535178c6",
+      "configs/eval_manifest.json": "ddba7687f3d680390e68b021b227ce8dbbf9ef681542abe354ea0f59e0c50e35",
+      "configs/train_math_4096.json": "b43f68a18df3f0ed28295faf0ca1593dc0f46bb57416a38d23fc31b7b912c507"
+    },
+    "helper_sha256": "a0411478fa88c5f3e03f9449add095a9f36e512e53d16e6632f27853e95632b5",
+    "builder_sha256": "157daf39fc64a019ff373948a95749de9957d9263b239bb3c40f6a0a47cc0ec6"
+  },
+  "eligible_records": 64,
+  "excluded": [
+    {
+      "index": 45,
+      "reason": "No complete answer block within sequence cap",
+      "question_sha": "a9782246884de183381954b9e979c92b89d8cbc7ba4bade0298c291b38a43217"
+    }
+  ]
+}
