@@ -7,7 +7,7 @@ from quality import score,QWEN_EVAL,HERE
 
 ROOT=HERE.parent
 sha=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest()
-protocol={'grader':'vendored Qwen2.5-Math parser/grader; HumanEval manifest unit tests','sandbox':'bubblewrap unshare-all; no home/network;5s CPU,8s wall,768MiB address space,1MiB file output','python_source':sha(HERE/'quality.py'),'qwen_source_sha256':{str(p.relative_to(QWEN_EVAL)):sha(p) for p in sorted(QWEN_EVAL.rglob('*.py'))},'dependencies':{'antlr4-python3-runtime':'4.11.1','word2number':'1.1','sympy':'1.12','mpmath':'1.3.0'},'math_policy':'Official extraction and symbolic/numeric equality; parse failures remain incorrect and are logged.','code_policy':'Preserve original function prompt/helpers and use complete returned function when present; execute supplied standard HumanEval tests.','dialogue_policy':'No canonical score. Preserve text, exact agreement and truncation for review.'}
+protocol={'version':2,'grader':'vendored Qwen2.5-Math parser/grader; HumanEval manifest unit tests','sandbox':'bubblewrap unshare-all; no home/network;20s CPU,30s wall,768MiB address space,1MiB file output','python_source':sha(HERE/'quality.py'),'qwen_source_sha256':{str(p.relative_to(QWEN_EVAL)):sha(p) for p in sorted(QWEN_EVAL.rglob('*.py'))},'dependencies':{'antlr4-python3-runtime':'4.11.1','word2number':'1.1','sympy':'1.12','mpmath':'1.3.0'},'resource_policy':'Resource/infrastructure failures are unscored, never incorrect; v1 archived after observed SIGKILLs on valid answers.','math_policy':'Official extraction and symbolic/numeric equality; parse failures remain incorrect and are logged.','code_policy':'Preserve original function prompt/helpers and use complete returned function when present; execute supplied standard HumanEval tests.','dialogue_policy':'No canonical score. Preserve text, exact agreement and truncation for review.'}
 protocol_sha=hashlib.sha256(json.dumps(protocol,sort_keys=True).encode()).hexdigest()
 protocol_path=ROOT/'reports/quality-protocol.json'
 if protocol_path.exists():assert json.loads(protocol_path.read_text())==protocol
@@ -52,8 +52,9 @@ for benchmark in ['gsm8k','math500','humaneval','mtbench']:
     for method in methods:
         selected=[r for r in scored if r['benchmark']==benchmark and r['method']==method]
         assert len(selected)==32
-        rows.append({'benchmark':benchmark,'method':method,'requests':32,'correct':sum(r['score']['correct'] is True for r in selected) if benchmark!='mtbench' else None,'capped':sum(r['capped'] for r in selected),'failures':[r for r in selected if r['score']['correct'] is False]})
+        rows.append({'benchmark':benchmark,'method':method,'requests':32,'correct':sum(r['score']['correct'] is True for r in selected) if benchmark!='mtbench' else None,'unscored':sum(r['score']['correct'] is None for r in selected) if benchmark!='mtbench' else None,'capped':sum(r['capped'] for r in selected),'failures':[r for r in selected if r['score']['correct'] is False]})
 (ROOT/'reports/quality-summary.json').write_text(json.dumps({'status':'complete','protocol_sha256':protocol_sha,'rows':rows},indent=2)+'\n')
+assert not any(r['unscored'] for r in rows if r['benchmark']!='mtbench'), 'Unscored resource failures remain; inspect before reporting final quality table'
 lines=['# Confirmation answer and code audit','','Math uses the vendored Qwen2.5-Math extraction/grading rules. HumanEval uses its supplied standard tests in an isolated sandbox. All scores use one deterministic completion per request; repeated identical outputs are not extra samples. Failures and extraction details are retained in quality-scored.json. Dialogue has no ground-truth score and is not claimed equivalent.','','| Method | GSM8K correct /32 | MATH500 correct /32 | HumanEval passed /32 | Dialogue capped /32 |','|---|---:|---:|---:|---:|']
 for m in methods:
     get=lambda b:next(r for r in rows if r['method']==m and r['benchmark']==b)

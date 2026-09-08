@@ -1,7 +1,8 @@
 {
+  "version": 2,
   "grader": "vendored Qwen2.5-Math parser/grader; HumanEval manifest unit tests",
-  "sandbox": "bubblewrap unshare-all; no home/network;5s CPU,8s wall,768MiB address space,1MiB file output",
-  "python_source": "2b9872757f17bee8e4e2bc0fab5f70a1e8861f98525dd321581fd898e62f5632",
+  "sandbox": "bubblewrap unshare-all; no home/network;20s CPU,30s wall,768MiB address space,1MiB file output",
+  "python_source": "1def37fc01b43de39941e5f7ca71b2600a9411f1dfadb4b267b04325385d2d6f",
   "qwen_source_sha256": {
     "data_loader.py": "e6695f7737926b4c51afd3c7ed6721bd23f564572043e086259ad591b2f98567",
     "evaluate.py": "ec397765a8049848f8e95955fe9ba80cfadc507394dc8a4854d40fce0d8f9ac0",
@@ -62,6 +63,7 @@
     "sympy": "1.12",
     "mpmath": "1.3.0"
   },
+  "resource_policy": "Resource/infrastructure failures are unscored, never incorrect; v1 archived after observed SIGKILLs on valid answers.",
   "math_policy": "Official extraction and symbolic/numeric equality; parse failures remain incorrect and are logged.",
   "code_policy": "Preserve original function prompt/helpers and use complete returned function when present; execute supplied standard HumanEval tests.",
   "dialogue_policy": "No canonical score. Preserve text, exact agreement and truncation for review."

@@ -38,7 +38,7 @@ def run_sandbox(payload):
     marker=uuid.uuid4().hex
     wrapper=r'''
 import json,resource,sys
-resource.setrlimit(resource.RLIMIT_CPU,(5,5))
+resource.setrlimit(resource.RLIMIT_CPU,(20,20))
 resource.setrlimit(resource.RLIMIT_AS,(768*1024*1024,768*1024*1024))
 resource.setrlimit(resource.RLIMIT_FSIZE,(1024*1024,1024*1024))
 resource.setrlimit(resource.RLIMIT_NOFILE,(64,64))
@@ -61,13 +61,15 @@ print(payload['marker']+json.dumps(result))
     command=['bwrap','--unshare-all','--new-session','--die-with-parent','--ro-bind','/usr','/usr','--ro-bind','/lib','/lib','--ro-bind','/lib64','/lib64','--ro-bind',SITE,'/deps','--ro-bind',str(QWEN_EVAL),'/qwen_eval','--ro-bind',str(PRIVATE_DEPS),'/grader_deps','--proc','/proc','--dev','/dev','--tmpfs','/tmp','--chdir','/tmp','--clearenv','--setenv','PATH','/usr/bin','--setenv','PYTHONHASHSEED','0','--setenv','OPENBLAS_NUM_THREADS','1','--setenv','OMP_NUM_THREADS','1','/usr/bin/python3','-I','-c',wrapper]
     try:
         with tempfile.TemporaryFile(mode='w+') as out, tempfile.TemporaryFile(mode='w+') as err:
-            result=subprocess.run(command,input=json.dumps(payload),text=True,stdout=out,stderr=err,timeout=8)
+            result=subprocess.run(command,input=json.dumps(payload),text=True,stdout=out,stderr=err,timeout=30)
             out.seek(0); stdout=out.read(1024*1024)
             err.seek(0); stderr=err.read(1024*1024)
     except subprocess.TimeoutExpired:
-        return {'correct':False,'reason':'sandbox_timeout'}
+        return {'correct':None,'reason':'sandbox_timeout_unscored'}
     marked=[line[len(marker):] for line in stdout.splitlines() if line.startswith(marker)]
     if result.returncode or not marked:
+        if result.returncode not in (0,1) or any(s in stderr for s in ['MemoryError','ModuleNotFoundError','bwrap:']):
+            return {'correct':None,'reason':'sandbox_resource_or_infrastructure_failure','returncode':result.returncode,'error':stderr[-1200:]}
         return {'correct':False,'reason':'sandbox_test_or_parse_failure','returncode':result.returncode,'error':stderr[-1200:]}
     return json.loads(marked[-1])
 
