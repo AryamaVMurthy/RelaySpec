@@ -19,7 +19,7 @@
 | Usable deliverables | Current .tex/.bib/generatedassets andfullPDF; ninepagemain preview andcomplete readingcopy underoutput/pdf | Complete |
 
 Current complete-PDF SHA256:
-`33141db9fc8725467808e1edbe62bd190229eeb26b3377c2ed20a29d8f18ecd9`
+`a384125db3fe6aa9936a88142d13d6ebaa0219ce41cbafbba4efe1096e5ed0c8`
 
 ## Verification performed
 
@@ -32,3 +32,5 @@ Current complete-PDF SHA256:
 ## Scope retained rather than hidden
 
 This completes the requested manuscript rebuild using available evidence. It does not guarantee ICLRacceptance, certify untested runtime behavior, or complete every historical research-plan experiment. The paper retains BF16disagreements, narrow fitting-seed coverage, exposeddevelopmentcohorts, oneheterogeneoustokenizerpair, cappedoutputs, runtime-confoundedpublicbaselines and unresolvedtightaccuracy noninferiority. The native-parity rollout result is a separateNumina/vLLMrecipe, not a causal data-only/loss-only improvement. No newGPUexperiment was needed for this rewrite.
+
+Contribution clarity was subsequently tightened without changing experimental results. See CONTRIBUTIONS-REVISION.md for the scoped reviewer and rendered-page checks.

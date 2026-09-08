@@ -57,35 +57,39 @@ drafter, inherited embedding and vocabulary projection remain fixed.
 The target verifier continues to decide which tokens are committed
 \citep{leviathan2023speculative}.
 
-The practical contribution is preserving a trained drafter's proposal
-behavior while replacing the costly path that supplies its features.
-A simple map is useful only if the resulting proposals compensate for
-the changed context and mapping overhead. We test this with matched
-AR, native-drafter and source-reuse controls. The primary Qwen MATH-500
-suite reaches 2.35--5.11 times AR throughput and retains 89.1--90.3\%
-of the evaluated native drafters' speed. Removing source layers
-separately saves 7.63--7.80 GiB in EAGLE-3. Code workloads expose cases
-where source reuse is faster, making the deployment tradeoff explicit.
+The central idea is to adapt the conditioning interface while retaining
+the drafter's trained prediction weights. Its value depends on whether
+proposal quality survives the changed inputs well enough to offset the
+removed source computation. Matched AR, native-drafter and source-reuse
+controls measure this tradeoff across both drafter families and expose
+code workloads where retaining the source is faster.
 
-Our contributions are threefold:
-\begin{itemize}
-\item \textbf{Frozen-drafter retargeting.} We replace the conditioning
-boundary in two released drafter families, remove the source transformer
-from generation, and extend DFlash reuse to Llama targets and a
-cross-tokenizer Qwen-to-Llama pair.
-\item \textbf{Measured calibration regimes.} Frozen 512-example maps
-retain 97.5\% and 98.9\% of their 2,048-example counterparts' speed on
-256 GSM8K questions. A separate richer linear calibration recipe reaches
-native DFlash performance in two 128-request runs. Matched capacity,
-regularization, optimization and CE/LoRA studies establish where the
-cheap direct-context recipe is competitive.
-\item \textbf{Interface findings that inform deployment choices.}
-More capacity and lower feature error need not improve generation.
-Expanded calibration improves the tested cross-family recipe by 14.3\%
-but leaves Llama-to-Llama speed unchanged within uncertainty. Feature
-selection also compresses native frozen-drafter inputs, extending the
-interface analysis beyond retargeting.
-\end{itemize}
+\paragraph{Contributions and main findings.}
+\label{sec:contributions}
+\begin{enumerate}
+\item \textbf{Retarget a frozen drafter through its input interface.}
+RelaySpec replaces source conditioning with mapped target features,
+removing the source transformer while preserving the drafter's prediction
+weights and target-controlled verification. We implement this in DFlash
+and EAGLE-3 (Section~\ref{sec:method}).
+\item \textbf{Establish a useful regime for simple calibration.}
+On frozen GSM8K tests, 512 examples retain 97.5\% and 98.9\% of
+2,048-example throughput. Dense maps lead the completed 8B capacity
+comparisons, despite testing MLPs, longer fits and regularization.
+Better feature fitting need not produce faster decoding
+(Section~\ref{sec:controlled-scaling}).
+\item \textbf{Show that inherited drafters can reach native throughput.}
+A richer linear recipe using 16,384 generated rollouts exceeds native
+DFlash throughput by 2.6\% in two matched runs, with 128/128 exact AR
+sequences. This establishes a higher-effort calibration option
+(Section~\ref{sec:rollout-extension}).
+\item \textbf{Demonstrate reuse across model sizes and tokenizers.}
+Llama-to-Llama and Qwen-to-Llama transfers reach $2.52\times$ and
+$2.75\times$ matched FP32-target AR throughput, with 128/128 exact
+sequences per pair. Expanded calibration helps the cross-family recipe
+but leaves the Llama comparison unchanged within uncertainty
+(Section~\ref{sec:family-extension}).
+\end{enumerate}
 
 \section{Related work and positioning}
 \label{sec:related}
@@ -131,8 +135,8 @@ not a general cross-vocabulary sampling scheme
 structural re-parameterization \citep{huo2026repspec}. VSD optimizes
 sequence acceptance, and the Draft-OPD preprint studies on-policy
 teacher feedback \citep{zou2026vsd,lei2026draftopd}. These approaches
-improve a drafter's learned prediction behavior. RelaySpec holds that
-behavior fixed and regresses its input context. Our matched warm-budget connector-CE and rank-32 LoRA comparisons
+improve a drafter's learned prediction behavior. RelaySpec freezes the
+prediction weights and regresses their input context. Our matched warm-budget connector-CE and rank-32 LoRA comparisons
 test this alternative locally (Table~\ref{tab:adaptation-main}), without
 ranking untested objectives or full-drafter training.
 
@@ -591,30 +595,34 @@ gives training, selection, token alignment and numerical diagnostics.
 
 \section{Discussion and limitations}
 \label{sec:limitations}
-The evidence supports both a cheap direct-context fit and a richer
-linear calibration recipe that reaches native throughput. Neither
-establishes a best loss or minimum data count across deployments.
-The strongest mechanism comparisons hold the inherited drafter and
-runtime fixed. Public baselines instead expose practical alternatives
-with different runtimes and training histories. Historical BF16 differences and the exact batch-invariant BF16 and
+\paragraph{Main insights.}
+The tested drafter's learned prediction function can remain useful after
+its conditioning model changes. A small linear interface often suffices,
+but feature error alone does not determine decoding speed. Calibration
+requirements also depend on the transfer: richer fitting reaches native
+throughput in one setting and improves Qwen-to-Llama reuse, while the
+larger Llama fit adds no resolved gain. These findings favor measuring
+acceptance and runtime when choosing an interface, rather than selecting
+it by regression loss or parameter count alone.
+
+\paragraph{Scope and limitations.}
+Mechanism comparisons hold the inherited drafter and runtime fixed.
+Public baselines have different runtimes and training histories. Historical BF16 differences and the exact batch-invariant BF16 and
 FP32-target matches require their respective numerical references. Frozen small-data confirmation supports speed
 retention but does not establish tight accuracy noninferiority.
 
-Coverage remains limited to the evaluated Qwen and Llama pairs, one
-cross-tokenizer transfer and one request per worker. Development exposure,
-related math templates, limited fitting seeds and capped outputs restrict
-generalization. Generated-rollout calibration changes data, supervision
-and optimization together. Native parity in that setting is an observed
-operating point, not an attribution to any one of these changes.
+Coverage is limited to the evaluated pairs, one cross-tokenizer transfer
+and one request per worker. Development exposure, related math templates,
+limited fitting seeds and capped outputs restrict generalization.
+Generated-rollout calibration changes data, supervision and optimization
+together, so its native parity does not isolate any one change.
 
 \section{Conclusion}
 \label{sec:scope}
-RelaySpec reuses a trained speculative drafter by calibrating its input
-context and removing the source transformer from generation. The experiments establish
-useful small-data and richer-calibration operating points, test nonlinear
-alternatives, and extend reuse beyond the primary Qwen setting. They
-make the frozen drafter's input interface a practical unit of adaptation,
-with measured speed, memory and numerical tradeoffs.
+RelaySpec makes a frozen drafter's conditioning interface a practical
+unit of adaptation. Calibrated reuse removes the source transformer and
+supports both small-data efficiency and native-level throughput in a
+tested richer recipe.
 
 \label{maintextend}
 \section*{AI use statement}
