@@ -45,3 +45,11 @@ The paper now has **five main figures and 28 figures overall**. Thirteen newly g
 | Capped output and prompt-length distributions | 27 | 61 |
 
 Existing workload, fitting trajectory, regularization, composition and source-memory figures are retained. New graphs use recorded runs rather than new GPU experiments. Four builders emit vector PDFs, PNG previews and complete plotted-value/input-hash registries. The manuscript audit rebuilds them and compares every output bytewise. Visual revision notes and final review are in `reports/paper-visuals-20260908/`.
+
+## Contributions and competitor positioning, 8 September 2026
+
+The introduction now presents four explicit contributions: portable frozen-drafter reuse through linear calibration, the small-data regime, the gap between feature fitting and decoding speed, and native-throughput/cross-family transfer. The application and empirical findings carry the novelty claim, with related linear-interface and frozen-adapter work credited.
+
+Table 1 on page 2 directly compares RelaySpec, TriSpec, PARD and SD² by inherited model, adaptation and verification. Table 4 on page 8 reports the completed 128-question public-runtime comparison: RelaySpec 193.68 tokens/s (5.14× own AR), PARD 105.63 (3.34×), and frozen-drafter SD² 19.92 (1.60×). It marks the highest measured configuration values and states the runtime differences. TriSpec is a conceptual comparison. The main text has four tables, with 71 overall.
+
+Section 6 is now solely Limitations. It identifies hidden-state access, checkpoint-specific calibration, preparation costs, serving conditions and the scope of greedy cross-tokenizer verification. Statistical and numerical qualifications remain adjacent to their results. Source checks, raw-record comparison review and the latest visual signoff are documented in `reports/paper-positioning-20260908/`.

@@ -100,7 +100,7 @@ def _strip_drawing_environments(source: str) -> str:
 
 def _citation_keys(source: str) -> list[str]:
     keys: list[str] = []
-    for match in re.finditer(r"\\cite\w*\{([^}]+)\}", source):
+    for match in re.finditer(r"\\(?:cite\w*|citation)\{([^}]+)\}", source):
         keys.extend(key.strip() for key in match.group(1).split(",") if key.strip())
     return keys
 
@@ -450,7 +450,8 @@ def audit_manuscript(root: Path, *, write_report: bool = True) -> dict[str, Any]
     log = log_path.read_text(encoding="utf-8")
     pdf_info = _pdf_info(pdf_path)
     pdf_text = _pdf_text(pdf_path)
-    citation_keys = _citation_keys(source)
+    # The compiled auxiliary file also records citations from input tables.
+    citation_keys = _citation_keys(source + "\n" + aux)
     missing_citations = sorted(set(citation_keys) - _bib_keys(bib))
     main_page = _main_page(aux)
     exact_paragraphs, similar_paragraphs = _paragraph_overlap(source)

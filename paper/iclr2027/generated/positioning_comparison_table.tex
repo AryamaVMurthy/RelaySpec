@@ -1,0 +1,21 @@
+% Hand-authored qualitative comparison. source audit:
+% reports/paper-positioning-20260908/COMPARISON.md
+% This table contains no new experimental measurements.
+\begingroup%
+\small%
+\setlength{\tabcolsep}{3pt}%
+\renewcommand{\arraystretch}{1.08}%
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.95in}>{\raggedright\arraybackslash}p{1.08in}>{\raggedright\arraybackslash}p{1.42in}>{\raggedright\arraybackslash}p{1.72in}@{}}
+\toprule
+Method & Inherited object & Adaptation & Execution / verification \\
+\midrule
+\textbf{RelaySpec} & Feature-conditioned drafter & Regress linear input map. Prediction weights fixed & Source transformer removed. Target verifies proposals \\
+\addlinespace[3pt]
+TriSpec\newline\citep{jiang2026trispec} & Pretrained EAGLE drafter in adapter-only regime & Fit proxy-feature adapter. Joint training also studied & Proxy approves trusted tokens. Target resolves uncertainty \\
+\addlinespace[3pt]
+PARD\newline\citep{an2026pard} & Autoregressive draft model & Train parallel drafter once. Reuse across supported targets & Target-independent parallel proposals. Target verification \\
+\addlinespace[3pt]
+SD$^2$\newline\citep{berdoz2026sd2} & Autoregressive draft model & Jointly fit steering and drafter. Frozen variant also studied & Target-feature steering inside drafter. Target verification \\
+\bottomrule
+\end{tabular}%
+\endgroup%

@@ -37,108 +37,100 @@ interface-only adaptation.
 \section{Introduction}
 \label{sec:introduction}
 
-A deployment may inherit a speculative drafter trained for one language
-model but need to serve another: a larger model, a smaller model, or one
-from a different family. Feature-conditioned drafters such as DFlash and
-EAGLE-3 rely on the original model's internal states
-\citep{chen2026dflash,li2025eagle3}. Keeping that \emph{source} model
-supplies compatible features but retains another transformer in the
-generation loop. Training a new drafter incurs a different adaptation
-cost. We ask how much of the inherited drafter can be reused by changing
-only its conditioning interface.
+A deployment may inherit a speculative drafter but need to serve a
+different target. Feature-conditioned drafters such as DFlash and
+EAGLE-3 depend on their original model's hidden states
+\citep{chen2026dflash,li2025eagle3}. Retaining that \emph{source} model
+supplies compatible features but keeps another transformer in the
+generation loop. Can a small amount of interface calibration make the
+inherited drafter useful without its source transformer?
 
 RelaySpec learns a linear map from a new \emph{target}'s hidden states
-to the context consumed by the frozen drafter. During calibration,
-source and target process shared text to provide paired supervision.
-During generation, verification already computes the target states
-needed for the next draft. The map converts them into the drafter's
-input, allowing the source transformer to be removed. The target,
-drafter, inherited embedding and vocabulary projection remain fixed.
-The target verifier continues to decide which tokens are committed
-\citep{leviathan2023speculative}.
+to the frozen drafter's input context, using paired source and target
+states from shared text. At generation time, target verification already
+computes the states needed for the next draft. Mapping these states
+removes the source transformer while preserving the target, drafter,
+inherited embeddings and vocabulary projection. The target verifier
+still decides which tokens are committed \citep{leviathan2023speculative}.
 
-The central idea is to adapt the conditioning interface while retaining
-the drafter's trained prediction weights. Its value depends on whether
-proposal quality survives the changed inputs well enough to offset the
-removed source computation. Matched AR, native-drafter and source-reuse
-controls measure this tradeoff across both drafter families and expose
-code workloads where retaining the source is faster.
+The central question is whether enough proposal quality survives the
+changed conditioning to offset the removed source computation. We test
+this with matched AR, native-drafter and source-reuse controls.
 
-\paragraph{Contributions and main findings.}
+\paragraph{Contributions.}
 \label{sec:contributions}
 \begin{enumerate}
-\item \textbf{Retarget a frozen drafter through its input interface.}
-RelaySpec replaces source conditioning with mapped target features,
-removing the source transformer while preserving the drafter's prediction
-weights and target-controlled verification. We implement this in DFlash
-and EAGLE-3 (Section~\ref{sec:method}).
-\item \textbf{Establish a useful regime for simple calibration.}
-On frozen GSM8K tests, 512 examples retain 97.5\% and 98.9\% of
-2,048-example throughput. Dense maps lead the completed 8B capacity
-comparisons, despite testing MLPs, longer fits and regularization.
-Better feature fitting need not produce faster decoding
-(Section~\ref{sec:controlled-scaling}).
-\item \textbf{Show that inherited drafters can reach native throughput.}
-A richer linear recipe using 16,384 generated rollouts exceeds native
-DFlash throughput by 2.6\% in two matched runs, with 128/128 exact AR
-sequences. This establishes a higher-effort calibration option
-(Section~\ref{sec:rollout-extension}).
-\item \textbf{Demonstrate reuse across model sizes and tokenizers.}
-Llama-to-Llama and Qwen-to-Llama transfers reach $2.52\times$ and
-$2.75\times$ matched FP32-target AR throughput, with 128/128 exact
-sequences per pair. Expanded calibration helps the cross-family recipe
-but leaves the Llama comparison unchanged within uncertainty
-(Section~\ref{sec:family-extension}).
+\item \textbf{Linear calibration makes inherited drafters portable.}
+A linear input map lets a released drafter retain its prediction weights
+after its conditioning model changes. With the source transformer removed,
+DFlash and
+EAGLE-3 reach $1.10$--$1.53\times$ source-reuse throughput in the primary
+comparisons (Sections~\ref{sec:method} and~\ref{sec:results}).
+\item \textbf{Useful reuse needs little distinct calibration data.}
+On frozen 256-question GSM8K tests, 512 examples retain 97.5\% and
+98.9\% of 2,048-example throughput. Fixed-work scaling from 16 to
+32,768 records identifies diminishing returns in the tested regime
+(Section~\ref{sec:controlled-scaling}). This establishes a practical
+small-data adaptation regime for speculative drafters.
+\item \textbf{Better feature fitting does not ensure faster decoding.}
+Dense maps lead the completed 8B long-output capacity comparisons,
+even after testing MLPs, longer fitting and regularization. Source
+removal also improves speed despite lower progress per cycle.
+Interface selection therefore needs both feature and decoding measurements
+(Section~\ref{sec:ablations}).
+\item \textbf{Frozen reuse reaches native throughput and crosses model families.}
+A richer linear recipe reaches native DFlash throughput, exceeding it
+by 2.6\% in two runs. Llama and cross-tokenizer Qwen-to-Llama reuse
+extend the tested scope: expanded fitting improves the latter by 14.3\%
+but gives no resolved Llama gain. Frozen reuse supports both economical
+and higher-effort calibration
+(Sections~\ref{sec:rollout-extension} and~\ref{sec:family-extension}).
 \end{enumerate}
 
 \section{Related work and positioning}
 \label{sec:related}
 
-\paragraph{Retargeting an inherited drafter.}
-DFlash and EAGLE-3 condition their proposals on target features
-\citep{chen2026dflash,li2025eagle3}, tying an inherited drafter to its
-training interface. TriSpec already supports adapter-only finetuning
-into a fixed EAGLE-family drafter, mapping proxy features to the
-expected feature space \citep{jiang2026trispec}. Adapter-only tuning
-is therefore not our novelty claim. TriSpec uses a proxy to approve
-some tokens without full-target verification. RelaySpec instead removes
-the source transformer from generation, retargets its inherited drafter
-to a new verifier, and retains target-controlled acceptance. Our
-contribution is this deployment setting and its measured data,
-capacity and source-removal behavior across two drafting families.
+\paragraph{Reusing a drafter through its conditioning interface.}
+DFlash and EAGLE-3 consume features tied to their training target
+\citep{chen2026dflash,li2025eagle3}. RelaySpec applies small-data linear
+regression to this deployment dependency: retain the released prediction
+network, replace its source features, and remove the source transformer.
+Table~\ref{tab:positioning} locates this construction among the closest
+alternatives. TriSpec already supports adapter-only fitting into a frozen
+EAGLE drafter, while PARD reuses a target-independent parallel drafter
+without a new target-specific fit. RelaySpec
+characterizes how little input adaptation can make a released
+feature-conditioned predictor useful after source removal, across
+two drafter families and multiple target settings.
 
-\paragraph{Target-independent drafting and dynamic steering.}
-PARD adapts an autoregressive draft model for parallel token prediction
-and reuses it across a target family \citep{an2026pard}. Thus reuse across
-targets is established prior work. Its target-independent drafter offers
-zero additional target-specific fitting at deployment. RelaySpec instead
-makes a small target-specific investment to reuse a feature-conditioned
-checkpoint and exploit the new target's internal states. SD$^2$ is a
-closer alignment alternative: it computes steering from verifier states
-and injects it into a pretrained drafter \citep{berdoz2026sd2}.
-Our fitted input map replaces source conditioning, whereas SD$^2$
-learns steering within the drafter. The experiments include its public
-frozen-drafter configuration and PARD's released checkpoint, with their
-own matched AR controls (Appendix~\ref{app:externalbaselines}). These
-comparisons expose practical alternatives without attributing differences
-in runtime or inherited models to the alignment mechanism alone.
+\begin{table}[H]
+\caption{Training and execution requirements of closely related methods.
+Table~\ref{tab:public-comparison} reports completed 128-question timings
+for RelaySpec, PARD and frozen-drafter SD$^2$. TriSpec is a conceptual
+comparison.}
+\label{tab:positioning}
+\centering
+\input{generated/positioning_comparison_table.tex}
+\end{table}
 
-\paragraph{Distillation and drafter adaptation.}
-OmniDraft uses online hybrid distillation and an n-gram cache to address
+SD$^2$ injects verifier-derived steering within a pretrained drafter.
+RelaySpec regresses the input context consumed by a fixed feature-conditioned
+predictor. We measure PARD and SD$^2$'s public frozen-drafter option
+with their own AR controls (Table~\ref{tab:public-comparison}). Matched
+connector-CE and drafter-LoRA comparisons isolate adaptation choices
+within the RelaySpec runtime (Figure~\ref{fig:adaptation}).
+
+\paragraph{Distillation and heterogeneous tokenizers.}
+OmniDraft combines online hybrid distillation with an n-gram cache for
 cross-vocabulary deployment \citep{ramakrishnan2025omnidraft}.
-Our primary study uses a shared vocabulary. A separate Qwen-to-Llama
-extension aligns shared text boundaries during fitting and translates
-proposals between tokenizers before target verification
-(Section~\ref{sec:family-extension}). It tests one heterogeneous pair,
-not a general cross-vocabulary sampling scheme
+RelaySpec's Qwen-to-Llama extension pairs shared text-prefix features
+and translates proposals before target verification. It tests a greedy
+bridge, distinct from general heterogeneous-vocabulary sampling
 \citep{timor2025heterogeneous}. RepSpec changes draft training through
-structural re-parameterization \citep{huo2026repspec}. VSD optimizes
-sequence acceptance, and the Draft-OPD preprint studies on-policy
-teacher feedback \citep{zou2026vsd,lei2026draftopd}. These approaches
-improve a drafter's learned prediction behavior. RelaySpec freezes the
-prediction weights and regresses their input context. Our matched warm-budget connector-CE and rank-32 LoRA comparisons
-test this alternative locally (Table~\ref{tab:adaptation-main}), without
-ranking untested objectives or full-drafter training.
+structural re-parameterization \citep{huo2026repspec}, VSD optimizes
+sequence acceptance, and Draft-OPD studies on-policy teacher feedback
+\citep{zou2026vsd,lei2026draftopd}. These improve draft prediction
+weights. Our calibration holds those weights fixed.
 
 \paragraph{Frozen interfaces and the meaning of feature alignment.}
 Adapters, low-rank updates and model stitching already adapt or connect
@@ -161,7 +153,7 @@ with other scheduling policies is not established by our experiments.
 
 \section{Preliminaries}
 \label{sec:preliminaries}
-\subsection{Drafting and target verification}
+\paragraph{Drafting and target verification.}
 An autoregressive model generates one token at a time. Blockwise and
 speculative methods propose several tokens, then check them in a target
 pass \citep{stern2018blockwise,xia2023specdec,leviathan2023speculative}.
@@ -169,20 +161,19 @@ In greedy decoding, the verifier commits the longest matching prefix
 and a target-selected next token. RelaySpec preserves this decoder and
 changes the features supplied to its drafter.
 
-\subsection{Throughput and accepted progress}
+\paragraph{Throughput and accepted progress.}
 \label{sec:cost}
 
-Our primary metric is end-to-end output throughput: total generated tokens
-divided by total request time, including prompt processing. Let $T_A$,
-$T_R$ and $T_N$ denote this throughput for plain AR, RelaySpec and the
-native target-specific drafter. We report
+End-to-end output throughput divides total generated tokens by total
+request time, including prompt processing. For plain AR, RelaySpec and
+the native drafter, denote it $T_A$, $T_R$ and $T_N$. We report
 \begin{equation}
 \text{AR speedup}=T_R/T_A,\qquad
 \text{native throughput retained}=100\,T_R/T_N\ \%.
 \label{eq:metrics}
 \end{equation}
-Throughput includes prompt processing. We also report summed AR time
-relative to summed relay time because output lengths can differ.
+We also report summed AR time relative to summed relay time because
+output lengths can differ.
 Accepted progress counts tokens advanced per verification cycle,
 including the target-supplied token. Removing source computation saves
 cycle time but can reduce accepted progress. Appendix~\ref{app:acceptance}
@@ -314,14 +305,13 @@ first answer. Its bootstrap unit is the conversation. Other confidence
 intervals resample matched requests and condition on the fitted checkpoint.
 Model loading and external task scoring sit outside the request timer.
 
+\subsection{Acceleration over plain autoregressive decoding}
 \label{sec:results}
 
-\subsection{Acceleration over plain autoregressive decoding}
-
-RelaySpec accelerates all four primary MATH-500 configurations
-(Figure~\ref{fig:primary}a). DFlash reaches 186.49 and 116.88 tokens/s at
-8B and 14B, while EAGLE-3 reaches 84.92 and 59.18. AR-relative ratios
-span 2.35--5.11, with all paired intervals above one.
+RelaySpec accelerates all four primary MATH-500 configurations by
+2.35--5.11 times AR, with all paired intervals above one
+(Figure~\ref{fig:primary}a). DFlash reaches 186.49/116.88 tokens/s at
+8B/14B, and EAGLE-3 reaches 84.92/59.18.
 
 \begin{figure}[H]
 \centering
@@ -337,19 +327,17 @@ so comparisons between drafter families do not isolate architecture.
 \subsection{Native retention and source removal}
 RelaySpec retains 90.3\% of native DFlash-8B throughput and 90.2\%/89.1\%
 of native EAGLE-3 at 8B/14B (Table~\ref{tab:retention}). These compare
-released drafters, not matched original training costs. Against source
-reuse, throughput ratios are 1.531/1.268 for DFlash and 1.278/1.097 for
-EAGLE-3 at 8B/14B. Holding the inherited drafter fixed, removing source
-computation outweighs the lower progress per cycle
+released drafters, not matched original training costs. Holding the
+inherited drafter fixed, source removal improves throughput by
+9.7--53.1\%, outweighing the lower progress per cycle
 (Figure~\ref{fig:primary}b).
 
 \subsection{Math accuracy and output agreement}
 
 Table~\ref{tab:quality} scores the outputs timed in Figure~\ref{fig:primary}.
-Observed AR-to-relay accuracy differences range from $-0.2$ to $+0.8$
-percentage points, and each paired interval includes zero. These measured
-outcomes support the accuracy comparison without treating token equality
-as a substitute for task quality.
+AR-to-relay accuracy differences range from $-0.2$ to $+0.8$ percentage
+points, with each paired interval including zero. We measure task quality
+and token equality separately.
 
 \begin{table}[H]
 \caption{MATH-500 accuracy in percent. Difference is RelaySpec minus AR
@@ -401,7 +389,7 @@ to 192.8 with 512, then ranges from 196.9 to 198.4 at 2,048--32,768
 (Figure~\ref{fig:scaling}a). Thus 16 records give $2.58\times$ AR, and
 512 retain 97.2\% of the observed best. All eleven maps score 105/128.
 These single-seed development results do not establish a general data
-threshold. Appendix~\ref{app:design} retains the historical MATH-only study.
+threshold (Appendix~\ref{app:design}).
 
 \begin{figure}[t]
 \centering
@@ -484,16 +472,19 @@ costs (Appendix~\ref{app:timed-budget}).
 \end{figure}
 
 \paragraph{Public-runtime baselines.}
-Table~\ref{tab:public-comparison} places the completed public baselines
-beside RelaySpec. The relay has the highest measured throughput, but the
-separate runtime controls prevent an algorithm-only ranking.
-Table~\ref{tab:method-differences} distinguishes their adaptation mechanisms.
+RelaySpec has the highest measured throughput and own-runtime AR
+speedup among the three completed configurations in
+Table~\ref{tab:public-comparison}: $5.14\times$ versus PARD's
+$3.34\times$ and frozen-drafter SD$^2$'s $1.60\times$. Different runtimes
+and inherited models prevent attributing this ranking solely to the
+adaptation method. Table~\ref{tab:positioning} distinguishes their designs.
 
 \begin{table}[H]
 \caption{Public-runtime comparison on 128 MATH development questions,
 2,048-token cap. Correct counts are out of 128, with each system's AR in
 parentheses. Precision, attention and libraries differ, so speedups use
-own-runtime AR. Settings and paired quality uncertainty appear in
+own-runtime AR. Bold marks the highest observed throughput and own-runtime speedup.
+Settings and paired quality uncertainty appear in
 Appendix~\ref{app:externalbaselines}.}
 \label{tab:public-comparison}
 \centering\small
@@ -557,25 +548,25 @@ recent family development but belong to the broader project's MATH pool.
 These speeds are not pooled with the BF16 Qwen suite
 (Appendix~\ref{app:family-extension}).
 
-\section{Discussion and limitations}
+\section{Limitations}
 \label{sec:limitations}
-\paragraph{Main insights.}
-A drafter's learned prediction function can remain useful after its
-conditioning model changes. A small linear interface often suffices,
-but its feature error alone does not determine speed. Richer fitting
-reaches native throughput in one setting and helps cross-family reuse,
-while the larger Llama fit adds no resolved gain. Interface selection
-therefore needs both feature and decoding measurements.
+\paragraph{Access and calibration.}
+RelaySpec requires source and target hidden states during fitting, and
+target features during generation, so ordinary text-only APIs are
+insufficient. A map is calibrated for particular checkpoints and feature
+taps. Reuse after model updates or quantization needs validation.
+Source removal saves inference work but does not remove calibration
+cost: the richer rollout recipe requires substantial data preparation.
 
-\paragraph{Scope and limitations.}
-Mechanism comparisons hold drafter and runtime fixed, while public
-baselines differ in runtime and training history. Historical BF16 and
-later exact matches require their respective numerical references.
-Frozen small-data tests support speed retention, not tight accuracy
-noninferiority. Coverage remains limited to the evaluated pairs, one
-cross-tokenizer transfer and one request per worker. Development exposure,
-related templates, few fitting seeds and capped outputs limit generalization.
-The rollout recipe changes data, supervision and optimization together.
+\paragraph{Serving and verification.}
+The gain depends on saved source work outweighing reduced proposal
+progress. Some code workloads favor retaining the source, and our
+single-request measurements do not establish gains under continuous
+batching or concurrent serving. The cross-tokenizer bridge is tested
+only for greedy decoding, not a general sampling correction across
+vocabularies. Numerical agreement remains runtime-dependent, as the
+historical BF16 and later exact comparisons demonstrate. Broader model
+coverage and independent fitting repetitions are still needed.
 
 \section{Conclusion}
 \label{sec:scope}

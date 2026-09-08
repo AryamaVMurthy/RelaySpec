@@ -236,10 +236,10 @@ def main():
     public_table = [
         r"\begin{tabular}{lrrrr}",
         r"\toprule",
-        r"System & Tok/s & Own AR tok/s & Speedup [95\% CI] & Correct (AR) \\",
+        r"System & End-to-end tok/s & Own AR tok/s & Speedup [95\% CI] & Correct (AR) \\",
         r"\midrule",
     ]
-    for label, row, ar, correct, ar_correct in [
+    public_rows = [
         (
             r"RelaySpec ($N=512$)",
             relay_methods["relay_dense_n512"],
@@ -261,11 +261,20 @@ def main():
             sd_full["capped_quality"]["methods"]["sd2_selected"]["correct_count"],
             sd_full["capped_quality"]["methods"]["native_ar"]["correct_count"],
         ),
-    ]:
+    ]
+    max_tps = max(row[1]["tokens_per_second"] for row in public_rows)
+    max_speedup = max(row[1]["throughput_ratio"] for row in public_rows)
+    for label, row, ar, correct, ar_correct in public_rows:
         lo, hi = row["throughput_ci95"]
+        tps = f"{row['tokens_per_second']:.2f}"
+        speedup = f"{row['throughput_ratio']:.2f}"
+        if row["tokens_per_second"] == max_tps:
+            tps = r"\textbf{" + tps + "}"
+        if row["throughput_ratio"] == max_speedup:
+            speedup = r"\textbf{" + speedup + "}"
         public_table.append(
-            f"{label} & {row['tokens_per_second']:.2f} & {ar['tokens_per_second']:.2f} & "
-            f"{row['throughput_ratio']:.2f} [{lo:.2f}, {hi:.2f}] & {correct} ({ar_correct}) "
+            f"{label} & {tps} & {ar['tokens_per_second']:.2f} & "
+            f"{speedup} [{lo:.2f}, {hi:.2f}] & {correct} ({ar_correct}) "
             + r"\\"
         )
     public_table += [r"\bottomrule", r"\end{tabular}"]
