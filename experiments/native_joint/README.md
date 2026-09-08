@@ -2,6 +2,10 @@
 
 A separate experiment investigating whether joint token-prediction training of a compact conditioning interface and native speculative drafter can improve on original DFlash. This project has its own code, configuration, results and decision record. It does not import RelaySpec, train a cross-model mapper, or modify the RelaySpec manuscript.
 
+## Current speed target and rapid research mode
+
+The user requires at least10% end-to-end speedup over original DFlash and has prioritized rapid, radical decoding ideas after joint training reached only near parity. `radical_decode.py` and `run_radical.py` test inference policies with the unchanged native weights: verification length, history lookup, conditional multi-branch verification, and recycling unused proposals. These screens extend the separate native study; they are not RelaySpec results. Every proposed token is still target-verified, and numerical output differences are measured explicitly. A small-screen gain is only a promotion signal: repeated broader tests and the reserved128-request/2,048-token comparison are required.
+
 ## Question and comparison
 
 The target is frozen Qwen3-8B. The baseline is its pinned released native DFlash-b16 drafter. Students initialize from that native checkpoint, reduce the conditioning taps and/or draft depth, and train both the conditioning projection and draft transformer. This is native compression fine-tuning, not training from scratch or a claim of architectural novelty.
@@ -22,6 +26,10 @@ For a sequence of tokens `x`, choose an anchor at position `a`. Target context f
 The initial objective is full-vocabulary KL(target || student), temperature 1, with position weights `exp(-j/7)` for `j=0..14`. Later comparisons include data cross-entropy, hard target labels, mixed losses, uniform weights and other decays. These objectives are prediction surrogates; true accepted progress is measured in decoding.
 
 Training examples come from pinned NuminaMath records and solutions. Frozen target activations are independently generated for this experiment. Existing raw dataset storage may be read, but no previously trained cross-model mapper or feature target is used. Training and fitting-validation records are disjoint by normalized question. Development benchmark exposure is recorded; final confirmation requests must be frozen separately after selection.
+
+The native-teacher arm distills the frozen original drafter on identical prefix features and masked query tokens. Batched fitting right-pads conditioning keys, masks all padding, and preserves each query's true position. GPU gates compare padded and separate forwards in FP32 and BF16 and require padding perturbations to have no effect. Full-vocabulary losses average normalized per-block losses, so increasing batch size does not multiply the objective. Logs report distinct records actually consumed and supervised blocks. Optional validation-best checkpoints are saved separately; the standard after-training screen always evaluates the final checkpoint and labels it explicitly.
+
+`data/screening.json` selects 16 requests per workload for adaptive work. `data/confirmation.json` reserves 32 other requests per workload (128 total), without overlap with screening IDs. These originated in an earlier project manifest; only separation from this standalone study's tuning is claimed. `evaluate_native.py` supports paired repeated timing, block-size comparisons, and optional original block=1 AR decoding. Confirmation requires an explicit frozen checkpoint/configuration and manifest match.
 
 ## Research stages and completion requirements
 

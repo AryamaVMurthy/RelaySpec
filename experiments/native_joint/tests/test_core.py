@@ -1,7 +1,45 @@
 import torch
 from torch import nn
 
-from core import TAPS, block_view, compact_student, prediction_loss, token_ids, cast_parameters
+from core import TAPS, block_view, block_batch, compact_student, prediction_loss, token_ids, cast_parameters
+
+
+def test_batched_objective_equals_mean_of_individual_values_and_gradients():
+    torch.manual_seed(9)
+    teacher = torch.randn(3, 15, 19)
+    labels = torch.randint(19, (3, 15))
+    for kind in ["kl", "ce", "hard_target", "mixed"]:
+        for gamma in [0, 7]:
+            student = torch.randn(3, 15, 19, requires_grad=True)
+            batched, _ = prediction_loss(student, teacher, labels, kind, gamma)
+            separate = torch.stack([prediction_loss(student[i], teacher[i], labels[i], kind, gamma)[0] for i in range(3)]).mean()
+            assert torch.allclose(batched, separate, atol=1e-6)
+            a = torch.autograd.grad(batched, student, retain_graph=True)[0]
+            b = torch.autograd.grad(separate, student)[0]
+            assert torch.allclose(a, b, atol=1e-7)
+
+
+def test_variable_prefix_batch_masks_padding_and_preserves_true_positions():
+    records = [{"input_ids": torch.arange(40), "taps": torch.randn(5, 40, 2), "final_hidden": torch.randn(40, 3)} for _ in range(2)]
+    batch = block_batch(records, [7, 20], [25, 33])
+    assert batch["context"].shape == (2, 20, 4)
+    assert not batch["attention_mask"][0, :, :, 7:20].any()
+    assert batch["attention_mask"][0, :, :, :7].all()
+    assert batch["attention_mask"][..., 20:].all()
+    assert torch.equal(batch["positions"][0, 20:], torch.arange(7, 23))
+    for i, anchor in enumerate([7, 20]):
+        view = block_view(records[i], anchor, [25, 33])
+        assert torch.equal(batch["context"][i, :anchor], view["context"][0])
+        assert torch.equal(batch["labels"][i], view["labels"])
+        assert torch.equal(batch["teacher_hidden"][i], view["teacher_hidden"])
+    query = torch.randn(2, 1, 16, 4)
+    key = torch.randn(2, 1, 36, 4)
+    value = torch.randn_like(key)
+    reference = torch.nn.functional.scaled_dot_product_attention(query, key, value, batch["attention_mask"])
+    key[0, :, 7:20] = 1e4
+    value[0, :, 7:20] = -1e4
+    perturbed = torch.nn.functional.scaled_dot_product_attention(query, key, value, batch["attention_mask"])
+    assert torch.equal(reference, perturbed)
 
 
 def test_parameter_precision_conversion_preserves_nonpersistent_rope():

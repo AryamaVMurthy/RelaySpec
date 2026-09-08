@@ -1,0 +1,45 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 256,
+  "timeout_seconds": 540,
+  "name": "radical_lane0",
+  "variants": [
+    {
+      "name": "verify4",
+      "kind": "truncate",
+      "block_size": 16,
+      "verify_tokens": 4
+    },
+    {
+      "name": "verify8",
+      "kind": "truncate",
+      "block_size": 16,
+      "verify_tokens": 8
+    },
+    {
+      "name": "verify12",
+      "kind": "truncate",
+      "block_size": 16,
+      "verify_tokens": 12
+    },
+    {
+      "name": "confidence0.3",
+      "kind": "confidence",
+      "threshold": 0.3,
+      "minimum": 4
+    },
+    {
+      "name": "confidence0.6",
+      "kind": "confidence",
+      "threshold": 0.6,
+      "minimum": 4
+    }
+  ]
+}

@@ -15,7 +15,7 @@ import torch
 import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from core import TAPS, block_view, compact_student, prediction_loss, token_ids, cast_parameters
+from core import TAPS, block_view, block_batch, compact_student, prediction_loss, token_ids, cast_parameters
 
 TARGET = {"id": "Qwen/Qwen3-8B", "revision": "b968826d9c46dd6066d109eabc6255188de91218"}
 DRAFT = {"id": "z-lab/Qwen3-8B-DFlash-b16", "revision": "9b41424b7109f9c5413454f481b09a82b85333f4"}
@@ -153,6 +153,52 @@ def main():
         record["anchor_max"] = len(record["input_ids"])-cfg["block_size"]
         return record
     student = compact_student(native, cfg["taps"], cfg["layers"]).eval()
+    batch_size = cfg.get("batch_size", 1)
+    if not isinstance(batch_size, int) or batch_size < 1:
+        raise ValueError("batch_size must be a positive integer")
+    if batch_size > 1:
+        # Compare real native/student forwards against independent unpadded calls.
+        # This gate runs before training and also perturbs every padding feature.
+        with torch.no_grad():
+            probe_records = [load_record(path) for path in datasets["train"][:2]]
+            if len(probe_records) != 2:
+                raise ValueError("Batched validation requires at least two records")
+            probe_anchors = [probe_records[0]["anchor_min"], probe_records[1]["anchor_max"]]
+            if probe_anchors[0] == probe_anchors[1]:
+                probe_anchors[0] = max(1, probe_anchors[0]-1)
+            gate = []
+            probes = [(model, taps, name, dtype) for model, taps, name in [(native, TAPS, "native"), (student, cfg["taps"], "student")] for dtype in [torch.bfloat16, torch.float32]]
+            for model, taps, name, dtype in probes:
+                cast_parameters(model, dtype)
+                view = block_batch(probe_records, probe_anchors, taps, cfg["block_size"])
+                tokens = torch.full((2, cfg["block_size"]), native.mask_token_id, dtype=torch.long, device="cuda")
+                tokens[:, 0] = view["anchor_token"].cuda()
+                noise = target.model.embed_tokens(tokens).to(dtype)
+                context = view["context"].cuda().to(dtype)
+                kwargs = dict(noise_embedding=noise, position_ids=view["positions"].cuda(), attention_mask=view["attention_mask"].cuda(), use_cache=False, is_causal=False)
+                batched = model(target_hidden=context, **kwargs)
+                individual = []
+                for i, (record, anchor) in enumerate(zip(probe_records, probe_anchors)):
+                    single = block_view(record, anchor, taps, cfg["block_size"])
+                    individual.append(model(target_hidden=single["context"].cuda().to(dtype), noise_embedding=noise[i:i+1], position_ids=single["positions"].cuda(), use_cache=False, is_causal=False))
+                individual = torch.cat(individual)
+                relative_error = float((batched.float()-individual.float()).norm()/individual.float().norm())
+                max_error = float((batched.float()-individual.float()).abs().max())
+                output_scale = float(individual.float().abs().max())
+                for i, anchor in enumerate(probe_anchors):
+                    context[i, anchor:] = 100
+                perturbed = model(target_hidden=context, **kwargs)
+                padding_exact = torch.equal(batched, perturbed)
+                relative_limit, max_scaled_limit = ((.01, .02) if dtype == torch.bfloat16 else (1e-5, 1e-5))
+                passed = relative_error <= relative_limit and max_error <= max_scaled_limit*output_scale and padding_exact
+                gate.append({"model": name, "dtype": str(dtype), "relative_l2": relative_error, "relative_l2_limit": relative_limit, "max_absolute": max_error, "output_max_absolute": output_scale, "max_scaled_limit": max_scaled_limit, "padding_perturbation_exact": padding_exact, "passed": passed})
+                (args.output/"batch-gate.json").write_text(json.dumps({"status": "running" if passed else "failed", "anchors": probe_anchors, "models": gate}, indent=2))
+                if not passed:
+                    raise RuntimeError(f"Batched forward gate failed: {gate[-1]}")
+                cast_parameters(model, torch.bfloat16)
+            (args.output/"batch-gate.json").write_text(json.dumps({"status": "pass", "anchors": probe_anchors, "models": gate}, indent=2))
+            del batched, individual, perturbed, context, noise, kwargs, probe_records
+        log("batch_gate", models=gate)
     frozen_pointers = {p.data_ptr() for model in [native, target] for p in model.parameters()}
     if any(p.data_ptr() in frozen_pointers for p in student.parameters()):
         raise RuntimeError("Student shares parameter storage with a frozen model")
@@ -207,24 +253,27 @@ def main():
     projection_start = student.fc.weight.detach().clone()
     draft_start = student.layers[0].mlp.down_proj.weight.detach().clone()
 
-    def objective(record, anchor, backward=False):
-        view = block_view(record, anchor, cfg["taps"], cfg["block_size"])
-        tokens = torch.full((1, cfg["block_size"]), native.mask_token_id, dtype=torch.long, device="cuda")
+    def objective(records, anchors):
+        view = block_batch(records, anchors, cfg["taps"], cfg["block_size"])
+        tokens = torch.full((len(records), cfg["block_size"]), native.mask_token_id, dtype=torch.long, device="cuda")
         tokens[:, 0] = view["anchor_token"].cuda()
+        kwargs = dict(position_ids=view["positions"].cuda(), use_cache=False, is_causal=False)
+        if len(records) > 1:
+            kwargs["attention_mask"] = view["attention_mask"].cuda()
         with torch.no_grad():
             noise = target.model.embed_tokens(tokens)
             teacher = target.lm_head(view["teacher_hidden"].cuda())
             teacher_kind = cfg.get("teacher", "target")
             native_logits = None
             if teacher_kind in {"native", "blend"}:
-                native_view = block_view(record, anchor, TAPS, cfg["block_size"])
-                native_hidden = native(target_hidden=native_view["context"].cuda(), noise_embedding=noise, position_ids=view["positions"].cuda(), use_cache=False, is_causal=False)
-                native_logits = target.lm_head(native_hidden[0, 1:])
+                native_view = block_batch(records, anchors, TAPS, cfg["block_size"])
+                native_hidden = native(target_hidden=native_view["context"].cuda(), noise_embedding=noise, **kwargs)
+                native_logits = target.lm_head(native_hidden[:, 1:])
             elif teacher_kind != "target":
                 raise ValueError("Invalid distillation teacher")
         with torch.autocast("cuda", dtype=torch.bfloat16):
-            hidden = student(target_hidden=view["context"].cuda(), noise_embedding=noise, position_ids=view["positions"].cuda(), use_cache=False, is_causal=False)
-            logits = target.lm_head(hidden[0, 1:])
+            hidden = student(target_hidden=view["context"].cuda(), noise_embedding=noise, **kwargs)
+            logits = target.lm_head(hidden[:, 1:])
         target_loss, values = prediction_loss(logits, teacher, view["labels"].cuda(), cfg["loss"], cfg["gamma"], cfg["temperature"])
         if native_logits is None:
             return target_loss, values
@@ -239,23 +288,41 @@ def main():
         for path in datasets["validation"]:
             record = load_record(path)
             anchor = (record["anchor_min"]+record["anchor_max"])//2
-            loss, values = objective(record, anchor)
+            loss, values = objective([record], [anchor])
             metrics.append({"loss": float(loss), **values})
         summary = {key: sum(r[key] for r in metrics)/len(metrics) for key in metrics[0]}
         log("validation", step=step, **summary)
         return {"step": step, **summary}
 
+    best_validation = None
+    def retain_best(validation):
+        nonlocal best_validation
+        if not cfg.get("save_best"):
+            return
+        if best_validation is not None and validation["loss"] >= best_validation["loss"]:
+            return
+        best_path = scratch/"best-validation.pt"
+        temporary = scratch/"best-validation.tmp"
+        # Store deployable weights without changing live precision or buffers.
+        state = {name: value.detach().to(device="cpu", dtype=torch.bfloat16) if value.is_floating_point() else value.detach().cpu() for name, value in student.state_dict().items()}
+        torch.save({"config": cfg, "validation": validation, "state_dict": state}, temporary)
+        temporary.replace(best_path)
+        best_validation = {**validation, "path": str(best_path), "sha256": sha(best_path)}
+        (args.output/"best-validation.json").write_text(json.dumps(best_validation, indent=2))
+
     validations = [validate(0)]
+    retain_best(validations[-1])
     visited_records = set()
     with (args.output/"training.jsonl").open("w") as stream:
         for step in range(1, cfg["steps"]+1):
             optimizer.zero_grad(set_to_none=True)
             loss_total = 0.
             for micro in range(cfg["accumulation"]):
-                record = load_record(datasets["train"][((step-1)*cfg["accumulation"]+micro) % len(datasets["train"])])
-                visited_records.add(record["question_sha"])
-                anchor = random.randint(record["anchor_min"], record["anchor_max"])
-                loss, values = objective(record, anchor)
+                start = ((step-1)*cfg["accumulation"]+micro)*batch_size
+                records = [load_record(datasets["train"][(start+i) % len(datasets["train"])]) for i in range(batch_size)]
+                visited_records.update(record["question_sha"] for record in records)
+                anchors = [random.randint(record["anchor_min"], record["anchor_max"]) for record in records]
+                loss, values = objective(records, anchors)
                 if not torch.isfinite(loss):
                     raise RuntimeError("Nonfinite training loss")
                 (loss/cfg["accumulation"]).backward()
@@ -272,8 +339,9 @@ def main():
             stream.write(json.dumps({"step": step, "loss": loss_total, "gradient_norm": float(norm), **values})+"\n"); stream.flush()
             if step % cfg["validate_every"] == 0 or step == cfg["steps"]:
                 validations.append(validate(step))
+                retain_best(validations[-1])
     counts["distinct_records_consumed"] = len(visited_records)
-    counts["supervised_blocks"] = cfg["steps"]*cfg["accumulation"]
+    counts["supervised_blocks"] = cfg["steps"]*cfg["accumulation"]*batch_size
     if cfg.get("require_all_records") and len(visited_records) != cfg["train_records"]:
         raise RuntimeError("Not all requested training records were consumed")
     changes = {"interface_l2": float((student.fc.weight.detach()-projection_start).norm()), "draft_l2": float((student.layers[0].mlp.down_proj.weight.detach()-draft_start).norm())}
@@ -303,7 +371,7 @@ def main():
     if not torch.equal(live.output_ids, reloaded.output_ids) or live.acceptance_lengths != reloaded.acceptance_lengths:
         raise RuntimeError("Saved checkpoint failed decode reproduction")
     (args.output/"reload-gate.json").write_text(json.dumps({"status": "pass", "cap": probe_args["max_new_tokens"], "output_tokens": live.num_output_tokens, "checkpoint_sha256": sha(checkpoint)}, indent=2))
-    result = {"status": "pass", "before": before, "after": after, "validation": validations, "updates": changes, "counts": counts, "elapsed_seconds": time.perf_counter()-started, "cuda_max_allocated": torch.cuda.max_memory_allocated()}
+    result = {"status": "pass", "before": before, "after": after, "validation": validations, "best_validation": best_validation, "evaluated_checkpoint": "final", "updates": changes, "counts": counts, "elapsed_seconds": time.perf_counter()-started, "cuda_max_allocated": torch.cuda.max_memory_allocated()}
     (args.output/"result.json").write_text(json.dumps(result, indent=2))
     log("complete", summary=result)
 

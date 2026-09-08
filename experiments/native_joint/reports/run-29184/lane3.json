@@ -1,0 +1,48 @@
+{
+  "eval_manifest": "data/screening.json",
+  "benchmarks": [
+    "gsm8k",
+    "math500",
+    "humaneval",
+    "mtbench"
+  ],
+  "requests_per_benchmark": 2,
+  "output_cap": 256,
+  "timeout_seconds": 540,
+  "name": "radical_lane3",
+  "variants": [
+    {
+      "name": "branch_b8_first",
+      "kind": "branches",
+      "block_size": 8,
+      "fork": "first",
+      "search_positions": 4
+    },
+    {
+      "name": "branch_b8_weakest",
+      "kind": "branches",
+      "block_size": 8,
+      "fork": "weakest",
+      "search_positions": 4
+    },
+    {
+      "name": "branch_b16_first",
+      "kind": "branches",
+      "block_size": 16,
+      "fork": "first",
+      "search_positions": 4
+    },
+    {
+      "name": "branch_b16_weakest",
+      "kind": "branches",
+      "block_size": 16,
+      "fork": "weakest",
+      "search_positions": 4
+    },
+    {
+      "name": "adaptive_headroom2",
+      "kind": "adaptive",
+      "headroom": 2.0
+    }
+  ]
+}

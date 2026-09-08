@@ -1,0 +1,185 @@
+{
+  "lanes": [
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 256,
+      "timeout_seconds": 540,
+      "name": "radical_lane0",
+      "variants": [
+        {
+          "name": "verify4",
+          "kind": "truncate",
+          "block_size": 16,
+          "verify_tokens": 4
+        },
+        {
+          "name": "verify8",
+          "kind": "truncate",
+          "block_size": 16,
+          "verify_tokens": 8
+        },
+        {
+          "name": "verify12",
+          "kind": "truncate",
+          "block_size": 16,
+          "verify_tokens": 12
+        },
+        {
+          "name": "confidence0.3",
+          "kind": "confidence",
+          "threshold": 0.3,
+          "minimum": 4
+        },
+        {
+          "name": "confidence0.6",
+          "kind": "confidence",
+          "threshold": 0.6,
+          "minimum": 4
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 256,
+      "timeout_seconds": 540,
+      "name": "radical_lane1",
+      "variants": [
+        {
+          "name": "block4",
+          "kind": "fixed",
+          "block_size": 4
+        },
+        {
+          "name": "block8",
+          "kind": "fixed",
+          "block_size": 8
+        },
+        {
+          "name": "block12",
+          "kind": "fixed",
+          "block_size": 12
+        },
+        {
+          "name": "block24",
+          "kind": "fixed",
+          "block_size": 24
+        },
+        {
+          "name": "block32",
+          "kind": "fixed",
+          "block_size": 32
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 256,
+      "timeout_seconds": 540,
+      "name": "radical_lane2",
+      "variants": [
+        {
+          "name": "lookup_s2_b16",
+          "kind": "history",
+          "suffix": 2,
+          "lookup_block": 16,
+          "minimum_lookup": 3
+        },
+        {
+          "name": "lookup_s3_b16",
+          "kind": "history",
+          "suffix": 3,
+          "lookup_block": 16,
+          "minimum_lookup": 3
+        },
+        {
+          "name": "lookup_s4_b16",
+          "kind": "history",
+          "suffix": 4,
+          "lookup_block": 16,
+          "minimum_lookup": 3
+        },
+        {
+          "name": "lookup_s3_b32",
+          "kind": "history",
+          "suffix": 3,
+          "lookup_block": 32,
+          "minimum_lookup": 3
+        },
+        {
+          "name": "adaptive_progress",
+          "kind": "adaptive",
+          "headroom": 1.5
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 256,
+      "timeout_seconds": 540,
+      "name": "radical_lane3",
+      "variants": [
+        {
+          "name": "branch_b8_first",
+          "kind": "branches",
+          "block_size": 8,
+          "fork": "first",
+          "search_positions": 4
+        },
+        {
+          "name": "branch_b8_weakest",
+          "kind": "branches",
+          "block_size": 8,
+          "fork": "weakest",
+          "search_positions": 4
+        },
+        {
+          "name": "branch_b16_first",
+          "kind": "branches",
+          "block_size": 16,
+          "fork": "first",
+          "search_positions": 4
+        },
+        {
+          "name": "branch_b16_weakest",
+          "kind": "branches",
+          "block_size": 16,
+          "fork": "weakest",
+          "search_positions": 4
+        },
+        {
+          "name": "adaptive_headroom2",
+          "kind": "adaptive",
+          "headroom": 2.0
+        }
+      ]
+    }
+  ]
+}

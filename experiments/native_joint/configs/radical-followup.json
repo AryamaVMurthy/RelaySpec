@@ -1,0 +1,147 @@
+{
+  "lanes": [
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "humaneval"
+      ],
+      "requests_per_benchmark": 8,
+      "output_cap": 512,
+      "timeout_seconds": 540,
+      "name": "code_recheck",
+      "repeats": 2,
+      "variants": [
+        {
+          "name": "lookup_s3_b32_code8",
+          "kind": "history",
+          "suffix": 3,
+          "lookup_block": 32,
+          "minimum_lookup": 3
+        },
+        {
+          "name": "confidence03_code8",
+          "kind": "confidence",
+          "threshold": 0.3,
+          "minimum": 4
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 4,
+      "output_cap": 256,
+      "timeout_seconds": 540,
+      "name": "history_extended",
+      "variants": [
+        {
+          "name": "lookup_s2_b32",
+          "kind": "history",
+          "suffix": 2,
+          "lookup_block": 32,
+          "minimum_lookup": 4
+        },
+        {
+          "name": "lookup_s3_b48",
+          "kind": "history",
+          "suffix": 3,
+          "lookup_block": 48,
+          "minimum_lookup": 4
+        },
+        {
+          "name": "lookup_s4_b32",
+          "kind": "history",
+          "suffix": 4,
+          "lookup_block": 32,
+          "minimum_lookup": 4
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 256,
+      "timeout_seconds": 540,
+      "name": "conditional_branches",
+      "variants": [
+        {
+          "name": "conditional_branch_0.5",
+          "kind": "branches",
+          "block_size": 16,
+          "fork": "first",
+          "branch_margin": 0.5
+        },
+        {
+          "name": "conditional_branch_1.0",
+          "kind": "branches",
+          "block_size": 16,
+          "fork": "first",
+          "branch_margin": 1.0
+        },
+        {
+          "name": "conditional_branch_2.0",
+          "kind": "branches",
+          "block_size": 16,
+          "fork": "first",
+          "branch_margin": 2.0
+        },
+        {
+          "name": "four_branches",
+          "kind": "branches",
+          "block_size": 16,
+          "branches": 4
+        }
+      ]
+    },
+    {
+      "eval_manifest": "data/screening.json",
+      "benchmarks": [
+        "gsm8k",
+        "math500",
+        "humaneval",
+        "mtbench"
+      ],
+      "requests_per_benchmark": 2,
+      "output_cap": 256,
+      "timeout_seconds": 540,
+      "name": "recycled_proposals",
+      "variants": [
+        {
+          "name": "recycle_min4_rounds1",
+          "kind": "recycle",
+          "minimum_recycle": 4,
+          "max_recycles": 1
+        },
+        {
+          "name": "recycle_min8_rounds1",
+          "kind": "recycle",
+          "minimum_recycle": 8,
+          "max_recycles": 1
+        },
+        {
+          "name": "recycle_min4_rounds2",
+          "kind": "recycle",
+          "minimum_recycle": 4,
+          "max_recycles": 2
+        },
+        {
+          "name": "recycle_min8_rounds2",
+          "kind": "recycle",
+          "minimum_recycle": 8,
+          "max_recycles": 2
+        }
+      ]
+    }
+  ]
+}

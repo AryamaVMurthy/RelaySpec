@@ -67,6 +67,27 @@ def block_view(record, anchor, taps, block_size=16):
     }
 
 
+def block_batch(records, anchors, taps, block_size=16):
+    """Right-pad prefix keys; each query retains its actual sequence position."""
+    if not records or len(records) != len(anchors):
+        raise ValueError("Expected one anchor per nonempty batch record")
+    views = [block_view(r, a, taps, block_size) for r, a in zip(records, anchors)]
+    context_length = max(anchors)
+    context = views[0]["context"].new_zeros(len(records), context_length, views[0]["context"].shape[-1])
+    positions = torch.zeros(len(records), context_length+block_size, dtype=torch.long)
+    mask = torch.zeros(len(records), 1, block_size, context_length+block_size, dtype=torch.bool)
+    for i, (view, anchor) in enumerate(zip(views, anchors)):
+        context[i, :anchor] = view["context"][0]
+        positions[i, :anchor] = torch.arange(anchor)
+        positions[i, context_length:] = torch.arange(anchor, anchor+block_size)
+        mask[i, :, :, :anchor] = True
+        mask[i, :, :, context_length:] = True
+    return {"context": context, "positions": positions, "attention_mask": mask,
+            "anchor_token": torch.cat([v["anchor_token"] for v in views]),
+            "labels": torch.stack([v["labels"] for v in views]),
+            "teacher_hidden": torch.stack([v["teacher_hidden"] for v in views])}
+
+
 def prediction_loss(student_logits, teacher_logits, labels, kind="kl", gamma=7.0, temperature=1.0):
     logits = student_logits.float()
     weights = torch.ones(logits.shape[-2], device=logits.device)
@@ -77,15 +98,15 @@ def prediction_loss(student_logits, teacher_logits, labels, kind="kl", gamma=7.0
     logp = F.log_softmax(logits/temperature, dim=-1)
     logq = F.log_softmax(teacher/temperature, dim=-1)
     kl = (logq.exp()*(logq-logp)).sum(-1)*temperature**2
-    ce = F.cross_entropy(logits, labels, reduction="none")
-    hard = F.cross_entropy(logits, teacher.argmax(-1), reduction="none")
+    ce = F.cross_entropy(logits.reshape(-1, logits.shape[-1]), labels.reshape(-1), reduction="none").reshape(labels.shape)
+    hard = F.cross_entropy(logits.reshape(-1, logits.shape[-1]), teacher.argmax(-1).reshape(-1), reduction="none").reshape(labels.shape)
     losses = {"kl": kl, "ce": ce, "hard_target": hard, "mixed": .5*(kl+ce)}
     if kind not in losses:
         raise ValueError("Unknown token objective")
     match = logits.argmax(-1) == teacher.argmax(-1)
-    return (losses[kind]*weights).sum(), {
-        "kl": float((kl*weights).sum().detach()),
-        "data_ce": float((ce*weights).sum().detach()),
+    return (losses[kind]*weights).sum(-1).mean(), {
+        "kl": float((kl*weights).sum(-1).mean().detach()),
+        "data_ce": float((ce*weights).sum(-1).mean().detach()),
         "token_agreement": float(match.float().mean()),
-        "teacher_forced_prefix_matches": int(match.long().cumprod(-1).sum()),
+        "teacher_forced_prefix_matches": float(match.long().cumprod(-1).sum(-1).float().mean()),
     }
