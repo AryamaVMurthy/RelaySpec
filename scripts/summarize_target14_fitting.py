@@ -63,7 +63,19 @@ def main():
         ),
     )
     args.output.mkdir(parents=True, exist_ok=True)
-    plt.rcParams.update({"font.size": 10, "pdf.fonttype": 42, "ps.fonttype": 42})
+    # The fixed 11.6-inch canvas is reduced to about 47% in the manuscript.
+    # Source fonts of 17--18 pt remain readable at roughly 8--8.5 pt there.
+    plt.rcParams.update(
+        {
+            "font.size": 18,
+            "axes.titlesize": 18,
+            "axes.labelsize": 18,
+            "xtick.labelsize": 17,
+            "ytick.labelsize": 17,
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+        }
+    )
     fig, axes = plt.subplots(1, 2, figsize=(11.6, 4.6), sharey=True)
     for ax, n in zip(axes, [512, 2048], strict=True):
         for record in results:
@@ -73,28 +85,37 @@ def main():
             points = [p for p in record["validation_trajectory"] if p["step"] > 0]
             appearance = style(trial)
             display = label(trial)
+            if trial["architecture"] == "factorized":
+                display = f"Linear {trial['width']}"
             if trial["seed"] != 1729:
                 appearance.update(color="#777777", linestyle="--", marker="x")
-                display += " (seed 1730)"
+                display += ", seed 1730"
             ax.plot(
                 [p["step"] for p in points],
                 [p["groups"]["validation"]["objective"] for p in points],
                 label=display,
-                linewidth=1.5,
-                markersize=4,
+                linewidth=2.2,
+                markersize=6,
+                markeredgewidth=1.1,
+                markerfacecolor="white"
+                if trial["architecture"] == "factorized"
+                else appearance["color"],
                 **appearance,
             )
         ax.set_xscale("log", base=2)
         ax.set_xticks([128, 512, 2048, 8192], ["128", "512", "2,048", "8,192"])
-        ax.set_xlabel("Optimizer updates (batch size 4)")
-        ax.set_title(f"{n:,} distinct training examples")
+        ax.set_xlabel("Updates (batch size 4)")
+        ax.set_title(f"{n:,} training examples")
         ax.grid(alpha=0.2)
-    axes[0].set_ylabel("Validation relative interface MSE")
+    axes[0].set_ylabel("Validation relative MSE")
     handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="lower center", ncol=4, frameon=False, fontsize=9)
+    fig.legend(
+        handles, labels, loc="lower center", ncol=4, frameon=False, fontsize=17,
+        handlelength=1.8, handletextpad=0.45, columnspacing=1.0, labelspacing=0.4,
+    )
     family_label = {"dflash": "DFlash", "eagle3": "EAGLE-3"}[args.family]
     fig.suptitle(f"{family_label} / Qwen3-14B: fixed-data fitting trajectories")
-    fig.tight_layout(rect=(0, 0.13, 1, 0.95))
+    fig.tight_layout(rect=(0, 0.21, 1, 0.95), pad=0.6, w_pad=0.8)
     for extension in ["png", "pdf"]:
         fig.savefig(
             args.output / f"validation-trajectories.{extension}",

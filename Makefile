@@ -5,7 +5,7 @@ PAPER_NAME := relayspec_iclr2027
 SCALING_RAW_ROOT ?= .
 export PYTHONPATH := $(CURDIR)/src:$(PYTHONPATH)
 
-.PHONY: help install test test-all lint format check paper paper-assets audit-paper clean research-plan submission-ready
+.PHONY: help install test test-all lint format check paper paper-assets paper-visual-assets audit-paper clean research-plan submission-ready
 
 help:
 	@echo "install       Install the locked development environment"
@@ -13,6 +13,7 @@ help:
 	@echo "test-all      Every test, including built-manuscript checks"
 	@echo "paper         Compile the current manuscript"
 	@echo "paper-assets  Regenerate tables and figures"
+	@echo "paper-visual-assets Regenerate the evidence-backed analytical figures"
 	@echo "audit-paper   Compile and run the strict submission-artifact audit"
 	@echo "research-plan Validate the research plan and show next tasks (no GPU jobs)"
 	@echo "submission-ready Require completion evidence for the research execution plan"
@@ -83,6 +84,12 @@ paper-target14-assets:
 
 paper-family-assets:
 	$(PYTHON) scripts/build_family_extension_paper_assets.py --root $(CURDIR) --output $(PAPER_DIR)
+
+paper-visual-assets:
+	$(PYTHON) scripts/build_results_visuals.py --root . --output $(PAPER_DIR)
+	$(PYTHON) scripts/build_scaling_visuals.py --root . --output $(PAPER_DIR)
+	$(PYTHON) scripts/build_transfer_visuals.py --root . --output $(PAPER_DIR)
+	$(PYTHON) scripts/build_diagnostics_visuals.py --root . --output $(PAPER_DIR)
 
 paper:
 	cd $(PAPER_DIR) && pdflatex -interaction=nonstopmode -halt-on-error $(PAPER_NAME).tex

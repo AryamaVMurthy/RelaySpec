@@ -268,9 +268,58 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
         for path in (expected / "generated").iterdir():
             if (paper / "generated" / path.name).read_bytes() != path.read_bytes():
                 return False, f"stale family extension asset {path.name}"
+    visual_assets = 0
+    for builder_name in (
+        "build_results_visuals.py",
+        "build_scaling_visuals.py",
+        "build_transfer_visuals.py",
+        "build_diagnostics_visuals.py",
+    ):
+        with tempfile.TemporaryDirectory(
+            prefix="relayspec-visual-paper-audit-"
+        ) as directory:
+            expected = Path(directory)
+            # Executing the absolute script path makes its sibling modules
+            # importable without permanently changing the audit's sys.path.
+            # A fresh process also isolates each builder's Matplotlib settings.
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(root / "scripts" / builder_name),
+                    "--root",
+                    str(root),
+                    "--output",
+                    str(expected),
+                ],
+                cwd=root,
+                text=True,
+                capture_output=True,
+            )
+            if result.returncode:
+                return (
+                    False,
+                    f"visual evidence validation failed ({builder_name}): "
+                    + result.stderr[-2000:],
+                )
+            emitted = sorted(
+                path for path in expected.rglob("*")
+                if path.is_file() and path.suffix.lower() in {".pdf", ".png", ".json"}
+            )
+            if {path.suffix.lower() for path in emitted} != {".pdf", ".png", ".json"}:
+                return False, f"incomplete visual asset output from {builder_name}"
+            for path in emitted:
+                relative = path.relative_to(expected)
+                actual = paper / relative
+                if not actual.exists():
+                    return False, f"missing visual asset {relative}"
+                if actual.read_bytes() != path.read_bytes():
+                    return False, f"stale visual asset {relative}"
+            visual_assets += len(emitted)
     return (
         True,
-        "registered core and family extension assets match validated raw evidence; " + research_evidence,
+        "registered core and family extension assets match validated raw evidence; "
+        f"{visual_assets} analytical visual assets match deterministic rebuilds; "
+        + research_evidence,
     )
 
 
