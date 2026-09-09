@@ -27,6 +27,8 @@ def main():
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--checkpoint", type=Path, required=True)
+    parser.add_argument("--profile", action="store_true", help="Separate instrumented pass; never used as throughput evidence")
+    parser.add_argument("--profile-method", choices=["all", "native", "compact_linear", "candidate", "reference"], default="all")
     args = parser.parse_args()
     spec = json.loads(args.config.read_text())
     assert spec["purpose"] == "hardware_replication"
@@ -126,6 +128,9 @@ def run(args, spec, records, preflight):
         for _ in range(2):
             result = generate(method, probe, 64)
             del result
+    if args.profile:
+        from profile_pass import profile_pass
+        return profile_pass(args, spec, records, encoded, generate, target, native, compact)
     rows = []
     with (args.output / "evaluation.jsonl").open("x") as stream:
         for repeat in range(spec["repeats"]):

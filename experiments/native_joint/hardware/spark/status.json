@@ -1,17 +1,31 @@
 {
-  "status": "blocked_on_ssh_authentication",
+  "status": "queued_waiting_for_weights",
   "host": "sarcs@10.1.73.110",
-  "last_checked_utc": "2026-09-09T09:19:55.487188+00:00",
-  "ssh_error": "Permission denied (publickey,password).",
-  "remote_jobs_launched": 0,
-  "gpu_results_collected": false,
-  "prepared": [
-    "four-method frozen-checkpoint replication",
-    "four-request cap128 smoke",
-    "32-request cap2048 repeated main evaluation",
-    "timestamped GPU/UMA telemetry",
-    "paired throughput and energy analysis"
+  "hardware": "NVIDIA GB10 (12.1), edgexpert-bc70",
+  "updated_utc": "2026-09-09T13:35:14.347093+00:00",
+  "runtime": "private Transformers 5.3.0; PyTorch 2.13.0+cu130 read-only external packages",
+  "profiler_preflight": {
+    "nsight_systems_2025.3.2": "CUDA and NVTX ranges captured; annotation identity passed",
+    "nsight_compute_2025.3.1": "NVTX-filtered real GPU counters captured; full demangled kernel filtering verified"
+  },
+  "decoding_jobs_launched": 0,
+  "pending": [
+    "target and draft pinned weights downloading",
+    "selected checkpoint transfer",
+    "smoke gates",
+    "unprofiled repeated 32-request cap2048 evaluation",
+    "separate NVTX timeline and selected-kernel counters"
   ],
-  "local_checks": "Five telemetry tests pass; Python compilation and shell syntax pass; frozen decoder hashes unchanged. GPU execution remains untested.",
-  "required_action": "Enable the workstation SSH public key, e.g. ssh-copy-id sarcs@10.1.73.110 from an interactive terminal."
+  "scope": "Only essential frozen native comparisons; no new training",
+  "remote_pipeline_pid": 877140,
+  "remote_run": "/home/sarcs/native-spark-20260909/evaluation-01",
+  "remote_log": "/home/sarcs/native-spark-20260909/pipeline-v2.log",
+  "local_collector_session": 39276,
+  "local_result_directory": "/home/aryamavmurthy/work/RelaySpec/experiments/native_joint/hardware/spark/runs/gb10-20260909",
+  "caveats": [
+    "No decoding result yet; assets downloading",
+    "GB10 DRAM byte-bandwidth counters absent in tested profile; preserve unavailable values",
+    "Different Torch/CUDA runtime from L40S",
+    "Sampled kernel counters are diagnostics, separate from unprofiled TPS"
+  ]
 }
