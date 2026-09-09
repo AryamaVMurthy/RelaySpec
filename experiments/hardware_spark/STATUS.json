@@ -1,6 +1,6 @@
 {
-  "status": "main_evaluation_running",
-  "checked_utc": "2026-09-09T15:20:29.845711+00:00",
+  "status": "complete",
+  "checked_utc": "2026-09-09T16:10:29.644731+00:00",
   "host": "edgexpert-bc70, NVIDIA GB10",
   "remote_root": "/home/sarcs/relayspec-spark-20260909",
   "pipeline_pid": 888867,
@@ -26,13 +26,7 @@
     "source_relay_exact": 4,
     "mismatch": "All three speculative controls differ from AR on the same GSM8K request, first differing generated token index 15. Cause not yet established on this GPU."
   },
-  "pending": [
-    "Finish second timing pass and audit all 256 rows",
-    "Isolated source/relay memory",
-    "Nsight timeline and source/mapper kernel counters",
-    "One native/AR numerical disagreement diagnostic",
-    "Paper table/figure/text and rendered PDF verification"
-  ],
+  "pending": [],
   "quality_first_pass": {
     "ar": {
       "gsm8k": {
@@ -145,5 +139,42 @@
     "relay_source_exact": 32,
     "native_ar_exact": 7,
     "relay_ar_exact": 7
+  },
+  "gpu_idle_verified": true,
+  "final_tps": {
+    "ar": 11.135707906846834,
+    "native": 70.8796845678579,
+    "source": 50.73336965650088,
+    "relay": 60.91689798939007
+  },
+  "relay_vs_source": {
+    "ratio": 1.2007264331511696,
+    "ci95": [
+      1.1706694909519066,
+      1.2324263489785698
+    ]
+  },
+  "isolated_peak_allocated_GiB": {
+    "source": 23.815007209777832,
+    "relay": 17.41573667526245
+  },
+  "gpu_profiles": {
+    "timeline": "pass",
+    "counters_source": "pass, seven GEMM and one attention kernel",
+    "counters_relay": "pass, eight GEMM kernels"
+  },
+  "diagnostic": "pass, native/AR BF16 tie reproduced on one identical prefix; FP32 head argmax agrees",
+  "paper": {
+    "path": "/home/aryamavmurthy/work/RelaySpec-scaling/paper/iclr2027/relayspec_iclr2027.pdf",
+    "pages": 64,
+    "main_pages": 9,
+    "section": "5.3 and Appendix N",
+    "figure": 29,
+    "tables": [
+      72,
+      73
+    ],
+    "audit": "pass",
+    "visual_review": "pass"
   }
 }

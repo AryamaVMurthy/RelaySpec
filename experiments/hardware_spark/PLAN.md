@@ -17,7 +17,7 @@ The earlier native-only queue is superseded after its successful smoke test. Its
 - Smoke: four requests, cap128, four controls; short repeated-output gates before measurements.
 - Memory: fresh source-only and relay-only deployment processes on the same four requests, cap2048. Retain inherited embedding/head while removing source transformer layers. Report PyTorch peak allocated/reserved memory separately from system UMA and process RSS; all-arm timing memory cannot establish deployment savings.
 - Nsight Systems: warmed four-method pass on one fixed MATH request, cap256; CUDA/NVTX labels for target, drafting, source reconstruction, and mapper. Instrumentation must preserve tokens and acceptance lengths.
-- Nsight Compute: bounded projection-kernel sampling in source reconstruction and relay mapping. Preserve filters and raw reports. Hardware counters describe those sampled kernels, not the full workload. Nsight Systems separately traces target verification.
+- Nsight Compute: bounded kernel sampling in source reconstruction and relay mapping. Preserve filters and raw reports. The CUTLASS filter also selects an attention kernel in the source path. Hardware counters describe those sampled kernels, not the full workload. Nsight Systems separately traces target verification.
 - One-second GPU power, utilization, clocks, temperature, available memory counters, process RSS, and system UMA. Final sample brackets last request for approximate device-energy integration. Unsupported counters remain unavailable; device power is not wall-socket power.
 
 ## Deliverables and completion gates
