@@ -260,9 +260,12 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
     if not research_pass:
         return False, research_evidence
     extension = _load_script(
-        root / "scripts/build_family_extension_paper_assets.py", "family_extension_assets"
+        root / "scripts/build_family_extension_paper_assets.py",
+        "family_extension_assets",
     )
-    with tempfile.TemporaryDirectory(prefix="relayspec-family-paper-audit-") as directory:
+    with tempfile.TemporaryDirectory(
+        prefix="relayspec-family-paper-audit-"
+    ) as directory:
         expected = Path(directory)
         extension.build(root, expected)
         for path in (expected / "generated").iterdir():
@@ -302,7 +305,8 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
                     + result.stderr[-2000:],
                 )
             emitted = sorted(
-                path for path in expected.rglob("*")
+                path
+                for path in expected.rglob("*")
                 if path.is_file() and path.suffix.lower() in {".pdf", ".png", ".json"}
             )
             if {path.suffix.lower() for path in emitted} != {".pdf", ".png", ".json"}:
@@ -315,6 +319,33 @@ def _generated_assets_match(root: Path, paper: Path) -> tuple[bool, str]:
                 if actual.read_bytes() != path.read_bytes():
                     return False, f"stale visual asset {relative}"
             visual_assets += len(emitted)
+    hardware = paper / "generated/hardware_spark"
+    if "app:gb10" in (paper / "relayspec_iclr2027.tex").read_text():
+        with tempfile.TemporaryDirectory(
+            prefix="relayspec-hardware-audit-"
+        ) as directory:
+            expected = Path(directory)
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(root / "scripts/build_hardware_spark_assets.py"),
+                    "--run",
+                    str(root / "reports/hardware-spark-20260909"),
+                    "--output",
+                    str(expected),
+                ],
+                cwd=root,
+                text=True,
+                capture_output=True,
+            )
+            if result.returncode:
+                return False, "GB10 evidence validation failed: " + result.stderr[
+                    -2000:
+                ]
+            for path in expected.iterdir():
+                actual = hardware / path.name
+                if not actual.exists() or actual.read_bytes() != path.read_bytes():
+                    return False, f"missing or stale GB10 evidence asset {path.name}"
     return (
         True,
         "registered core and family extension assets match validated raw evidence; "

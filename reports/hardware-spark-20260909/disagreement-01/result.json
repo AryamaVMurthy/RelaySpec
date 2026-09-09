@@ -1,0 +1,200 @@
+{
+  "status": "pass",
+  "problem_id": "gsm8k/76a1374ec79f5b38",
+  "first_differing_generated_token_index": 15,
+  "absolute_prediction_position": 78,
+  "identical_token_prefix": true,
+  "reproduced_measured_disagreement": true,
+  "diagnostic_output_cap": 64,
+  "hidden_max_abs_difference": 1.0,
+  "hidden_mean_abs_difference": 0.017442841082811356,
+  "fp32_head_argmax_agrees": true,
+  "methods": {
+    "ar": {
+      "cache_length_before": 78,
+      "input_length": 1,
+      "measured_bf16_argmax": 70894,
+      "bf16_top8": [
+        {
+          "id": 70894,
+          "text": " Understand",
+          "logit": 37.25
+        },
+        {
+          "id": 29901,
+          "text": " Determine",
+          "logit": 37.0
+        },
+        {
+          "id": 7379,
+          "text": " Find",
+          "logit": 31.75
+        },
+        {
+          "id": 10657,
+          "text": " Total",
+          "logit": 31.625
+        },
+        {
+          "id": 45451,
+          "text": " Understanding",
+          "logit": 29.75
+        },
+        {
+          "id": 8085,
+          "text": " Information",
+          "logit": 28.625
+        },
+        {
+          "id": 2585,
+          "text": " How",
+          "logit": 28.125
+        },
+        {
+          "id": 14187,
+          "text": " Know",
+          "logit": 28.125
+        }
+      ],
+      "fp32_head_argmax": 70894,
+      "fp32_head_top8": [
+        {
+          "id": 70894,
+          "text": " Understand",
+          "logit": 37.173431396484375
+        },
+        {
+          "id": 29901,
+          "text": " Determine",
+          "logit": 37.05963134765625
+        },
+        {
+          "id": 7379,
+          "text": " Find",
+          "logit": 31.759719848632812
+        },
+        {
+          "id": 10657,
+          "text": " Total",
+          "logit": 31.677614212036133
+        },
+        {
+          "id": 45451,
+          "text": " Understanding",
+          "logit": 29.76007843017578
+        },
+        {
+          "id": 8085,
+          "text": " Information",
+          "logit": 28.65522003173828
+        },
+        {
+          "id": 14187,
+          "text": " Know",
+          "logit": 28.14055061340332
+        },
+        {
+          "id": 2585,
+          "text": " How",
+          "logit": 28.13417625427246
+        }
+      ]
+    },
+    "native": {
+      "cache_length_before": 70,
+      "input_length": 16,
+      "measured_bf16_argmax": 29901,
+      "bf16_top8": [
+        {
+          "id": 29901,
+          "text": " Determine",
+          "logit": 37.0
+        },
+        {
+          "id": 70894,
+          "text": " Understand",
+          "logit": 37.0
+        },
+        {
+          "id": 7379,
+          "text": " Find",
+          "logit": 31.625
+        },
+        {
+          "id": 10657,
+          "text": " Total",
+          "logit": 31.375
+        },
+        {
+          "id": 45451,
+          "text": " Understanding",
+          "logit": 29.625
+        },
+        {
+          "id": 8085,
+          "text": " Information",
+          "logit": 28.5
+        },
+        {
+          "id": 2585,
+          "text": " How",
+          "logit": 28.0
+        },
+        {
+          "id": 14187,
+          "text": " Know",
+          "logit": 27.875
+        }
+      ],
+      "fp32_head_argmax": 70894,
+      "fp32_head_top8": [
+        {
+          "id": 70894,
+          "text": " Understand",
+          "logit": 36.924522399902344
+        },
+        {
+          "id": 29901,
+          "text": " Determine",
+          "logit": 36.88982009887695
+        },
+        {
+          "id": 7379,
+          "text": " Find",
+          "logit": 31.586132049560547
+        },
+        {
+          "id": 10657,
+          "text": " Total",
+          "logit": 31.333805084228516
+        },
+        {
+          "id": 45451,
+          "text": " Understanding",
+          "logit": 29.5672664642334
+        },
+        {
+          "id": 8085,
+          "text": " Information",
+          "logit": 28.439905166625977
+        },
+        {
+          "id": 2585,
+          "text": " How",
+          "logit": 27.967918395996094
+        },
+        {
+          "id": 14187,
+          "text": " Know",
+          "logit": 27.916690826416016
+        }
+      ]
+    }
+  },
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "gpu": "NVIDIA GB10",
+  "reference_sha256": "d4a197c0649b3ebef8cae4bd3428aaf0c90a023a2201e996412721e00238836b",
+  "script_sha256": "a8b630571fd608bb5a3f15966ecb6de90189a4a493720fea94fcba8d6524178f",
+  "scope": "One observed native/AR discrepancy, independent of RelaySpec. Identical committed token prefix; AR and block evaluation use different matrix shapes/cache histories. FP32 head reprojection reuses saved BF16 hidden states; it is not full-FP32 inference or a universal exactness guarantee."
+}

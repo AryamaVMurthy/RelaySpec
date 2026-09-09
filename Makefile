@@ -85,6 +85,9 @@ paper-target14-assets:
 paper-family-assets:
 	$(PYTHON) scripts/build_family_extension_paper_assets.py --root $(CURDIR) --output $(PAPER_DIR)
 
+paper-hardware-assets:
+	$(PYTHON) scripts/build_hardware_spark_assets.py --run reports/hardware-spark-20260909 --output $(PAPER_DIR)/generated/hardware_spark
+
 paper-visual-assets:
 	$(PYTHON) scripts/build_results_visuals.py --root . --output $(PAPER_DIR)
 	$(PYTHON) scripts/build_scaling_visuals.py --root . --output $(PAPER_DIR)

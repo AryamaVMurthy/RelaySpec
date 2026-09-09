@@ -326,11 +326,11 @@ so comparisons between drafter families do not isolate architecture.
 
 \subsection{Native retention and source removal}
 RelaySpec retains 90.3\% of native DFlash-8B throughput and 90.2\%/89.1\%
-of native EAGLE-3 at 8B/14B (Table~\ref{tab:retention}). These compare
-released drafters, not matched original training costs. Holding the
-inherited drafter fixed, source removal improves throughput by
-9.7--53.1\%, outweighing the lower progress per cycle
-(Figure~\ref{fig:primary}b).
+of native EAGLE-3 at 8B/14B (Table~\ref{tab:retention}). Original drafter
+training costs are unmatched. Source removal raises throughput
+9.7--53.1\% despite lower progress per cycle (Figure~\ref{fig:primary}b).
+The frozen 8B map gains 20.1\% over source reuse on 32 GB10 requests
+(Appendix~\ref{app:gb10}).
 
 \subsection{Math accuracy and output agreement}
 
@@ -3032,5 +3032,119 @@ so these ratios do not represent equivalent reductions in training compute.
 The evaluated EAGLE-3 checkpoints come from DeepSpec, while the table's
 EAGLE-3 count refers specifically to the published training recipe.
 
+
+\clearpage
+\section{GB10 hardware replication and GPU profiling}
+\label{app:gb10}
+
+\paragraph{Scope and protocol.}
+We replicate the primary Qwen3-4B-to-8B DFlash transfer on an MSI
+EdgeXpert MS-C931 with NVIDIA GB10 and 128\,GB advertised unified memory,
+a DGX Spark-platform system.\footnote{Manufacturer specification:
+\url{https://www.msi.com/Landing/EdgeXpert-MS-C931}.}
+The original 4,096-record mapper is frozen without additional fitting or
+tuning. We use 32 previously evaluated requests, eight each from MATH,
+GSM8K, HumanEval and MT-Bench's first turn. This is a hardware replication,
+not an independent generalization holdout. All four methods use batch one,
+greedy BF16/SDPA decoding, a 2,048-output-token cap and two rotated timing
+passes. No request reaches the cap. The runtime is PyTorch 2.13.0,
+CUDA 13.0 and Transformers 5.3.0 on aarch64.
+
+\paragraph{Matched throughput and energy.}
+Table~\ref{tab:gb10} measures synchronized generation wall time including
+prefill, excluding model loading, warmup and text serialization.
+Profilers are disabled during these measurements. RelaySpec reaches
+60.92 tokens/s, or $5.47\times$ AR and 85.9\% of native DFlash throughput.
+Against source reuse, the gain is 20.1\% with a paired 95\% request
+interval of 17.1--23.2\%. The corresponding sampled device energy per
+token falls by 15.7\%. Intervals use 10,000 paired bootstrap resamples
+stratified by workload and do not include fitting-seed variation.
+Figure~\ref{fig:gb10}a shows workload dependence. The code estimate is
+6.2\%, but its interval of $-0.6$--11.8\% does not resolve a gain.
+Runtime and timing instrumentation differ from the earlier
+L40S measurements, so differences across hosts do not isolate hardware.
+
+\begin{table}[H]
+\caption{GB10 replication, 32 requests and two timing passes. Correct
+M/G/C counts score eight MATH, GSM8K and HumanEval outputs each.
+Isolated memory uses four fixed requests in fresh processes.
+Energy integrates one-second device-power samples, not wall-socket power.}
+\label{tab:gb10}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\input{generated/hardware_spark/hardware_spark_table.tex}
+\end{table}
+
+\paragraph{Output checks.}
+All 128 second-pass outputs and acceptance traces exactly match their
+first pass. RelaySpec, source reuse and native DFlash also produce identical
+sequences to one another on all 32 requests. Each matches AR on only 7/32,
+so the measured BF16 configuration does not establish exact AR reproduction.
+All methods score 8/8 on MATH, 7/8 on GSM8K and 7/8 on the base HumanEval
+tests. These small samples do not establish quality equivalence.
+MT-Bench first-turn responses have no judge score.
+
+\paragraph{Deployment memory.}
+The throughput experiment keeps all four arms resident, so its memory
+peaks cannot measure the benefit of source removal. Separate fresh
+processes instead evaluate the same four requests at the 2,048-token cap.
+The source control retains only its 34 executed transformer blocks.
+RelaySpec retains the inherited embeddings and output head while removing
+the source transformer. Peak PyTorch allocated memory falls from 23.82
+to 17.42\,GiB, a 6.40\,GiB (26.9\%) reduction. Peak reserved memory is
+24.07 versus 17.69\,GiB. Each isolated path reproduces its main-run
+outputs on all four requests. These are allocator measurements, not total
+system unified-memory occupancy or measurements of concurrent serving.
+
+\paragraph{GPU execution profile.}
+Nsight Systems traces a separate warmed MATH request at a 256-token cap.
+Annotations preserve the generated tokens and acceptance traces for all
+four methods. Source reconstruction accounts for 2.10\,s of GPU-projected
+time, compared with 31.8\,ms for relay mapping. RelaySpec still incurs
+4.44\,s for target verification and 0.53\,s for drafting in these projected
+ranges. This explains the mechanism of source removal without attributing
+the full throughput gain to the mapper alone. Projected ranges can include
+gaps between GPU operations and profiling adds overhead. Their values
+must not be interpreted as unprofiled wall-time fractions.
+
+Nsight Compute separately replays eight filtered kernels per conditioning
+path at a 64-token cap. The source sample includes seven matrix products
+and one attention kernel, while the relay sample contains eight matrix
+products. Achieved warp occupancy ranges from 2.8--17.1\% for the source
+sample and 6.7--7.0\% for relay mapping. These different kernel samples
+do not measure whole-workload occupancy or establish a performance
+advantage by themselves. Per-kernel compute and L2 counters accompany
+the raw reports. DRAM bandwidth counters are unavailable in this setup.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{generated/hardware_spark/hardware_spark.pdf}
+\caption{RelaySpec on GB10. (a) Throughput by workload with paired-request
+95\% intervals, eight requests per workload. (b) Peak PyTorch allocated
+memory in isolated deployments. (c) Nsight Systems GPU-projected stage
+time on one warmed MATH request with a 256-token cap. Conditioning is the
+source transformer or relay mapping. These projected spans are neither
+unprofiled wall times nor a union of kernel-busy intervals.}
+\label{fig:gb10}
+\end{figure}
+
+\begin{table}[H]
+\caption{One-second GPU samples during the unprofiled GB10 timing runs.
+Utilization, power, SM clock and temperature are sample means. Progress is
+committed tokens per decoding cycle. AR exact counts complete sequence
+matches on the 32 distinct requests, not repeated measurements.}
+\label{tab:gb10-metrics}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\input{generated/hardware_spark/hardware_spark_metrics.tex}
+\end{table}
+
+\paragraph{One numerical disagreement.}
+On one identical GSM8K prefix, AR assigns BF16 logits 37.25/37.00 to
+``Understand''/``Determine''. Native block verification ties them at
+37.00 and selects ``Determine''. FP32 head reprojection chooses
+``Understand'' for both captured BF16 hidden states, which also differ.
+This reproduced difference at generated token 16 occurs without RelaySpec
+and establishes neither full-FP32 decoding nor agreement elsewhere.
 
 \end{document}

@@ -1,0 +1,21 @@
+[
+  "/opt/nvidia/nsight-systems/2025.3.2/target-linux-sbsa-armv8/nsys",
+  "profile",
+  "--trace=cuda,nvtx",
+  "--sample=none",
+  "--cpuctxsw=none",
+  "--capture-range=cudaProfilerApi",
+  "--capture-range-end=stop",
+  "-o",
+  "/home/sarcs/relayspec-spark-20260909/paper-run-01/timeline",
+  "/home/sarcs/native-spark-20260909/venv/bin/python",
+  "/home/sarcs/relayspec-spark-20260909/study/run.py",
+  "--stage",
+  "profile",
+  "--method",
+  "all",
+  "--checkpoint",
+  "/home/sarcs/relayspec-spark-20260909/relay-primary.pt",
+  "--output",
+  "/home/sarcs/relayspec-spark-20260909/paper-run-01/timeline-run"
+]

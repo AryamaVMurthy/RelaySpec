@@ -1,6 +1,6 @@
 # RelaySpec manuscript
 
-Current version: **8 September 2026**, anonymous ICLR 2027 format, nine main-text pages and 62 total pages with statements, references and appendices. This is the current manuscript directory.
+Current version: **9 September 2026**, anonymous ICLR 2027 format, nine main-text pages and 64 total pages with statements, references and appendices. This is the current manuscript directory.
 
 The paper centers on reusing frozen drafters through a learned linear interface. It distinguishes inexpensive calibration from the larger generated-rollout recipe, and separates historical BF16 Qwen measurements from the batch-invariant BF16 and FP32-target extensions. The main text includes the 128-question Llama/cross-tokenizer comparison at a 2,048-token cap, repeated native-throughput comparison, small-data confirmation, capacity findings, matched adaptation controls and public-runtime baselines. Detailed trajectories, negative results and implementation provenance remain in the appendix.
 
@@ -14,6 +14,7 @@ From the repository root, in the installed project environment:
 ```bash
 make paper
 make paper-family-assets
+make paper-hardware-assets
 make paper-visual-assets
 make audit-paper
 ```
@@ -53,3 +54,9 @@ The introduction now presents four explicit contributions: portable frozen-draft
 Table 1 on page 2 directly compares RelaySpec, TriSpec, PARD and SD² by inherited model, adaptation and verification. Table 4 on page 8 reports the completed 128-question public-runtime comparison: RelaySpec 193.68 tokens/s (5.14× own AR), PARD 105.63 (3.34×), and frozen-drafter SD² 19.92 (1.60×). It marks the highest measured configuration values and states the runtime differences. TriSpec is a conceptual comparison. The main text has four tables, with 71 overall.
 
 Section 6 is now solely Limitations. It identifies hidden-state access, checkpoint-specific calibration, preparation costs, serving conditions and the scope of greedy cross-tokenizer verification. Statistical and numerical qualifications remain adjacent to their results. Source checks, raw-record comparison review and the latest visual signoff are documented in `reports/paper-positioning-20260908/`.
+
+## GB10 hardware replication, 9 September 2026
+
+Section 5.3 now cites the frozen-map hardware replication. Appendix N on pages 63–64 adds Tables 72–73 and Figure 29, bringing the paper to 29 figures and 73 tables. On 32 fixed requests with two timing passes and a 2,048-token cap, RelaySpec reaches 60.92 tokens/s versus source reuse at 50.73, native DFlash at 70.88 and AR at 11.14. RelaySpec improves source reuse by 20.1% (paired 95% interval 17.1–23.2%), with identical outputs, 15.7% lower sampled device energy per token and 26.9% lower isolated peak allocated memory. The code-specific gain is unresolved, and native DFlash remains faster overall.
+
+The actual system is MSI EdgeXpert MS-C931 with NVIDIA GB10, a DGX Spark-platform machine. Separate Nsight Systems and Nsight Compute runs profile GPU stages and selected kernels. A one-prefix diagnostic reproduces a native/AR BF16 tie and tests FP32 head reprojection. These measurements preserve their small-sample, numerical, power and profiling qualifications. Raw measurements, quality scores, commands, provenance and visual comparisons are in `reports/hardware-spark-20260909/`. The hardware asset builder is included in the manuscript audit.
