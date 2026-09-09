@@ -33,6 +33,8 @@ def summarize(out):
         for m in methods:
             arm = [r for r in rows if r["method"] == m and r["problem_id"] in selected_ids]
             tokens, seconds = arrays[m].sum(0)
+            bootstrap_totals = arrays[m][draws].sum(1)
+            tps_ci95 = np.quantile(bootstrap_totals[:,0]/bootstrap_totals[:,1], [.025,.975]).tolist()
             ratios = {}
             for reference in methods:
                 b = arrays[reference].sum(0)
@@ -50,7 +52,7 @@ def summarize(out):
             energies = [energy(telemetry,r["monotonic_start"],r["monotonic_stop"]) for r in arm]
             joules = sum(energies) if all(x is not None for x in energies) else None
             result[m] = {"requests": len(selected_ids), "repeats": repeats, "tokens": int(tokens), "seconds": float(seconds),
-                "tps": float(tokens/seconds), "ratios": ratios, "device_joules": joules,
+                "tps": float(tokens/seconds), "tps_ci95": tps_ci95, "ratios": ratios, "device_joules": joules,
                 "device_joules_per_token": joules/tokens if joules is not None else None,
                 "energy_covered_rows": sum(x is not None for x in energies), "gpu_metrics": metrics,
                 "peak_allocated_GiB": max(r["peak_allocated"] for r in arm)/2**30,

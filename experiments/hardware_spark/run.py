@@ -41,6 +41,7 @@ def main():
     for name, expected in protocol["source_files"].items():
         assert sha(HERE / name) == expected, name
     args.output.mkdir(parents=True, exist_ok=False)
+    (args.output / "executed-run.py").write_bytes(Path(__file__).read_bytes())
     (args.output / "protocol.json").write_text(json.dumps(protocol, indent=2))
     (args.output / "invocation.json").write_text(json.dumps(vars(args), default=str, indent=2))
     with Monitor(args.output / "telemetry.jsonl", 1.):
@@ -78,6 +79,11 @@ def run(args, protocol):
         assert methods in [["source"], ["relay"]]
     target = load("target")
     source = load("source") if set(methods) & {"source", "relay"} else None
+    # Isolated deployment excludes the two source blocks that the provider
+    # never executes. Main timings retain the original co-resident protocol.
+    if args.stage == "memory" and source is not None and "source" in methods:
+        source.model.layers = torch.nn.ModuleList(list(source.model.layers[:34]))
+        gc.collect(); torch.cuda.empty_cache()
     embedding = source.model.embed_tokens if source is not None else None
     head = source.lm_head if source is not None else None
     provider = None
@@ -148,8 +154,9 @@ def run(args, protocol):
         models=MODELS, checkpoint_sha256=protocol["checkpoint_sha256"], taps=taps, torch=torch.__version__,
         transformers=transformers.__version__, cuda=torch.version.cuda, hostname=platform.node(), gpu=torch.cuda.get_device_name(),
         source_transformer_resident=provider is not None, gate="short repeat and annotation identity passed",
+        retained_source_blocks=len(source.model.layers) if source is not None else 0,
         memory_scope="isolated source/relay deployment" if args.stage == "memory" else "All evaluated arms co-resident; use separate memory runs for deployment footprints",
-        script_sha256=sha(__file__), protocol_sha256=sha(HERE / "protocol.json"),
+        script_sha256=sha(args.output / "executed-run.py"), protocol_sha256=sha(HERE / "protocol.json"),
         timing="synchronized wall time includes prefill and decoding; no CUDA events or profiler in throughput runs",
         nvidia_smi=capture(["nvidia-smi", "-q"]),
         parameter_bytes={name: sum(p.numel()*p.element_size() for p in model.parameters()) for name, model in

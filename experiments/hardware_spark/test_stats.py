@@ -32,6 +32,7 @@ class AuditTests(unittest.TestCase):
             path=Path(directory); self.fixture(path)
             r=summarize(path)["overall"]["relay"]
             self.assertEqual(r["tps"],8.)
+            self.assertEqual(r["tps_ci95"],[8.,8.])
             self.assertEqual(r["ratios"]["source"],{"ratio":2.,"ci95":[2.,2.]})
             self.assertEqual(r["device_joules_per_token"],12.5)
             self.assertEqual(r["exact_ar"],4)

@@ -1,4 +1,4 @@
-# RelaySpec on DGX Spark: focused paper evidence
+# RelaySpec on the GB10 / DGX Spark platform: focused paper evidence
 
 Goal: validate the paper's actual inherited-drafter transfer on GB10, collect matched speed and output checks, and explain hardware cost with separate memory and GPU profiling runs.
 
@@ -29,3 +29,5 @@ The earlier native-only queue is superseded after its successful smoke test. Its
 5. Compare against matched controls on GB10. Prior L40S observations are contextual unless prompt IDs, checkpoint, runtime, and timing instrumentation are aligned; the current Spark Torch2.13/CUDA13 runtime differs from L40S, so cross-host differences are not pure hardware effects.
 
 Remote root: `/home/sarcs/relayspec-spark-20260909`. Native proof-of-profiler reports remain separately under `/home/sarcs/native-spark-20260909`.
+
+Hardware identity is MSI EdgeXpert MS-C931 with NVIDIA GB10, not an NVIDIA-branded DGX Spark unit. The official MSI specification identifies this as a DGX Spark-platform system with 128GB unified memory: https://www.msi.com/Landing/EdgeXpert-MS-C931 (checked 2026-09-09). The source-only memory run retains just the 34 executed source blocks; its outputs are checked against the co-resident run.
