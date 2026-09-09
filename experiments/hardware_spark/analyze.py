@@ -51,6 +51,9 @@ def summarize(out):
                     "p95": float(np.quantile(valid,.95)) if valid else None}
             energies = [energy(telemetry,r["monotonic_start"],r["monotonic_stop"]) for r in arm]
             joules = sum(energies) if all(x is not None for x in energies) else None
+            rss = [s["process_memory"]["VmRSS_bytes"] for s in samples if "VmRSS_bytes" in s["process_memory"]]
+            available = [s["system_memory"]["MemAvailable_bytes"] for s in samples if "MemAvailable_bytes" in s["system_memory"]]
+            ttft = [r["time_to_first_token"] for r in arm if r.get("time_to_first_token") is not None]
             result[m] = {"requests": len(selected_ids), "repeats": repeats, "tokens": int(tokens), "seconds": float(seconds),
                 "tps": float(tokens/seconds), "tps_ci95": tps_ci95, "ratios": ratios, "device_joules": joules,
                 "device_joules_per_token": joules/tokens if joules is not None else None,
@@ -58,8 +61,11 @@ def summarize(out):
                 "peak_allocated_GiB": max(r["peak_allocated"] for r in arm)/2**30,
                 "peak_reserved_GiB": max(r["peak_reserved"] for r in arm)/2**30,
                 "incremental_peak_GiB": max(r["incremental_peak_allocated"] for r in arm)/2**30,
-                "max_process_rss_GiB": max((s["process_memory"].get("VmRSS_bytes",0) for s in samples),default=0)/2**30,
-                "min_system_available_GiB": min((s["system_memory"]["MemAvailable_bytes"] for s in samples),default=0)/2**30,
+                "max_process_rss_GiB": max(rss)/2**30 if rss else None,
+                "min_system_available_GiB": min(available)/2**30 if available else None,
+                "request_seconds_p50_p95": np.quantile([r["seconds"] for r in arm],[.5,.95]).tolist(),
+                "ttft_seconds_p50_p95": np.quantile(ttft,[.5,.95]).tolist() if ttft else None,
+                "ttft_valid_rows": len(ttft),
                 "mean_progress_per_cycle": sum(sum(r["acceptance_lengths"]) for r in arm)/sum(len(r["acceptance_lengths"]) for r in arm),
                 "capped_requests": sum(lookup[m,p,0]["capped"] for p in selected_ids),
                 "exact_ar": sum(lookup[m,p,0]["tokens"] == lookup["ar",p,0]["tokens"] for p in selected_ids) if "ar" in methods else None,

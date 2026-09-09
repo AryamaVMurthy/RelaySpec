@@ -1,6 +1,6 @@
 {
   "status": "main_evaluation_running",
-  "checked_utc": "2026-09-09T14:38:18.187725+00:00",
+  "checked_utc": "2026-09-09T15:20:29.845711+00:00",
   "host": "edgexpert-bc70, NVIDIA GB10",
   "remote_root": "/home/sarcs/relayspec-spark-20260909",
   "pipeline_pid": 888867,
@@ -27,10 +27,123 @@
     "mismatch": "All three speculative controls differ from AR on the same GSM8K request, first differing generated token index 15. Cause not yet established on this GPU."
   },
   "pending": [
-    "32-request cap2048 two-repeat paired measurements",
-    "isolated source/relay memory",
+    "Finish second timing pass and audit all 256 rows",
+    "Isolated source/relay memory",
     "Nsight timeline and source/mapper kernel counters",
-    "independent answer/code scores",
-    "paper table/figure/text and rendered PDF verification"
-  ]
+    "One native/AR numerical disagreement diagnostic",
+    "Paper table/figure/text and rendered PDF verification"
+  ],
+  "quality_first_pass": {
+    "ar": {
+      "gsm8k": {
+        "correct": 7,
+        "incorrect": 1,
+        "unscored": 0,
+        "requests": 8
+      },
+      "humaneval": {
+        "correct": 7,
+        "incorrect": 1,
+        "unscored": 0,
+        "requests": 8
+      },
+      "math500": {
+        "correct": 8,
+        "incorrect": 0,
+        "unscored": 0,
+        "requests": 8
+      },
+      "mtbench": {
+        "correct": 0,
+        "incorrect": 0,
+        "unscored": 8,
+        "requests": 8
+      }
+    },
+    "native": {
+      "gsm8k": {
+        "correct": 7,
+        "incorrect": 1,
+        "unscored": 0,
+        "requests": 8
+      },
+      "humaneval": {
+        "correct": 7,
+        "incorrect": 1,
+        "unscored": 0,
+        "requests": 8
+      },
+      "math500": {
+        "correct": 8,
+        "incorrect": 0,
+        "unscored": 0,
+        "requests": 8
+      },
+      "mtbench": {
+        "correct": 0,
+        "incorrect": 0,
+        "unscored": 8,
+        "requests": 8
+      }
+    },
+    "relay": {
+      "gsm8k": {
+        "correct": 7,
+        "incorrect": 1,
+        "unscored": 0,
+        "requests": 8
+      },
+      "humaneval": {
+        "correct": 7,
+        "incorrect": 1,
+        "unscored": 0,
+        "requests": 8
+      },
+      "math500": {
+        "correct": 8,
+        "incorrect": 0,
+        "unscored": 0,
+        "requests": 8
+      },
+      "mtbench": {
+        "correct": 0,
+        "incorrect": 0,
+        "unscored": 8,
+        "requests": 8
+      }
+    },
+    "source": {
+      "gsm8k": {
+        "correct": 7,
+        "incorrect": 1,
+        "unscored": 0,
+        "requests": 8
+      },
+      "humaneval": {
+        "correct": 7,
+        "incorrect": 1,
+        "unscored": 0,
+        "requests": 8
+      },
+      "math500": {
+        "correct": 8,
+        "incorrect": 0,
+        "unscored": 0,
+        "requests": 8
+      },
+      "mtbench": {
+        "correct": 0,
+        "incorrect": 0,
+        "unscored": 8,
+        "requests": 8
+      }
+    }
+  },
+  "first_pass_output_agreement": {
+    "requests": 32,
+    "relay_native_exact": 32,
+    "relay_source_exact": 32,
+    "native_ar_exact": 7,
+    "relay_ar_exact": 7
+  }
 }
