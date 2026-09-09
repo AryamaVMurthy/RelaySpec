@@ -1,0 +1,39 @@
+{
+  "provenance": {
+    "selection": "hardware_replication",
+    "source_manifest_sha256": "3e1af1d416ed37cc7440675ba49850e6c259f187bb7def88589477b0eb8d3a5d",
+    "scope": "Previously evaluated L40S confirmation requests; fixed first records per workload, no new holdout claim."
+  },
+  "records": [
+    {
+      "answer": "4",
+      "benchmark": "gsm8k",
+      "problem_id": "gsm8k/76a1374ec79f5b38",
+      "prompt": "A loaf of bread has 24 slices. If Abby can eat 2 slices a day while Josh can eat twice as much, how many days will the loaf of bread last?"
+    },
+    {
+      "answer": "720",
+      "benchmark": "math500",
+      "problem_id": "math500/32",
+      "prompt": "In how many ways can 8 people sit around a round table if 3 of the people -- Pierre, Rosa, and Thomas -- all want to sit together?  (Two seatings are considered the same if one is a rotation of the other.)"
+    },
+    {
+      "answer": {
+        "entry_point": "find_zero",
+        "test": "\n\nMETADATA = {}\n\n\ndef check(candidate):\n    import math\n    import random\n    rng = random.Random(42)\n    import copy\n    for _ in range(100):\n        ncoeff = 2 * rng.randint(1, 4)\n        coeffs = []\n        for _ in range(ncoeff):\n            coeff = rng.randint(-10, 10)\n            if coeff == 0:\n                coeff = 1\n            coeffs.append(coeff)\n        solution = candidate(copy.deepcopy(coeffs))\n        assert math.fabs(poly(coeffs, solution)) < 1e-4\n\n"
+      },
+      "benchmark": "humaneval",
+      "problem_id": "HumanEval/32",
+      "prompt": "Write a solution to the following problem and make sure that it passes the tests:\n```python\nimport math\n\n\ndef poly(xs: list, x: float):\n    \"\"\"\n    Evaluates polynomial with coefficients xs at point x.\n    return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n\n    \"\"\"\n    return sum([coeff * math.pow(x, i) for i, coeff in enumerate(xs)])\n\n\ndef find_zero(xs: list):\n    \"\"\" xs are coefficients of a polynomial.\n    find_zero find x such that poly(x) = 0.\n    find_zero returns only only zero point, even if there are many.\n    Moreover, find_zero only takes list xs having even number of coefficients\n    and largest non zero coefficient as it guarantees\n    a solution.\n    >>> round(find_zero([1, 2]), 2) # f(x) = 1 + 2x\n    -0.5\n    >>> round(find_zero([-6, 11, -6, 1]), 2) # (x - 1) * (x - 2) * (x - 3) = -6 + 11x - 6x^2 + x^3\n    1.0\n    \"\"\"\n\n```"
+    },
+    {
+      "answer": null,
+      "benchmark": "mtbench",
+      "problem_id": "mtbench/32",
+      "turns": [
+        "In a survey conducted at a local high school, preferences for a new school color were measured: 58% of students liked the color blue, 45% preferred green, and 22% liked both colors. If we randomly pick a student from the school, what's the probability that they would like neither blue nor green?",
+        "If we select a student liked green, what's the probability that he or she would dislike both colors?"
+      ]
+    }
+  ]
+}
