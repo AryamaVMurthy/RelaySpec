@@ -1,3 +1,7 @@
+## 2026-09-12: completed timing-repeat figure generated
+
+Generated and visually checked figures/q8_three_repeats.png/pdf directly from the verified three-pass comparison. Shows absolute TPS by repetition and all three paired percentage changes, explicitly labeled one fitting seed/development only and AR/ZIP pending. Preserves positiveBA(+2.68%) and negativefive(-4.91%) outcomes. Plot source saved for regeneration; no manuscript results rewritten prematurely. Source-copy audit found only1.5MB remote reports, so no unsupported claim that copying causes slow training; current Q14five reached1580/2000updates.
+
 ## 2026-09-12: Q14 first complete normal evaluation archived
 
 Q14normal r0 completed128requests/cap2048:111.524295TPS,122902generated tokens,1102.019963summed requestseconds. Archived full rows/summary and SHA256 metrics in reports/q14-normal-first-pass. One fitting seed/one timing repetition so far; no AR or AUF comparison claim. Q14five reached1390/2000updates.
