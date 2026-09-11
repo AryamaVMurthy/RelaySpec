@@ -163,9 +163,12 @@ def evaluate(draft, embedding, mapper, examples):
 
 
 @torch.no_grad()
-def export(mapper, work, dest, example_features):
+def export(mapper, work, dest, example_features, draft_state=None):
     source = work/"models/4b/draft"
     state = load_file(str(source/"model.safetensors"))
+    if draft_state is not None:
+        assert state.keys() == draft_state.keys(), 'Merged drafter key mismatch'
+        state = draft_state
     state["fc.weight"] = mapper.folded().detach().cpu().to(torch.bfloat16).contiguous()
     x = example_features[:256].to("cuda")
     with torch.autocast("cuda", dtype=torch.bfloat16):

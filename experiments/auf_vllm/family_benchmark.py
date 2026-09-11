@@ -3,6 +3,7 @@ import argparse
 import dataclasses
 import json
 import os
+import sys
 import time
 from pathlib import Path
 from .pilot_data import write,sha
@@ -22,12 +23,15 @@ def main(args):
     target=args.models/('llama3-target' if args.family=='llama' else 'qwen14-target')
     if args.export:
         os.environ['TRANSFER_MAPPED']='1'
-        from .runtime_zip.mapper_runtime import install
+        runtime=str(Path(__file__).resolve().parent/'runtime_zip')
+        sys.path.insert(0,runtime)
+        os.environ['PYTHONPATH']=runtime+os.pathsep+os.environ.get('PYTHONPATH','')
+        from mapper_runtime import install
         install()
     config=dict(model=str(target),dtype='bfloat16',max_model_len=5120,max_num_seqs=8,
                 max_num_batched_tokens=8192,gpu_memory_utilization=.8 if args.family=='llama' else .9,
                 enable_prefix_caching=False,generation_config='vllm',async_scheduling=False,
-                seed=0,worker_extension_cls='experiments.auf_vllm.family_metrics.FamilyMetricsWorker',
+                seed=0,disable_log_stats=False,worker_extension_cls='experiments.auf_vllm.family_metrics.FamilyMetricsWorker',
                 compilation_config={'mode':0,'cudagraph_mode':'FULL_DECODE_ONLY'})
     if args.export:
         export_config=json.loads((args.export/'config.json').read_text())

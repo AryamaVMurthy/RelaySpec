@@ -61,6 +61,8 @@ def main(args):
         raise ValueError("Logical batch must be divisible by microbatch records")
     args.out.mkdir(parents=True,exist_ok=True)
     contract={key:str(value) if isinstance(value,Path) else value for key,value in vars(args).items()}
+    if not args.draft_lora:
+        contract.pop('draft_lora')
     if args.lora_base is None:
         contract.pop("lora_base")
         contract.pop("rank")
@@ -97,7 +99,18 @@ def main(args):
               "requires_charging_zip_initialization":True})
     gate=batch_gate(draft,embedding,mapper,[train[0],train[1]])
     write(args.out/"gate.json",gate)
-    optimizer=torch.optim.AdamW(mapper.parameters(),lr=args.lr,weight_decay=0,fused=True)
+    if args.draft_lora:
+        from .draft_lora import inject, parameters_by_name, export_gate
+        assert args.lora_base is not None
+        mapper.requires_grad_(False)
+        names=inject(draft,args.rank)
+        trainable=list(parameters_by_name(draft).values())
+        write(args.out/'draft-lora.json',{'modules':names,'rank':args.rank,'alpha':args.rank,
+              'trainable_parameters':sum(p.numel() for p in trainable),'frozen_interface':True,
+              'initialization_records_charged':4096,'forward':'merged BF16 weight with FP32 LoRA accumulation'})
+    else:
+        trainable=list(mapper.parameters())
+    optimizer=torch.optim.AdamW(trainable,lr=args.lr,weight_decay=0,fused=True)
     planned_steps=math.ceil(len(train)/args.logical_records)*args.epochs
     warm=max(1,int(.05*planned_steps))
     start_epoch=step=0
@@ -107,9 +120,13 @@ def main(args):
         saved=torch.load(resume,weights_only=True)
         assert saved["contract"] == contract
         mapper.load_state_dict(saved["mapper"])
+        if args.draft_lora:
+            with torch.no_grad():
+                for name,p in parameters_by_name(draft).items():
+                    p.copy_(saved['draft_lora'][name])
         optimizer.load_state_dict(saved["optimizer"])
         start_epoch,step,history=saved["epoch"]+1,saved["step"],saved["history"]
-    frozen_versions={name:p._version for name,p in draft.named_parameters()}
+    frozen_versions={name:p._version for name,p in draft.named_parameters() if not p.requires_grad}
     torch.cuda.reset_peak_memory_stats()
     invocation=time.perf_counter()
     for epoch in range(start_epoch,args.epochs):
@@ -148,7 +165,8 @@ def main(args):
                 total_valid+=int(batch["valid"].sum())
                 loss_sum+=result.loss.item()/micro_count
                 del blocks,batch,scores,result,example
-            norm=torch.nn.utils.clip_grad_norm_(mapper.parameters(),1.,error_if_nonfinite=True)
+            assert all(p.grad is not None and torch.isfinite(p.grad).all() for p in trainable)
+            norm=torch.nn.utils.clip_grad_norm_(trainable,1.,error_if_nonfinite=True)
             optimizer.step()
             step+=1
             if step % 16 == 0:
@@ -162,13 +180,20 @@ def main(args):
                "validation":validation(draft,embedding,mapper,valid) if valid is not None else {"status":"pending_offline_evaluation"}}
         history.append(event)
         temporary=resume.with_suffix(".part")
-        torch.save({"contract":contract,"mapper":mapper.state_dict(),"optimizer":optimizer.state_dict(),
-                    "epoch":epoch,"step":step,"history":history},temporary)
+        checkpoint={"contract":contract,"mapper":mapper.state_dict(),"optimizer":optimizer.state_dict(),
+                    "epoch":epoch,"step":step,"history":history}
+        if args.draft_lora:
+            checkpoint['draft_lora']={n:p.detach() for n,p in parameters_by_name(draft).items()}
+        torch.save(checkpoint,temporary)
         temporary.replace(resume)
         write(args.out/"history.json",history)
-        export(mapper,Path(os.environ["TRANSFER_WORK"]),args.out/f"epoch-{epoch+1}/export",train[0][1])
+        draft_state=None
+        if args.draft_lora:
+            draft_state,merged_check=export_gate(draft,embedding,mapper,train[0])
+            write(args.out/f'epoch-{epoch+1}/draft-merge-check.json',merged_check)
+        export(mapper,Path(os.environ["TRANSFER_WORK"]),args.out/f"epoch-{epoch+1}/export",train[0][1],draft_state=draft_state)
         print(json.dumps(event),flush=True)
-    assert all(p.grad is None and p._version == frozen_versions[name] for name,p in draft.named_parameters())
+    assert all(p.grad is None and p._version == frozen_versions[name] for name,p in draft.named_parameters() if name in frozen_versions)
     write(args.out/"summary.json",{"contract":contract,"history":history,"job_id":os.environ.get("SLURM_JOB_ID"),
           "seconds_this_invocation":time.perf_counter()-invocation,"peak_allocated_bytes":torch.cuda.max_memory_allocated(),
           "checkpoint_sha256":sha(resume),"status":"training_complete_validation_pending" if valid is None else "complete"})
@@ -191,4 +216,5 @@ if __name__ == "__main__":
     parser.add_argument("--defer-validation",action="store_true",help="Fit fixed epochs while separately reserved validation labels are prepared")
     parser.add_argument("--lora-base",type=Path)
     parser.add_argument("--rank",type=int,default=56)
+    parser.add_argument("--draft-lora",action='store_true',help='Freeze ZIP interface; train rank-r drafter attention/MLP LoRA')
     main(parser.parse_args())

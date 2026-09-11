@@ -1,0 +1,1607 @@
+{
+  "mode": "mapped",
+  "config": {
+    "async_scheduling": false,
+    "worker_extension_cls": "metrics.MetricsWorker",
+    "model": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+    "dtype": "bfloat16",
+    "max_model_len": 4096,
+    "max_num_seqs": 8,
+    "max_num_batched_tokens": 2048,
+    "gpu_memory_utilization": 0.8,
+    "enable_prefix_caching": false,
+    "seed": 0,
+    "generation_config": "vllm",
+    "attention_config": {
+      "backend": "FLASH_ATTN"
+    },
+    "enforce_eager": false,
+    "compilation_config": {
+      "mode": 0,
+      "cudagraph_mode": "FULL",
+      "cudagraph_capture_sizes": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64
+      ]
+    },
+    "disable_log_stats": false,
+    "speculative_config": {
+      "method": "dflash",
+      "model": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/export",
+      "num_speculative_tokens": 15
+    },
+    "profiler_config": {
+      "profiler": "torch",
+      "torch_profiler_dir": "/scratch/aryama.murthy/relayspec-auf-20260911/profiles/q8/auf-31354",
+      "torch_profiler_with_stack": false,
+      "torch_profiler_record_shapes": true,
+      "torch_profiler_with_memory": true,
+      "torch_profiler_with_flops": true,
+      "max_iterations": 64,
+      "ignore_frontend": true,
+      "detailed_trace_annotation": true
+    }
+  },
+  "args": {
+    "mode": "mapped",
+    "split": "eval",
+    "count": 4,
+    "repeat": 0,
+    "tag": "profile-31354",
+    "cap": 128,
+    "offset": 0,
+    "worker_index": 0,
+    "workers": 1,
+    "profile_dir": "/scratch/aryama.murthy/relayspec-auf-20260911/profiles/q8/auf-31354"
+  },
+  "setup_wall_seconds": 14.323971129022539,
+  "gpu_identity": [
+    {
+      "jit_events": 5,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b1c59d5d-db4e-3c67-a31a-2fc61e93adde",
+      "allocated": 37938265088,
+      "reserved": 38088474624,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "attachment_check": [
+    {
+      "passed": true,
+      "target_size": 8,
+      "target_and_draft_embedding_head_samples_verified": true
+    }
+  ],
+  "warmup_wall_seconds": 6.490600093733519,
+  "measurement_wall_seconds": 16.82899959385395,
+  "gpu_before": [
+    {
+      "jit_events": 4,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b1c59d5d-db4e-3c67-a31a-2fc61e93adde",
+      "allocated": 37938265088,
+      "reserved": 38088474624,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "gpu_after": [
+    {
+      "jit_events": 5,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b1c59d5d-db4e-3c67-a31a-2fc61e93adde",
+      "allocated": 37938265088,
+      "reserved": 38088474624,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "metrics_before": [
+    {
+      "name": "vllm:spec_decode_num_drafts",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 156
+    },
+    {
+      "name": "vllm:spec_decode_num_draft_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 2340
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 307
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens_per_pos",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "values": [
+        97,
+        62,
+        38,
+        30,
+        25,
+        16,
+        12,
+        9,
+        5,
+        3,
+        3,
+        2,
+        2,
+        2,
+        1
+      ]
+    },
+    {
+      "name": "vllm:estimated_flops_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_read_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_write_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_requests_running",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "reason": "capacity"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "reason": "deferred"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "sleep_state": "awake"
+      },
+      "value": 1.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "sleep_state": "weights_offloaded"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "sleep_state": "discard_all"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:kv_cache_usage_perc",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_preemptions",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 361
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "source": "local_compute"
+      },
+      "value": 361
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "source": "local_cache_hit"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "source": "external_kv_transfer"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_cached",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 460
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "finished_reason": "stop"
+      },
+      "value": 3
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "finished_reason": "length"
+      },
+      "value": 3
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "finished_reason": "abort"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "finished_reason": "error"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "finished_reason": "repetition"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_prompt_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 361.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 6,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 460.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 3,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:iteration_tokens_total",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 162,
+      "sum": 821.0,
+      "buckets": {
+        "1.0": 60,
+        "8.0": 147,
+        "16.0": 156,
+        "32.0": 158,
+        "64.0": 160,
+        "128.0": 162,
+        "256.0": 162,
+        "512.0": 162,
+        "1024.0": 162,
+        "2048.0": 162,
+        "4096.0": 162,
+        "8192.0": 162,
+        "16384.0": 162,
+        "+Inf": 162
+      }
+    },
+    {
+      "name": "vllm:request_max_num_generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 460.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 3,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_params_n",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 6.0,
+      "buckets": {
+        "1.0": 6,
+        "2.0": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_params_max_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 576.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 0,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:time_to_first_token_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 0.36307621002197266,
+      "buckets": {
+        "0.001": 0,
+        "0.005": 0,
+        "0.01": 0,
+        "0.02": 0,
+        "0.04": 2,
+        "0.06": 3,
+        "0.08": 5,
+        "0.1": 6,
+        "0.25": 6,
+        "0.5": 6,
+        "0.75": 6,
+        "1.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "7.5": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "40.0": 6,
+        "80.0": 6,
+        "160.0": 6,
+        "640.0": 6,
+        "2560.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:inter_token_latency_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 156,
+      "sum": 6.29629131173715,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 156,
+        "0.075": 156,
+        "0.1": 156,
+        "0.15": 156,
+        "0.2": 156,
+        "0.3": 156,
+        "0.4": 156,
+        "0.5": 156,
+        "0.75": 156,
+        "1.0": 156,
+        "2.5": 156,
+        "5.0": 156,
+        "7.5": 156,
+        "10.0": 156,
+        "20.0": 156,
+        "40.0": 156,
+        "80.0": 156,
+        "+Inf": 156
+      }
+    },
+    {
+      "name": "vllm:request_time_per_output_token_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 0.14046001987185983,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 4,
+        "0.05": 6,
+        "0.075": 6,
+        "0.1": 6,
+        "0.15": 6,
+        "0.2": 6,
+        "0.3": 6,
+        "0.4": 6,
+        "0.5": 6,
+        "0.75": 6,
+        "1.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "7.5": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "40.0": 6,
+        "80.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:e2e_request_latency_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 6.661213159561157,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 5,
+        "2.0": 5,
+        "2.5": 5,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_queue_time_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 0.00014844536781311035,
+      "buckets": {
+        "0.3": 6,
+        "0.5": 6,
+        "0.8": 6,
+        "1.0": 6,
+        "1.5": 6,
+        "2.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_inference_time_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 6.638922287616879,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 5,
+        "2.0": 5,
+        "2.5": 5,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_prefill_time_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 0.3426309758797288,
+      "buckets": {
+        "0.3": 6,
+        "0.5": 6,
+        "0.8": 6,
+        "1.0": 6,
+        "1.5": 6,
+        "2.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_decode_time_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 6.29629131173715,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 3,
+        "1.5": 5,
+        "2.0": 5,
+        "2.5": 5,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_prefill_kv_computed_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 6,
+      "sum": 361.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 6,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:cache_config_info",
+      "labels": {
+        "block_size": "16",
+        "user_specified_block_size": "False",
+        "user_specified_mamba_block_size": "False",
+        "prefix_match_unit": "None",
+        "gpu_memory_utilization": "0.8",
+        "cache_dtype": "auto",
+        "is_attention_free": "False",
+        "num_gpu_blocks_override": "None",
+        "sliding_window": "None",
+        "enable_prefix_caching": "False",
+        "prefix_caching_hash_algo": "sha256",
+        "kv_cache_dtype_skip_layers": "[]",
+        "mamba_page_size_padded": "None",
+        "skip_page_size_padded": "None",
+        "mamba_block_size": "None",
+        "mamba_cache_dtype": "auto",
+        "mamba_ssm_cache_dtype": "auto",
+        "mamba_cache_mode": "none",
+        "replayssm_buffer_len": "16",
+        "use_replayssm": "False",
+        "num_gpu_blocks": "6918",
+        "num_cpu_blocks": "None",
+        "kv_cache_size_tokens": "110688",
+        "kv_cache_max_concurrency": "27.0234375",
+        "kv_sharing_fast_prefill": "False",
+        "kv_cache_memory_bytes": "None",
+        "kv_offloading_size": "None",
+        "kv_offloading_backend": "native",
+        "_block_size_resolved": "True",
+        "engine": "0"
+      },
+      "value": 1.0
+    }
+  ],
+  "metrics_after": [
+    {
+      "name": "vllm:spec_decode_num_drafts",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 351
+    },
+    {
+      "name": "vllm:spec_decode_num_draft_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 5265
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 753
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens_per_pos",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "values": [
+        221,
+        144,
+        86,
+        71,
+        60,
+        45,
+        34,
+        29,
+        18,
+        14,
+        10,
+        7,
+        5,
+        5,
+        4
+      ]
+    },
+    {
+      "name": "vllm:estimated_flops_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_read_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_write_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_requests_running",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "reason": "capacity"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "reason": "deferred"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "sleep_state": "awake"
+      },
+      "value": 1.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "sleep_state": "weights_offloaded"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "sleep_state": "discard_all"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:kv_cache_usage_perc",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_preemptions",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 1418
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "source": "local_compute"
+      },
+      "value": 1418
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "source": "local_cache_hit"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "source": "external_kv_transfer"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_cached",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "value": 1100
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "finished_reason": "stop"
+      },
+      "value": 3
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "finished_reason": "length"
+      },
+      "value": 8
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "finished_reason": "abort"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "finished_reason": "error"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0",
+        "finished_reason": "repetition"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_prompt_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 1418.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 6,
+        "200.0": 8,
+        "500.0": 11,
+        "1000.0": 11,
+        "2000.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 1100.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 3,
+        "200.0": 11,
+        "500.0": 11,
+        "1000.0": 11,
+        "2000.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:iteration_tokens_total",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 362,
+      "sum": 2518.0,
+      "buckets": {
+        "1.0": 131,
+        "8.0": 322,
+        "16.0": 351,
+        "32.0": 353,
+        "64.0": 355,
+        "128.0": 357,
+        "256.0": 360,
+        "512.0": 362,
+        "1024.0": 362,
+        "2048.0": 362,
+        "4096.0": 362,
+        "8192.0": 362,
+        "16384.0": 362,
+        "+Inf": 362
+      }
+    },
+    {
+      "name": "vllm:request_max_num_generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 1100.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 3,
+        "200.0": 11,
+        "500.0": 11,
+        "1000.0": 11,
+        "2000.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_params_n",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 11.0,
+      "buckets": {
+        "1.0": 11,
+        "2.0": 11,
+        "5.0": 11,
+        "10.0": 11,
+        "20.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_params_max_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 1216.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 0,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 11,
+        "500.0": 11,
+        "1000.0": 11,
+        "2000.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:time_to_first_token_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 0.8386642932891846,
+      "buckets": {
+        "0.001": 0,
+        "0.005": 0,
+        "0.01": 0,
+        "0.02": 0,
+        "0.04": 2,
+        "0.06": 3,
+        "0.08": 5,
+        "0.1": 9,
+        "0.25": 11,
+        "0.5": 11,
+        "0.75": 11,
+        "1.0": 11,
+        "2.5": 11,
+        "5.0": 11,
+        "7.5": 11,
+        "10.0": 11,
+        "20.0": 11,
+        "40.0": 11,
+        "80.0": 11,
+        "160.0": 11,
+        "640.0": 11,
+        "2560.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:inter_token_latency_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 351,
+      "sum": 22.54013363737613,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 350,
+        "0.075": 350,
+        "0.1": 350,
+        "0.15": 350,
+        "0.2": 350,
+        "0.3": 350,
+        "0.4": 350,
+        "0.5": 350,
+        "0.75": 350,
+        "1.0": 350,
+        "2.5": 350,
+        "5.0": 350,
+        "7.5": 350,
+        "10.0": 351,
+        "20.0": 351,
+        "40.0": 351,
+        "80.0": 351,
+        "+Inf": 351
+      }
+    },
+    {
+      "name": "vllm:request_time_per_output_token_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 0.2683642901524817,
+      "buckets": {
+        "0.01": 2,
+        "0.025": 8,
+        "0.05": 10,
+        "0.075": 11,
+        "0.1": 11,
+        "0.15": 11,
+        "0.2": 11,
+        "0.3": 11,
+        "0.4": 11,
+        "0.5": 11,
+        "0.75": 11,
+        "1.0": 11,
+        "2.5": 11,
+        "5.0": 11,
+        "7.5": 11,
+        "10.0": 11,
+        "20.0": 11,
+        "40.0": 11,
+        "80.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:e2e_request_latency_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 23.38391947746277,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 7,
+        "2.0": 7,
+        "2.5": 8,
+        "5.0": 10,
+        "10.0": 11,
+        "15.0": 11,
+        "20.0": 11,
+        "30.0": 11,
+        "40.0": 11,
+        "50.0": 11,
+        "60.0": 11,
+        "120.0": 11,
+        "240.0": 11,
+        "480.0": 11,
+        "960.0": 11,
+        "1920.0": 11,
+        "7680.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_queue_time_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 0.00033176364377141,
+      "buckets": {
+        "0.3": 11,
+        "0.5": 11,
+        "0.8": 11,
+        "1.0": 11,
+        "1.5": 11,
+        "2.0": 11,
+        "2.5": 11,
+        "5.0": 11,
+        "10.0": 11,
+        "15.0": 11,
+        "20.0": 11,
+        "30.0": 11,
+        "40.0": 11,
+        "50.0": 11,
+        "60.0": 11,
+        "120.0": 11,
+        "240.0": 11,
+        "480.0": 11,
+        "960.0": 11,
+        "1920.0": 11,
+        "7680.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_inference_time_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 23.3451471705921,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 7,
+        "2.0": 7,
+        "2.5": 8,
+        "5.0": 10,
+        "10.0": 11,
+        "15.0": 11,
+        "20.0": 11,
+        "30.0": 11,
+        "40.0": 11,
+        "50.0": 11,
+        "60.0": 11,
+        "120.0": 11,
+        "240.0": 11,
+        "480.0": 11,
+        "960.0": 11,
+        "1920.0": 11,
+        "7680.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_prefill_time_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 0.8050135332159698,
+      "buckets": {
+        "0.3": 11,
+        "0.5": 11,
+        "0.8": 11,
+        "1.0": 11,
+        "1.5": 11,
+        "2.0": 11,
+        "2.5": 11,
+        "5.0": 11,
+        "10.0": 11,
+        "15.0": 11,
+        "20.0": 11,
+        "30.0": 11,
+        "40.0": 11,
+        "50.0": 11,
+        "60.0": 11,
+        "120.0": 11,
+        "240.0": 11,
+        "480.0": 11,
+        "960.0": 11,
+        "1920.0": 11,
+        "7680.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_decode_time_seconds",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 22.54013363737613,
+      "buckets": {
+        "0.3": 2,
+        "0.5": 2,
+        "0.8": 2,
+        "1.0": 5,
+        "1.5": 7,
+        "2.0": 7,
+        "2.5": 8,
+        "5.0": 10,
+        "10.0": 11,
+        "15.0": 11,
+        "20.0": 11,
+        "30.0": 11,
+        "40.0": 11,
+        "50.0": 11,
+        "60.0": 11,
+        "120.0": 11,
+        "240.0": 11,
+        "480.0": 11,
+        "960.0": 11,
+        "1920.0": 11,
+        "7680.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_prefill_kv_computed_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/benchmarks/q8-selected/auf/worker-0/models/8b/target",
+        "engine": "0"
+      },
+      "count": 11,
+      "sum": 1418.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 6,
+        "200.0": 8,
+        "500.0": 11,
+        "1000.0": 11,
+        "2000.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:cache_config_info",
+      "labels": {
+        "block_size": "16",
+        "user_specified_block_size": "False",
+        "user_specified_mamba_block_size": "False",
+        "prefix_match_unit": "None",
+        "gpu_memory_utilization": "0.8",
+        "cache_dtype": "auto",
+        "is_attention_free": "False",
+        "num_gpu_blocks_override": "None",
+        "sliding_window": "None",
+        "enable_prefix_caching": "False",
+        "prefix_caching_hash_algo": "sha256",
+        "kv_cache_dtype_skip_layers": "[]",
+        "mamba_page_size_padded": "None",
+        "skip_page_size_padded": "None",
+        "mamba_block_size": "None",
+        "mamba_cache_dtype": "auto",
+        "mamba_ssm_cache_dtype": "auto",
+        "mamba_cache_mode": "none",
+        "replayssm_buffer_len": "16",
+        "use_replayssm": "False",
+        "num_gpu_blocks": "6918",
+        "num_cpu_blocks": "None",
+        "kv_cache_size_tokens": "110688",
+        "kv_cache_max_concurrency": "27.0234375",
+        "kv_sharing_fast_prefill": "False",
+        "kv_cache_memory_bytes": "None",
+        "kv_offloading_size": "None",
+        "kv_offloading_backend": "native",
+        "_block_size_resolved": "True",
+        "engine": "0"
+      },
+      "value": 1.0
+    }
+  ],
+  "slurm_job_id": "31354",
+  "cuda_visible_devices": "0",
+  "timing_valid": false,
+  "timing_contract": "Profiled runs are excluded from speed comparisons. Otherwise per-request generate wall; compile/capture-affected request retried once, cold time retained; prefix cache off"
+}

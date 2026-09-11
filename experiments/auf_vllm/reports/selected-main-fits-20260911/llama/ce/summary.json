@@ -1,0 +1,65 @@
+{
+  "contract": {
+    "family": "llama",
+    "models": "/scratch/aryama.murthy/relayspec-auf-20260911/models",
+    "data": "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096",
+    "validation_manifest": "/scratch/aryama.murthy/relayspec-auf-20260911/validation-llama-n1024/combined-ce.json",
+    "out": "/scratch/aryama.murthy/relayspec-auf-20260911/fits/llama-n4096-ce-lr1e-3-s42",
+    "objective": "ce",
+    "records": 4096,
+    "epochs": 3,
+    "seed": 42,
+    "lr": 0.001,
+    "exploratory": false,
+    "manifests": {
+      "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-0/train.json": "9f49a600938036cfe65e4a3ddae96b6f0ed334ef4945484d89ee948324c167b5",
+      "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-1/train.json": "55ec73c99a13e06ca3a397c00557896d0578fe10dda0870ad681af9762dbb0f1",
+      "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-2/train.json": "91cccd16d011960f302efffe72269dc9f82546cd0913571be63c29ecc68dbbce",
+      "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-3/train.json": "2c126865a3f1e95bc8e2a7957a9b581635352ffa54edbdb96ee21a8f48218dae",
+      "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-4/train.json": "2a46cd14f1f9ca8eb07a3ba9003cc51e800deb2cdf1932c4ca7200ef07de188c",
+      "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-5/train.json": "a764b708c0c650a907d320209212800f1563993f3230a4993801a2397b149c87",
+      "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-6/train.json": "d55b95d77625cfdc5d0484f862aaded8c5a8c57af46fce1d3107485cf0d3fb9d",
+      "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-7/train.json": "9c82ad5a4645570f9be61065f02d3f9f039911e6589e4fb77b4bc1b4afe87d82"
+    },
+    "validation_sha256": "0968b0891ad4d6dea87f18220dac0d4913c1383dc869a972c82d8ad21e09bfc0",
+    "target_adapters": null,
+    "token_batch": "4 records x 4 anchors x 8 accumulation",
+    "zip_positions": "deterministic stratified 25%; equal example mass; 2048-position batches"
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "steps": 128,
+      "records": 4096,
+      "blocks": 16384,
+      "active_tokens": 144818,
+      "valid_tokens": 144818,
+      "training_loss": 5.245834300061688,
+      "seconds": 359.9494784139097
+    },
+    {
+      "epoch": 2,
+      "steps": 256,
+      "records": 4096,
+      "blocks": 16384,
+      "active_tokens": 144784,
+      "valid_tokens": 144784,
+      "training_loss": 3.2101392748299986,
+      "seconds": 372.7968381177634
+    },
+    {
+      "epoch": 3,
+      "steps": 384,
+      "records": 4096,
+      "blocks": 16384,
+      "active_tokens": 144722,
+      "valid_tokens": 144722,
+      "training_loss": 2.544778239331208,
+      "seconds": 362.18641924718395
+    }
+  ],
+  "peak_allocated_bytes": 21608298496,
+  "checkpoint_sha256": "af2bee3909ba745f0dc6bef943f73fc9a952b6c84334548abccf20fa061fcfd4",
+  "job_id": "31363",
+  "status": "fit_complete_offline_validation_pending"
+}

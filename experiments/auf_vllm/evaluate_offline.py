@@ -32,6 +32,10 @@ def main(args):
         path=args.fit/f"epoch-{epoch}/export/model.safetensors"
         with safe_open(path,framework="pt",device="cpu") as reader:
             interface=FoldedInterface(reader.get_tensor("fc.weight"),reader.get_tensor("hidden_norm.weight")).to("cuda")
+            # Also evaluate exported drafter adaptations, not the original drafter.
+            state={name:reader.get_tensor(name) for name in draft.state_dict() if name != 'fc.weight'}
+            loaded=draft.load_state_dict(state,strict=False)
+            assert loaded.missing_keys == ['fc.weight'] and not loaded.unexpected_keys
         event={"epoch":epoch,"export_sha256":sha(path),"metrics":validation(draft,embedding,interface,records),
                "interface":"BF16 folded deployment matrix","job_id":os.environ.get("SLURM_JOB_ID")}
         result.append(event)

@@ -481,3 +481,29 @@ The study is complete when:
 - The separate manuscript/PDF and reproduction artifacts are audited; no original-paper evidence is overwritten and no anticipated result is presented as observed.
 
 Implementation starts with the generic AUF tests and Q8 compatibility pilot after this plan stage. Broad scheduling waits for those gates, not for a favorable speed result.
+
+
+## User-added direct drafter-LoRA comparison (2026-09-11)
+
+The user requested checking whether the original study already compared linear
+RelaySpec against LoRA within the drafter, and repeating this at main evaluation
+scale. Original matched-time evidence exists on512 records but only16x256
+questions/tokens. New jobs31447/31450 expand this comparison.
+
+- Shared frozen ZIP4096/3epoch initialization, charged to every continuation.
+- Four arms: drafter attention+MLP LoRA CE/AUF, fusion-only LoRA CE/AUF.
+- Rank32,alpha32; drafter arm freezes interface; interface arm freezes drafter.
+- No target adaptation. All branches reuse4096 unique training records;
+  initialization+continuation are6 total passes, not3 total passes.
+- Equal per-arm three-rate512-record3epoch screen (2e-5,1e-4,1e-3), same1024
+  offline validation. Select smallest rate within1% of best epoch3 prefix.
+- Main4096-record3epoch continuations,4x4anchor microbatches,8 accumulation;
+  exact CE/AUF losses. Report parameter count, time, active supervision and cost.
+- Three128-request2048-cap vLLM development timing repetitions per final arm,
+  paired AR exactness, compare to unchanged ZIP and native controls. Refresh
+  matching baseline timing repetitions before a formal main-table claim.
+- Original512+16x256 evidence is not substituted for this new comparison.
+- Same-data/epoch matching does not imply same FLOPs or parameter count; warm
+  time matching is a separate analysis. Shared ZIP start tests whether changing
+  drafter weights improves upon a functional transfer interface. It does not
+  demonstrate transfer without any dimensional compatibility interface.
