@@ -105,7 +105,7 @@ After obtaining a dimensionally compatible frozen interface `F0`:
 
 ### 3.4 Two inputs requiring resolution at the implementation gate
 
-1. The supplied AUF definition specifies **LoRA-adapted target rollouts**. The inspected ZIP instead uses an unadapted frozen target. Locate and pin the intended target adapter/checkpoint and its rollout provenance before claiming exact reproduction. The teacher generating labels, the model supplying target features, and the verifier/AR baseline must be the same adapted target. If no such adapter exists, report this dependency explicitly; a base-target AUF extension must be labeled separately, not passed off as that recipe.
+1. **Resolved by the user during implementation:** use the original frozen paper targets to isolate the loss change. No target LoRA adapter is trained or loaded. The rollout teacher, captured target features, verification target, and AR baseline must use the same pinned original target. This applies the exact supplied AUF loss to the original targets; it does not claim reproduction of the distinct adapted-target setting mentioned in the initial loss description.
 2. Interpret “along with ZIP” as using its transfer architecture/data/export path, with pure AUF during token refinement. Do not invent `AUF + lambda*MSE`. Any simultaneous combined objective would be a separately named later ablation requiring an explicit protocol revision.
 
 Neither dependency prevents writing the plan, auditing data, or implementing and testing the generic AUF function.
