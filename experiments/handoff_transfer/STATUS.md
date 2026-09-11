@@ -1,3 +1,20 @@
+## Verified fit and scaling preparation update
+
+Q14 fusion AUF job31558 completed 2,000 updates in707.98 seconds on two GPUs.
+Archived summary and verification in reports/q14-handoff-r56-fit: only A/B
+train, frozen non-fc weights exact, folded export relative MSE0.0. This is
+training/export evidence; its full128-request throughput evaluation is pending.
+Q8 retry31584 passed the repaired unique-path gate and reached1,310/2,000
+updates at the last live check;31579 and31346 remain active evaluations.
+
+Added prepare_scaling.py to build isolated matched-data inputs. It requires
+an exactly N-record, three-epoch ZIP initializer, checks checkpoint and capture
+hashes and exact sequence identity, reuses full mmap shards and materializes
+only partial shards (including N16). A separate count-aware trainer preserves
+the original main4096 recipe. This prepares inputs only; the scaling GPU runs
+are not yet launched. Nine local CPU tests pass, including rejection of an
+initializer fitted on more records than the declared scaling point.
+
 ## Evaluation scheduling and timing update
 
 Pending evaluation jobs31562–31573,31587/31588 replaced (none were running)
