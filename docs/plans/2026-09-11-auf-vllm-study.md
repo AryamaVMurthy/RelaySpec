@@ -88,6 +88,8 @@ The original paper's normalized direct-context loss is an additional historical 
 
 ### 3.3 Track B: reproduce the supplied fusion-LoRA recipe
 
+Final scope decision: Track B is a targeted capacity/cost ablation, not a second full transfer/data/epoch campaign. Start with rank56 on Q8 at N=4,096, comparing frozen F0, CE-LoRA, and AUF-LoRA. Additional rank cells belong only to the bounded capacity study below. The main transfer table and its seed-replication counts contain Track A's three objectives.
+
 After obtaining a dimensionally compatible frozen interface `F0`:
 
 `F_new = F0 + (alpha/r) B A`, with `r = alpha = 56`.
@@ -233,8 +235,8 @@ All X8-dependent rows are conditional on the cross-family decision rule above. T
 | Study | Planned settings | Controls and evaluation | Purpose |
 |---|---|---|---|
 | End-to-end correctness | Q8, then Q14/L3/X8; 16–64 training records | Small diagnostic prompts, then 128 development requests × 2,048 cap | Prove the actual path works before scale |
-| Main transfer | Q8, Q14, L3, X8; N=4,096; 3 epochs | Track A's three losses; Track B's frozen/CE/AUF starts; AR and native where available | Principal table |
-| Main seed replication | Seeds 42, 43, 44 at frozen N=4,096 configuration | Same initialization seed paired across AUF/CE/ZIP where architectures match | Fit variability without cherry-picking |
+| Main transfer | Q8, Q14, L3, X8; N=4,096; 3 epochs; seed42 | Track A's three losses; AR and native where available; three timing measurements of the frozen seed42 checkpoints | Principal table |
+| Targeted seed replication | Q8 and L3 only; add seeds43 and44 at frozen N=4,096 configuration | ZIP/CE/AUF; one128-request MATH evaluation per additional checkpoint at2048 cap | Fit variability without multiplying timing repeats across all seeds |
 | Data scaling, fixed updates | Q8: all 12 N values; X8: 512/2,048/4,096/8,192/16,384/32,768 | Initially AUF/CE at 1,024 updates; ZIP matched record-exposure series separately | Distinct data at declared work |
 | Data scaling, fixed epochs | Same Q8 grid; X8 six points; Q14/L3 at 512/4,096/16,384 | 3 epochs, all Track A losses; same selected records | Benefit when larger datasets also get more exposure |
 | Epoch scaling | Q8 and X8, N=512/4,096/16,384 | Epochs 1/3/6/12 for AUF/CE/ZIP; Q14/L3 endpoints 3/6 | Underfitting, saturation, overfitting |
@@ -253,7 +255,9 @@ For fixed-update AUF/CE, 1,024 × 32 record-visits allows every record in the 32
 
 ZIP's historical optimizer batch is 2,048 sampled positions, with equal-example weighting. Its original 1,024-update sweep used four examples/update. Preserve that historical curve as a separately labeled reproduction; add a new record-exposure-matched ZIP protocol rather than pretending those different update definitions are equal compute. Compare all losses at measured GPU-time budgets as well.
 
-Initial sweeps use seed42 and are exploratory. The principal transfer configuration and selected low/high-data confirmations use three fit seeds. Training repetitions and runtime repetitions are distinct. Every plotted decoding endpoint uses 128 development requests and the 2,048 cap; tiny diagnostics never substitute for a plotted endpoint. Use unopened confirmation data only after the selection rules and configuration are frozen.
+Final repetition policy: all exploratory sweeps use seed42 and one warmed evaluation per endpoint. Main transfer results use seed42 and three rotated timing measurements. Only Q8 and L3 at the main N=4,096 configuration receive two additional training seeds43/44, for each of ZIP/CE/AUF, evaluated once each on the predeclared128-request MATH set at2048 cap. Do not select a best seed. Training repetitions and runtime repetitions are distinct; the additional seeds are not timed three times. Every plotted decoding endpoint uses128 development requests and the2,048 cap; tiny diagnostics never substitute for a plotted endpoint. Use unopened confirmation data only after the selection rules and configuration are frozen.
+
+Core count if all four transfer pairs pass:12 initial fits (4pairs×3losses), plus12 additional fits (2pairs×3losses×2extra seeds), for24 main/robustness fits. Main trained-method evaluation is144 units (4pairs×4workloads×3losses×3timings), plus12 extra-seed units, totaling156 units of128 requests, or19,968 generated answers. This excludes AR/native controls, scaling/architecture ablations, EAGLE extensions, original-paper breadth, and final backend checks. If X8 fails feasibility, the core becomes21 fits and120 evaluation units (15,360 answers). These are not claimed to be the total campaign counts.
 
 Keep epoch12 even if it regresses; numerical failure stops a cell with an explicit record. Extra epochs beyond12 need a new justified protocol revision, not an indefinite search for a win.
 
@@ -283,7 +287,7 @@ Separately benchmark serving at concurrency 4/8/16/32. Use a fixed prompt order/
 - Prefix caching off in the primary comparison to avoid repeated-prompt cache advantages. A cached-serving configuration can be a separate systems study.
 - Use the ZIP's batch-invariant, no-compile reference settings with supported CUDA decode graphs as the starting correctness configuration. Benchmark further optimizations equally for every method after validation.
 - At least four excluded representative warmup prompts and coverage of timing shapes. Save cold setup/compile times; follow one declared retry policy for compilation-affected requests.
-- Three rotated hardware/order repetitions for principal claims. Fixed checkpoints, request set, and controls; avoid colocated training on any timed GPU.
+- Three rotated hardware/order repetitions for principal seed42 claims only. Additional fit seeds receive one measurement each on the specified robustness set; exploratory endpoints receive one. Fixed checkpoints, request set, and controls; avoid colocated training on any timed GPU. This replaces the earlier blanket3-training-seed×3-timing-repeat budget.
 - Run methods in isolation for memory accounting. GPU rotation balances device effects; record power caps, clocks, temperature, and concurrent system activity.
 
 ### Controls
@@ -451,6 +455,8 @@ Main-paper candidates, selected for distinct questions rather than repeating the
 Appendix: all loss/initialization/seed/block-size cells, complete benchmark quality/exact matches, additional profiles, bridge coverage, numerical diagnostics, and final Transformers replication. Full curves retain poor endpoints. Limitations discuss measured transfer restrictions, objective/exposure bias, computational cost, vocabulary support, and statistical scope honestly.
 
 ## 14. Duration and completion criteria
+
+The earlier `2026-09-11-auf-time-estimate.md` describes the superseded five-variant, blanket3×3 budget. It is preserved as historical planning arithmetic, not the estimate for this reduced protocol. The peer-protocol audit motivates separating timing and training-seed checks; final core counts are given in Section8 above. A revised total forecast must use this scope and measured AUF rates, not simply divide every stage by the main-evaluation reduction.
 
 Do not promise a fixed short completion time before measuring the AUF trainer and cross-family integration. The two likely large costs are full-prefix feature capture and full-length repeated evaluation, not the number of trainable mapper weights alone.
 
