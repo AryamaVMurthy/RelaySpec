@@ -150,3 +150,13 @@ All later mapped evaluations repeat this check;19 unit tests pass, including
 rejection of a stale context-KV buffer. This is additional assurance that the
 runtime uses the saved adapter/drafter weights, not a speedup result.
 Q14 first512-record validation shard completed; second shard running.
+
+## Runtime gate complete at20:10 IST
+
+31461completed3m42s. ZIP/CE/AUF/native each matched AR4/4 on the new MATH
+manifest's diagnostic subset, cap128. Full tensor projection/context-KV checks
+passed for all mapped models. Archive:reports/q8-workload-gate-31461.
+Main drafter-LoRA fits31450_0(CE) and31450_1(AUF) are now RUNNING on node07,
+4096records3epochs at selected2e-5; fusion branches follow within the same
+max2GPU array. Llama31445 evaluation andQ14validation31327_1 remain RUNNING
+on node06. Total4GPUs. This is diagnostic exactness, not full128-workload data.
