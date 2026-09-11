@@ -16,7 +16,14 @@ control=/home/aryama.murthy/relayspec-auf-20260911
 study=/scratch/aryama.murthy/relayspec-auf-20260911
 root=/scratch/aryama.murthy/handoff-transfer-20260911
 study_python=/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/bin/python
-export PYTHONPATH="$control" OMP_NUM_THREADS=4 TOKENIZERS_PARALLELISM=false HF_HUB_OFFLINE=1 VLLM_BATCH_INVARIANT=1
+snapshot="$root/cross-evaluation-sources/$SLURM_JOB_ID"
+mkdir -p "$snapshot/experiments/handoff_transfer" "$snapshot/logs"
+rsync -a --exclude __pycache__ "$control/experiments/handoff_transfer/cross" "$control/experiments/handoff_transfer/matrix" "$snapshot/experiments/handoff_transfer/"
+rsync -a --exclude reports --exclude __pycache__ "$control/experiments/auf_vllm" "$snapshot/experiments/"
+export PYTHONPATH="$snapshot" OMP_NUM_THREADS=4 TOKENIZERS_PARALLELISM=false HF_HUB_OFFLINE=1 VLLM_BATCH_INVARIANT=1
+nvidia-smi --query-gpu=timestamp,index,uuid,name,utilization.gpu,memory.used,power.draw,temperature.gpu --format=csv -l 5 > "$snapshot/logs/gpu.csv" &
+monitor=$!
+trap 'kill "$monitor"' EXIT
 export CROSS_SOURCE_TOKENIZER="$study/models/qwen4-source"
 target="$study/models/llama8-source"
 base="$root/cross"
