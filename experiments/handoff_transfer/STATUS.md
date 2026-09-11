@@ -1,5 +1,16 @@
 ## Verified fit and scaling preparation update
 
+FIRST COMPLETE Q8 AUF128/cap2048 PASS (repeat0):BA177.5331TPS,+2.7004%
+versus normal172.8651TPS;five-map164.4955TPS,-4.8417%. Both128/128 full
+token and finish matches to normal,122,768 output tokens. Common runtime and
+manifest checked. This is one of three repetitions,not finalAR/ZIP/native/CE
+comparison. Archived in reports/q8-handoff-first-pass. Do not claim10% gain.
+
+Workload collectors31664/31665/31666 scheduled on matching family nodes.
+Main collector now validates family,method,and repetition identifiers as well
+as runtime/manifest consistency; workload collector reuses that validation.
+Q14 normal31580 has started; four GPUs active at the last live check.
+
 Measured Q8 fitting-cost ledger and figure generated from archived summaries.
 Normal4.72min,ZIP4.82min,ZIP+AUFBA15.38min,ZIP+AUFfive15.57min,
 ZIP+uniformCE13.80min sequential fitting. GPU-minutes charge two-GPU

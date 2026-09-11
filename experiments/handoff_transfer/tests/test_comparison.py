@@ -25,7 +25,8 @@ def test_main_collector_fails_finish_mismatch_but_retains_report(tmp_path):
                 'output_ids':[1],'prompt_ids':[2],'output_tokens':1,'wall_seconds':1,
                 'finish_reason':'length' if mode=='handoff-five' else 'stop'}) for i in range(128)))
             path.with_suffix('.summary.json').write_text(json.dumps({'timing_valid':True,
-                'contract':{'cap':2048,'count':128,'manifest_sha256':'same','runtime_config':{}}}))
+                'contract':{'cap':2048,'count':128,'family':'q14','mode':mode,'repeat':repeat,
+                            'manifest_sha256':'same','runtime_config':{}}}))
     out=tmp_path/'comparison.json'
     with pytest.raises(AssertionError,match='Full token/finish'):
         main(argparse.Namespace(root=root,out=out))
