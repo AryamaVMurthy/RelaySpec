@@ -1,5 +1,13 @@
 ## Verified fit and scaling preparation update
 
+Q8 five-map31585 completed0; fit644.74 seconds,2,000 updates,export verified.
+Proof archived in reports/q8-handoff-five-fit. Uniform CE31586 now running.
+Separate rank-capacity port supports8/16/32/56/128/256 while preserving the
+main rank56 implementation; test verifies rank56 arithmetic unchanged except
+variant naming. Rank8 fit31634 queued after both profiling arrays31632/31633,
+2GPUs,4krecords/2kupdates. This is a capacity ablation,not exact rank56 recipe;
+its decoding evaluation and other rank fits remain to schedule.13 CPU tests pass.
+
 Scaling preparation now hashes each reused full shard once,retaining that
 verified digest for its symlink instead of rereading the same tensor file.
 Main comparison collector now fails its job on any token or finish mismatch
