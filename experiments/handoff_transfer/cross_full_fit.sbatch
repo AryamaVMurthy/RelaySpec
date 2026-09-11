@@ -16,7 +16,7 @@ control=/home/aryama.murthy/relayspec-auf-20260911
 code="$control/experiments/handoff_transfer"
 root=/scratch/aryama.murthy/handoff-transfer-20260911
 study_python=/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/bin/python
-export AUF_WORKDIR="$root/cross-matrix/$KIND-$MATRIX_OBJECTIVE-lr$MATRIX_LR"
+export AUF_WORKDIR="$root/matrix/cross/$KIND-$MATRIX_OBJECTIVE-lr$MATRIX_LR"
 export AUF_MODELS="$root/cross-reference" AUF_DOMAIN=math SPECFORGE_ROOT="$code/specforge"
 snapshot="$AUF_WORKDIR/source-$SLURM_JOB_ID"
 mkdir -p "$snapshot/experiments/handoff_transfer" "$AUF_WORKDIR/logs"

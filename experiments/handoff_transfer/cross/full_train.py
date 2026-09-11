@@ -25,7 +25,8 @@ def main(a):
     assert TRANSFER['full_data_index_sha256']==digest(a.index)
     cache=CrossRecords(a.index)
     assert len(cache)==4096 and a.steps in (100,500,2000)
-    out=R/'full-fits'/f'{a.kind}-{OBJECTIVE}-lr{a.lr}-steps{a.steps}'
+    out=R/'modules'/f'steps-{a.steps}'/a.kind
+    export_dir=R/'exports'/f'steps-{a.steps}'/a.kind
     resume_path=out/'resume.pt'
     schedule={'kind':a.kind,'objective':OBJECTIVE,'lr':a.lr,'steps':a.steps,'seed':42,
               'index_sha256':digest(a.index),'initializer_sha256':TRANSFER['base_sha256'],'record_order':'seed42+epoch shuffled64-record chunks, shuffled records within chunk'}
@@ -73,8 +74,8 @@ def main(a):
     if rank==0:
         assert all(torch.isfinite(p).all() for p in params)
         assert any(not torch.equal(initial[k],p.detach().cpu()) for k,p in raw.draft_model.named_parameters() if p.requires_grad)
-        export(raw,cfg,a.kind,out/'export')
-        exported=load_file(str(out/'export/model.safetensors'))
+        export(raw,cfg,a.kind,export_dir)
+        exported=load_file(str(export_dir/'model.safetensors'))
         base=load_file(str(Path(TRANSFER['base_export'])/'model.safetensors'))
         assert set(exported)==set(base)
         assert all(torch.equal(v,exported[k]) for k,v in base.items() if k!='fc.weight')
@@ -82,12 +83,12 @@ def main(a):
         folded=fc.folded() if a.kind!='fusion_r56' else fc.base_layer.weight.float()+fc.get_delta_weight('default').float()
         folded=folded.detach().to(dtype=torch.bfloat16,device='cpu')
         torch.testing.assert_close(folded,exported['fc.weight'],rtol=0,atol=0)
-        write(out/'verification.json',{'status':'training_and_export_verified','frozen_non_fc_exact':True,
-            'trainable_names':sorted(initial),'export_sha256':digest(out/'export/model.safetensors'),
+        write(out/'verification.json',{'status':'passed','frozen_non_fc_exact':True,
+            'trainable_names':sorted(initial),'export_sha256':digest(export_dir/'model.safetensors'),
             'inference_exactness':'not yet evaluated'})
         torch.save({k:p.detach().cpu() for k,p in raw.draft_model.named_parameters() if p.requires_grad},out/'parameters.pt')
         write(out/'summary.json',{'scope':'full-data cross-family fit; decoding measurement separate','records':len(cache),
-            'steps':a.steps,'presentations':8*a.steps,'anchors_limit':512,'objective':OBJECTIVE,
+            'steps':a.steps,'optimizer_steps':a.steps,'presentations':8*a.steps,'processed_examples':8*a.steps,'anchors_limit':512,'anchors_per_example':512,'world_size':world,'seed':42,'variant':a.kind,'checkpoint':'final','objective':OBJECTIVE,
             'label_units':'source tokens','context_units':'target tokens','lr':a.lr,
             'training_seconds':training_seconds,'training_gpu_hours':training_seconds*world/3600,'actual_anchors_rank0':anchor_count,'records_rank0':record_count,'peak_cuda_bytes_rank0':torch.cuda.max_memory_allocated(),
             'history':history,'initializer_records':TRANSFER['initializer_records'],

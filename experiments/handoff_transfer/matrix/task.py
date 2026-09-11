@@ -7,7 +7,7 @@ KINDS = {'normal_ce', 'fusion_r56', 'five_maps', 'dense_fusion', 'five_ba56', 'd
 
 def values(task):
     family, kind, objective = (task[k] for k in ('family', 'kind', 'objective'))
-    if family not in {'q8', 'llama'} or kind not in KINDS or objective not in {'ce', 'auf'}:
+    if family not in {'q8', 'llama', 'cross'} or kind not in KINDS or objective not in {'ce', 'auf'}:
         raise ValueError('Unsupported matrix task')
     lr = float(task.get('lr', 0.0001))
     steps = task.get('steps', 100)
