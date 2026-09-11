@@ -1,3 +1,7 @@
+## 2026-09-12: Q8 full-pipeline seed jobs queued
+
+Seed43 fit/eval31675/31676, seed44 fit/eval31677/31678; serial chain starts after workload31661. Small-data fit31608 now waits for31678, preserving at-most-two experimental GPUs alongside the at-most-two-GPU data lane. Each seed independently fits ZIP and normal for three epochs on4096 cached records, then BA/five for2000updates/global8/eight anchors. AUF two-step verification gate precedes full fitting. Evaluations rotate all four methods across repetitions,128/cap2048 with full token/finish equality against matched main AR. No new target inference for data is needed.17 tests pass and shell scripts parse. GPU seed runs, Llama seed wiring and across-seed collection remain pending.
+
 ## 2026-09-12: full-pipeline seed provenance preparation
 
 Added prepare_seed.py for Q8 seeds43/44. It requires a fresh4096-record/three-epoch ZIP initializer whose recorded seed matches, verifies exact cached sequence identity through existing prepare_scaling, and generates an isolated AUF trainer. Seed variation covers ZIP/AUF initialization, anchor sampling and shard shuffle. Main seed42 trainer remains unchanged. The generated trainer rejects an inconsistent --seed and fixes previously hardcoded seed42 summary wording for these extra runs. Normal baseline must also refit with the matching seed. No seed jobs launched yet; Llama initializer schema and launch/evaluation wiring remain pending. All17 tests pass. Live Q8 third repetitions progressing; no duplicate launches.
