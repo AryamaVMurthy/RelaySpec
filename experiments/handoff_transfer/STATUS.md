@@ -1,3 +1,7 @@
+## 2026-09-12: Q14 five-map full training complete and verified
+
+Job31559 completed all2000updates/16000record presentations in772.031363seconds (12.8672minutes) on2GPUs. Export verifier passed: exactly the five fc.maps weights trained, folded relativeMSE0, every non-fc exported tensor unchanged. Full summary/verification archived in reports/q14-handoff-five-fit. This completes both Q14 AUF fits (BA already complete); full decoding comparison still pending. Success released LlamaBA job31560, now running on2GPUs alongside normalQ14 and olderQ14evaluation (four total). No job restarted.
+
 ## 2026-09-12: completed timing-repeat figure generated
 
 Generated and visually checked figures/q8_three_repeats.png/pdf directly from the verified three-pass comparison. Shows absolute TPS by repetition and all three paired percentage changes, explicitly labeled one fitting seed/development only and AR/ZIP pending. Preserves positiveBA(+2.68%) and negativefive(-4.91%) outcomes. Plot source saved for regeneration; no manuscript results rewritten prematurely. Source-copy audit found only1.5MB remote reports, so no unsupported claim that copying causes slow training; current Q14five reached1580/2000updates.
