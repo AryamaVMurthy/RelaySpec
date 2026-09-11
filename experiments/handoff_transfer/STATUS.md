@@ -569,3 +569,13 @@ no newfailures. Running31771_7 (Qwenlastinitialtask,node07,2GPU),31772_9
 (Llama,node06,2GPU;tasks10/11follow). Crosspaired31803,sharedAR31820,
 Llamarecovery31842,batchgate31861 remain dependent. Fulltuning/128x2048
 benchmarks stillpending. Next routinecheck04:16:45IST (25minutes).
+
+## 2026-09-12 04:16:45 IST
+
+Initialarraysfinished; knownLlamafusionCErecovery31842stillpending. ARreference
+31820/node06 andbatchgate31861/node07 running,oneGPUeach. Crosspaired31803
+failed prefix/fullfeaturecheck at1e-6threshold. Its script omittedbatch-invariant
+kernels alreadyusedbyfullcrossdata; addedrequiredsettinganderrormetadata,
+rerun31913after31861. No tolerancechange; numericalcauseunconfirmeduntilrerun.
+QwenLR31780waits31913completion;crossdata31806requires31913success. This
+preserves<=4GPUwhenLlamarecovery/LRoverlaps. Next routinecheck04:41:45IST.

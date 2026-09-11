@@ -22,8 +22,8 @@
     "ce": 31769
   },
   "cross_decode_gate": 31770,
-  "last_routine_gpu_check": "2026-09-12T03:51:45+05:30",
-  "next_routine_gpu_check_not_before": "2026-09-12T04:16:45+05:30",
+  "last_routine_gpu_check": "2026-09-12T04:16:45+05:30",
+  "next_routine_gpu_check_not_before": "2026-09-12T04:41:45+05:30",
   "remaining_initial_fit_arrays": {
     "q8": 31771,
     "llama": 31772
@@ -57,7 +57,8 @@
     "31779": "same BatchEncoding issue; repaired and resubmitted",
     "31777": "vLLM synthetic sampler warmup is non-greedy without dummy flag; explicit warmup scope added",
     "31771_1": "NFS shell stale file handle after fit and verification completed; retain verified 100-update normal_ce AUF artifacts",
-    "31772_2": "NFS shell stale file handle after 4-request exactness gate, before main fit; recovery31842"
+    "31772_2": "NFS shell stale file handle after 4-request exactness gate, before main fit; recovery31842",
+    "31803": "Prefix/full feature discrepancy; pilot omitted VLLM_BATCH_INVARIANT=1 used by full pipeline. Rerun31913 with same threshold and logged error; cause not yet confirmed."
   },
   "promotion_pipeline": {
     "q8_promote100": 31786,
@@ -102,7 +103,7 @@
       "exact_tokens_and_finish": 32
     }
   },
-  "cross_paired_gate": 31803,
+  "cross_paired_gate": 31913,
   "cross_full_pipeline": {
     "data": 31806,
     "assemble": 31807,
@@ -179,13 +180,13 @@
     "cross": 0
   },
   "running_at_last_check": {
-    "31771_7": {
-      "node": "node07",
-      "gpus": 2
-    },
-    "31772_9": {
+    "31820": {
       "node": "node06",
-      "gpus": 2
+      "gpus": 1
+    },
+    "31861": {
+      "node": "node07",
+      "gpus": 1
     }
   },
   "matrix_transformers_confirmation": {

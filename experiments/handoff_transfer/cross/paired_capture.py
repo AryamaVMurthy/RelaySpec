@@ -12,6 +12,7 @@ from experiments.auf_vllm.pilot_data import write
 
 
 def main(args):
+    assert os.environ.get("VLLM_BATCH_INVARIANT")=="1", "Prefix/full feature comparisons require batch-invariant kernels"
     from vllm import LLM, PoolingParams
     source = AutoTokenizer.from_pretrained(args.models/'qwen4-source', local_files_only=True)
     target = AutoTokenizer.from_pretrained(args.models/'llama8-source', local_files_only=True)
@@ -54,8 +55,9 @@ def main(args):
                 end=int(si[0])+1
                 prefix=llm.encode([{'prompt_token_ids':item['source_ids'][:end]}],**options)[0].outputs.data.float().cpu()
                 error=float((prefix-y[:end].float()).square().sum()/prefix.square().sum().clamp_min(1e-12))
-                assert error<1e-6
-                write(args.out/'paired/causality.json',dict(passed=True,relative_mse=error))
+                write(args.out/'paired/causality.json',dict(passed=error<1e-6,relative_mse=error,threshold=1e-6,
+                    prefix_tokens=end,full_tokens=len(item['source_ids']),batch_invariant=True))
+                assert error<1e-6, f'Prefix/full feature mismatch: {error}'
             dest=args.out/f'paired/{i:05d}.pt';dest.parent.mkdir(parents=True,exist_ok=True)
             torch.save(dict(group_id=row['group_id'],x=data['features'][ti].clone(),y=y[si].clone(),
                 target_positions=ti,source_positions=si),dest.with_suffix('.tmp'))
