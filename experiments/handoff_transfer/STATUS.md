@@ -1,3 +1,24 @@
+## Current execution update — approximately23:10 IST
+
+Four GPUs active:Q14 AUF fusion full training31558 (last880/2000 updates),
+Q8 normal evaluation31579 (first repeat96/128),older Q14 evaluation31346
+(AR81/128). Q8 normal fitting completed in283.36 seconds; runtime input
+normalization matches the numerical reference exactly in the GPU probe.
+
+Both Q8 short AUF architecture gates passed4/4 token/finish checks. Subsequent
+full jobs31556/31557 failed before full training: repeated setup overwrote
+diagnostic exports and strict checkpoint-hash checks correctly rejected reuse.
+The repaired script uses job-specific diagnostic paths; full retries31584/31585
+are queued. Q14's first gate passed and its full fit is running.
+
+Matched Q8 uniform-CE control31586 uses the same ZIP initialization,rank56,
+2,000 updates and handoff sampler; only prefix support is removed. NativeQ8
+and CE evaluations31587/31588 added. Q14 AR reuse31589 requires identical
+configuration,requests,prompt IDs and complete timing-valid outputs; retains
+original rows/provenance as one repetition, with two fresh repetitions still
+required. Eight CPU tests pass. Detailed job dependencies are recorded in
+reports/repair-and-control-jobs.json and other job manifests.
+
 ## Verified result — original handoff reproduction
 
 Origin31525 completed successfully. All128 outputs and finish reasons match

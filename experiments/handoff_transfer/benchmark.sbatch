@@ -27,6 +27,8 @@ if [ "$FAMILY" = q8 ]; then extra+=(--target-path /scratch/aryama.murthy/transfe
 export_args=()
 case "$MODE" in
   ar) ;;
+  native) test "$FAMILY" = q8; export_args+=(--native-draft /scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/draft);;
+  handoff-ce) test "$FAMILY" = q8; test -f "/scratch/aryama.murthy/handoff-transfer-20260911/q8-ce/modules/full-fusion_r56/fusion_r56/verification.json"; export_args+=(--export /scratch/aryama.murthy/handoff-transfer-20260911/q8-ce/exports/full-fusion_r56/fusion_r56);;
   zip) export_args+=(--export "$study/fits/$FAMILY-n4096-zip-lr1e-3-s42/epoch-3/export");;
   handoff-r56|handoff-five)
     kind=fusion_r56

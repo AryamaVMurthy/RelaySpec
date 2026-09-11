@@ -44,3 +44,23 @@ def test_five_maps_fold_and_gradients_and_frozen_fusion():
     assert all(p.grad is not None and p.grad.isfinite().all() and p.grad.abs().sum()>0 for p in layer.parameters())
     assert layer.fusion.grad is None
     torch.testing.assert_close(layer.fusion,fusion,rtol=0,atol=0)
+
+def test_uniform_ce_control_only_changes_support_and_keeps_later_gradients():
+    import types
+    source=(ROOT/'vendor/code/objectives.py').read_text()
+    ce=types.ModuleType('uniform_ce_test')
+    exec(source.replace('loss_weights=weight_mask*support','loss_weights=weight_mask'),ce.__dict__)
+    ce.DFlashObjectiveTerms=SimpleNamespace
+    ce.SelectorTerms=SimpleNamespace(zeros=lambda x:SimpleNamespace(**{k:x.new_zeros(()) for k in ['ce_num','probability_num','correct_num','weight_den','covered_num']}))
+    model=SimpleNamespace(lm_head=torch.nn.Identity(),draft_model=SimpleNamespace(),lk_loss_type=None,_selector_objective_enabled=False)
+    logits=torch.tensor([[[[3.,0.],[0.,3.],[3.,0.],[0.,3.]]]],requires_grad=True)
+    labels=torch.zeros(1,1,4,dtype=torch.long);mask=torch.tensor([[[0.,1.,1.,1.]]])
+    terms=ce._dflash_objective_chunk_terms(model,logits,labels,mask,labels)
+    loss=terms.ce_loss_num/terms.loss_den
+    expected=torch.nn.functional.cross_entropy(logits.reshape(-1,2)[1:],labels.reshape(-1)[1:])
+    torch.testing.assert_close(loss,expected)
+    loss.backward()
+    assert logits.grad[...,0,:].count_nonzero()==0 and (logits.grad[...,2:,:].abs().sum(-1)>0).all()
+    original=(ROOT/'port/train.py').read_text()
+    expected_source=original.replace("'objective':'AUF'","'objective':'uniform CE'").replace("'objective':'accept-until-fail, first failure included, detached prefix weights'","'objective':'uniform valid-position CE; matched handoff ablation'")
+    assert (ROOT/'port_ce/train.py').read_text()==expected_source

@@ -1,0 +1,48 @@
+{
+  "status": "complete",
+  "contract": {
+    "family": "q8",
+    "records": 4096,
+    "epochs": 3,
+    "seed": 42,
+    "lr": 0.001,
+    "positions": 1353733,
+    "position_batch": 2048,
+    "input_eps": 1e-06,
+    "output_eps": 1e-06,
+    "trainable_parameters": 52428800,
+    "objective": "normal RelaySpec normalized context relative_interface_mse; equal-record weighting",
+    "initialization": "original random nn.Linear; not ZIP warm-start",
+    "base_export_sha256": "f5e153e5bf22257801a203b9c9eaef1a2627b501fae55350f307b3e916a14998",
+    "feature_manifests": {
+      "/scratch/aryama.murthy/relayspec-auf-20260911/main-q8-n4096/train.json": "f6be75508741b53ca50a098d4809fa683a8fce6ce87b0c9ade7044a74bbc5ec9"
+    },
+    "sampler": "same deterministic stratified25% positions and equal-record masses as ZIP",
+    "optimizer": "AdamW betas.9/.999 eps1e-8 weight_decay0 clip1, ZIP warmup/cosine"
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "step": 662,
+      "seconds": 96.73059818800539,
+      "loss": 0.37843892806313306
+    },
+    {
+      "epoch": 2,
+      "step": 1324,
+      "seconds": 104.38066233042628,
+      "loss": 0.15311354589607618
+    },
+    {
+      "epoch": 3,
+      "step": 1986,
+      "seconds": 82.24890528898686,
+      "loss": 0.14059150859634428
+    }
+  ],
+  "training_seconds": 283.3601658074185,
+  "peak_cuda_bytes": 1225538048,
+  "export_relative_mse": 0.0,
+  "export_sha256": "fae3478637e7d40c002cec10669e350bfe6546a0925001a03ed514f10f3dce87",
+  "job_id": "31579"
+}

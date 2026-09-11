@@ -300,3 +300,26 @@ token counts;97.0828% of source token-end boundaries coincide. The unchanged
 handoff has no bridge for these unequal sequences. This is a failed direct
 port prerequisite, not a decoding performance result. A source-token AUF
 alignment and target-token verification extension requires separate validation.
+
+### Diagnostic isolation, loss control, and verified measurement reuse
+
+Full Q8 jobs31556/31557 stopped before full fitting because repeated setup
+rewrote diagnostic checkpoints and their new hashes differed from prior gate
+measurements. The strict hash check was retained. New gates use job-specific
+checkpoint and evaluation directories. Retry jobs31584/31585 follow Q14's
+already-running full fit31558; subsequent two-GPU jobs remain serial.
+
+Q8 CE control31586 preserves the entire handoff training loop, ZIP base,
+rank56,batches,anchors and2,000 updates, changing only the AUF objective's
+`loss_weights=weight_mask*support` to `loss_weights=weight_mask`. Its data,
+checkpoints and contracts are separate. This isolates prefix weighting from
+extra optimization. NativeQ8 and CE evaluations31587/31588 join the matched
+128x2048,three-timing-repetition table.
+
+The older Q14 AR run may provide repetition0 only after reuse31589 verifies
+identical runtime configuration,manifest,prompt IDs,128 complete rows and valid
+timing. Rows,summary and original job identity are copied verbatim and hashed;
+repetitions1/2 still run fresh. Reuse failure does not block fresh measurement.
+The first evaluation lane starts after either old31346 or final two-GPU fit31561
+finishes; the second still waits on old31346 and the normal-control lane.
+This permits earlier evaluation without exceeding four GPUs.
