@@ -90,9 +90,34 @@ def batch_gate(draft, embedding, mapper, examples):
         padded = logits(draft, embedding, mapper, perturbed)
         torch.testing.assert_close(joined, padded, rtol=0, atol=0)
     relative = ((joined.float()-separate.float()).square().sum()/separate.float().square().sum()).item()
-    assert relative < 1e-4, relative
     # Compare supported labels only; rounding near an argmax tie is reported separately.
     agreement = (joined.argmax(-1)[batch["valid"]] == separate.argmax(-1)[batch["valid"]]).float().mean().item()
+    # FP32 isolates indexing/masking errors from BF16 shape-dependent GEMMs.
+    draft.float()
+    mapper.fusion = mapper.fusion.float()
+    mapper.norm = mapper.norm.float()
+    fp_batch = dict(batch)
+    fp_batch["context"] = batch["context"].float()
+    embedding_fp = embedding.float()
+    with torch.no_grad():
+        fp_joined = logits(draft, embedding_fp, mapper, fp_batch)
+        singles = []
+        for block in blocks:
+            one = collate_blocks([block], "cuda")
+            one["context"] = one["context"].float()
+            singles.append(logits(draft, embedding_fp, mapper, one))
+        fp_separate = torch.cat(singles)
+        fp_relative = ((fp_joined-fp_separate).square().sum()/fp_separate.square().sum()).item()
+    report = {"bf16_relative_mse":relative,"bf16_argmax_agreement":agreement,
+              "fp32_relative_mse":fp_relative}
+    print(json.dumps({"batch_numerics":report}),flush=True)
+    assert fp_relative < 1e-10, report
+    # Keep the original BF16 gate until its numerical discrepancy is resolved.
+    assert relative < 1e-4, report
+    draft.bfloat16()
+    mapper.fusion = mapper.fusion.bfloat16()
+    mapper.norm = mapper.norm.bfloat16()
+    del embedding_fp, fp_joined, fp_separate, singles
     with torch.autocast("cuda", dtype=torch.bfloat16):
         result = token_loss(logits(draft, embedding, mapper, batch), batch["labels"], batch["valid"], "auf")
     result.loss.backward()
