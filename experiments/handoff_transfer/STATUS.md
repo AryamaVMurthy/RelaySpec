@@ -1,5 +1,12 @@
 ## Verified fit and scaling preparation update
 
+Scaling fit31608 queued on node07,two GPUs,afterok both evaluation pools31606
+and31607. First point:N16,three-epoch ZIP initialization fitted on exactlyN16,
+then1,024 AUF updates for each fusion-r56 and five-map architecture. Immutable
+job-specific source/output paths; verification required per export. This job
+does not include decoding evaluation. Broader scaling waits for this first
+runtime check; no old-loss scaling arrays were released.
+
 Q14 fusion AUF job31558 completed 2,000 updates in707.98 seconds on two GPUs.
 Archived summary and verification in reports/q14-handoff-r56-fit: only A/B
 train, frozen non-fc weights exact, folded export relative MSE0.0. This is
