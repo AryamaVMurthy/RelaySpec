@@ -6,6 +6,10 @@ then1,024 AUF updates for each fusion-r56 and five-map architecture. Immutable
 job-specific source/output paths; verification required per export. This job
 does not include decoding evaluation. Broader scaling waits for this first
 runtime check; no old-loss scaling arrays were released.
+Evaluation array31609 now follows31608:three methods (matchedN16 ZIP, BA,
+five maps),128 requests/cap2048,three timing repetitions,up to two GPUs.
+Reuses existing matched Q8 AR references and requires full token/finish
+agreement for every repetition. No new redundant AR generation is scheduled.
 
 Q14 fusion AUF job31558 completed 2,000 updates in707.98 seconds on two GPUs.
 Archived summary and verification in reports/q14-handoff-r56-fit: only A/B
