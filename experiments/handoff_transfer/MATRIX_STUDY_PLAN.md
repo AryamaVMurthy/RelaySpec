@@ -185,3 +185,8 @@ anchors,records below512,and total distinct anchors available in a complete
 epoch. These availability counts must be distinguished from actual sampled
 anchors in the training logs,especially at100/500updates and the final partial
 epoch. Never report4096x512 as consumed supervision without measured evidence.
+
+Final report generation must use `matrix.paper_results --require-complete`.
+It requires all36 registered family/interface/loss cells, emits explicit
+coverage metadata, and derives18 CE/AUF comparisons from the matched evidence.
+Partial tables can support progress inspection but are not a completed study.
