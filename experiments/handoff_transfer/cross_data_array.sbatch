@@ -36,3 +36,5 @@ trap 'kill "$monitor"' EXIT
 "$study_python" -u -m experiments.handoff_transfer.cross.prepare --out "$out" --models "$study/models"
 export PYTHONPATH="$snapshot/experiments/auf_vllm/bootstrap:$snapshot" AUF_CAPTURE=1
 "$study_python" -u -m experiments.handoff_transfer.cross.capture --out "$out"
+
+"$study_python" -u -m experiments.handoff_transfer.cross.paired_capture --out "$out" --models "$study/models"
