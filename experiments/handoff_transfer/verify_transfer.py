@@ -6,7 +6,7 @@ def main(a):
     torch.manual_seed(42)
     model,cfg=build(a.kind)
     draft=model.draft_model
-    out=R/'modules'/a.tag/a.kind
+    out=a.module_dir or R/'modules'/a.tag/a.kind
     summary=json.loads((out/'summary.json').read_text())
     assert summary['optimizer_steps']==a.steps
     parameters=torch.load(out/'final.pt',weights_only=True,map_location='cuda')
@@ -14,7 +14,7 @@ def main(a):
     assert set(parameters)==expected
     assert any(not torch.equal(dict(draft.named_parameters())[k],v) for k,v in parameters.items())
     draft.load_state_dict(parameters,strict=False)
-    dest=R/'exports'/a.tag/a.kind
+    dest=a.export_dir or R/'exports'/a.tag/a.kind
     exported=load_file(str(dest/'model.safetensors'))
     base=load_file(str(Path(TRANSFER['base_export'])/'model.safetensors'))
     assert set(exported)==set(base)
@@ -31,4 +31,6 @@ def main(a):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--kind',choices=VARIANTS,required=True)
-    p.add_argument('--tag',required=True);p.add_argument('--steps',type=int,required=True);main(p.parse_args())
+    p.add_argument('--tag',required=True);p.add_argument('--steps',type=int,required=True)
+    p.add_argument('--module-dir',type=Path);p.add_argument('--export-dir',type=Path)
+    main(p.parse_args())

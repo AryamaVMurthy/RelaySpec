@@ -1,5 +1,13 @@
 ## Verified fit and scaling preparation update
 
+Compute evaluations31612 (Q8,node07,max1GPU) and31613 (Q14,node06,max1GPU)
+queued after31609. Each evaluates both architectures at500/1000/1500 updates
+with128 requests,cap2048,three repetitions; final2000 endpoint comes from
+primary evaluations. Checkpoint/export verifier now accepts explicit paths
+for saved intermediate endpoints. These are continuous-fit checkpoints under
+the same2000-update schedule,not independently retuned short schedules. No
+new training or AR generation. Combined with capture's2GPU limit,total<=4.
+
 Archived normal Q8 repetitions0/1 in reports/q8-normal-partial. Each contains
 128 complete timing-valid rows and122,768 output tokens; aggregate rates
 172.8651 and172.9689TPS (mean172.9170). Third repetition and matched AR
