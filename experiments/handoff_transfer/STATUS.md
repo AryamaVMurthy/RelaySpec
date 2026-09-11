@@ -1,5 +1,13 @@
 ## Verified fit and scaling preparation update
 
+Large four-epoch fits now fully queued:4K31647,8K31650,16K31651,32K31652;
+full evaluations31653–31656 follow with128 requests/cap2048/3repetitions.
+32K fit additionally waits for assembly31645. Updates areN/2 and record
+presentations4N per architecture,with shared matched three-epoch ZIP init.
+Final large-data collection remains to wire. CE fit proof archived in
+reports/q8-ce-fit. Q8 BA/five main evaluations are producing responses and
+acceptance counters; no complete128-request AUF result has been promoted yet.
+
 Priority scheduling update:Q8 AUF evaluation tasks31606_2/3 materialized as
 31648/31649 and their unrelated-family dependencies cleared after both fits,
 CE,and normal Q8 finished. Q14 two-GPU fit31559 now waits for these two tasks;
