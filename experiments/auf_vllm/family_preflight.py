@@ -11,15 +11,18 @@ def main(args):
     from transformers import AutoTokenizer
     from vllm import LLM,PoolingParams,SamplingParams
     root=Path("/scratch/aryama.murthy/relayspec-auf-20260911/models")
-    target=root/"llama3-target"
-    source=root/"llama8-source"
-    draft=root/"llama8-draft"
+    if args.family == "llama":
+        target,source,draft=(root/name for name in ["llama3-target","llama8-source","llama8-draft"])
+        width,taps,architecture=3072,[1,7,13,19,25],"AUFCaptureLlama"
+    else:
+        target,source,draft=(root/name for name in ["qwen14-target","qwen4-source","qwen4-draft"])
+        width,taps,architecture=5120,[1,10,19,28,37],"AUFCaptureQwen3"
     tt=AutoTokenizer.from_pretrained(target,local_files_only=True)
     st=AutoTokenizer.from_pretrained(source,local_files_only=True)
     samples=["Hello, world!","def f(x):\n    return x + 1\n","café 日本語 😀", "  12.5\n\n"]
     shared=tt.get_vocab() == st.get_vocab()
     assert shared and all(tt.encode(x,add_special_tokens=False)==st.encode(x,add_special_tokens=False) for x in samples)
-    prompt=tt.apply_chat_template([{"role":"user","content":"What is 2 + 2? Answer with only the number."}],tokenize=False,add_generation_prompt=True)
+    prompt=tt.apply_chat_template([{"role":"user","content":"What is 2 + 2? Answer with only the number."}],tokenize=False,add_generation_prompt=True,enable_thinking=False)
     ids=tt.encode(prompt,add_special_tokens=False)
     assert all(isinstance(token,int) for token in ids)
     info={"job_id":os.environ.get("SLURM_JOB_ID"),"gpu":torch.cuda.get_device_name(),
@@ -34,7 +37,7 @@ def main(args):
         info.update(text=output.text,output_ids=list(output.token_ids),passed=output.text.strip()=="4")
         assert info["passed"],info
     else:
-        llm=LLM(model=str(target),runner="pooling",hf_overrides={"architectures":["AUFCaptureLlama"]},
+        llm=LLM(model=str(target),runner="pooling",hf_overrides={"architectures":[architecture]},
                 pooler_config={"task":"token_embed"},dtype="bfloat16",enforce_eager=True,
                 max_model_len=5120,max_num_seqs=4,max_num_batched_tokens=8192,gpu_memory_utilization=.7,
                 enable_prefix_caching=False,enable_chunked_prefill=False)
@@ -42,10 +45,10 @@ def main(args):
         kwargs=dict(pooling_task="token_embed",pooling_params=PoolingParams(task="token_embed"),use_tqdm=False)
         outputs=llm.encode([{"prompt_token_ids":full},{"prompt_token_ids":ids}],**kwargs)
         a,b=(x.outputs.data.float().cpu() for x in outputs)
-        assert a.shape == (len(full),5*3072) and b.shape == (len(ids),5*3072)
+        assert a.shape == (len(full),5*width) and b.shape == (len(ids),5*width)
         relative=((a[:len(ids)]-b).square().sum()/b.square().sum()).item()
         assert relative < 1e-6,relative
-        info.update(passed=True,causality_relative_mse=relative,target_taps=[1,7,13,19,25])
+        info.update(passed=True,causality_relative_mse=relative,target_taps=taps)
     write(args.out,info)
     print(json.dumps({"mode":args.mode,"passed":info["passed"]}),flush=True)
 
@@ -54,4 +57,5 @@ if __name__ == "__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument("mode",choices=["generate","capture"])
     parser.add_argument("--out",type=Path,required=True)
+    parser.add_argument("--family",choices=["llama","q14"],default="llama")
     main(parser.parse_args())
