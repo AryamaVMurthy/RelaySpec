@@ -125,6 +125,43 @@ global batch eight. Short records supply fewer distinct anchors. Tuning uses
 a separate 32-request validation set; final comparisons require 128 requests,
 a 2,048-token cap, and three timing repetitions.
 
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lll}
+\toprule
+Interface & Initialization & Trainable continuation \\
+\midrule
+RelaySpec interface & Original feature fit & Normalized dense map \\
+Fusion residual & ZIP feature fit & One rank-56 $BA$ update \\
+Five layer maps & ZIP feature fit & Five dense maps \\
+Dense fusion & ZIP feature fit & One dense fusion matrix \\
+Five layer residuals & ZIP feature fit & Five rank-56 $BA$ updates \\
+Fresh dense control & Kaiming initialization & One dense fusion matrix \\
+\bottomrule
+\end{tabular}
+\caption{Registered interventions, each crossed with uniform CE and AUF.
+Unchanged original RelaySpec and ZIP checkpoints provide separate controls.
+This is an experimental-design table, not a completed performance comparison.}
+\end{table}
+
+Each interface/loss pair screens learning rates $10^{-4}$, $3\times10^{-4}$,
+and $6\times10^{-4}$ at 100 updates. The two best verified candidates advance
+to 500 updates; one advances to 2,000 updates. Each budget uses a fresh fit
+from its registered initializer with its own warmup/cosine schedule, rather
+than treating the earlier short schedule as a prefix of the longer schedule.
+Selection uses exact-output-verified validation throughput, with no selection
+on the final 128 requests. CE and AUF may select different learning rates;
+the final comparison therefore concerns separately tuned recipes, not a
+fixed-learning-rate causal estimate of the loss alone. Three final timing
+repetitions measure timing variation, not variation across training seeds.
+
+Batched serving is a separate measurement protocol: fixed request batches of
+four or eight report total generated tokens divided by total batch wall time.
+Amortized per-request batch time is not individual request latency. GPU
+validation and final batched comparisons remain pending. Cross-family data
+assembly additionally records eligible-anchor coverage, since shared text
+boundaries can further restrict the number of valid anchors below 512.
+
 The first Qwen8 five-BA fits completed 100 updates (800 presentations) with
 1,863,680 trainable parameters. AUF took 337.8 seconds and CE 339.7 seconds
 on two L40S GPUs; both peaked near 17.04 GB allocated memory on rank zero.
