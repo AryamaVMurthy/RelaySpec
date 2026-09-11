@@ -1,4 +1,31 @@
 class MetricsWorker:
+    def sd_verify_draft_projections(self,export_path):
+        """Verify merged drafter weights and vLLM's derived context-KV cache."""
+        from pathlib import Path
+        import torch
+        from safetensors import safe_open
+        draft=self.model_runner.get_draft_model() if hasattr(self.model_runner,'get_draft_model') else self.model_runner.drafter.model
+        count=0;kv=[]
+        with safe_open(Path(export_path)/'model.safetensors',framework='pt',device='cpu') as reader:
+            for index,layer in enumerate(draft.model.layers):
+                prefix=f'layers.{index}.'
+                expected=[reader.get_tensor(prefix+'self_attn.'+name+'.weight') for name in ['q_proj','k_proj','v_proj']]
+                packed=torch.cat(expected,dim=0)
+                torch.testing.assert_close(layer.self_attn.qkv_proj.weight.detach().cpu(),packed,rtol=0,atol=0)
+                count+=packed.numel();kv.extend(expected[1:])
+                for source,actual in [('self_attn.o_proj',layer.self_attn.o_proj.weight),
+                                      ('mlp.down_proj',layer.mlp.down_proj.weight)]:
+                    value=reader.get_tensor(prefix+source+'.weight')
+                    torch.testing.assert_close(actual.detach().cpu(),value,rtol=0,atol=0)
+                    count+=value.numel()
+                packed=torch.cat([reader.get_tensor(prefix+'mlp.'+name+'.weight') for name in ['gate_proj','up_proj']],dim=0)
+                torch.testing.assert_close(layer.mlp.gate_up_proj.weight.detach().cpu(),packed,rtol=0,atol=0)
+                count+=packed.numel()
+        assert count>0
+        assert hasattr(draft.model,'_fused_kv_weight'),'Expected pinned vLLM context-KV buffer'
+        torch.testing.assert_close(draft.model._fused_kv_weight.detach().cpu(),torch.cat(kv,dim=0),rtol=0,atol=0)
+        return {'passed':True,'projection_elements_verified':count,'full_tensor_equality':True,'fused_context_kv_verified':True}
+
     def sd_install_monitor(self):
         from vllm.utils import jit_monitor
         if not hasattr(jit_monitor,"sd_events"):
@@ -54,4 +81,6 @@ class MetricsWorker:
             actual_sample=actual_fc.index_select(0,r.to(actual_fc.device)).index_select(1,c.to(actual_fc.device)).cpu()
             torch.testing.assert_close(actual_sample,expected_fc[r][:,c],rtol=0,atol=0)
             torch.testing.assert_close(draft.model.hidden_norm.weight.cpu(),expected_norm,rtol=0,atol=0)
-        return {'passed':True,'target_size':target_size,'target_and_draft_embedding_head_samples_verified':True}
+        projections=self.sd_verify_draft_projections(export_path) if export_path else None
+        return {'passed':True,'target_size':target_size,'target_and_draft_embedding_head_samples_verified':True,
+                'draft_projections':projections}

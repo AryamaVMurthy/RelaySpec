@@ -137,3 +137,16 @@ DFlash support.
   Transformers checks and paper still remain. Eighteen tests passed previously;
   scaling wrappers pass Python compilation and shell syntax checks, while the
   underlying resumable update trainer already passed its GPU resumption gate.
+
+## Follow-up at20:09 IST: complete LoRA screens and deployment checks
+
+All12cells of31447 completed successfully, approximately5minutes each.
+The predeclared smallest-LR-within1% rule selects2e-5 for all four branches:
+draftCE/AUF andfusionCE/AUF. Full reports and selections are archived in
+reports/draft-lora-screen-31447. Main4096continuations remain pending runtime
+gate31461. The gate already verified504627200 projection elements with exact
+full-tensor equality for ZIP and checked vLLM's derived fused context-KV buffer.
+All later mapped evaluations repeat this check;19 unit tests pass, including
+rejection of a stale context-KV buffer. This is additional assurance that the
+runtime uses the saved adapter/drafter weights, not a speedup result.
+Q14 first512-record validation shard completed; second shard running.

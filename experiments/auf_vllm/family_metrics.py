@@ -50,5 +50,7 @@ class FamilyMetricsWorker(MetricsWorker):
             for key,actual in [('fc.weight',draft.model.fc.weight),('hidden_norm.weight',draft.model.hidden_norm.weight)]:
                 check(actual,tensor(native_path,key))
             checks.extend(['native_embedding','native_head','native_fc','native_norm'])
+        projections=self.sd_verify_draft_projections(export_path) if export_path else None
         return {'passed':True,'checks':checks,'verification':'matrix shape and deterministic samples; full norm vector',
+                'draft_projections':projections,
                 'target_adapters':None}
