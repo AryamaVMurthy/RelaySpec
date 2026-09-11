@@ -25,22 +25,26 @@ def main(args):
     sys.path.insert(0,os.environ["DFLASH_SOURCE"])
     cls=importlib.import_module("dflash.model").DFlashDraftModel
     models=ROOT/"models"
-    path=models/"llama8-draft"
+    is_llama=args.family == "llama"
+    source_name,target_name,draft_name=("llama8-source","llama3-target","llama8-draft") if is_llama else ("qwen4-source","qwen14-target","qwen4-draft")
+    source_width,target_width=(4096,3072) if is_llama else (2560,5120)
+    taps=[1,7,13,19,25] if is_llama else [1,10,19,28,37]
+    path=models/draft_name
     cfg=Qwen3Config.from_pretrained(path,local_files_only=True)
     cfg._attn_implementation="sdpa"
     draft=cls(cfg)
     draft.load_state_dict(load_file(str(path/"model.safetensors")),strict=True,assign=True)
     draft=draft.to("cuda",torch.bfloat16).eval().requires_grad_(False)
-    embedding=tensor(models/"llama8-source","model.embed_tokens.weight").to("cuda",torch.bfloat16)
-    head=tensor(models/"llama8-source","lm_head.weight").to("cuda",torch.bfloat16)
-    assert embedding.shape == head.shape == (128256,4096)
-    # Llama's output head is untied. Reusing the embedding as the head is wrong.
-    assert not torch.equal(embedding[:8],head[:8])
-    target_cfg=json.loads((models/"llama3-target/config.json").read_text())
+    embedding=tensor(models/source_name,"model.embed_tokens.weight").to("cuda",torch.bfloat16)
+    head=tensor(models/source_name,"lm_head.weight").to("cuda",torch.bfloat16) if is_llama else embedding
+    assert embedding.shape == head.shape and embedding.shape[1] == source_width
+    if is_llama:
+        assert not torch.equal(embedding[:8],head[:8])
+    target_cfg=json.loads((models/target_name/"config.json").read_text())
     eos=target_cfg["eos_token_id"]
     torch.manual_seed(42)
-    mapper=LayerContextMapper(draft.fc.weight,draft.hidden_norm.weight,target_width=3072,source_width=4096).to("cuda")
-    data=ROOT/"pilot-l3"
+    mapper=LayerContextMapper(draft.fc.weight,draft.hidden_norm.weight,target_width=target_width,source_width=source_width).to("cuda")
+    data=ROOT/("pilot-l3" if is_llama else "pilot-q14")
     parts={}
     for split in ["train","dev"]:
         examples=[]
@@ -126,13 +130,13 @@ def main(args):
     export.mkdir(exist_ok=True)
     save_file(weights,str(export/"model.safetensors"))
     config=json.loads((path/"config.json").read_text())
-    config.update(architectures=["MapperDFlash"],target_hidden_size=3072,num_target_layers=28,
+    config.update(architectures=["MapperDFlash"],target_hidden_size=target_width,num_target_layers=target_cfg["num_hidden_layers"],
                   tie_word_embeddings=False,bos_token_id=target_cfg["bos_token_id"],eos_token_id=eos)
-    config["dflash_config"]["target_layer_ids"]=[1,7,13,19,25]
+    config["dflash_config"]["target_layer_ids"]=taps
     write(export/"config.json",config)
-    write(export/"export_check.json",{"context_relative_mse":error,"source_head_untied":True})
+    write(export/"export_check.json",{"context_relative_mse":error,"source_head_untied":is_llama})
     write(args.out/"summary.json",{"pilot_only":True,"objective":args.objective,"records":32,"epochs":args.epochs,
-          "source":"Llama3.1-8B","target":"Llama3.2-3B","target_adapters":None,"source_head_untied":True,
+          "source":source_name,"target":target_name,"target_adapters":None,"source_head_untied":is_llama,
           "initial":initial,"final":history[-1]["validation"],"seconds":time.perf_counter()-start,
           "job_id":os.environ.get("SLURM_JOB_ID"),"checkpoint_sha256":sha(args.out/"checkpoint.pt")})
 
@@ -140,6 +144,7 @@ def main(args):
 if __name__ == "__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument("--objective",choices=["auf","ce","zip"],required=True)
+    parser.add_argument("--family",choices=["llama","q14"],default="llama")
     parser.add_argument("--epochs",type=int,default=1)
     parser.add_argument("--out",type=Path,required=True)
     main(parser.parse_args())
