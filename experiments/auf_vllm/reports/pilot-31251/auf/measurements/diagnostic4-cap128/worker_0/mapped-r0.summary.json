@@ -1,0 +1,1595 @@
+{
+  "mode": "mapped",
+  "config": {
+    "async_scheduling": false,
+    "worker_extension_cls": "metrics.MetricsWorker",
+    "model": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+    "dtype": "bfloat16",
+    "max_model_len": 4096,
+    "max_num_seqs": 8,
+    "max_num_batched_tokens": 2048,
+    "gpu_memory_utilization": 0.8,
+    "enable_prefix_caching": false,
+    "seed": 0,
+    "generation_config": "vllm",
+    "attention_config": {
+      "backend": "FLASH_ATTN"
+    },
+    "enforce_eager": false,
+    "compilation_config": {
+      "mode": 0,
+      "cudagraph_mode": "FULL",
+      "cudagraph_capture_sizes": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32,
+        64
+      ]
+    },
+    "disable_log_stats": false,
+    "speculative_config": {
+      "method": "dflash",
+      "model": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/export",
+      "num_speculative_tokens": 15
+    }
+  },
+  "args": {
+    "mode": "mapped",
+    "split": "eval",
+    "count": 4,
+    "repeat": 0,
+    "tag": "diagnostic4-cap128",
+    "cap": 128,
+    "offset": 0,
+    "worker_index": 0,
+    "workers": 1
+  },
+  "setup_wall_seconds": 13.786365586332977,
+  "gpu_identity": [
+    {
+      "jit_events": 5,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b414a4b9-2dd2-9d2f-4da2-443d11dc17ba",
+      "allocated": 37938265088,
+      "reserved": 38088474624,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "attachment_check": [
+    {
+      "passed": true,
+      "target_size": 8,
+      "target_and_draft_embedding_head_samples_verified": true
+    }
+  ],
+  "warmup_wall_seconds": 18.060888196807355,
+  "measurement_wall_seconds": 25.40922831511125,
+  "gpu_before": [
+    {
+      "jit_events": 4,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b414a4b9-2dd2-9d2f-4da2-443d11dc17ba",
+      "allocated": 37938265088,
+      "reserved": 38088474624,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "gpu_after": [
+    {
+      "jit_events": 5,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b414a4b9-2dd2-9d2f-4da2-443d11dc17ba",
+      "allocated": 37938265088,
+      "reserved": 38088474624,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "metrics_before": [
+    {
+      "name": "vllm:spec_decode_num_drafts",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 439
+    },
+    {
+      "name": "vllm:spec_decode_num_draft_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 6585
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 16
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens_per_pos",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "values": [
+        16,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "vllm:estimated_flops_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_read_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_write_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_requests_running",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "reason": "capacity"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "reason": "deferred"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "sleep_state": "awake"
+      },
+      "value": 1.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "sleep_state": "weights_offloaded"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "sleep_state": "discard_all"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:kv_cache_usage_perc",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_preemptions",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 361
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "source": "local_compute"
+      },
+      "value": 361
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "source": "local_cache_hit"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "source": "external_kv_transfer"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_cached",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 460
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "finished_reason": "stop"
+      },
+      "value": 3
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "finished_reason": "length"
+      },
+      "value": 3
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "finished_reason": "abort"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "finished_reason": "error"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "finished_reason": "repetition"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_prompt_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 361.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 6,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 460.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 3,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:iteration_tokens_total",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 445,
+      "sum": 821.0,
+      "buckets": {
+        "1.0": 424,
+        "8.0": 439,
+        "16.0": 439,
+        "32.0": 441,
+        "64.0": 443,
+        "128.0": 445,
+        "256.0": 445,
+        "512.0": 445,
+        "1024.0": 445,
+        "2048.0": 445,
+        "4096.0": 445,
+        "8192.0": 445,
+        "16384.0": 445,
+        "+Inf": 445
+      }
+    },
+    {
+      "name": "vllm:request_max_num_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 460.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 3,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_params_n",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 6.0,
+      "buckets": {
+        "1.0": 6,
+        "2.0": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_params_max_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 576.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 0,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:time_to_first_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.5443079471588135,
+      "buckets": {
+        "0.001": 0,
+        "0.005": 0,
+        "0.01": 0,
+        "0.02": 0,
+        "0.04": 1,
+        "0.06": 1,
+        "0.08": 4,
+        "0.1": 5,
+        "0.25": 6,
+        "0.5": 6,
+        "0.75": 6,
+        "1.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "7.5": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "40.0": 6,
+        "80.0": 6,
+        "160.0": 6,
+        "640.0": 6,
+        "2560.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:inter_token_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 439,
+      "sum": 18.445066671818495,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 438,
+        "0.075": 438,
+        "0.1": 438,
+        "0.15": 438,
+        "0.2": 438,
+        "0.3": 438,
+        "0.4": 438,
+        "0.5": 438,
+        "0.75": 438,
+        "1.0": 439,
+        "2.5": 439,
+        "5.0": 439,
+        "7.5": 439,
+        "10.0": 439,
+        "20.0": 439,
+        "40.0": 439,
+        "80.0": 439,
+        "+Inf": 439
+      }
+    },
+    {
+      "name": "vllm:request_time_per_output_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.985204563341668,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 5,
+        "0.075": 5,
+        "0.1": 5,
+        "0.15": 5,
+        "0.2": 5,
+        "0.3": 5,
+        "0.4": 5,
+        "0.5": 5,
+        "0.75": 5,
+        "1.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "7.5": 6,
+        "10.0": 6,
+        "20.0": 6,
+        "40.0": 6,
+        "80.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:e2e_request_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 18.991196155548096,
+      "buckets": {
+        "0.3": 1,
+        "0.5": 1,
+        "0.8": 1,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 3,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_queue_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.0001980029046535492,
+      "buckets": {
+        "0.3": 6,
+        "0.5": 6,
+        "0.8": 6,
+        "1.0": 6,
+        "1.5": 6,
+        "2.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_inference_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 18.97029640665278,
+      "buckets": {
+        "0.3": 1,
+        "0.5": 1,
+        "0.8": 1,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 3,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_prefill_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 0.5252297348342836,
+      "buckets": {
+        "0.3": 6,
+        "0.5": 6,
+        "0.8": 6,
+        "1.0": 6,
+        "1.5": 6,
+        "2.0": 6,
+        "2.5": 6,
+        "5.0": 6,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_decode_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 18.445066671818495,
+      "buckets": {
+        "0.3": 1,
+        "0.5": 1,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 5,
+        "10.0": 6,
+        "15.0": 6,
+        "20.0": 6,
+        "30.0": 6,
+        "40.0": 6,
+        "50.0": 6,
+        "60.0": 6,
+        "120.0": 6,
+        "240.0": 6,
+        "480.0": 6,
+        "960.0": 6,
+        "1920.0": 6,
+        "7680.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:request_prefill_kv_computed_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 6,
+      "sum": 361.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 6,
+        "200.0": 6,
+        "500.0": 6,
+        "1000.0": 6,
+        "2000.0": 6,
+        "+Inf": 6
+      }
+    },
+    {
+      "name": "vllm:cache_config_info",
+      "labels": {
+        "block_size": "16",
+        "user_specified_block_size": "False",
+        "user_specified_mamba_block_size": "False",
+        "prefix_match_unit": "None",
+        "gpu_memory_utilization": "0.8",
+        "cache_dtype": "auto",
+        "is_attention_free": "False",
+        "num_gpu_blocks_override": "None",
+        "sliding_window": "None",
+        "enable_prefix_caching": "False",
+        "prefix_caching_hash_algo": "sha256",
+        "kv_cache_dtype_skip_layers": "[]",
+        "mamba_page_size_padded": "None",
+        "skip_page_size_padded": "None",
+        "mamba_block_size": "None",
+        "mamba_cache_dtype": "auto",
+        "mamba_ssm_cache_dtype": "auto",
+        "mamba_cache_mode": "none",
+        "replayssm_buffer_len": "16",
+        "use_replayssm": "False",
+        "num_gpu_blocks": "6918",
+        "num_cpu_blocks": "None",
+        "kv_cache_size_tokens": "110688",
+        "kv_cache_max_concurrency": "27.0234375",
+        "kv_sharing_fast_prefill": "False",
+        "kv_cache_memory_bytes": "None",
+        "kv_offloading_size": "None",
+        "kv_offloading_backend": "native",
+        "_block_size_resolved": "True",
+        "engine": "0"
+      },
+      "value": 1.0
+    }
+  ],
+  "metrics_after": [
+    {
+      "name": "vllm:spec_decode_num_drafts",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 1049
+    },
+    {
+      "name": "vllm:spec_decode_num_draft_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 15735
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 41
+    },
+    {
+      "name": "vllm:spec_decode_num_accepted_tokens_per_pos",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "values": [
+        41,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "vllm:estimated_flops_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_read_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:estimated_write_bytes_per_gpu",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_requests_running",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "reason": "capacity"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:num_requests_waiting_by_reason",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "reason": "deferred"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "sleep_state": "awake"
+      },
+      "value": 1.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "sleep_state": "weights_offloaded"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:engine_sleep_state",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "sleep_state": "discard_all"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:kv_cache_usage_perc",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0.0
+    },
+    {
+      "name": "vllm:prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:external_prefix_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_queries",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:mm_cache_hits",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:num_preemptions",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 1418
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "source": "local_compute"
+      },
+      "value": 1418
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "source": "local_cache_hit"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_by_source",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "source": "external_kv_transfer"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:prompt_tokens_cached",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:generation_tokens",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0"
+      },
+      "value": 1100
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "finished_reason": "stop"
+      },
+      "value": 3
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "finished_reason": "length"
+      },
+      "value": 8
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "finished_reason": "abort"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "finished_reason": "error"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_success",
+      "labels": {
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target",
+        "engine": "0",
+        "finished_reason": "repetition"
+      },
+      "value": 0
+    },
+    {
+      "name": "vllm:request_prompt_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 1418.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 6,
+        "200.0": 8,
+        "500.0": 11,
+        "1000.0": 11,
+        "2000.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 1100.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 3,
+        "200.0": 11,
+        "500.0": 11,
+        "1000.0": 11,
+        "2000.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:iteration_tokens_total",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 1060,
+      "sum": 2518.0,
+      "buckets": {
+        "1.0": 1009,
+        "8.0": 1049,
+        "16.0": 1049,
+        "32.0": 1051,
+        "64.0": 1053,
+        "128.0": 1055,
+        "256.0": 1058,
+        "512.0": 1060,
+        "1024.0": 1060,
+        "2048.0": 1060,
+        "4096.0": 1060,
+        "8192.0": 1060,
+        "16384.0": 1060,
+        "+Inf": 1060
+      }
+    },
+    {
+      "name": "vllm:request_max_num_generation_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 1100.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 2,
+        "5.0": 2,
+        "10.0": 2,
+        "20.0": 2,
+        "50.0": 2,
+        "100.0": 3,
+        "200.0": 11,
+        "500.0": 11,
+        "1000.0": 11,
+        "2000.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_params_n",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 11.0,
+      "buckets": {
+        "1.0": 11,
+        "2.0": 11,
+        "5.0": 11,
+        "10.0": 11,
+        "20.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_params_max_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 1216.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 0,
+        "50.0": 2,
+        "100.0": 2,
+        "200.0": 11,
+        "500.0": 11,
+        "1000.0": 11,
+        "2000.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:time_to_first_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 1.1911356449127197,
+      "buckets": {
+        "0.001": 0,
+        "0.005": 0,
+        "0.01": 0,
+        "0.02": 0,
+        "0.04": 1,
+        "0.06": 1,
+        "0.08": 7,
+        "0.1": 9,
+        "0.25": 10,
+        "0.5": 11,
+        "0.75": 11,
+        "1.0": 11,
+        "2.5": 11,
+        "5.0": 11,
+        "7.5": 11,
+        "10.0": 11,
+        "20.0": 11,
+        "40.0": 11,
+        "80.0": 11,
+        "160.0": 11,
+        "640.0": 11,
+        "2560.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:inter_token_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 1049,
+      "sum": 43.104479478206486,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 1048,
+        "0.075": 1048,
+        "0.1": 1048,
+        "0.15": 1048,
+        "0.2": 1048,
+        "0.3": 1048,
+        "0.4": 1048,
+        "0.5": 1048,
+        "0.75": 1048,
+        "1.0": 1049,
+        "2.5": 1049,
+        "5.0": 1049,
+        "7.5": 1049,
+        "10.0": 1049,
+        "20.0": 1049,
+        "40.0": 1049,
+        "80.0": 1049,
+        "+Inf": 1049
+      }
+    },
+    {
+      "name": "vllm:request_time_per_output_token_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 1.1793731681163766,
+      "buckets": {
+        "0.01": 0,
+        "0.025": 0,
+        "0.05": 10,
+        "0.075": 10,
+        "0.1": 10,
+        "0.15": 10,
+        "0.2": 10,
+        "0.3": 10,
+        "0.4": 10,
+        "0.5": 10,
+        "0.75": 10,
+        "1.0": 11,
+        "2.5": 11,
+        "5.0": 11,
+        "7.5": 11,
+        "10.0": 11,
+        "20.0": 11,
+        "40.0": 11,
+        "80.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:e2e_request_latency_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 44.29872226715088,
+      "buckets": {
+        "0.3": 1,
+        "0.5": 1,
+        "0.8": 1,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 4,
+        "10.0": 11,
+        "15.0": 11,
+        "20.0": 11,
+        "30.0": 11,
+        "40.0": 11,
+        "50.0": 11,
+        "60.0": 11,
+        "120.0": 11,
+        "240.0": 11,
+        "480.0": 11,
+        "960.0": 11,
+        "1920.0": 11,
+        "7680.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_queue_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 0.00036233989521861076,
+      "buckets": {
+        "0.3": 11,
+        "0.5": 11,
+        "0.8": 11,
+        "1.0": 11,
+        "1.5": 11,
+        "2.0": 11,
+        "2.5": 11,
+        "5.0": 11,
+        "10.0": 11,
+        "15.0": 11,
+        "20.0": 11,
+        "30.0": 11,
+        "40.0": 11,
+        "50.0": 11,
+        "60.0": 11,
+        "120.0": 11,
+        "240.0": 11,
+        "480.0": 11,
+        "960.0": 11,
+        "1920.0": 11,
+        "7680.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_inference_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 44.26548306643963,
+      "buckets": {
+        "0.3": 1,
+        "0.5": 1,
+        "0.8": 1,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 4,
+        "10.0": 11,
+        "15.0": 11,
+        "20.0": 11,
+        "30.0": 11,
+        "40.0": 11,
+        "50.0": 11,
+        "60.0": 11,
+        "120.0": 11,
+        "240.0": 11,
+        "480.0": 11,
+        "960.0": 11,
+        "1920.0": 11,
+        "7680.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_prefill_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 1.161003588233143,
+      "buckets": {
+        "0.3": 10,
+        "0.5": 11,
+        "0.8": 11,
+        "1.0": 11,
+        "1.5": 11,
+        "2.0": 11,
+        "2.5": 11,
+        "5.0": 11,
+        "10.0": 11,
+        "15.0": 11,
+        "20.0": 11,
+        "30.0": 11,
+        "40.0": 11,
+        "50.0": 11,
+        "60.0": 11,
+        "120.0": 11,
+        "240.0": 11,
+        "480.0": 11,
+        "960.0": 11,
+        "1920.0": 11,
+        "7680.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_decode_time_seconds",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 43.104479478206486,
+      "buckets": {
+        "0.3": 1,
+        "0.5": 1,
+        "0.8": 2,
+        "1.0": 2,
+        "1.5": 2,
+        "2.0": 2,
+        "2.5": 2,
+        "5.0": 10,
+        "10.0": 11,
+        "15.0": 11,
+        "20.0": 11,
+        "30.0": 11,
+        "40.0": 11,
+        "50.0": 11,
+        "60.0": 11,
+        "120.0": 11,
+        "240.0": 11,
+        "480.0": 11,
+        "960.0": 11,
+        "1920.0": 11,
+        "7680.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:request_prefill_kv_computed_tokens",
+      "labels": {
+        "engine": "0",
+        "model_name": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-fit-31251/auf/models/8b/target"
+      },
+      "count": 11,
+      "sum": 1418.0,
+      "buckets": {
+        "1.0": 0,
+        "2.0": 0,
+        "5.0": 0,
+        "10.0": 0,
+        "20.0": 1,
+        "50.0": 2,
+        "100.0": 6,
+        "200.0": 8,
+        "500.0": 11,
+        "1000.0": 11,
+        "2000.0": 11,
+        "+Inf": 11
+      }
+    },
+    {
+      "name": "vllm:cache_config_info",
+      "labels": {
+        "block_size": "16",
+        "user_specified_block_size": "False",
+        "user_specified_mamba_block_size": "False",
+        "prefix_match_unit": "None",
+        "gpu_memory_utilization": "0.8",
+        "cache_dtype": "auto",
+        "is_attention_free": "False",
+        "num_gpu_blocks_override": "None",
+        "sliding_window": "None",
+        "enable_prefix_caching": "False",
+        "prefix_caching_hash_algo": "sha256",
+        "kv_cache_dtype_skip_layers": "[]",
+        "mamba_page_size_padded": "None",
+        "skip_page_size_padded": "None",
+        "mamba_block_size": "None",
+        "mamba_cache_dtype": "auto",
+        "mamba_ssm_cache_dtype": "auto",
+        "mamba_cache_mode": "none",
+        "replayssm_buffer_len": "16",
+        "use_replayssm": "False",
+        "num_gpu_blocks": "6918",
+        "num_cpu_blocks": "None",
+        "kv_cache_size_tokens": "110688",
+        "kv_cache_max_concurrency": "27.0234375",
+        "kv_sharing_fast_prefill": "False",
+        "kv_cache_memory_bytes": "None",
+        "kv_offloading_size": "None",
+        "kv_offloading_backend": "native",
+        "_block_size_resolved": "True",
+        "engine": "0"
+      },
+      "value": 1.0
+    }
+  ],
+  "slurm_job_id": "31254",
+  "cuda_visible_devices": "0",
+  "timing_valid": true,
+  "timing_contract": "Per-request generate wall; compile/capture-affected request retried once, cold time retained; prefix cache off"
+}
