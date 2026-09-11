@@ -20,7 +20,7 @@ paper-level performance claim has been established yet.
 
 - Turing preflight31246: L40S, CUDA GEMM, torch2.13.0+cu129,
   vLLM0.28.0, transformers5.16.1, pinned Qwen assets and rollout inventory.
-- Twelve unit tests: exact AUF first-failure supervision, detached support,
+- Thirteen unit tests: exact AUF first-failure supervision, detached support,
   microbatch normalization, ZIP objective/folding, LoRA initialization,
   no future features, EOS/padding, and attention positions.
 - Pilot data31248: 32 archived Q8 training rollouts, eight separate development
@@ -44,37 +44,59 @@ paper-level performance claim has been established yet.
   and exact greedy agreement. Padding perturbation and official-helper
   comparison were exact. The documented gate now requires FP32 relative
   MSE<1e-10, exact supervised greedy agreement, and BF16 relative-L2<2%.
-  This is numerical tolerance, not a claim of bitwise BF16 batch invariance.
+  This early gate has been refined by the fitted-interface diagnostic in NUMERICS.md;
+  FP32 argmax invariance remains required, while BF16 support differences are reported.
 - Decode31252 stopped at an obsolete telemetry attribute before measurements.
   vLLM0.28 V2 uses `speculator`/`get_draft_model`; hook updated and rerun31254
   succeeded, including original source embedding/head attachment checks.
 
-## Active preparation and queued main work
+## Completed main fitting and current evidence
 
-- Q8 target dense capture:31258 resumes verified files from31253. Four records
-  per capture call; manifest hash computed once. Batched full-prefix vs truncated
-  prefix checks must pass relative MSE<1e-6. Original31253 was intentionally
-  stopped to remove per-record manifest hashing and batch the calls.
-- Offline validation31261: reserve1024 records from the archived ZIP evaluation
-  pool indices128:1152, excluding original train/dev and the legacy first128
-  evaluation questions. These are explicitly validation, not fresh confirmation.
-  Generate frozen-Q8 labels in128-record shards with64 active sequences, then
-  capture dense target features. Fixed-epoch fitting may overlap preparation;
-  validation is still required before configuration selection.
-- ZIP main reference31263:4096 matching records,3epochs,lr1e-3, original
-  quarter-position cache and equal-example weighting. No new source capture
-  is needed. Redundant source capture31255 was stopped and queued31259 cancelled.
-- AUF31267 and CE31268:4096records,3epochs,lr1e-4, seed42,4×4×8 batch contract;
-  depend on target capture31258. These are initial main configurations, not
-  learning-rate-selected final checkpoints. Replaced dependency-only31264/31265
-  to overlap fixed fitting with validation-label preparation.
-- Llama assets/runtime staging to node06 is in progress. Storage check31266
-  confirmed node07 scratch is not accessible directly from node06; explicit
-  node-local staging is required. No Llama AUF run has completed yet.
+Q8 dense target capture31258 and separate1024-record validation31261 are
+complete. Main4096-record,3-epoch seed42 fits are complete: ZIP31263 (lr1e-3),
+AUF31267 and CE31268 (lr1e-4). These are initial configurations; equal-budget LR
+selection is still required. Offline evaluations31271/31272/31273 use4096 fixed
+blocks from1024 separate validation records:
+
+| Objective | Epoch3 CE | Epoch3 AUF | Mean accepted draft prefix |
+|---|---:|---:|---:|
+| ZIP | 1.3584 | 0.4312 | 5.8091 |
+| AUF | 3.4561 | 1.5490 | 1.6875 |
+| CE | 3.0037 | 1.6184 | 1.5679 |
+
+These are offline teacher-context measurements, not decoding TPS. Initial AUF
+has not improved on ZIP. New128-request,2048-cap speed results remain unrun.
+
+Llama preflight31270, paired pilot data31274, three32-record pilot fits31275,
+and vLLM diagnostic31279 completed. All4 outputs match AR, but tiny mapped fits
+are slower: AR46.22TPS, AUF40.30, CE42.16, ZIP41.90. Preserve the untied source
+head; incorrect inherited source BOS/EOS metadata is corrected in exports.
+Q14 pinned download31297, preflight31315, pilot data31318 and pilot fits31321
+completed. Streaming family fitting is under GPU verification31323.
+
+The benchmark overlap audit31289 found no exact matches, and four potential
+MATH template overlaps in the full16384-record calibration pool:31,58,226,336.
+Exclude these from new benchmark subsets; this is not semantic decontamination.
+
+## Active and queued work
+
+- Matched rank56 fusion-LoRA AUF/CE screen31320 starts from the same frozen
+  ZIP4096 endpoint and trains on512 existing records for3epochs. Charge its
+ 4096-record ZIP initialization. Only A/B train; original targets remain frozen.
+  Initial31319 stopped at BF16 batch-shape argmax sensitivity; see NUMERICS.md.
+- LR array31316: ZIP/CE/AUF x1e-4/3e-4/1e-3,512records/3epochs,1024 validation,
+  at most2 GPUs. It follows the LoRA screen and main offline validation.
+- Llama4096-record paired capture31290: eight512-record shards, one GPU.
+  Family validation31325 follows it, using separate1024 archived validation
+  problems rather than training or final benchmark prompts.
+- Q14 main data31324 follows successful streaming trainer gate31323; eight
+ 512-record shards, one GPU. Main family fits and validation follow preparation.
+- Node07 uses at most2 of our GPUs; node06 uses at most2. Dependencies enforce
+  the four-GPU campaign cap. Check live Slurm state for current execution.
 
 ## Remaining
 
-Finish main Q8 fits, offline validation, equal-budget learning-rate comparison,
+Finish equal-budget learning-rate comparison, ZIP-initialized continuation,
 128×2048 decoding, additional families and compatibility gates, scaling and
 ablations, required repetitions/confirmation, hardware profiling, final two
 Transformers backend comparisons, and the separate evidence-backed manuscript.
