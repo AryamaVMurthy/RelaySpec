@@ -1,5 +1,12 @@
 ## Verified fit and scaling preparation update
 
+Capacity evaluation31635 follows rank8 fit31634,with128/cap2048/3repetitions
+and full token/finish checks. Ranks16/32/128/256 fits/evals31636–31643 form
+a serial chain after successful rank8 evaluation. Rank56 reuses the primary
+measurement. Explicit handoff-capacity runtime label avoids calling these
+rank56 results. At most2GPUs in this lane,plus possible2GPU capture. Final
+capacity aggregation remains to wire; none of these ablations has run yet.
+
 Q8 five-map31585 completed0; fit644.74 seconds,2,000 updates,export verified.
 Proof archived in reports/q8-handoff-five-fit. Uniform CE31586 now running.
 Separate rank-capacity port supports8/16/32/56/128/256 while preserving the
