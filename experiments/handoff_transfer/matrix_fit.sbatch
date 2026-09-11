@@ -18,15 +18,20 @@ root=/scratch/aryama.murthy/handoff-transfer-20260911
 study_python=/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/bin/python
 export AUF_WORKDIR="$root/matrix/$FAMILY/$KIND-$MATRIX_OBJECTIVE-lr$MATRIX_LR"
 export AUF_MODELS="$root/models/qwen4" AUF_DOMAIN=math SPECFORGE_ROOT="$code/specforge"
-export PYTHONPATH="$control:$code/matrix:$code/overlay:$code/vendor/code:$SPECFORGE_ROOT"
+snapshot="$AUF_WORKDIR/source-$SLURM_JOB_ID"
+mkdir -p "$snapshot/experiments/handoff_transfer/matrix" "$snapshot/experiments/auf_vllm"
+rsync -a --exclude __pycache__ "$code/matrix/" "$snapshot/experiments/handoff_transfer/matrix/"
+rsync -a --exclude reports --exclude __pycache__ "$control/experiments/auf_vllm/" "$snapshot/experiments/auf_vllm/"
+matrix_code="$snapshot/experiments/handoff_transfer/matrix"
+export PYTHONPATH="$snapshot:$matrix_code:$code/overlay:$code/vendor/code:$SPECFORGE_ROOT"
 export OMP_NUM_THREADS=4 TOKENIZERS_PARALLELISM=false HF_HUB_OFFLINE=1
 "$study_python" -m experiments.handoff_transfer.matrix.prepare --base "$root/$FAMILY" --out "$AUF_WORKDIR" --kind "$KIND" --objective "$MATRIX_OBJECTIVE" --lr "$MATRIX_LR"
 mkdir -p "$AUF_WORKDIR/logs"
 nvidia-smi --query-gpu=timestamp,index,uuid,name,utilization.gpu,memory.used,power.draw --format=csv -l 5 > "$AUF_WORKDIR/logs/gpu-$SLURM_JOB_ID.csv" &
 monitor=$!
 trap 'kill "$monitor"' EXIT
-"$study_python" -m torch.distributed.run --standalone --nproc_per_node=2 "$code/matrix/train.py" --kind "$KIND" --tag check --output-tag "gate-$SLURM_JOB_ID" --lr "$MATRIX_LR" --epochs 1 --max-steps 2
-"$study_python" "$code/matrix/verify.py" --kind "$KIND" --tag "gate-$SLURM_JOB_ID" --steps 2
+"$study_python" -m torch.distributed.run --standalone --nproc_per_node=2 "$matrix_code/train.py" --kind "$KIND" --tag check --output-tag "gate-$SLURM_JOB_ID" --lr "$MATRIX_LR" --epochs 1 --max-steps 2
+"$study_python" "$matrix_code/verify.py" --kind "$KIND" --tag "gate-$SLURM_JOB_ID" --steps 2
 # Check the actual deployed decoder before any tuning fit.
 training_gpus="$CUDA_VISIBLE_DEVICES"
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES%%,*}" VLLM_BATCH_INVARIANT=1
@@ -43,6 +48,6 @@ export CUDA_VISIBLE_DEVICES="$training_gpus"
 # TRAIN_STEPS defaults to gate only. Tuning screens are explicit.
 
 if [ "${TRAIN_STEPS:-0}" -gt 0 ]; then
- "$study_python" -m torch.distributed.run --standalone --nproc_per_node=2 "$code/matrix/train.py" --kind "$KIND" --tag full --output-tag "steps-$TRAIN_STEPS" --lr "$MATRIX_LR" --epochs 4 --max-steps "$TRAIN_STEPS" --snapshot-every 100
- "$study_python" "$code/matrix/verify.py" --kind "$KIND" --tag "steps-$TRAIN_STEPS" --steps "$TRAIN_STEPS"
+ "$study_python" -m torch.distributed.run --standalone --nproc_per_node=2 "$matrix_code/train.py" --kind "$KIND" --tag full --output-tag "steps-$TRAIN_STEPS" --lr "$MATRIX_LR" --epochs 4 --max-steps "$TRAIN_STEPS" --snapshot-every 100
+ "$study_python" "$matrix_code/verify.py" --kind "$KIND" --tag "steps-$TRAIN_STEPS" --steps "$TRAIN_STEPS"
 fi
