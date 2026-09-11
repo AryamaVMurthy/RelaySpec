@@ -197,3 +197,9 @@ measured timing repetitions, and throughput versus final continuation
 GPU-hours. The cost panel explicitly excludes initialization, rollouts and
 tuning. No figures are generated from pilot/tuning numbers by this path;
 rendered final annotations must be visually inspected before paper inclusion.
+
+`matrix.tuning_cost` accounts for the complete3-to-2-to-1 successful fit path
+per interface/loss:3x100+2x500+1x2000=3300updates. Report its tuning-plus-final
+GPU-hours separately from the final-fit figure. Neither timer is total project
+cost: feature initializers,data generation,validation,engine startup/gates,
+failed attempts and queue waiting are excluded and must be labeled accordingly.
