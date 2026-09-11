@@ -100,39 +100,47 @@ def capture(work, out, size):
     for split in ["train", "dev"]:
         manifest = out/f"{split}.json"
         examples = json.loads(manifest.read_text())
+        manifest_hash = sha(manifest)
+        pending = []
         for index, row in enumerate(examples):
             dest = out/f"features/{size}/{split}/{index:05d}.pt"
-            meta = dest.with_suffix(".json")
             if dest.exists():
-                saved = json.loads(meta.read_text())
-                assert saved["sha256"] == sha(dest) and saved["manifest_sha256"] == sha(manifest)
-                continue
+                saved = json.loads(dest.with_suffix(".json").read_text())
+                assert saved["sha256"] == sha(dest) and saved["manifest_sha256"] == manifest_hash
+            else:
+                pending.append((index,row,dest))
+        for start_index in range(0,len(pending),4):
+            group = pending[start_index:start_index+4]
             start = time.perf_counter()
-            result = model.encode([{"prompt_token_ids": row["full_ids"]}], pooling_task="token_embed",
-                                  pooling_params=PoolingParams(task="token_embed"), use_tqdm=False)[0]
-            features = result.outputs.data.to(torch.bfloat16).cpu()
-            assert features.shape == (len(row["full_ids"]), 5*{4:2560, 8:4096}[size])
-            assert torch.isfinite(features).all()
-            if index == 0:
-                boundary = max(2, len(row["full_ids"])//2)
-                prefix_result = model.encode([{"prompt_token_ids":row["full_ids"][:boundary]}],
-                    pooling_task="token_embed",pooling_params=PoolingParams(task="token_embed"),use_tqdm=False)[0]
-                prefix_features = prefix_result.outputs.data.cpu().float()
-                full_prefix = features[:boundary].float()
-                error = ((prefix_features-full_prefix).square().sum()/full_prefix.square().sum()).item()
-                assert error < 1e-6, {"causality_relative_mse":error}
-                write(out/f"features/{size}/{split}/causality.json", {"passed":True,
-                    "relative_mse":error,"prefix_tokens":boundary,"full_tokens":len(features)})
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            temp = dest.with_suffix(".part")
-            torch.save({"features": features, "group_id": row["group_id"],
-                        "layers": [1,9,17,25,33]}, temp)
-            temp.replace(dest)
-            write(meta, {"sha256": sha(dest), "manifest_sha256": sha(manifest),
-                         "seconds": time.perf_counter()-start, "tokens": len(features),
-                         "job_id": os.environ.get("SLURM_JOB_ID")})
-            if index % 16 == 0 or index+1 == len(examples):
-                print(json.dumps({"capture": str(dest), "records_done":index+1,"tokens": len(features)}), flush=True)
+            results = model.encode([{"prompt_token_ids":row["full_ids"]} for _,row,_ in group],
+                pooling_task="token_embed",pooling_params=PoolingParams(task="token_embed"),use_tqdm=False)
+            capture_seconds = time.perf_counter()-start
+            for (index,row,dest),result in zip(group,results):
+                features = result.outputs.data.to(torch.bfloat16).cpu()
+                assert features.shape == (len(row["full_ids"]),5*{4:2560,8:4096}[size])
+                assert torch.isfinite(features).all()
+                if start_index == 0:
+                    # Covers the new batch shapes on every resumed invocation.
+                    boundary = max(2,len(row["full_ids"])//2)
+                    prefix_result = model.encode([{"prompt_token_ids":row["full_ids"][:boundary]}],
+                        pooling_task="token_embed",pooling_params=PoolingParams(task="token_embed"),use_tqdm=False)[0]
+                    prefix_features = prefix_result.outputs.data.cpu().float()
+                    full_prefix = features[:boundary].float()
+                    error = ((prefix_features-full_prefix).square().sum()/full_prefix.square().sum()).item()
+                    assert error < 1e-6,{"causality_relative_mse":error}
+                    write(out/f"features/{size}/{split}/causality-{index:05d}.json",{"passed":True,
+                        "relative_mse":error,"prefix_tokens":boundary,"full_tokens":len(features),
+                        "batch_records":len(group),"job_id":os.environ.get("SLURM_JOB_ID")})
+                dest.parent.mkdir(parents=True,exist_ok=True)
+                temp = dest.with_suffix(".part")
+                torch.save({"features":features,"group_id":row["group_id"],"layers":[1,9,17,25,33]},temp)
+                temp.replace(dest)
+                write(dest.with_suffix(".json"),{"sha256":sha(dest),"manifest_sha256":manifest_hash,
+                    "batch_capture_seconds":capture_seconds,"batch_records":len(group),"tokens":len(features),
+                    "job_id":os.environ.get("SLURM_JOB_ID")})
+            print(json.dumps({"size":size,"split":split,"records_done":group[-1][0]+1,
+                              "batch_capture_seconds":capture_seconds}),flush=True)
+
 
 
 if __name__ == "__main__":
