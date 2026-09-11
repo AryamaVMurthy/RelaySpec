@@ -1,3 +1,7 @@
+## 2026-09-12: reserved confirmation runner prepared
+
+Added confirmation_runner.py. It requires a frozen protocol and exact checkpoint/config hashes before materializing reserved prompts, preserves all prespecified primary arms, rotates mode order by timing repetition, launches each vLLM engine in a separate subprocess for clean memory teardown, verifies runtime config equals the frozen development config, and retains full AR token/finish diagnostics for all128requests/cap2048. Output links pin protocol hash per repetition and prevent mixing frozen protocols. Validation test rejects changed weights before evaluation.20tests pass overall and focused freeze/runner validation passes. No GPU confirmation run or Slurm submission yet; scheduling remains after required development evidence. Q14five reached520/2000updates at last observation.
+
 ## 2026-09-12: confirmation freeze checks validated
 
 Added per-family freeze support so Q8 checkpoints can be checked on node07 and Q14/Llama on node06 without assuming a shared scratch namespace. Seed evidence now requires exactly42/43/44 and three repetitions per seed; empty or incomplete maps cannot pass. New tests exercise immutable output, changed-checkpoint rejection and absence of a frozen output on failed validation.20tests pass. Confirmation runner and combining per-family protocols remain pending; no confirmation data touched. Q14five training reached330/2000updates at latest live check.

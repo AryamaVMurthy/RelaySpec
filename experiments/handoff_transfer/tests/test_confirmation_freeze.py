@@ -2,6 +2,7 @@ import hashlib
 import json
 import pytest
 from experiments.handoff_transfer.freeze_confirmation import freeze
+from experiments.handoff_transfer.confirmation_runner import validate
 
 
 def test_confirmation_freeze_rejects_changed_checkpoint_and_overwrite(tmp_path):
@@ -22,10 +23,14 @@ def test_confirmation_freeze_rejects_changed_checkpoint_and_overwrite(tmp_path):
             'contract': {'family': 'q14', 'mode': mode, 'count': 128, 'cap': 2048,
                          'runtime_config': runtime, 'export_sha256': weight_hash}}))
     output = tmp_path / 'frozen.json'
-    assert freeze(root, reports, workloads, output, ['q14'])['status'] == 'frozen'
+    protocol = freeze(root, reports, workloads, output, ['q14'])
+    assert protocol['status'] == 'frozen'
+    assert set(validate(protocol, 'q14', 'math', 0)) == {'ar', 'normal', 'zip', 'handoff-r56', 'handoff-five'}
     with pytest.raises(AssertionError, match='overwrite'):
         freeze(root, reports, workloads, output, ['q14'])
     (checkpoint / 'model.safetensors').write_bytes(b'changed')
+    with pytest.raises(AssertionError):
+        validate(protocol, 'q14', 'math', 0)
     with pytest.raises(AssertionError, match='Checkpoint changed'):
         freeze(root, reports, workloads, tmp_path / 'other.json', ['q14'])
     assert not (tmp_path / 'other.json').exists()
