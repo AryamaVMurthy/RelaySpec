@@ -609,3 +609,14 @@ Node07 progression now:31480->31486->31478(small fixed updates)->31487
 - ZIP fixed-update sampling and capacity/MLP implementation remain missing.
   Do not treat queued jobs as completed results or infer fair compute budgets
   from equal epochs across distinct objectives.
+
+### Fusion-residual capacity implementation (20:44 IST)
+
+Array31498 follows31495 with22 cells, covering ranks8/16/32/56/112/224,
+AUF/CE and512/4096 records. The two4096-rank32 cells reuse31450.
+Initialization is the corresponding data-size ZIP three-epoch checkpoint,
+then three continuation epochs at fixed2e-5; alpha/r=1. The wrapper records
+initialization hash/cost, actual trainable parameters, unchanged deployed
+fusion size, offline validation and128x2048 decoding. This implements the
+Q8 residual-rank subset only; direct fusion, factored and MLP architectures,
+non-Qwen rank checks, regularization and ZIP fixed-update curves remain open.

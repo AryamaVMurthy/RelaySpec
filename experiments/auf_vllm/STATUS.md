@@ -210,3 +210,31 @@ Array31496 repeats unchanged ZIP and native controls three times at128x2048,
 one sequential request stream per worker, immediately after31450.
 Q8 workload array31470 now depends on31496, retaining the max4GPU total.
 The initial one-timing ZIP baseline is preliminary until these controls finish.
+
+## Completed first main LoRA timings and Llama objective comparison, 20:44 IST
+
+Q8 draft-LoRA first complete128x2048 timing: CE173.102746 TPS and
+AUF174.831102 TPS, both128/128 exact AR outputs,122768 output tokens.
+Versus the prior ZIP single timing173.939941, ratios are0.995187 and1.005123.
+These small differences do not establish a winner. Fresh ZIP/native controls
+and the remaining two repetitions are pending/running. Both new summaries
+verify504627200 deployed projection elements and the fused context-KV buffer
+with full tensor equality. Raw rows, summaries and local paired replays are
+archived in reports/draft-lora-decoding-31450. Extra training has not yet
+produced a resolved throughput gain; do not claim linear beats LoRA here.
+
+Llama31445 now completed: AUF112.855197 TPS,2.453092x AR,128/128 exact,
+85900 output tokens. The complete objective comparison is ZIP186.925463,
+CE142.230796,AUF112.855197 versus AR46.005282 TPS. This is one seed/timing
+on development, not confirmation. All raw rows replayed locally.
+Figure figures/qwen_llama_objectives.{pdf,png,json} combines the completed
+Qwen/Llama evidence, with paired request bootstrap intervals only.
+
+Array31498 follows31495,22 fusion-residual rank cells: ranks8/16/32/56/112/224,
+CE/AUF,512/4096 records, with4096-rank32 reused from31450 rather than rerun.
+Each512 cell starts from the512 ZIP fit, so initialization does not expose
+extra4096 records. Each4096 cell starts from the same4096 ZIP fit. Three
+initialization epochs plus three continuation epochs are explicitly charged.
+LR2e-5 is fixed from the rank32 screen, no per-rank tuning. Rank changes
+trainable parameters, not the merged dense deployment size. All new cells
+remain queued and no capacity conclusion is available yet.
