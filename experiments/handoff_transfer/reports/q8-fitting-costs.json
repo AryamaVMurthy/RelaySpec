@@ -1,0 +1,67 @@
+{
+  "status": "complete_fitting_costs_only",
+  "family": "q8",
+  "records": 4096,
+  "rows": [
+    {
+      "method": "Normal RelaySpec",
+      "trainable_parameters": 52428800,
+      "initialization_seconds": 0,
+      "second_stage_seconds": 283.3601658074185,
+      "sequential_fit_seconds": 283.3601658074185,
+      "fit_gpu_hours": 0.07871115716872737
+    },
+    {
+      "method": "Older ZIP",
+      "trainable_parameters": 52428800,
+      "initialization_seconds": 289.4104381473735,
+      "second_stage_seconds": 0,
+      "sequential_fit_seconds": 289.4104381473735,
+      "fit_gpu_hours": 0.08039178837427041
+    },
+    {
+      "method": "ZIP + AUF BA",
+      "trainable_parameters": 1290240,
+      "initialization_seconds": 289.4104381473735,
+      "second_stage_seconds": 633.5834707128815,
+      "sequential_fit_seconds": 922.993908860255,
+      "fit_gpu_hours": 0.43238260543698237
+    },
+    {
+      "method": "ZIP + AUF five maps",
+      "trainable_parameters": 52428800,
+      "initialization_seconds": 289.4104381473735,
+      "second_stage_seconds": 644.7405549371615,
+      "sequential_fit_seconds": 934.150993084535,
+      "fit_gpu_hours": 0.43858098556158237
+    },
+    {
+      "method": "ZIP + uniform CE BA",
+      "trainable_parameters": 1290240,
+      "initialization_seconds": 289.4104381473735,
+      "second_stage_seconds": 538.6460648421198,
+      "sequential_fit_seconds": 828.0565029894933,
+      "fit_gpu_hours": 0.37963960217544807
+    }
+  ],
+  "source_sha256": {
+    "experiments/handoff_transfer/reports/q8-normal-fit/summary.json": "0a359ca88604beeeb09676098f75726fdc7e2c03c78d95e8486f69d6d9f183a9",
+    "experiments/handoff_transfer/reports/q8-zip-fit/summary.json": "3cf97d39b6e1cffe960685967528d6aac9530da1db145070c8587f834a287a3a",
+    "experiments/handoff_transfer/reports/q8-handoff-r56-fit/summary.json": "7d74a674023a12d56d87230ee013afaae5918b423782596596668badcf21d95b",
+    "experiments/handoff_transfer/reports/q8-handoff-r56-fit/verification.json": "ee6e35133842b50991d8056e38c5c87a92b629f938d90528ebacbe95e838930b",
+    "experiments/handoff_transfer/reports/q8-handoff-five-fit/summary.json": "fe70a6bdfb20a1bd8e9c01ea9342e6bed4fdf249fc4e11dccbd74650e4468928",
+    "experiments/handoff_transfer/reports/q8-handoff-five-fit/verification.json": "e6374e9f58cf129449b54231587b8cfdd3deb27d196e3dc31c56e4360248b20e",
+    "experiments/handoff_transfer/reports/q8-ce-fit/summary.json": "c4c966110e78a3352b08e4911109dacdde60f2e845a137bd9ba58461696eb31c",
+    "experiments/handoff_transfer/reports/q8-ce-fit/verification.json": "c548338b525a65e770ba88db039241b7d251820a64400b02267e1e924fe8b376"
+  },
+  "exclusions": [
+    "rollout generation",
+    "source and target feature capture",
+    "packing",
+    "model loading",
+    "diagnostic gates",
+    "queue time",
+    "decoding evaluation"
+  ],
+  "interpretation": "Measured fit times from one seed/run. ZIP initialization uses one GPU; AUF/CE continuation uses two. BA parameter counts describe continuation only; the preceding ZIP stage fits 52,428,800 parameters. This is not total adaptation cost."
+}

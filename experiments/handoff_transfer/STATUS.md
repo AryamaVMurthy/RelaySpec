@@ -1,5 +1,12 @@
 ## Verified fit and scaling preparation update
 
+Measured Q8 fitting-cost ledger and figure generated from archived summaries.
+Normal4.72min,ZIP4.82min,ZIP+AUFBA15.38min,ZIP+AUFfive15.57min,
+ZIP+uniformCE13.80min sequential fitting. GPU-minutes charge two-GPU
+continuation separately. Excludes rollout/capture/packing/loading/gates/queue;
+not total adaptation cost. Figure viewed and legend overlap corrected.
+See reports/q8-fitting-costs.json and figures/q8_fitting_costs.{png,pdf}.
+
 Frozen workload development arrays31659(Q8),31660(Q14),31661(Llama) queued
 serially after both main pools. Each4workloads x3timing repeats,128/cap2048,
 AR/normal/ZIP/BA/five plus Q8native; all full token/finish checks mandatory.
