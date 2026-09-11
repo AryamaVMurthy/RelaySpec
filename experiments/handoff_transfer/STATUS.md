@@ -554,3 +554,10 @@ checks now show9Qwen and5Llama complete100-updatefits. QwenfivemapsAUF
 fusionBAAUF241.16. These are trainingcosts; decoding screens remain pending.
 LlamafusionBACE recovery31842 andcrosspaired31803/sharedAR31820/batchgate31861
 are dependencywaiting. Next routineGPUcheck not before03:51:45IST.
+
+Queued31905:standaloneTransformers confirmation ofnewQwenfiveBA CE/AUF
+finalists againstAR/normal/ZIP,4/cap128gate then128/cap2048,one timing.
+Runsafterok31867batchedvLLM,oneGPU,node07. EarlierheldTransformersjobs
+usepreviouscheckpoints and do not substitute for thisconfirmation. Updated
+Transformersnormalizationdispatch readscheckpointconfig,notjustmodelabel.
+Script/CLI andexistingcollection/preflighttests pass;GPUconfirmationpending.

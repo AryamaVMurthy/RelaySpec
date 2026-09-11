@@ -51,7 +51,7 @@ def main(a):
         head=nn.Linear(weights['lm_head.weight'].shape[1],weights['lm_head.weight'].shape[0],bias=False,dtype=torch.bfloat16)
         head.weight=nn.Parameter(weights['lm_head.weight'],requires_grad=False);head=head.cuda()
         relay=draft.fc
-        if a.mode=='normal':
+        if config.get('relayspec_normal_input_eps') is not None:
             eps=config['relayspec_normal_input_eps']
             relay=nn.Sequential(nn.RMSNorm(fusion.shape[1],eps=eps,elementwise_affine=False),draft.fc).cuda()
         taps=tuple(config['dflash_config']['target_layer_ids'])
@@ -89,6 +89,6 @@ if __name__=='__main__':
     for name in ('target','data','out','dflash-source'):p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--export',type=Path)
     p.add_argument('--family',choices=['q8','llama'],required=True)
-    p.add_argument('--mode',choices=['ar','normal','zip','handoff-r56','handoff-five'],required=True)
+    p.add_argument('--mode',choices=['ar','normal','zip','handoff-r56','handoff-five','ce','auf'],required=True)
     p.add_argument('--count',type=int,default=128);p.add_argument('--cap',type=int,default=2048)
     main(p.parse_args())
