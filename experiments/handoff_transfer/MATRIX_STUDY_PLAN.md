@@ -130,3 +130,9 @@ features and equal-record weights. The original normalized interface uses the
 Llama target RMSNorm epsilon and frozen Qwen source output norm. These are
 implemented controls, not completed measurements; the GPU gate, data capture,
 initializer fitting, training and full evaluations must still pass.
+
+Full cross fits now have immutable per-architecture/loss/LR directories via
+`cross/prepare_cell.py` and`cross_full_fit.sbatch`. They do not share mutable
+model-contract files or resume checkpoints. The full initializer hash and data
+index are checked before fitting. This launch script is prepared but unsubmitted;
+its prerequisites are still awaiting the cross decoding gate and data runs.
