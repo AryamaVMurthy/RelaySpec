@@ -35,6 +35,10 @@ def main(args):
         config['speculative_config']={'method':'dflash','model':str(args.export),'num_speculative_tokens':block-1}
     else:
         assert args.mode=='ar'
+    if args.profile_dir:
+        config['profiler_config']={'profiler':'torch','torch_profiler_dir':str(args.profile_dir.resolve()),
+             'torch_profiler_with_stack':False,'torch_profiler_record_shapes':True,'torch_profiler_with_memory':True,
+             'torch_profiler_with_flops':True,'max_iterations':64,'ignore_frontend':True,'detailed_trace_annotation':True}
     tokenizer=AutoTokenizer.from_pretrained(target,local_files_only=True)
     params=SamplingParams(temperature=0,top_p=1.,top_k=-1,min_p=0.,repetition_penalty=1.,
                           presence_penalty=0.,frequency_penalty=0.,seed=0,max_tokens=args.cap,
@@ -67,6 +71,7 @@ def main(args):
         llm.generate([{'prompt_token_ids':row['prompt_token_ids']}],params,use_tqdm=False)
     warm_seconds=time.perf_counter()-start
     before=llm.collective_rpc('sd_stats')
+    if args.profile_dir:llm.start_profile()
 
     def counters():
         return {serial(x)['name']:serial(x).get('value',0) for x in llm.get_metrics()}
@@ -91,13 +96,14 @@ def main(args):
                     'output_text':result.text,'output_tokens':len(result.token_ids),'prompt_ids':row['prompt_token_ids'],
                     'prompt_tokens':len(row['prompt_token_ids']),'wall_seconds':seconds,'cold_wall_seconds':cold,
                     'finish_reason':result.finish_reason,'verification_iterations':delta('spec_decode_num_drafts'),
-                    'accepted_draft_tokens':delta('spec_decode_num_accepted_tokens'),'timing_valid':True}
+                    'accepted_draft_tokens':delta('spec_decode_num_accepted_tokens'),'timing_valid':not bool(args.profile_dir)}
             handle.write(json.dumps(record,default=serial)+'\n');handle.flush()
             if (index//args.workers+1)%16==0:
                 print(json.dumps({'mode':args.mode,'completed':index//args.workers+1,'last_seconds':seconds}),flush=True)
+    if args.profile_dir:llm.stop_profile()
     write(summary_path,{'contract':contract,'setup_seconds':setup,'warmup_seconds':warm_seconds,
                         'asset_checks':assets,'gpu_before':before,'gpu_after':llm.collective_rpc('sd_stats'),
-                        'job_id':os.environ.get('SLURM_JOB_ID'),'timing_valid':True,
+                        'job_id':os.environ.get('SLURM_JOB_ID'),'timing_valid':not bool(args.profile_dir),
                         'timing_contract':'per-request generate wall; compilation-affected request retried once, cold time retained; prefix cache off'})
 
 
@@ -114,4 +120,5 @@ if __name__=='__main__':
     parser.add_argument('--workers',type=int,default=1)
     parser.add_argument('--worker-index',type=int,default=0)
     parser.add_argument('--repeat',type=int,default=0)
+    parser.add_argument('--profile-dir',type=Path)
     main(parser.parse_args())

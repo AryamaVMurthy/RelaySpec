@@ -17,6 +17,7 @@ def main():
  ap.add_argument("--tag",default="final");ap.add_argument("--cap",type=int,default=2048)
  ap.add_argument("offset",nargs="?",type=int,default=0);ap.add_argument("--worker-index",type=int,default=0)
  ap.add_argument("--workers",type=int,default=1)
+ ap.add_argument("--profile-dir",default=None,help="Separate instrumented run; its timings are invalid for speed comparisons")
  args=ap.parse_args();assert 0<=args.worker_index<args.workers;label=args.mode;mode=label
  assert label in ('ar8','native8','mapped')
  variant=label=='mapped'
@@ -43,6 +44,10 @@ def main():
   draft=pair/"draft"
   if variant:draft=WORK/"export"
   kw["speculative_config"]={"method":"dflash","model":str(draft),"num_speculative_tokens":15}
+ if args.profile_dir:
+  kw['profiler_config']={'profiler':'torch','torch_profiler_dir':str(Path(args.profile_dir).resolve()),
+   'torch_profiler_with_stack':False,'torch_profiler_record_shapes':True,'torch_profiler_with_memory':True,
+   'torch_profiler_with_flops':True,'max_iterations':64,'ignore_frontend':True,'detailed_trace_annotation':True}
  t=time.perf_counter();llm=LLM(**kw);setup=time.perf_counter()-t
  params=SamplingParams(temperature=0,top_p=1.0,top_k=-1,min_p=0.0,repetition_penalty=1.0,presence_penalty=0.0,frequency_penalty=0.0,seed=0,stop_token_ids=[151645],ignore_eos=False,max_tokens=args.cap)
  llm.collective_rpc("sd_install_monitor")
@@ -65,6 +70,7 @@ def main():
  warmtime=time.perf_counter()-t
  before=llm.collective_rpc("sd_stats")
  metrics_before=llm.get_metrics()
+ if args.profile_dir:llm.start_profile()
  totalstart=time.perf_counter()
  with outpath.open("x") as f:
   for i,x in enumerate(rows):
@@ -86,19 +92,20 @@ def main():
    counts1=counters(llm)
    delta=lambda k:counts1.get("vllm:"+k,0)-counts0.get("vllm:"+k,0)
    drafts=delta("spec_decode_num_drafts");accepted=delta("spec_decode_num_accepted_tokens")
-   row=dict(verification_iterations=drafts,accepted_draft_tokens=accepted,accepted_plus_bonus_proxy=(1+accepted/drafts) if drafts else None,cold_wall_seconds=cold_wall,timing_valid=True,index=args.offset+args.workers*i+args.worker_index,worker_index=args.worker_index,row_id=x["row_id"],group_id=x["group_id"],mode=label,
+   row=dict(verification_iterations=drafts,accepted_draft_tokens=accepted,accepted_plus_bonus_proxy=(1+accepted/drafts) if drafts else None,cold_wall_seconds=cold_wall,timing_valid=not bool(args.profile_dir),index=args.offset+args.workers*i+args.worker_index,worker_index=args.worker_index,row_id=x["row_id"],group_id=x["group_id"],mode=label,
     repeat=args.repeat,wall_seconds=wall,prompt_tokens=len(x["prompt_token_ids"]),
     output_tokens=len(o.outputs[0].token_ids),output_ids=list(o.outputs[0].token_ids),prompt_ids=x["prompt_token_ids"],output_text=o.outputs[0].text,
     finish_reason=o.outputs[0].finish_reason,metrics=serial(o.metrics) if o.metrics else None)
    f.write(json.dumps(row,default=serial)+"\n");f.flush()
    if (i+1)%16==0:print("PROGRESS",mode,i+1,"elapsed",time.perf_counter()-totalstart,flush=True)
  after=llm.collective_rpc("sd_stats")
+ if args.profile_dir:llm.stop_profile()
  summary=dict(mode=label,config=kw,args=vars(args),setup_wall_seconds=setup,
   gpu_identity=llm.collective_rpc("sd_stats"),attachment_check=attachment_check,
   warmup_wall_seconds=warmtime,measurement_wall_seconds=time.perf_counter()-totalstart,
   gpu_before=before,gpu_after=after,metrics_before=metrics_before,metrics_after=llm.get_metrics(),
   slurm_job_id=os.environ.get("SLURM_JOB_ID"),cuda_visible_devices=os.environ.get("CUDA_VISIBLE_DEVICES"),
-  timing_valid=True,timing_contract="Per-request generate wall; compile/capture-affected request retried once, cold time retained; prefix cache off")
+  timing_valid=not bool(args.profile_dir),timing_contract="Profiled runs are excluded from speed comparisons. Otherwise per-request generate wall; compile/capture-affected request retried once, cold time retained; prefix cache off")
  (outdir/(label+"-r"+str(args.repeat)+".summary.json")).write_text(json.dumps(summary,default=serial,indent=2))
  print("BENCH_DONE",mode,summary["measurement_wall_seconds"],summary["timing_valid"],flush=True)
 if __name__=="__main__":main()
