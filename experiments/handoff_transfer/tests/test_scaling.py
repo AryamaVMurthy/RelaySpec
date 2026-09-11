@@ -15,7 +15,7 @@ def test_scaling_rejects_extra_initialization_data_and_truncates_capture(tmp_pat
     shard = parent / 'features/full/00000.pt'
     shard.parent.mkdir(parents=True)
     torch.save({'rows': rows, 'features': [torch.ones(1, 2) for _ in rows]}, shard)
-    write(parent / 'transfer.json', {'status': 'complete', 'shards': {str(shard): sha(shard)}})
+    write(parent / 'transfer.json', {'status': 'complete', 'family': 'q8', 'shards': {str(shard): sha(shard)}})
     export = fit / 'epoch-3/export'
     export.mkdir(parents=True)
     (export / 'model.safetensors').write_bytes(b'fixture')

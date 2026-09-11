@@ -1,3 +1,7 @@
+## 2026-09-12: Llama initializer schema audited for seed replication
+
+Audited completed Llama ZIP summary: contract schema, objectiveZIP, frozen targets, 4096records/3epochs, ordered part manifests and checkpoint hash; status explicitly says fit complete/offline validation pending. Added shared initializer_contract reader to prepare_scaling/prepare_seed; Q8 schema remains separately checked. Family manifests are loaded in numeric part order and every SHA256 verified before existing exact dense-row identity checks and checkpoint verification. Seed preparation now supports Llama43/44, but launch/evaluation/collection wiring remains pending. Updated synthetic Q8 fixture to include the real required family field;19 tests pass. Q8 BA third repetition finished; five-map still live, so full three-repeat joint collection waits.
+
 ## 2026-09-12: across-seed aggregation queued
 
 CPU2 collector31679 follows seed44 evaluation31678. It requires original ZIP, normal, BA and five-map fits with matching seed42/43/44 provenance, records/epochs/updates, verified frozen weights, and exact evaluated checkpoint hashes. Uses shared matched AR references and full128/cap2048 three-repeat equality checks. Averages timing repeats within each fit before computing sample standard deviation/min/max across three seeds; does not count nine timing runs as independent fits. Per-seed reports now receive correct seed metadata rather than hardcoded42.18 tests pass. Actual seed runs and Llama seed support remain pending.

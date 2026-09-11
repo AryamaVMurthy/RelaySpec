@@ -10,6 +10,7 @@ from pathlib import Path
 import torch
 
 from experiments.handoff_transfer.pack_transfer import sha, write
+from experiments.handoff_transfer.initializer_contract import initializer_records
 
 
 def training_source():
@@ -28,13 +29,8 @@ def prepare(parent, fit, out, records):
     assert not out.exists(), 'Use a new output directory; never replace a running study'
     contract = json.loads((parent / 'transfer.json').read_text())
     summary = json.loads((fit / 'summary.json').read_text())
-    assert contract['status'] == summary['status'] == 'complete'
-    assert summary['config']['records'] == records
-    assert summary['config']['epochs'] == 3
-    assert [h['epoch'] for h in summary['history']] == [1, 2, 3]
-    expected = json.loads(Path(summary['config']['manifest']).read_text())[:records]
-    assert len(expected) == records
-    assert len({r['group_id'] for r in expected}) == records
+    assert contract['status'] == 'complete'
+    _, expected = initializer_records(summary, contract['family'], records)
     export = fit / 'epoch-3/export'
     assert (export / 'model.safetensors').is_file()
     assert (fit / 'resume.pt').is_file()
