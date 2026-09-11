@@ -1,5 +1,12 @@
 ## Verified fit and scaling preparation update
 
+Large-data CPU collector31657 queued after31656. Requires all fourN points,
+four complete epochs per architecture (including expected microbatch counts),
+verified exports,all128 token/finish matches across three timing repetitions,
+and includes one-GPU ZIP initialization plus two-GPU AUF fitting costs.
+Q8 main AUF evaluations remain live; BA first repetition passed16 requests
+at the last check. No partial request log is treated as a full benchmark.
+
 Large four-epoch fits now fully queued:4K31647,8K31650,16K31651,32K31652;
 full evaluations31653–31656 follow with128 requests/cap2048/3repetitions.
 32K fit additionally waits for assembly31645. Updates areN/2 and record
