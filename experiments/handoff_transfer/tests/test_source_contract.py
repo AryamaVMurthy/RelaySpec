@@ -1,5 +1,6 @@
 import importlib.util
 from pathlib import Path
+import pytest
 from types import SimpleNamespace
 import torch
 
@@ -10,22 +11,23 @@ def test_training_port_changes_only_dimensions_and_provenance():
     expected=original.replace('S,12800','S,INPUT_WIDTH').replace("'initialization':'base draft, zero bias, PEFT random A zero B; seed42'","'initialization':'ZIP epoch-3 initialization; see architecture model contract; seed42'")
     assert (ROOT/'port/train.py').read_text()==expected
 
-def test_packaged_auf_chunk_reduction_preserves_loss_and_gradients():
+@pytest.mark.parametrize("chunk_size", [2, 16])
+def test_packaged_auf_chunk_reduction_preserves_loss_and_gradients(chunk_size):
     spec=importlib.util.spec_from_file_location('handoff_objectives_test',ROOT/'vendor/code/objectives.py')
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
     module.DFlashObjectiveTerms=SimpleNamespace
     module.SelectorTerms=SimpleNamespace(zeros=lambda x:SimpleNamespace(**{k:x.new_zeros(()) for k in ['ce_num','probability_num','correct_num','weight_den','covered_num']}))
     model=SimpleNamespace(lm_head=torch.nn.Identity(),draft_model=SimpleNamespace(),lk_loss_type=None,_selector_objective_enabled=False)
-    values=torch.zeros(1,5,16,7)
-    for b in range(5):
+    values=torch.zeros(1,33,16,7)
+    for b in range(33):
         for j in range(16):values[0,b,j,0 if j<b+2 else 1]=3
-    labels=torch.zeros(1,5,16,dtype=torch.long)
+    labels=torch.zeros(1,33,16,dtype=torch.long)
     mask=torch.ones_like(labels,dtype=torch.float);mask[...,0]=0;mask[0,3,2]=0
     whole=values.clone().requires_grad_();terms=module._dflash_objective_chunk_terms(model,whole,labels,mask,labels)
     loss=terms.ce_loss_num/terms.loss_den;loss.backward()
     chunked=values.clone().requires_grad_();parts=[]
-    for start in range(0,5,2):
-        parts.append(module._dflash_objective_chunk_terms(model,chunked[:,start:start+2],labels[:,start:start+2],mask[:,start:start+2],labels[:,start:start+2]))
+    for start in range(0,33,chunk_size):
+        parts.append(module._dflash_objective_chunk_terms(model,chunked[:,start:start+chunk_size],labels[:,start:start+chunk_size],mask[:,start:start+chunk_size],labels[:,start:start+chunk_size]))
     combined=sum(x.ce_loss_num for x in parts)/sum(x.loss_den for x in parts);combined.backward()
     torch.testing.assert_close(loss,combined)
     torch.testing.assert_close(whole.grad,chunked.grad)
