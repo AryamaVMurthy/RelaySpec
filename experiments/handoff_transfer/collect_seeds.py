@@ -4,6 +4,7 @@ import json
 import statistics
 from pathlib import Path
 from experiments.handoff_transfer.collect_transfer import main as collect_one
+from experiments.handoff_transfer.initializer_contract import initializer_records
 
 METHODS = ('normal', 'zip', 'handoff-r56', 'handoff-five')
 
@@ -22,14 +23,14 @@ def summarize(reports):
 
 def main(a):
     reports, provenance = {}, {}
-    baseline = a.root / 'q8'
+    baseline = a.root / a.family
     for seed in (42, 43, 44):
-        run = baseline if seed == 42 else a.root / f'seeds/q8-s{seed}'
+        run = baseline if seed == 42 else a.root / f'seeds/{a.family}-s{seed}'
         transfer = json.loads((run / 'transfer.json').read_text())
         initializer = Path(transfer['base_export']).parents[1]
         zip_fit = json.loads((initializer / 'summary.json').read_text())
-        assert zip_fit['config']['seed'] == seed and zip_fit['config']['records'] == 4096
-        assert zip_fit['config']['epochs'] == 3
+        config, _ = initializer_records(zip_fit, a.family, 4096)
+        assert config['seed'] == seed
         normal = json.loads((run / 'normal/summary.json').read_text())
         assert normal['status'] == 'complete' and normal['contract']['seed'] == seed
         assert normal['contract']['records'] == 4096 and normal['contract']['epochs'] == 3
@@ -49,13 +50,13 @@ def main(a):
             for repeat in range(3):
                 measured = json.loads((run / f'measurements/{mode}-r{repeat}-w0.summary.json').read_text())
                 assert measured['contract']['export_sha256'] == digest, 'Evaluation used a different checkpoint'
-        out = a.out.parent / f'q8-seed-{seed}-comparison.json'
-        collect_one(argparse.Namespace(root=run, family='q8', out=out, training_seed=seed,
+        out = a.out.parent / f'{a.family}-seed-{seed}-comparison.json'
+        collect_one(argparse.Namespace(root=run, family=a.family, out=out, training_seed=seed,
             methods=['ar', *METHODS], method_roots={'ar': baseline / 'measurements'}))
         reports[seed] = json.loads(out.read_text())
         provenance[seed] = {'zip': zip_fit, 'normal': normal, 'auf': fits,
                             'comparison_path': str(out)}
-    result = {'status': 'complete', 'family': 'q8', 'training_seeds': [42, 43, 44],
+    result = {'status': 'complete', 'family': a.family, 'training_seeds': [42, 43, 44],
         'timing_repetitions_per_seed': 3, 'results': summarize(reports), 'per_seed': reports,
         'training_provenance': provenance,
         'scope': 'Average three timing repetitions within each fit before calculating variation across three fitting seeds. Fixed records and frozen rollout cache; not independent data draws or untouched confirmation. AR measurements are shared references, not nine independent AR measurements.'}
@@ -66,4 +67,5 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--root', type=Path, required=True)
     p.add_argument('--out', type=Path, required=True)
+    p.add_argument('--family', choices=('q8', 'llama'), default='q8')
     main(p.parse_args())

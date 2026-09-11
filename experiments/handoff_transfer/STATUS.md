@@ -1,3 +1,9 @@
+## 2026-09-12: Q8 three timing passes complete; Llama seeds queued
+
+Q8 normal mean172.945143TPS; BA177.579371TPS, paired mean ratio1.02679599 (+2.6796%), timingstdev0.04077TPS; five164.455648TPS, ratio0.95091237 (-4.9088%),stdev0.03581TPS. All three repetitions128/128 full output/finish equality versus normal,122768tokens per pass. Archived all rows/summaries/hashes in q8-handoff-three-repeats. AR/ZIP/native/CE are still pending. Q14five job31559 started on two GPUs after Q8 tasks completed.
+
+Llama seed43 fit/eval31680/31681 and seed44 fit/eval31682/31683 queued on node06 after Q8seed4431678. CPUcollector31684 follows. Small-data31608 now waits for31683, preserving experimental lane maximum2GPU plus data lane2GPU. Same fresh ZIP/normal/BA/five setup and full128/cap2048 three timing repeats; Llama target paths/tokenizer and cached records are retained. Shared seed collector now audits both schemas and full provenance;19tests pass. None of the added Llama seed jobs has run yet.
+
 ## 2026-09-12: Llama initializer schema audited for seed replication
 
 Audited completed Llama ZIP summary: contract schema, objectiveZIP, frozen targets, 4096records/3epochs, ordered part manifests and checkpoint hash; status explicitly says fit complete/offline validation pending. Added shared initializer_contract reader to prepare_scaling/prepare_seed; Q8 schema remains separately checked. Family manifests are loaded in numeric part order and every SHA256 verified before existing exact dense-row identity checks and checkpoint verification. Seed preparation now supports Llama43/44, but launch/evaluation/collection wiring remains pending. Updated synthetic Q8 fixture to include the real required family field;19 tests pass. Q8 BA third repetition finished; five-map still live, so full three-repeat joint collection waits.
