@@ -190,3 +190,10 @@ Final report generation must use `matrix.paper_results --require-complete`.
 It requires all36 registered family/interface/loss cells, emits explicit
 coverage metadata, and derives18 CE/AUF comparisons from the matched evidence.
 Partial tables can support progress inspection but are not a completed study.
+
+`matrix.figures` generates two final-evidence figures after full36-cell
+verification: CE/AUF throughput relative to unchanged ZIP, with individual
+measured timing repetitions, and throughput versus final continuation
+GPU-hours. The cost panel explicitly excludes initialization, rollouts and
+tuning. No figures are generated from pilot/tuning numbers by this path;
+rendered final annotations must be visually inspected before paper inclusion.
