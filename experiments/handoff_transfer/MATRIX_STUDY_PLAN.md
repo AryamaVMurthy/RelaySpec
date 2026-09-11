@@ -168,3 +168,14 @@ exclude the cold pass. Output ordering is checked against input token IDs.
 Main latency selectors and final collectors explicitly reject batched contracts.
 CPU measurement tests passed; GPU validation and matched AR/finalist batch4/8
 measurements remain outstanding and must not be presented as completed results.
+
+### Final CE versus AUF reporting
+
+`matrix.loss_comparison` pairs complete final collector outputs for the same
+family/interface. Both losses must have2000updates,16000presentations,
+512anchors,three128-request exact repetitions,the same hardware/control
+checkpoints,and identical hashed AR rows plus summaries. Report each selected
+learning rate alongside the AUF/CE throughput ratios. Because each loss tunes
+its learning rate separately,this measures the best registered loss recipe;
+it must not be described as a fixed-learning-rate causal ablation. Training
+seed variation remains unmeasured in this initial matrix.
