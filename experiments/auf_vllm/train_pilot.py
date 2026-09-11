@@ -125,10 +125,18 @@ def evaluate(draft, embedding, mapper, examples):
     return {key: value/totals["blocks"] if key != "blocks" else value for key,value in totals.items()}
 
 
-def export(mapper, work, dest):
+@torch.no_grad()
+def export(mapper, work, dest, example_features):
     source = work/"models/4b/draft"
     state = load_file(str(source/"model.safetensors"))
     state["fc.weight"] = mapper.folded().detach().cpu().to(torch.bfloat16).contiguous()
+    x = example_features[:256].to("cuda")
+    with torch.autocast("cuda", dtype=torch.bfloat16):
+        expected = mapper(x)[0]
+        actual = mapper.normalize(F.linear(x, state["fc.weight"].to("cuda")))
+    relative = ((actual.float()-expected.float()).square().sum(-1) /
+                (expected.float().square().sum(-1)+1e-6)).mean().item()
+    assert relative < 1e-3, relative
     embedding = tensor(work/"models/4b/target", "model.embed_tokens.weight")
     state["embed_tokens.weight"] = embedding.clone().contiguous()
     state["lm_head.weight"] = embedding.clone().contiguous()
@@ -137,6 +145,8 @@ def export(mapper, work, dest):
     dest.mkdir(parents=True, exist_ok=True)
     save_file(state, str(dest/"model.safetensors"))
     write(dest/"config.json", config)
+    write(dest/"export_check.json", {"context_relative_mse":relative,"tolerance":1e-3,
+                                    "preserved_source_embedding_head":True})
 
 
 def main(args):
@@ -197,7 +207,7 @@ def main(args):
     assert all(p._version == frozen_versions[n] and p.grad is None for n,p in draft.named_parameters())
     torch.save({"mapper":mapper.state_dict(),"optimizer":optimizer.state_dict(),"seed":args.seed,
                 "steps":steps,"objective":args.objective}, args.out/"checkpoint.pt")
-    export(mapper, work, args.out/"export")
+    export(mapper, work, args.out/"export", train[0][1])
     write(args.out/"summary.json", {"objective":args.objective,"seed":args.seed,"epochs":args.epochs,
           "records":len(train),"anchors":args.anchors,"microbatch_records":1,"accumulation":1,
           "lr":args.lr,"pilot_only":True,"seconds":time.perf_counter()-started,
