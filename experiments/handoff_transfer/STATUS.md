@@ -1,5 +1,13 @@
 ## Verified fit and scaling preparation update
 
+32K data-only chain enabled:31488 generates only added16,384 records after
+31486;31489 captures frozen source/target features after31488;new CPU2
+assembly31645 follows31489. Each GPU array max2 tasks,serial data stages.
+Generation batches up to64 sequences,cap4096; evaluation remains128/cap2048.
+Original16K rollouts/paired features reused and reserved dev/eval groups
+excluded by prepared manifest. Old-loss training arrays remain held. Larger
+data fits/evaluations still pending implementation and data verification.
+
 Capacity collector31644 queued after31643. It retains every declared rank,
 all timing repetitions,trainable parameter counts and fitting costs; compares
 against matched AR and primary rank56,checks common runtime/request manifests,

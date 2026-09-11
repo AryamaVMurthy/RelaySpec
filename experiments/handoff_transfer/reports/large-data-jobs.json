@@ -1,0 +1,11 @@
+{
+  "existing16k_capture": "31486",
+  "extra16k_generation": {"job_id": "31488", "dependency": "afterok:31486", "array": "0-63%2",
+    "records_per_task": 256, "max_num_seqs": 64, "output_cap": 4096, "gpus_per_task": 1},
+  "extra16k_source_and_target_capture": {"job_id": "31489", "dependency": "afterok:31488",
+    "array": "0-127%2", "gpus_per_task": 1},
+  "assembly": {"job_id": "31645", "dependency": "afterok:31489", "cpus": 2, "gpus": 0},
+  "preserved": "Original 16384 rollouts and paired ZIP samples; first4096 dense target captures",
+  "target": "Original frozen Qwen3-8B, no target LoRA",
+  "status": "Queued data preparation only; matched larger-data fitting and evaluations remain"
+}
