@@ -3,7 +3,7 @@
 Experimental: requires a GPU exactness gate before any performance claim.
 CPU tokenization/synchronization overhead is part of measured runtime.
 """
-import inspect,os
+import inspect,os,functools
 import torch
 from transformers import AutoTokenizer
 from experiments.handoff_transfer.cross.bridge import TextBridge
@@ -11,12 +11,34 @@ from experiments.handoff_transfer.cross.bridge import TextBridge
 def install():
     from vllm.v1.worker.gpu.spec_decode.dflash.speculator import DFlashSpeculator
     if getattr(DFlashSpeculator,'_cross_bridge_installed',False):return
+    # vLLM's sampler warmup uses synthetic non-greedy requests without passing
+    # dummy_run=True. Mark only that explicit startup call; do not infer warmup
+    # from temperature or token values on real requests.
+    from vllm.v1.worker import gpu_worker
+    from vllm.v1.worker.gpu import warmup
+    original_warmup = gpu_worker.warmup_kernels
+    @functools.wraps(original_warmup)
+    def scoped_warmup(model_runner, *args, **kwargs):
+        speculator = model_runner.speculator
+        if not isinstance(speculator, DFlashSpeculator):
+            return original_warmup(model_runner, *args, **kwargs)
+        speculator._cross_bridge_warmup = True
+        try:
+            return original_warmup(model_runner, *args, **kwargs)
+        finally:
+            speculator._cross_bridge_warmup = False
+    gpu_worker.warmup_kernels = scoped_warmup
+    warmup.warmup_kernels = scoped_warmup
     original=DFlashSpeculator.propose;signature=inspect.signature(original)
     required={'input_batch','num_sampled','num_rejected','last_sampled','next_prefill_tokens','temperature'}
     assert required<=signature.parameters.keys(),'Pinned vLLM proposer API changed'
     def propose(self,*args,**kwargs):
         bound=signature.bind(self,*args,**kwargs);bound.apply_defaults();a=bound.arguments
         if a['dummy_run'] or a['is_profile']:return original(*bound.args,**bound.kwargs)
+        if getattr(self, '_cross_bridge_warmup', False):
+            # Exercise the source drafter kernels, then give synthetic target
+            # warmup valid target IDs. No warmup outputs enter measurements.
+            return torch.zeros_like(original(*bound.args, **bound.kwargs))
         if not hasattr(self,'_text_bridge'):
             self._text_bridge=TextBridge(
                 AutoTokenizer.from_pretrained(os.environ['CROSS_SOURCE_TOKENIZER'],local_files_only=True),

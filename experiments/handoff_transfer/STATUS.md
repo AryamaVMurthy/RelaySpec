@@ -488,3 +488,14 @@ Queued additional LR fits31780/31781 and all-candidate validation31782/31783.
 Four-GPU maximum is enforced through two2-GPU fitting lanes or two2-wide1-GPU
 validation arrays; old baseline pools31606/31607 remain explicitly held until
 new full-fit dependencies are installed. Routine next poll not before02:30:47.
+
+## 2026-09-12 02:31 IST verified screen and cross gate repair
+
+Qwen fiveBA56 AUF,100updates,512anchor limit:149.0766TPS versus24.5635AR,
+6.0690×,32/32 full-token and finish matches,cap512,15,940 actual output tokens.
+This is a tuning screen, not the final128/cap2048 comparison and not evidence
+of improvement over normal RelaySpec. CE screen31785 was running at check.
+Llama normal job31581 completed. Cross gate31777 failed during synthetic
+vLLM non-greedy sampler warmup; explicit warmup-only handling added and31800
+resubmitted. Real requests remain greedy-only and target verified. Node06 has
+2.1TB free at check; node07 has11TB. Next routine check not before02:51:02.

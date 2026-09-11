@@ -22,15 +22,15 @@
     "ce": 31769
   },
   "cross_decode_gate": 31770,
-  "last_routine_gpu_check": "2026-09-12T02:10:47+05:30",
-  "next_routine_gpu_check_not_before": "2026-09-12T02:30:47+05:30",
+  "last_routine_gpu_check": "2026-09-12T02:31:02+05:30",
+  "next_routine_gpu_check_not_before": "2026-09-12T02:51:02+05:30",
   "remaining_initial_fit_arrays": {
     "q8": 31771,
     "llama": 31772
   },
   "repair_jobs": {
     "cross_fit": 31776,
-    "cross_gate": 31777,
+    "cross_gate": 31800,
     "five_ba_auf_screen": 31784,
     "five_ba_ce_screen": 31785
   },
@@ -53,7 +53,8 @@
     "31769": "same missing manifests",
     "31770": "cross training prerequisite absent; added preflight before AR",
     "31778": "Transformers chat template returned BatchEncoding; use text template then explicit encode",
-    "31779": "same BatchEncoding issue; repaired and resubmitted"
+    "31779": "same BatchEncoding issue; repaired and resubmitted",
+    "31777": "vLLM synthetic sampler warmup is non-greedy without dummy flag; explicit warmup scope added"
   },
   "promotion_pipeline": {
     "q8_promote100": 31786,
@@ -74,5 +75,18 @@
   "final_128x2048_arrays": {
     "q8": 31798,
     "llama": 31799
+  },
+  "verified_validation": {
+    "q8-five_ba56-auf-lr0.0001": {
+      "job": 31784,
+      "steps": 100,
+      "requests": 32,
+      "cap": 512,
+      "tps": 149.07662286306075,
+      "ar_tps": 24.563503956386224,
+      "ar_ratio": 6.069029203966748,
+      "exact_tokens_and_finish": 32,
+      "scope": "tuning, not final128/cap2048"
+    }
   }
 }
