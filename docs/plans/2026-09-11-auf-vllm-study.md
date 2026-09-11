@@ -620,3 +620,19 @@ initialization hash/cost, actual trainable parameters, unchanged deployed
 fusion size, offline validation and128x2048 decoding. This implements the
 Q8 residual-rank subset only; direct fusion, factored and MLP architectures,
 non-Qwen rank checks, regularization and ZIP fixed-update curves remain open.
+
+### Regularization and evidence draft (20:53 IST)
+
+Array31500 adds weight decay0.01/0.1 at512 records, AUF/CE, five-map dense
+and rank56 residual. Zero-decay cells reuse31494/31498. Each parameterization
+retains its own fixed initialization and learning rate, three epochs,
+1024-record validation and128x2048 decoding. This implements only the
+declared Q8 weight-decay subset; other remaining architecture/compute studies
+are unchanged. The trainer's zero-decay defaults remain compatible with
+existing checkpoint contracts.
+
+The new manuscript scaffold and generated current evidence now live in
+paper/auf_iclr. It is explicitly preliminary. build_paper_assets.py and
+claim_evidence.json tie its numeric claims to completed raw outputs and
+fitting contracts. Final writing and claims require the unfinished main
+experiments, repetitions, confirmation and backend replication.

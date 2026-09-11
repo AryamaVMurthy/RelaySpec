@@ -57,10 +57,14 @@ def validation(draft,embedding,mapper,records):
 
 
 def main(args):
+    if args.weight_decay < 0:
+        raise ValueError('Weight decay must be nonnegative')
     if args.logical_records % args.microbatch_records:
         raise ValueError("Logical batch must be divisible by microbatch records")
     args.out.mkdir(parents=True,exist_ok=True)
     contract={key:str(value) if isinstance(value,Path) else value for key,value in vars(args).items()}
+    if args.weight_decay == 0:
+        contract.pop('weight_decay')  # Preserve existing unregularized resume contracts.
     if not args.draft_lora:
         contract.pop('draft_lora')
     if args.lora_base is None:
@@ -110,7 +114,7 @@ def main(args):
               'initialization_records_charged':4096,'forward':'merged BF16 weight with FP32 LoRA accumulation'})
     else:
         trainable=list(mapper.parameters())
-    optimizer=torch.optim.AdamW(trainable,lr=args.lr,weight_decay=0,fused=True)
+    optimizer=torch.optim.AdamW(trainable,lr=args.lr,weight_decay=args.weight_decay,fused=True)
     planned_steps=math.ceil(len(train)/args.logical_records)*args.epochs
     warm=max(1,int(.05*planned_steps))
     start_epoch=step=0
@@ -212,6 +216,7 @@ if __name__ == "__main__":
     parser.add_argument("--logical-records",type=int,default=32)
     parser.add_argument("--seed",type=int,default=42)
     parser.add_argument("--lr",type=float,default=1e-4)
+    parser.add_argument('--weight-decay',type=float,default=0.)
     parser.add_argument("--exploratory",action="store_true")
     parser.add_argument("--defer-validation",action="store_true",help="Fit fixed epochs while separately reserved validation labels are prepared")
     parser.add_argument("--lora-base",type=Path)

@@ -238,3 +238,30 @@ initialization epochs plus three continuation epochs are explicitly charged.
 LR2e-5 is fixed from the rank32 screen, no per-rank tuning. Rank changes
 trainable parameters, not the merged dense deployment size. All new cells
 remain queued and no capacity conclusion is available yet.
+
+## Follow-up at 20:53 IST: regularization and separate evidence draft
+
+Q14 ZIP31334_0 completed training and1024-record offline validation.
+Epoch3 teacher-forced prefix is5.564697 (epoch1:4.632080),4096 validation
+blocks. This is not TPS. Q14 CE31334_1 is running. Reports archived in
+reports/q14-main-31334/zip. The two drafter-LoRA jobs continue repeated
+decoding. Llama workload31471 is pending with scheduler reason AssocGrpGRES;
+three study GPUs are active, and no unrelated jobs were modified.
+
+Array31500 follows31498: eight nonzero-weight-decay controls (0.01/0.1),
+512 records, AUF/CE, five-map dense and rank56 fusion residual. Corresponding
+zero-decay cells are reused from31494/31498. Initialization, LR and epochs
+remain fixed within each parameterization. The trainer defaults to zero
+decay and preserves existing zero-decay checkpoint contracts. All19 tests
+pass; new wrappers compile. These regularization runs remain queued.
+
+Created paper/auf_iclr/main.tex and a three-page preliminary main.pdf with
+completed Qwen/Llama objective tables, the first LoRA timing and the graph.
+build_paper_assets.py validates paired128 request outputs,2048 caps, fitting
+contracts and runtime LoRA attachment checks, then emits source hashes in
+claim_evidence.json. No historical paper results are imported. All three
+pages were visually inspected; the cover explicitly marks the draft as
+incomplete. TEXINPUTS must put '.' first to avoid old-paper table collisions.
+This is an evidence scaffold, not a finished paper or completed study;
+related work, full contributions, remaining evaluations and final audit
+remain outstanding.

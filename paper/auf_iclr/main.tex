@@ -1,0 +1,110 @@
+\documentclass{article}
+\usepackage{iclr2027_conference,times}
+\usepackage{amsmath,amssymb,booktabs,graphicx,microtype}
+\usepackage{hyperref}
+\iclrfinalcopy
+\title{Calibration Objectives for\\Transferred Speculative Drafters\\\large Preliminary evidence report}
+\author{Anonymous Authors}
+\begin{document}
+\maketitle
+\lhead{Working draft: experiments and manuscript incomplete}
+\begin{abstract}
+We investigate whether acceptance-aware token supervision improves a
+transferred feature-conditioned speculative drafter. This working report
+records completed development experiments from an ongoing study, rather
+than a finished submission. With 4,096 training records and three epochs,
+the reproduced feature objective currently outperforms uniform and
+accept-until-fail token cross-entropy on two within-family transfers.
+Additional drafter LoRA training from the feature-fitted checkpoint gives
+near-parity throughput in its first full timing. Repeated timing, broader
+workloads, scaling, and confirmation experiments remain unfinished.
+\end{abstract}
+
+\section{Question and controlled interventions}
+RelaySpec transfers a frozen feature-conditioned drafter to a new target
+through a learned linear interface. We compare the reproduced ZIP feature
+objective with ordinary token cross-entropy (CE) and accept-until-fail
+(AUF) cross-entropy while keeping the original targets frozen. No
+target-side LoRA adaptation is used. Equal record counts and epochs do
+not imply equal optimizer updates, supervised positions, or compute
+across feature and token objectives.
+
+For valid supervised positions $m_{b,j}$, draft probabilities
+$p_{\theta,b,j}$, and labels $y_{b,j}$ from the original target's rollout,
+the detached AUF support is
+\begin{align}
+ w_{b,j}&=\operatorname{stopgrad}\left[
+ \prod_{i<j}\left(1-m_{b,i}+m_{b,i}
+ \mathbf{1}[\arg\max_v p_{\theta,b,i}(v)=y_{b,i}]\right)\right],\\
+ \mathcal L_{\mathrm{AUF}}&=-\frac{\sum_{b,j}m_{b,j}w_{b,j}
+ \log p_{\theta,b,j}(y_{b,j})}{\sum_{b,j}m_{b,j}w_{b,j}}.
+\end{align}
+The clean anchor and padding are excluded. The first incorrect proposal
+remains supervised; positions after it do not. Normalization is performed
+inside each microbatch, followed by equal microbatch averaging per update.
+Pure AUF is used for this token intervention; no simultaneous MSE or KL
+term is added. ZIP denotes the reproduced layer and normalized fused-context
+feature objective, with its original position sampling and example weighting.
+
+\section{Completed development evidence}
+Each result below uses 128 Numina development requests, a maximum of
+2,048 generated tokens with natural EOS, fitting seed42, and one warmed
+timing. The inference backend is vLLM0.28.0 on L40S hardware. These are
+development measurements, not untouched confirmation results. Exactness
+means equality of the complete generated token sequence with the paired
+autoregressive (AR) output. It does not establish mathematical correctness
+of an answer or a universal guarantee across numerical configurations.
+
+\begin{table}[h]
+\centering\small
+\input{generated/objective_table.tex}
+\caption{Completed loss replacements. Qwen3-4B and Llama-3.1-8B drafters
+serve the listed targets. Speedup is relative to each target's own AR
+run. Differences in target and runtime configuration preclude interpreting
+cross-family absolute throughput as a model ranking.}
+\end{table}
+
+\begin{figure}[t]
+\centering\includegraphics[width=\linewidth]{figures/objectives.pdf}
+\caption{Throughput after fitting each objective. Intervals use 10,000
+paired request bootstrap samples; they exclude fitting-seed, timing-order
+and selection uncertainty. The current AUF intervention reduces throughput
+relative to feature fitting in both completed settings.}
+\end{figure}
+
+\section{Does adapting the drafter add value?}
+We additionally hold the trained ZIP interface fixed and adapt drafter
+attention and MLP projections with rank32 LoRA, using either CE or AUF.
+All branches reuse the same 4,096 records. The initial ZIP fit receives
+three epochs and each continuation receives three additional epochs.
+This is an incremental adaptation test; it is not an equal-total-compute
+comparison with the unchanged ZIP checkpoint. No source transformer is
+restored during decoding.
+
+\begin{table}[h]
+\centering\small
+\input{generated/lora_table.tex}
+\caption{First complete drafter-LoRA timing, compared with the earlier
+ZIP timing. Three fresh unchanged ZIP/native controls and repeated
+LoRA timings are pending. These approximately half-percent differences
+do not establish a winner.}
+\end{table}
+Merged-checkpoint logits agree exactly with the training implementation.
+The vLLM attachment check also verifies full projection tensors and the
+derived fused context-KV buffer against the exported weights. All reported
+LoRA outputs match paired AR outputs on 128/128 requests.
+
+\section{Scope and unfinished evidence}
+Our reported Qwen3 experiments use a shared tokenizer and token-ID
+vocabulary; the mapper adapts hidden representations or the fusion
+interface, not vocabulary IDs. Consequently, these results do not
+demonstrate heterogeneous-vocabulary DFlash support.
+
+Qwen14 evaluation, multiple-workload measurements, timing and fitting-seed
+replication, data and compute scaling, capacity, regularization, untouched
+confirmation, and the final Transformers replications remain incomplete.
+Related work, contribution claims and the full discussion will be written
+against the completed evidence. This report does not claim a new
+state-of-the-art method or submission readiness. Machine-readable claim
+and source hashes are recorded in \texttt{claim\_evidence.json}.
+\end{document}
