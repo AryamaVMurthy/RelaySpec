@@ -532,3 +532,9 @@ Separatebatch4/8measurement and comparisonprotocol implemented/deployed;
 61CPUtests pass. GPUbatchvalidation remains outstanding. Final128/cap2048
 benchmarks remain queued after tuning; no new finalspeedclaim. Next routine
 GPUcheck not before03:31:11IST.
+
+03:14IST:queued31861,oneGPU batch4/8 AR-vs-verifiedQwenfiveBAAUF gate,
+8requests/cap128. It follows31803and31772;QwenLR31780now waits afterok31861.
+Llama recovery/LRmay overlap with thisoneGPUgate without exceeding4GPUs.
+This validates servingintegration only; full128/cap2048 batchcomparisons remain
+outstanding. Batchscript submitted directly toSlurm,sourcecopied intojobdirectory.
