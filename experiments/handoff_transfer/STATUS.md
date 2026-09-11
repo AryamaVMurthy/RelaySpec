@@ -1,3 +1,7 @@
+## 2026-09-12: hardware profiling collection wired
+
+CPU-only collectors31673(Q8 after31632) and31674(Llama after31633) require all five methods, four completed instrumented requests/cap2048, profiler max64 iterations, nonempty GPU kernel traces and nvidia-smi telemetry. Both compressed and plain PyTorch trace formats are supported. Reports retain kernel duration categories, busy-time union, top kernels and source hashes; scope explicitly excludes primary throughput, full-request profiling, SM occupancy and unverified attribution of whole-node GPU telemetry. Test rejects profile outputs labeled as valid primary timing. All16 tests pass. Active four GPU jobs still progressing; normalQ14 was loading its next engine at last check.
+
 ## 2026-09-12: second complete Q8 timing repetition archived
 
 Both AUF methods now have two complete 128-request/cap2048 repetitions archived in reports/q8-handoff-two-repeats. BA:177.533103/177.594983 TPS, mean177.564043, paired mean ratio to normal1.02687468 (+2.6875%). Five maps:164.495466/164.445378 TPS, mean164.470422, ratio0.95115276 (-4.8847%). Matched normal172.865057/172.968865 TPS. All methods emitted122768 tokens per pass and match normal128/128 full token sequences and finishes. Collector verifies summary completeness, matching runtime/manifest/family/mode/repetition and timing validity; archives include SHA256 provenance. Third AUF repetitions still running when checked; AR/ZIP/native/CE still pending. These are one-fit development results, not confirmation or a 10% gain.

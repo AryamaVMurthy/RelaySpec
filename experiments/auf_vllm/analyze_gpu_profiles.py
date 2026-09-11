@@ -16,7 +16,8 @@ def category(name):
 
 
 def analyze(path):
-    with gzip.open(path,'rt') as f:trace=json.load(f)
+    opener = gzip.open if path.suffix == '.gz' else open
+    with opener(path,'rt') as f:trace=json.load(f)
     kernels=[e for e in trace['traceEvents'] if e.get('cat')=='kernel' and e.get('ph')=='X']
     assert kernels
     durations=collections.defaultdict(float);names=collections.defaultdict(float)
