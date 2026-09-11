@@ -11,13 +11,15 @@ ROOT=Path("/scratch/aryama.murthy/relayspec-auf-20260911")
 MODELS=ROOT/"models"
 
 
-def generate(out,count=32,offset=0,dev_count=8,family="llama"):
+def generate(out,count=32,offset=0,dev_count=8,family="llama",validation=False):
     from transformers import AutoTokenizer
     from vllm import LLM,SamplingParams
     target_name="llama3-target" if family == "llama" else "qwen14-target"
     tokenizer=AutoTokenizer.from_pretrained(MODELS/target_name,local_files_only=True)
     parts={"train":rows(ROOT/"manifests/train.jsonl")[offset:offset+count],"dev":rows(ROOT/"manifests/dev.jsonl")[:dev_count]}
-    assert len(parts["train"]) == count
+    if validation:
+        parts={"train":[],"dev":rows(ROOT/"manifests/eval.jsonl")[128+offset:128+offset+count]}
+    assert len(parts["dev" if validation else "train"]) == count
     assert not ({x["group_id"] for x in parts["train"]} & {x["group_id"] for x in parts["dev"]})
     llm=LLM(model=str(MODELS/target_name),dtype="bfloat16",max_model_len=5120,
             max_num_seqs=64 if count>32 and family == "llama" else 32,max_num_batched_tokens=8192,
@@ -110,9 +112,10 @@ if __name__ == "__main__":
     parser.add_argument("--offset",type=int,default=0)
     parser.add_argument("--dev-records",type=int,default=8)
     parser.add_argument("--family",choices=["llama","q14"],default="llama")
+    parser.add_argument("--validation",action="store_true")
     args=parser.parse_args()
     args.out.mkdir(parents=True,exist_ok=True)
     if args.mode == "generate":
-        generate(args.out,args.records,args.offset,args.dev_records,args.family)
+        generate(args.out,args.records,args.offset,args.dev_records,args.family,args.validation)
     else:
         capture(args.out,args.mode,args.family)
