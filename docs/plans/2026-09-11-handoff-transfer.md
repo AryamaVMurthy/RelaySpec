@@ -257,3 +257,19 @@ Each performs two optimizer updates and verifies frozen weights and export.
 They wait for cache pack31528 and the older one-GPU evaluation31346, then
 run sequentially beside the two-GPU origin reproduction31525; max four GPUs.
 Full architecture runs follow successful numerical and decoding gates.
+
+
+### Execution update
+
+The initial pending gates31551/31552 were replaced before execution by
+31553/31554 to add vLLM token/finish-exact deployment checks. Full fit jobs
+31556–31561 now cover both architectures for Q8,Q14,Llama. Evaluation jobs
+31562–31573 and CPU aggregation jobs are recorded in
+`experiments/handoff_transfer/reports/{evaluation,collection}-jobs.json`.
+Training is a serial two-GPU lane; evaluation is two serial one-GPU lanes.
+The latter wait for the older runs to release their GPUs. Q8 uses the exact
+original development manifest; its SHA256 matches the node06 manifest:
+`c540fc20817109c468763ba8bc70d48472f5869c814585a977c7a7337fce4cc9`.
+A missing node07 manifest path was linked to that existing immutable file.
+The original handoff fit completed in231.266 seconds; long evaluation is
+still running. This is evidence for fit efficiency, not transfer speedup.

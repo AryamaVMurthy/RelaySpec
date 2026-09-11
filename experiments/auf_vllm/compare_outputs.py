@@ -25,6 +25,7 @@ def compare(ar, method):
     assert caps_a==caps_b,'unequal output caps'
     assert a and a.keys()==b.keys(),'unequal request sets'
     exact=sum(a[k]['output_ids']==b[k]['output_ids'] for k in a)
+    finish_exact=sum(a[k]['finish_reason']==b[k]['finish_reason'] for k in a)
     for key in a:
         assert a[key]['prompt_ids']==b[key]['prompt_ids'],'unequal tokenized prompt'
     tokens_a=sum(x['output_tokens'] for x in a.values());tokens_b=sum(x['output_tokens'] for x in b.values())
@@ -32,7 +33,7 @@ def compare(ar, method):
     mismatches=[{'group_id':k,'ar_tokens':len(a[k]['output_ids']),'method_tokens':len(b[k]['output_ids']),
                  'first_different_position':next((i for i,(x,y) in enumerate(zip(a[k]['output_ids'],b[k]['output_ids'])) if x!=y),min(len(a[k]['output_ids']),len(b[k]['output_ids'])))}
                 for k in a if a[k]['output_ids']!=b[k]['output_ids']]
-    return {'count':len(a),'exact_matches':exact,'ar_tps':tokens_a/seconds_a,'method_tps':tokens_b/seconds_b,
+    return {'count':len(a),'exact_matches':exact,'finish_matches':finish_exact,'ar_tps':tokens_a/seconds_a,'method_tps':tokens_b/seconds_b,
             'throughput_ratio':(tokens_b/seconds_b)/(tokens_a/seconds_a),'ar_output_tokens':tokens_a,
             'method_output_tokens':tokens_b,'mismatches':mismatches,
             'ratio_note':'aggregate output tokens divided by summed request wall times; workers are independent sequential streams'}
@@ -51,4 +52,4 @@ if __name__=='__main__':
     write(args.out,result)
     print(json.dumps(result),flush=True)
     if args.require_exact:
-        assert result['exact_matches']==result['count'],result
+        assert result['exact_matches']==result['count'] and result['finish_matches']==result['count'],result

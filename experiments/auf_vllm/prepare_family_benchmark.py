@@ -7,7 +7,7 @@ from .pilot_data import rows,write,sha
 
 def main(args):
     from transformers import AutoTokenizer
-    target=args.models/('llama3-target' if args.family=='llama' else 'qwen14-target')
+    target=args.target_path or args.models/{'llama':'llama3-target','q14':'qwen14-target','q8':'qwen8-target'}[args.family]
     tokenizer=AutoTokenizer.from_pretrained(target,local_files_only=True)
     source=rows(args.manifest)
     evaluation,warmup=source[:128],source[-4:]
@@ -34,8 +34,9 @@ def main(args):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--family',choices=['llama','q14'],required=True)
+    parser.add_argument('--family',choices=['llama','q14','q8'],required=True)
     parser.add_argument('--models',type=Path,required=True)
+    parser.add_argument('--target-path',type=Path)
     parser.add_argument('--manifest',type=Path,required=True)
     parser.add_argument('--out',type=Path,required=True)
     main(parser.parse_args())

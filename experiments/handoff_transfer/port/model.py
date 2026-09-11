@@ -40,6 +40,7 @@ def build(kind):
         assert saved['epoch']==2, 'ZIP maps must be from the epoch-3 export'
         maps=saved['mapper']
         assert torch.equal(maps['fusion'],native_state['fc.weight'])
+        assert torch.equal(maps['norm'],native_state['hidden_norm.weight'])
         draft.fc=FiveMapProjection(native_state['fc.weight'],[maps[f'maps.{i}.weight'] for i in range(5)])
         assert draft.fc.target_width*5==INPUT_WIDTH
         folded=draft.fc.folded().detach().to(torch.bfloat16)

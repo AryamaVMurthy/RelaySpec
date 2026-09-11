@@ -1,3 +1,38 @@
+# Current state — 2026-09-11, approximately 22:40 IST
+
+- Original handoff Math fit: **complete**, 2,000 optimizer updates, 16,000
+  record presentations, 860,160 trainable parameters; 231.266 seconds on two
+  GPUs. This is fit time, not data preparation or evaluation time. Its full
+  128-request AR/native/mapper evaluation remains live in31525.
+- Qwen8 transfer cache31528: complete,4,096 records verified/repacked.
+  Qwen14 cache31529 live (last observed3,584 records); Llama31530 follows.
+- Both transfer architectures implemented with unchanged packaged AUF and
+  training loop, explicit source/checkpoint validation and folded exports.
+  Four CPU tests pass, including finish-reason disagreement detection.
+- Original pending gates31551/31552 were canceled before running to include
+  deployment tests. Replacement gates31553/31554 test both Qwen8 variants.
+  The first now follows origin31525 rather than waiting for slow old31346.
+- Full fits queued:Q8 r56/five31556/31557; Q14 r56/five31558/31559;
+  Llama r56/five31560/31561. Every full fit includes a short GPU training,
+  frozen/export and four-request token/finish-exact decoding gate first.
+- Matched vLLM evaluation jobs31562–31573 cover AR, ZIP, handoff-r56 and
+  handoff-five for all three pairs:128 requests, max2,048 tokens, natural
+  EOS,three timing repetitions. Two serial one-GPU lanes start after both
+  origin31525 and old31346 finish. Training uses one serial two-GPU lane.
+  Thus the campaign remains within four GPUs including old live work.
+- Evaluation and collection dependency IDs are recorded under reports/.
+  No new handoff transfer speedup result is available yet.
+
+## Remaining scope (goal is not complete)
+
+Normal RelaySpec matched control; heterogeneous-vocabulary cross-family
+implementation/correctness gate; other main workloads; data, optimization
+and capacity sweeps under the new recipe; selected fitting-seed confirmation;
+full GPU profiling; final Transformers cross-checks; comprehensive evidence
+and new paper. ZIP and normal RelaySpec remain distinct baselines.
+
+## Earlier audit and scheduling history
+
 # Handoff transfer status
 
 This campaign follows the exact handoff.zip source, not the earlier AUF
