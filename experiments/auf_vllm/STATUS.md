@@ -121,3 +121,19 @@ DFlash support.
 - Added figures/q8_selected_decoding.{pdf,png} with10000 paired request
   bootstrap resamples, and figures/q8_gpu_kernel_share.{pdf,png}. Request
   intervals exclude seed, timing-order and selection uncertainty.
+
+## Follow-up at20:02 IST: seed/scaling scheduling
+
+- Added robustness arrays31480Q8 and31481Llama: six fits each, seeds43/44,
+  ZIP/CE/AUF4096records3epochs; one128MATH/2048 evaluation each. Pending main
+  workload completion. No additional Q14 fit seeds per agreed protocol.
+- Added31478:18fixed-update AUF/CE cells for16--4096records,1024updates,
+ 32visits/update,4anchors/visit;128-update resumable chunks; full endpoint
+  offline validation and128x2048 decoding. Pending31480.
+- Added31479: four continuous12epoch fits at512/4096records,AUF/CE, evaluated
+  epochs1/3/6/12. Pending31478. This is not yet executed or claimed complete.
+- Node07 chains enforce max2GPU; node06 two independent max1GPU chains.
+  Higher data counts, ZIP scaling, capacity, mixed domains, final confirmation,
+  Transformers checks and paper still remain. Eighteen tests passed previously;
+  scaling wrappers pass Python compilation and shell syntax checks, while the
+  underlying resumable update trainer already passed its GPU resumption gate.

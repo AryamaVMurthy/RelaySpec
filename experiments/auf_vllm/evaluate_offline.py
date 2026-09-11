@@ -28,15 +28,16 @@ def main(args):
     records=Records(args.data,"dev")
     assert len(records) == 1024
     result=[]
-    for epoch in [1,3]:
-        path=args.fit/f"epoch-{epoch}/export/model.safetensors"
+    label='step' if args.steps else 'epoch'
+    for epoch in (args.steps or args.epochs):
+        path=args.fit/f"{label}-{epoch}/export/model.safetensors"
         with safe_open(path,framework="pt",device="cpu") as reader:
             interface=FoldedInterface(reader.get_tensor("fc.weight"),reader.get_tensor("hidden_norm.weight")).to("cuda")
             # Also evaluate exported drafter adaptations, not the original drafter.
             state={name:reader.get_tensor(name) for name in draft.state_dict() if name != 'fc.weight'}
             loaded=draft.load_state_dict(state,strict=False)
             assert loaded.missing_keys == ['fc.weight'] and not loaded.unexpected_keys
-        event={"epoch":epoch,"export_sha256":sha(path),"metrics":validation(draft,embedding,interface,records),
+        event={label:epoch,"export_sha256":sha(path),"metrics":validation(draft,embedding,interface,records),
                "interface":"BF16 folded deployment matrix","job_id":os.environ.get("SLURM_JOB_ID")}
         result.append(event)
         report={"manifest_sha256":sha(args.data/"dev.json"),"records":1024,"results":result}
@@ -51,4 +52,6 @@ if __name__ == "__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument("--fit",type=Path,required=True)
     parser.add_argument("--data",type=Path,required=True)
+    parser.add_argument('--epochs',type=int,nargs='+',default=[1,3])
+    parser.add_argument('--steps',type=int,nargs='+')
     main(parser.parse_args())

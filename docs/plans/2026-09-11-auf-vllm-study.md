@@ -535,3 +535,29 @@ are included. This audit does not establish semantic or pretraining independence
 - Keep confirmation unused until selections are frozen. Add original paper's
   exposed legacy benchmarks as separately named replications; these new sources
   do not silently replace the remaining legacy breadth/quality requirements.
+
+
+## Additional seed and scaling execution (2026-09-11)
+
+Robustness arrays31480(Q8,max2GPUs) and31481(Llama,max1GPU) cover ZIP/CE/AUF
+at seeds43/44,4096records,3epochs, fixed1e-3 LR. Each evaluates128MATH development
+requests once at2048cap using the same unified workload runner and saved AR
+reference. No best-seed selection; final tables aggregate all three fit seeds.
+They follow the corresponding completed seed42 workload arrays.
+
+Fixed-update array31478 followsQ8robustness31480, max2GPUs. It covers18cells:
+N=16,32,64,128,256,512,1024,2048,4096 xAUF/CE. Each fits1024updates at fixed
+32record visits/update and4anchors/visit, with128-update resumable chunks.
+Every endpoint receives1024-record offline validation and128x2048 Numina
+development decoding. This initial scheduled array does not coverZIP orN>4096;
+those remain required follow-ups, not claimed completed scaling coverage.
+
+Continuous-epoch array31479 follows31478, max2GPUs: N512/4096 xAUF/CE, one
+12epoch trajectory percell, saved/evaluated epochs1/3/6/12. Its12epoch cosine
+schedule differs from a separately fit3epoch schedule; identify the experiment
+as continuous training, not as identical independently optimized short fits.
+Every plotted checkpoint gets128x2048 decoding and1024-record validation.
+
+Current node07 chain:31447->31461->31450->31470->31480->31478->31479, with
+max2GPUs. Node06 has independent one-GPU Llama andQ14 chains. Preparations for
+8192/16384/32768 and capacity experiments remain outstanding.
