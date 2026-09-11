@@ -1,5 +1,13 @@
 ## Verified fit and scaling preparation update
 
+Prepared standalone Transformers runner/final script for Q8 and Llama. Uses
+pinned official DFlash plus existing verified relay generator,folded exports,
+normal-input RMS only for normal arm,and its own synchronized AR reference.
+Short4/cap128 gate must pass for all methods before128/cap2048 runs. One
+timing repetition per secondary backend replication; primary vLLM uses3.
+These files pass syntax checks but have NOT run on GPU; scheduling remains
+last after remaining vLLM/workload/confirmation work,as user requested.
+
 Large-data CPU collector31657 queued after31656. Requires all fourN points,
 four complete epochs per architecture (including expected microbatch counts),
 verified exports,all128 token/finish matches across three timing repetitions,
