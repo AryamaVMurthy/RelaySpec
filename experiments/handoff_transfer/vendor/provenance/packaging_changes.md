@@ -1,0 +1,3 @@
+# Packaging changes
+
+Source origins record original hashes before edits. Training/loss/batching/export logic retained. Common paths use AUF_WORKDIR, AUF_MODELS, AUF_DOMAIN and SPECFORGE_ROOT. Only fusion_r56 is exposed. Runtime selects the corresponding adapter/tokenizer/caps via AUF_ADAPTER and AUF_DOMAIN. Original benchmark input/timing functions were extracted without unrelated legacy fit functions. The portable evaluation wrapper enforces reference token/finish agreement. Safe weight sharing is enabled with AUF_SAFE_RUNTIME=1. Selected prompts are unchanged; historical timing/device fields were removed from reference outputs. No fresh GPU end-to-end run of these portable wrappers is claimed.
