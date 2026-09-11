@@ -22,8 +22,8 @@
     "ce": 31769
   },
   "cross_decode_gate": 31770,
-  "last_routine_gpu_check": "2026-09-12T02:51:10+05:30",
-  "next_routine_gpu_check_not_before": "2026-09-12T03:11:10+05:30",
+  "last_routine_gpu_check": "2026-09-12T03:11:11+05:30",
+  "next_routine_gpu_check_not_before": "2026-09-12T03:31:11+05:30",
   "remaining_initial_fit_arrays": {
     "q8": 31771,
     "llama": 31772
@@ -32,7 +32,8 @@
     "cross_fit": 31776,
     "cross_gate": 31800,
     "five_ba_auf_screen": 31784,
-    "five_ba_ce_screen": 31785
+    "five_ba_ce_screen": 31785,
+    "llama_fusion_r56_ce_initial_fit": 31842
   },
   "lr_tuning_arrays": {
     "q8": 31780,
@@ -54,7 +55,9 @@
     "31770": "cross training prerequisite absent; added preflight before AR",
     "31778": "Transformers chat template returned BatchEncoding; use text template then explicit encode",
     "31779": "same BatchEncoding issue; repaired and resubmitted",
-    "31777": "vLLM synthetic sampler warmup is non-greedy without dummy flag; explicit warmup scope added"
+    "31777": "vLLM synthetic sampler warmup is non-greedy without dummy flag; explicit warmup scope added",
+    "31771_1": "NFS shell stale file handle after fit and verification completed; retain verified 100-update normal_ce AUF artifacts",
+    "31772_2": "NFS shell stale file handle after 4-request exactness gate, before main fit; recovery31842"
   },
   "promotion_pipeline": {
     "q8_promote100": 31786,
@@ -132,5 +135,6 @@
     "q8": "reused actual31784 AR measurement",
     "llama": 31820,
     "cross": 31821
-  }
+  },
+  "repair_policy": "Recovery31842 submitted directly to Slurm so the shell script is spooled immutably; Llama LR array31781 waits afterok31842. Do not replace shared shell files while active wrappers read them."
 }

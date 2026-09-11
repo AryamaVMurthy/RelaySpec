@@ -515,3 +515,20 @@ pools31606/31607 remain held to prevent overlap. Broad grid fitting is substanti
 Qwen39600 optimizer updates at observed~3.4sec/update implies~37hours on its
 two-GPU lane before evaluation; this is an extrapolation, not a full-study ETA.
 Next routine poll not before03:11:10IST.
+
+## 2026-09-12 03:11 IST
+
+Four GPUs running:31771_2 node07,31772_3 node06,two each. Initial100 fits
+continue. Llama normal-initializer CE/AUF finished245.08/245.65 trainingseconds
+respectively,800 presentations,512anchorlimit. Qwen normal-initializerAUF fit
+finished340.49seconds and exportverification passed; enclosing31771_1 shell
+then failed on NFS stalefilehandle. Retained these completed artifacts.
+Llama31772_2 failed with same shellreaderror after exact4-request decodinggate,
+before100fit. Recovery31842 queued directly as a Slurm-spooled script;
+31781now waits for its success. FourGPUbudget preserved. Avoid replacing
+shared shell scripts while active wrappers are reading them.
+
+Separatebatch4/8measurement and comparisonprotocol implemented/deployed;
+61CPUtests pass. GPUbatchvalidation remains outstanding. Final128/cap2048
+benchmarks remain queued after tuning; no new finalspeedclaim. Next routine
+GPUcheck not before03:31:11IST.
