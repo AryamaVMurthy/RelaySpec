@@ -1,5 +1,12 @@
 ## Verified fit and scaling preparation update
 
+Q8 fusion job31584 completed0,2,000 updates in633.58 seconds; export verifier
+passed (onlyA/B train,frozen non-fc exact,folded relativeMSE0.0). Proof archived
+in reports/q8-handoff-r56-fit. Q8 five-map31585 has started. Full transfer
+throughput remains pending. Scaling collector now checks all three timing
+repetitions,runtime/manifest identity and128 token/finish comparisons; ten
+CPU tests pass,including deliberate runtime mismatch rejection.
+
 Scaling fit31608 queued on node07,two GPUs,afterok both evaluation pools31606
 and31607. First point:N16,three-epoch ZIP initialization fitted on exactlyN16,
 then1,024 AUF updates for each fusion-r56 and five-map architecture. Immutable
