@@ -23,7 +23,7 @@ def main(a):
  torch.cuda.set_device(rank);dist.init_process_group('nccl');torch.manual_seed(a.seed)
  raw,cfg=build(a.kind);raw.train();model=DDP(raw,device_ids=[rank],broadcast_buffers=False)
  parameters=[p for p in raw.parameters() if p.requires_grad]
- anchor_count=0;records_count=0
+ anchor_count=0;records_count=0;counts_complete=True
  n=sum(p.numel() for p in parameters);groups=[{'params':[p],'lr':.01 if name=='draft_model.fc.bias' else a.lr,'base_lr':.01 if name=='draft_model.fc.bias' else a.lr} for name,p in raw.named_parameters() if p.requires_grad];opt=torch.optim.AdamW(groups,weight_decay=0,fused=True)
  count=32 if a.tag.startswith('check') else 4096;total_steps=a.max_steps or count//8*a.epochs;step=0;history=[];t0=time.perf_counter();opt.zero_grad(set_to_none=True)
  resume_path=R/'modules'/(a.output_tag or a.tag)/a.kind/'resume.pt'
@@ -33,6 +33,7 @@ def main(a):
   resume=torch.load(resume_path,weights_only=False,map_location='cpu')
   raw.draft_model.load_state_dict(resume['parameters'],strict=False);opt.load_state_dict(resume['optimizer'])
   step=resume['step'];history=resume['history'];t0-=resume['elapsed_seconds']
+  counts_complete=resume.get('counts_complete','anchor_counts' in resume)
   assert step<=total_steps, 'Resume exceeds requested schedule'
   if 'schedule_contract' in resume:
    assert resume['schedule_contract']=={'lr':a.lr,'total_steps':total_steps,'seed':a.seed,'kind':a.kind,'objective':OBJECTIVE}
@@ -76,7 +77,7 @@ def main(a):
      record_totals=[None]*world;dist.all_gather_object(record_totals,records_count)
      if rank==0:
       resume_path.parent.mkdir(parents=True,exist_ok=True)
-      state={'parameters':{k:p.detach().cpu() for k,p in raw.draft_model.named_parameters() if p.requires_grad},'optimizer':opt.state_dict(),'step':step,'epoch':epoch,'next_batch':batch_index+1,'loss_sums':loss_totals,'anchor_counts':anchor_totals,'record_counts':record_totals,'schedule_contract':{'lr':a.lr,'total_steps':total_steps,'seed':a.seed,'kind':a.kind,'objective':OBJECTIVE},'history':history,'elapsed_seconds':time.perf_counter()-t0,'anchor_rng':'manual seed derived from seed/epoch/rank/microbatch index before each forward'}
+      state={'parameters':{k:p.detach().cpu() for k,p in raw.draft_model.named_parameters() if p.requires_grad},'optimizer':opt.state_dict(),'step':step,'epoch':epoch,'next_batch':batch_index+1,'loss_sums':loss_totals,'anchor_counts':anchor_totals,'record_counts':record_totals,'counts_complete':counts_complete,'schedule_contract':{'lr':a.lr,'total_steps':total_steps,'seed':a.seed,'kind':a.kind,'objective':OBJECTIVE},'history':history,'elapsed_seconds':time.perf_counter()-t0,'anchor_rng':'manual seed derived from seed/epoch/rank/microbatch index before each forward'}
       torch.save(state,resume_path.with_suffix('.tmp'));resume_path.with_suffix('.tmp').replace(resume_path)
      dist.barrier()
     if rank==0 and (step%10==0 or step==1):
@@ -92,7 +93,7 @@ def main(a):
   out=R/'modules'/(a.output_tag or a.tag)/a.kind;out.mkdir(parents=True,exist_ok=True)
   torch.save({k:p.detach().cpu() for k,p in raw.draft_model.named_parameters() if p.requires_grad},out/'final.pt')
   export(raw,cfg,a.kind,R/'exports'/(a.output_tag or a.tag)/a.kind)
-  put(out/'summary.json',{'trainable_parameters':n,'optimizer_steps':step,'training_seconds':seconds,'training_gpu_hours':seconds*world/3600,'world_size':world,'seed':a.seed,'variant':a.kind,'history':history,'peak_cuda_bytes_rank0':torch.cuda.max_memory_allocated(),'lr':a.lr,'bias_lr':.01,'initialization':json.loads((R/f'model-contract-{a.kind}.json').read_text())['initialization'],'processed_examples':step*8,'total_schedule_steps':total_steps,'objective':OBJECTIVE,'anchors_per_example':512,'batch_per_gpu':2,'gradient_accumulation':2,'checkpoint':'final','actual_anchors_rank0':anchor_count if not resume or 'anchor_counts' in resume else None,'records_rank0':records_count if not resume or 'record_counts' in resume else None,'anchor_count_scope':'complete run' if not resume or 'anchor_counts' in resume else 'legacy resume omitted historical counts; totals unavailable','anchor_limit_semantics':'distinct valid anchors; short records supply fewer','source_sha256':source_hashes})
+  put(out/'summary.json',{'trainable_parameters':n,'optimizer_steps':step,'training_seconds':seconds,'training_gpu_hours':seconds*world/3600,'world_size':world,'seed':a.seed,'variant':a.kind,'history':history,'peak_cuda_bytes_rank0':torch.cuda.max_memory_allocated(),'lr':a.lr,'bias_lr':.01,'initialization':json.loads((R/f'model-contract-{a.kind}.json').read_text())['initialization'],'processed_examples':step*8,'total_schedule_steps':total_steps,'objective':OBJECTIVE,'anchors_per_example':512,'batch_per_gpu':2,'gradient_accumulation':2,'checkpoint':'final','actual_anchors_rank0':anchor_count if counts_complete else None,'records_rank0':records_count if counts_complete else None,'anchor_count_scope':'complete run' if counts_complete else 'legacy resume omitted historical counts; totals unavailable','anchor_limit_semantics':'distinct valid anchors; short records supply fewer','source_sha256':source_hashes})
   print('TRAIN_DONE',a.kind,seconds,flush=True)
  dist.barrier();dist.destroy_process_group()
 if __name__=='__main__':
