@@ -4,6 +4,7 @@ from pathlib import Path
 import torch
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
+from safetensors.torch import load_file
 from model import build,export,TRANSFER,R,OBJECTIVE
 from experiments.handoff_transfer.cross.online import cross_online_class
 from experiments.handoff_transfer.cross.batch import collate
@@ -17,6 +18,7 @@ def main(a):
     model=DDP(raw,device_ids=[rank],broadcast_buffers=False)
     params=[p for p in raw.parameters() if p.requires_grad]
     opt=torch.optim.AdamW(params,lr=a.lr,weight_decay=0,fused=True)
+    initial={k:p.detach().cpu().clone() for k,p in raw.draft_model.named_parameters() if p.requires_grad}
     rows=json.loads((R/'train.json').read_text());alignment=json.loads((R/'source-label-alignment.json').read_text())
     assert len(rows)==len(alignment)==TRANSFER['records']
     conditioning=json.loads((R/'conditioning-contract.json').read_text())
@@ -46,14 +48,28 @@ def main(a):
         torch.nn.utils.clip_grad_norm_(params,1,error_if_nonfinite=True);opt.step()
         history.append({'step':step+1,'rank_local_mean_loss':sum(losses)/2})
     dist.barrier()
+    training_seconds=time.perf_counter()-began
     if rank==0:
+        assert all(torch.isfinite(p).all() for p in params)
+        assert any(not torch.equal(initial[k],p.detach().cpu()) for k,p in raw.draft_model.named_parameters() if p.requires_grad)
         out=R/'cross-fits'/f'{a.kind}-{OBJECTIVE}'
         export(raw,cfg,a.kind,out/'export')
+        exported=load_file(str(out/'export/model.safetensors'))
+        base=load_file(str(Path(TRANSFER['base_export'])/'model.safetensors'))
+        assert set(exported)==set(base)
+        assert all(torch.equal(v,exported[k]) for k,v in base.items() if k!='fc.weight')
+        fc=raw.draft_model.fc
+        folded=fc.folded() if a.kind!='fusion_r56' else fc.base_layer.weight.float()+fc.get_delta_weight('default').float()
+        folded=folded.detach().to(dtype=torch.bfloat16,device='cpu')
+        torch.testing.assert_close(folded,exported['fc.weight'],rtol=0,atol=0)
+        write(out/'verification.json',{'status':'training_and_export_verified','frozen_non_fc_exact':True,
+            'trainable_names':sorted(initial),'export_sha256':digest(out/'export/model.safetensors'),
+            'inference_exactness':'not yet evaluated'})
         torch.save({k:p.detach().cpu() for k,p in raw.draft_model.named_parameters() if p.requires_grad},out/'parameters.pt')
         write(out/'summary.json',{'scope':'integration pilot, not full-data benchmark','records':len(cache),
             'steps':a.steps,'presentations':8*a.steps,'anchors_limit':512,'objective':OBJECTIVE,
             'label_units':'source tokens','context_units':'target tokens','lr':a.lr,
-            'seconds':time.perf_counter()-began,'peak_cuda_bytes_rank0':torch.cuda.max_memory_allocated(),
+            'training_seconds':training_seconds,'peak_cuda_bytes_rank0':torch.cuda.max_memory_allocated(),
             'history':history,'initializer_records':TRANSFER['initializer_records'],
             'train_sha256':digest(R/'train.json'),'alignment_sha256':digest(R/'source-label-alignment.json')})
     dist.barrier();dist.destroy_process_group()
