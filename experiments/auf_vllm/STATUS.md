@@ -20,7 +20,7 @@ paper-level performance claim has been established yet.
 
 - Turing preflight31246: L40S, CUDA GEMM, torch2.13.0+cu129,
   vLLM0.28.0, transformers5.16.1, pinned Qwen assets and rollout inventory.
-- Fourteen unit tests: exact AUF first-failure supervision, detached support,
+- Fifteen unit tests: exact AUF first-failure supervision, detached support,
   microbatch normalization, ZIP objective/folding, LoRA initialization,
   no future features, EOS/padding, and attention positions.
 - Pilot data31248: 32 archived Q8 training rollouts, eight separate development
@@ -54,8 +54,8 @@ paper-level performance claim has been established yet.
 
 Q8 dense target capture31258 and separate1024-record validation31261 are
 complete. Main4096-record,3-epoch seed42 fits are complete: ZIP31263 (lr1e-3),
-AUF31267 and CE31268 (lr1e-4). These are initial configurations; equal-budget LR
-selection is still required. Offline evaluations31271/31272/31273 use4096 fixed
+AUF31267 and CE31268 (lr1e-4). These are initial configurations; the completed LR screen selects1e-3 for every loss, and token-loss refits
+are running. Offline evaluations31271/31272/31273 use4096 fixed
 blocks from1024 separate validation records:
 
 | Objective | Epoch3 CE | Epoch3 AUF | Mean accepted draft prefix |
@@ -90,7 +90,8 @@ Exclude these from new benchmark subsets; this is not semantic decontamination.
   Revised gate measured exact FP32 argmax and zero BF16 AUF-support differences
   on this diagnostic, despite one BF16 greedy difference out of30 positions.
 - LR array31316: ZIP/CE/AUF x1e-4/3e-4/1e-3,512records/3epochs,1024 validation,
-  at most2 GPUs. It is now running. Selected4096 refits31328 follow it,
+  at most2 GPUs. All nine cells completed, selecting1e-3 for each objective.
+  Selected4096 refits31328 are running,
   then two-shard128x2048 Numina development decoding (ZIP/CE/AUF/native/AR).
 - Llama4096-record paired capture31290: eight512-record shards, one GPU.
   Family validation31325 follows it, using separate1024 archived validation
@@ -101,6 +102,24 @@ Exclude these from new benchmark subsets; this is not semantic decontamination.
   Q8 LR screen archive31335, and transfer its fixed LR choices across families.
 - Node07 uses at most2 of our GPUs; node06 uses at most2. Dependencies enforce
   the four-GPU campaign cap. Check live Slurm state for current execution.
+
+## New verified infrastructure and scope
+
+- Cross-family vocabulary audit31341 dynamically measured41,739 source tokens
+  mapping to multiple target tokens and19,667 target entries without singleton
+  support, including EOS. Apply the authorized fallback; exact heterogeneous-
+  vocabulary AUF is deferred. See CROSS_FAMILY_DECISION.md and the full report.
+- Manifest extension31350 produced32,768 distinct fitting records, preserving
+  the original16,384-record prefix and excluding all20,736 original split groups
+  from the added records. This is prepared data, not completed32k training.
+- Fixed-update streaming gate31353 completed two resumable16-update chunks on
+ 16 records. Each update retains32 record visits and4 anchors/visit, including
+  repeat passes at small N. Fifteen unit tests pass. Larger sweeps remain unrun.
+- First measured offline comparison figure is in figures/offline_objective_comparison.pdf.
+  It explicitly labels prefix scores as offline proxies, without uncertainty
+  bars or speedup claims.
+- Full family development evaluations31345 (Llama) and31346 (Q14) are queued
+  behind their fits. Each includes asset checks, short exactness, then128x2048.
 
 ## Remaining
 
