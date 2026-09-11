@@ -1,5 +1,11 @@
 ## Verified fit and scaling preparation update
 
+Dense-feature packer now accepts explicit record counts/data directories and
+initializer exports while retaining4096 defaults. Added a32-record packing
+test that also rejects a mismatched capture-manifest hash; eleven CPU tests
+pass. Larger-data packing remains pending dense captures and matched ZIP fits.
+Q8 five-map31585 passed its gate and entered full2,000-update training.
+
 Loss-independent dense-feature capture array31486 released with replacement
 dependency afterok:31606:31607 (24 tasks,512 records/task,max2 GPUs).
 It completes records4096–16383 from existing frozen-target rollouts; the first

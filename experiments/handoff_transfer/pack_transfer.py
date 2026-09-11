@@ -14,8 +14,9 @@ def write(p,data):
     tmp.write_text(json.dumps(data,indent=2)+'\n');tmp.replace(p)
 
 def main(a):
+    assert a.records >= 32 and a.records % 32 == 0
     width={'q8':20480,'q14':25600,'llama':15360}[a.family]
-    name={'q8':'main-q8-n4096','q14':'main-q14-n4096','llama':'main-l3-n4096'}[a.family]
+    name=a.data_name or f"main-{'l3' if a.family=='llama' else a.family}-n{a.records}"
     data=a.study/name
     manifests=[data/'train.json'] if (data/'train.json').exists() else sorted(data.glob('part-*/train.json'),key=lambda p:int(p.parent.name.split('-')[-1]))
     items=[];hashes={}
@@ -24,10 +25,10 @@ def main(a):
         for i,row in enumerate(json.loads(p.read_text())):
             role='8' if a.family=='q8' else 'target'
             items.append((p,p.parent/f'features/{role}/train/{i:05d}.pt',row))
-    assert len(items)==4096 and len({r['group_id'] for _,_,r in items})==4096
+    assert len(items)==a.records and len({r['group_id'] for _,_,r in items})==a.records
     a.out.mkdir(parents=True,exist_ok=True)
     shard_hashes={};checked=0
-    for start in range(0,4096,32):
+    for start in range(0,a.records,32):
         dest=a.out/f'features/full/{start:05d}.pt';meta=dest.with_suffix('.json')
         selected=items[start:start+32]
         if dest.exists() and meta.exists():
@@ -53,7 +54,7 @@ def main(a):
         digest=sha(dest);shard_hashes[str(dest)]=digest
         write(meta,{'sha256':digest,'manifests':hashes,'sources':sources,'records':32,'input_width':width})
         print(json.dumps({'records_packed':start+32,'bytes_verified':checked}),flush=True)
-    fit=a.study/f'fits/{a.family}-n4096-zip-lr1e-3-s42/epoch-3/export'
+    fit=a.base_export or a.study/f'fits/{a.family}-n{a.records}-zip-lr1e-3-s42/epoch-3/export'
     assert (fit/'model.safetensors').is_file()
     if a.family=='q8':
         base=Path('/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/4b')
@@ -62,11 +63,14 @@ def main(a):
         source=a.study/'models'/('qwen4-source' if a.family=='q14' else 'llama8-source')
         draft=a.study/'models'/('qwen4-draft' if a.family=='q14' else 'llama8-draft')
     config={'family':a.family,'input_width':width,'source':str(source),'draft':str(draft),'base_export':str(fit),
-            'base_sha256':sha(fit/'model.safetensors'),'records':4096,'base_training_epochs':3,
+            'base_sha256':sha(fit/'model.safetensors'),'records':a.records,'base_training_epochs':3,
             'target_adapters':None,'feature_manifests':hashes,'shards':shard_hashes,'status':'complete'}
     write(a.out/'transfer.json',config)
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--family',choices=['q8','q14','llama'],required=True)
     p.add_argument('--study',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
+    p.add_argument('--records',type=int,default=4096)
+    p.add_argument('--data-name',default=None)
+    p.add_argument('--base-export',type=Path,default=None)
     main(p.parse_args())
