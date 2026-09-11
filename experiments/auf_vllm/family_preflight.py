@@ -19,7 +19,9 @@ def main(args):
     samples=["Hello, world!","def f(x):\n    return x + 1\n","café 日本語 😀", "  12.5\n\n"]
     shared=tt.get_vocab() == st.get_vocab()
     assert shared and all(tt.encode(x,add_special_tokens=False)==st.encode(x,add_special_tokens=False) for x in samples)
-    ids=tt.apply_chat_template([{"role":"user","content":"What is 2 + 2? Answer with only the number."}],tokenize=True,add_generation_prompt=True)
+    prompt=tt.apply_chat_template([{"role":"user","content":"What is 2 + 2? Answer with only the number."}],tokenize=False,add_generation_prompt=True)
+    ids=tt.encode(prompt,add_special_tokens=False)
+    assert all(isinstance(token,int) for token in ids)
     info={"job_id":os.environ.get("SLURM_JOB_ID"),"gpu":torch.cuda.get_device_name(),
           "shared_token_vocab":shared,"vocab_size":len(tt),"target_adapters":None,
           "configs":{name:{"sha256":sha(path/"config.json"),"config":json.loads((path/"config.json").read_text())}
