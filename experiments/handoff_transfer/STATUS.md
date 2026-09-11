@@ -538,3 +538,9 @@ GPUcheck not before03:31:11IST.
 Llama recovery/LRmay overlap with thisoneGPUgate without exceeding4GPUs.
 This validates servingintegration only; full128/cap2048 batchcomparisons remain
 outstanding. Batchscript submitted directly toSlurm,sourcecopied intojobdirectory.
+
+Queued31867:QwenfiveBA finalfixed-batch4/8 servingcomparison,128requests,
+cap2048,three repetitions; AR,unchangednormal/ZIP,CEandAUF. Eachloss uses
+its unique validation-selected finalLR checkpoint. Followscrossfinal31819
+and requiresQwenfinal31798+batchgate31861success,so noadditionalGPUoverlap
+with the mainmatrix. Script/CLI checked; GPUexecution pending.
