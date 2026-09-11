@@ -1,0 +1,64 @@
+{
+  "status": "verified_complete",
+  "setting": "Original handoff Math, Qwen3-4B with pinned frozen target LoRA; native Qwen3-4B DFlash; train fusion LoRA only",
+  "requests": 128,
+  "max_output_tokens": 2048,
+  "training_records": 4096,
+  "optimizer_steps": 2000,
+  "trainable_parameters": 860160,
+  "training_seconds": 231.26618635188788,
+  "training_seeds": [
+    42
+  ],
+  "timing_repetitions": 1,
+  "rows": {
+    "ar": {
+      "tps": 31.171102181854234,
+      "output_tokens": 19070,
+      "request_wall_seconds": 611.7845910210162,
+      "exact_token_matches": 128,
+      "exact_finish_matches": 128,
+      "finish_reasons": {
+        "stop": 128
+      }
+    },
+    "native": {
+      "tps": 122.75212577429345,
+      "output_tokens": 19070,
+      "request_wall_seconds": 155.35372507572174,
+      "exact_token_matches": 128,
+      "exact_finish_matches": 128,
+      "finish_reasons": {
+        "stop": 128
+      },
+      "accepted_draft_tokens_per_verification": 3.477059925093633
+    },
+    "mapper": {
+      "tps": 154.2869343917651,
+      "output_tokens": 19070,
+      "request_wall_seconds": 123.60087440442294,
+      "exact_token_matches": 128,
+      "exact_finish_matches": 128,
+      "finish_reasons": {
+        "stop": 128
+      },
+      "accepted_draft_tokens_per_verification": 4.698208955223881
+    }
+  },
+  "mapper_vs_native_tps_ratio": 1.2568982689184158,
+  "mapper_vs_ar_tps_ratio": 4.949678503238195,
+  "paired_request_bootstrap_95_ratio_interval": [
+    1.2259577473149994,
+    1.2891227964955407
+  ],
+  "interval_limit": "Request variation only; excludes fitting-seed and timing-repetition variation.",
+  "scope_limit": "Original package reproduction only; does not establish frozen-original-target transfer gains.",
+  "source_sha256": {
+    "experiments/handoff_transfer/reports/origin-full/ar/ar.json": "1617256d4aecf5df34a6ba68705215311a614c411051077432db457a580b925c",
+    "experiments/handoff_transfer/reports/origin-full/native/native.json": "3239b40d976c4ceeb8a34a3ce46eabcf7f5d10a9ed0f2f1e64e0aa98833f8c1e",
+    "experiments/handoff_transfer/reports/origin-full/mapper/mapped.json": "af6580796dc745b13ac45f6886e7fd6b4ba02d41f5e44563d0da29e46f8da5f0",
+    "experiments/handoff_transfer/reports/origin-full-fit/summary.json": "0f23eefb7df2d6ed328a8f594aa8e9c1938e9fcdeb9ada1072ac1716612d2b99",
+    "experiments/handoff_transfer/reports/origin-full-fit/gate-check.json": "c322d9177bb0097ddd5a175854ac9ee3f7ec8763610f0ba572397b3d2f34bbd7"
+  },
+  "references_sha256": "bb6a7366a1658b756c0ceed75daab156f16456a3c06e3bb49680189c70443bb6"
+}

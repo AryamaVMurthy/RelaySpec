@@ -1,3 +1,20 @@
+## Verified result — original handoff reproduction
+
+Origin31525 completed successfully. All128 outputs and finish reasons match
+both AR and the immutable package references. Max output2,048; all stopped
+naturally,19,070 total output tokens. AR31.171 TPS; native122.752 TPS;
+AUF fusion154.287 TPS,1.25690x native and4.94968x AR. Accepted draft tokens
+per verification improve3.4771 to4.6982. One fitting seed and timing run;
+request-bootstrap95% native-relative interval[1.2260,1.2891] excludes seed
+and timing repetition variation. This is the pinned frozen-target-LoRA Math
+setting, not a transfer-to-original-target result. Source logs, export check,
+summary and figure are archived under reports/origin-full* and figures/.
+
+Q8 fusion gate31553 completed with4/4 token/finish matches at128-token
+cap; that diagnostic is not the main throughput comparison. Five-map gate
+31554 is now running. Normal Q8 control31579 is training; first epoch
+completed in96.7 seconds. No full transfer comparison is complete yet.
+
 ## Latest update — approximately22:49 IST
 
 - Normal RelaySpec matched controls implemented and queued31579/31580/31581,
