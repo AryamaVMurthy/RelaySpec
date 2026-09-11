@@ -591,3 +591,13 @@ full-token and finish matches at batch4 and8: aggregate396.36/756.48TPS
 versus AR96.64/192.03TPS (4.10x/3.94x). These are8-request,128-token
 integration gates, not final benchmarks. Evidence archived under
 reports/validation-gates-20260912. Next routine check05:06:45IST.
+
+## 2026-09-12 05:06:45 IST
+
+Scheduled check: all four GPUs allocated to Qwen LR task31780_5 on
+node07 and Llama LR task31781_4 on node06 (two each). Six additional
+LR tasks completed since04:41, with no failures in these arrays.
+Qwen5/24 and Llama4/24 additional-LR fits completed; validation screen
+arrays31782/31783 remain pending. Qwen tasks take approximately9min,
+Llama8min including setup/export. No new final128x2048 benchmarks.
+Next routine check05:31:45IST.
