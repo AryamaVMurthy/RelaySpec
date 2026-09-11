@@ -544,3 +544,13 @@ cap2048,three repetitions; AR,unchangednormal/ZIP,CEandAUF. Eachloss uses
 its unique validation-selected finalLR checkpoint. Followscrossfinal31819
 and requiresQwenfinal31798+batchgate31861success,so noadditionalGPUoverlap
 with the mainmatrix. Script/CLI checked; GPUexecution pending.
+
+## 2026-09-12 03:31:45 IST
+
+FourGPUs running31771_5/node07 and31772_6/node06,twoeach. Sixadditional
+initialarraytasks completed since03:11; no newfailures. Auditedsummary/export
+checks now show9Qwen and5Llama complete100-updatefits. QwenfivemapsAUF
+340.12seconds,fusionBAAUF334.51,CE336.51; LlamafivemapsAUF246.44,CE246.12,
+fusionBAAUF241.16. These are trainingcosts; decoding screens remain pending.
+LlamafusionBACE recovery31842 andcrosspaired31803/sharedAR31820/batchgate31861
+are dependencywaiting. Next routineGPUcheck not before03:51:45IST.
