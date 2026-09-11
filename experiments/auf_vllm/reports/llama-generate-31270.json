@@ -1,0 +1,150 @@
+{
+  "job_id": "31270",
+  "gpu": "NVIDIA L40S",
+  "shared_token_vocab": true,
+  "vocab_size": 128256,
+  "target_adapters": null,
+  "configs": {
+    "target": {
+      "sha256": "eadff796b79b82cefa0537004668d70a1dd099fd4986b91ef88398ed91b26311",
+      "config": {
+        "architectures": [
+          "LlamaForCausalLM"
+        ],
+        "attention_bias": false,
+        "attention_dropout": 0.0,
+        "bos_token_id": 128000,
+        "eos_token_id": 128009,
+        "head_dim": 128,
+        "hidden_act": "silu",
+        "hidden_size": 3072,
+        "initializer_range": 0.02,
+        "intermediate_size": 8192,
+        "max_position_embeddings": 131072,
+        "mlp_bias": false,
+        "model_type": "llama",
+        "num_attention_heads": 24,
+        "num_hidden_layers": 28,
+        "num_key_value_heads": 8,
+        "pad_token_id": 128004,
+        "pretraining_tp": 1,
+        "rms_norm_eps": 1e-05,
+        "rope_scaling": {
+          "factor": 32.0,
+          "high_freq_factor": 4.0,
+          "low_freq_factor": 1.0,
+          "original_max_position_embeddings": 8192,
+          "rope_type": "llama3"
+        },
+        "rope_theta": 500000.0,
+        "tie_word_embeddings": true,
+        "torch_dtype": "bfloat16",
+        "transformers_version": "4.52.4",
+        "unsloth_fixed": true,
+        "use_cache": true,
+        "vocab_size": 128256
+      }
+    },
+    "source": {
+      "sha256": "ad98082c6bc4ea7078915219241814762be259de16d6ca5f170ba02820b3928b",
+      "config": {
+        "architectures": [
+          "LlamaForCausalLM"
+        ],
+        "attention_bias": false,
+        "attention_dropout": 0.0,
+        "bos_token_id": 128000,
+        "eos_token_id": 128009,
+        "head_dim": 128,
+        "hidden_act": "silu",
+        "hidden_size": 4096,
+        "initializer_range": 0.02,
+        "intermediate_size": 14336,
+        "max_position_embeddings": 131072,
+        "mlp_bias": false,
+        "model_type": "llama",
+        "num_attention_heads": 32,
+        "num_hidden_layers": 32,
+        "num_key_value_heads": 8,
+        "pad_token_id": 128004,
+        "pretraining_tp": 1,
+        "rms_norm_eps": 1e-05,
+        "rope_scaling": {
+          "factor": 8.0,
+          "high_freq_factor": 4.0,
+          "low_freq_factor": 1.0,
+          "original_max_position_embeddings": 8192,
+          "rope_type": "llama3"
+        },
+        "rope_theta": 500000.0,
+        "tie_word_embeddings": false,
+        "torch_dtype": "bfloat16",
+        "transformers_version": "4.52.0.dev0",
+        "unsloth_fixed": true,
+        "use_cache": true,
+        "vocab_size": 128256
+      }
+    },
+    "draft": {
+      "sha256": "a995f9265c9627628e3205eec41273451c968c18b50af1735a2ec73d3e5b3fa2",
+      "config": {
+        "architectures": [
+          "DFlashDraftModel"
+        ],
+        "attention_bias": false,
+        "attention_dropout": 0.0,
+        "auto_map": {
+          "AutoModel": "dflash.DFlashDraftModel"
+        },
+        "block_size": 10,
+        "bos_token_id": 151643,
+        "dflash_config": {
+          "mask_token_id": 128002,
+          "target_layer_ids": [
+            1,
+            8,
+            15,
+            22,
+            29
+          ]
+        },
+        "dtype": "bfloat16",
+        "eos_token_id": 151645,
+        "head_dim": 128,
+        "hidden_act": "silu",
+        "hidden_size": 4096,
+        "initializer_range": 0.02,
+        "intermediate_size": 12288,
+        "layer_types": [
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention",
+          "full_attention"
+        ],
+        "max_position_embeddings": 40960,
+        "max_window_layers": 5,
+        "model_type": "qwen3",
+        "num_attention_heads": 32,
+        "num_hidden_layers": 5,
+        "num_key_value_heads": 8,
+        "num_target_layers": 32,
+        "rms_norm_eps": 1e-06,
+        "rope_scaling": null,
+        "rope_theta": 1000000,
+        "sliding_window": null,
+        "tie_word_embeddings": false,
+        "transformers_version": "4.57.3",
+        "use_cache": true,
+        "use_sliding_window": false,
+        "vocab_size": 128256
+      }
+    }
+  },
+  "text": "4",
+  "output_ids": [
+    19,
+    128009
+  ],
+  "passed": true
+}
