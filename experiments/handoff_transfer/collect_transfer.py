@@ -49,7 +49,7 @@ def main(a):
             rows['handoff-r56']['matched_auf_vs_ce_tps_ratio']=statistics.mean(v['method_tps']/reports['handoff-ce'][r]['method_tps'] for r,v in enumerate(reports['handoff-r56']))
     all_exact=all(v['exact_matches']==v['finish_matches']==128 for values in reports.values() for v in values)
     result={'family':family,'status':'complete','all_exact':all_exact,'evaluation':getattr(a,'evaluation',None) or '128 Numina development requests, max2048, natural EOS, greedy',
-            'training_seeds':[42],'timing_repetitions':3,'rows':rows,'per_repeat':reports,'source_sha256':hashes,
+            'training_seeds':[getattr(a,'training_seed',42)],'timing_repetitions':3,'rows':rows,'per_repeat':reports,'source_sha256':hashes,
             'normal_relayspec_control':'input-normalized dense linear map, normalized-context relative MSE; same ZIP records/position sampler/3 epochs; random initialization' ,
             'uncertainty':'Timing repetition variation only; not fitting-seed uncertainty; not untouched confirmation.'}
     a.out.parent.mkdir(parents=True,exist_ok=True)

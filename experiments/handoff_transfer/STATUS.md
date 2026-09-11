@@ -1,3 +1,7 @@
+## 2026-09-12: across-seed aggregation queued
+
+CPU2 collector31679 follows seed44 evaluation31678. It requires original ZIP, normal, BA and five-map fits with matching seed42/43/44 provenance, records/epochs/updates, verified frozen weights, and exact evaluated checkpoint hashes. Uses shared matched AR references and full128/cap2048 three-repeat equality checks. Averages timing repeats within each fit before computing sample standard deviation/min/max across three seeds; does not count nine timing runs as independent fits. Per-seed reports now receive correct seed metadata rather than hardcoded42.18 tests pass. Actual seed runs and Llama seed support remain pending.
+
 ## 2026-09-12: Q8 full-pipeline seed jobs queued
 
 Seed43 fit/eval31675/31676, seed44 fit/eval31677/31678; serial chain starts after workload31661. Small-data fit31608 now waits for31678, preserving at-most-two experimental GPUs alongside the at-most-two-GPU data lane. Each seed independently fits ZIP and normal for three epochs on4096 cached records, then BA/five for2000updates/global8/eight anchors. AUF two-step verification gate precedes full fitting. Evaluations rotate all four methods across repetitions,128/cap2048 with full token/finish equality against matched main AR. No new target inference for data is needed.17 tests pass and shell scripts parse. GPU seed runs, Llama seed wiring and across-seed collection remain pending.
