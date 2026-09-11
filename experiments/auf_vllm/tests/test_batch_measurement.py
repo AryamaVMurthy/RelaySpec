@@ -60,3 +60,11 @@ def test_comparison_requires_matched_batch_protocol(tmp_path):
     summary['batch_measurements'][0]['wall_seconds']*=2
     b.with_suffix('.summary.json').write_text(json.dumps(summary))
     with pytest.raises(AssertionError):compare([a],[b])
+
+def test_comparison_rejects_invalid_token_accounting(tmp_path):
+    from experiments.auf_vllm.compare_outputs import compare
+    engine=Engine();a=tmp_path/'a.jsonl'
+    batches=bm.measure(engine,selected(4),None,a,4,engine.counters)
+    summary=dict(timing_valid=True,contract=dict(cap=1,workers=1,request_batch_size=4),batch_measurements=batches)
+    a.with_suffix('.summary.json').write_text(json.dumps(summary))
+    with pytest.raises(AssertionError,match='Invalid token accounting'):compare([a],[a])

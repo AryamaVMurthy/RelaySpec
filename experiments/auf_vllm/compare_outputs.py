@@ -35,6 +35,8 @@ def compare(ar, method):
             for row in rows:
                 assert row['group_id'] not in result,'duplicate request'
                 assert row['timing_valid']
+                assert row['output_tokens']==len(row['output_ids']) and 0<row['output_tokens']<=contract['cap'], 'Invalid token accounting'
+                assert math.isfinite(row['wall_seconds']) and row['wall_seconds']>0, 'Invalid measured wall time'
                 result[row['group_id']]=row
         assert len(caps)==1
         assert len(batch_sizes)==1
