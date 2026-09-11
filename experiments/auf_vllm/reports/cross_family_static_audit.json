@@ -1,0 +1,44 @@
+{
+  "date": "2026-09-11",
+  "status": "static_audit_only",
+  "gpu_experiments_run": false,
+  "reference_function": "cross_family_relay_dflash_generate",
+  "observations": [
+    "Existing generator consumes source-vocabulary draft logits, decodes proposals to text, and re-encodes them in target vocabulary for greedy verification.",
+    "Optional lookup maps provide shortcuts to retokenization; both archived maps have multiple source entries sharing destination IDs.",
+    "The inspected generator is a Transformers inference-mode path, not a differentiable AUF trainer or a native vLLM cross-family implementation."
+  ],
+  "limitations": [
+    "Static map counts are not measurements of token equivalence, runtime mapping coverage, normalization, or cross-family correctness.",
+    "Per-source-position probabilities are not automatically per-target-position probabilities after variable-length retokenization.",
+    "No new vLLM/AUF cross-family feasibility result has been established."
+  ],
+  "next_gate": "Validate a compatible proposal probability and label alignment contract before any cross-family fit or sweep.",
+  "authorized_fallback": "If compatibility or correctness cannot be established without materially changing the method, retain shared-vocabulary Qwen3 claims and defer heterogeneous-vocabulary DFlash.",
+  "sources": [
+    {
+      "path": "src/relayspec/generation.py",
+      "sha256": "69c6fdda0603b5dedb7f4dd91d7db02dcc4c40e230e305db4c897a14ba963557"
+    },
+    {
+      "path": "src/relayspec/vocab_bridge.py",
+      "sha256": "9f2d32004ba5624e67b6f9e2488876afffdc1bb7c0c7e44dc10a297e5ff812e9"
+    },
+    {
+      "path": "configs/vocab_bridges/llama3.1-8b_qwen3-4b.json",
+      "sha256": "4e9f4ecd6611b18aa3a93160b94f8db32f735b597d07fe54461b014039cd7ec0",
+      "entries": 109869,
+      "integer_id_pairs": 109869,
+      "distinct_destinations": 108665,
+      "excess_entries_over_distinct_destinations": 1204
+    },
+    {
+      "path": "configs/vocab_bridges/qwen3-4b_llama3.1-8b.json",
+      "sha256": "3a5d3d37e0aa9915d34f950d99993246d0b63f6981223947c35c268e366006b4",
+      "entries": 109996,
+      "integer_id_pairs": 109996,
+      "distinct_destinations": 108665,
+      "excess_entries_over_distinct_destinations": 1331
+    }
+  ]
+}

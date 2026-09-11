@@ -117,7 +117,7 @@ An arrow always means **drafter's original source target → new verification ta
 | Q8 | Qwen3-4B DFlash | Qwen3-8B | First pilot; complete scaling reference |
 | Q14 | Qwen3-4B DFlash | Qwen3-14B | Larger target replication |
 | L3 | Llama-3.1-8B DFlash | Llama-3.2-3B | Llama same-family, smaller target |
-| X8 | Qwen3-4B DFlash | Llama-3.1-8B | Required cross-family transfer |
+| X8 | Qwen3-4B DFlash | Llama-3.1-8B | Attempt cross-family feasibility first; full study conditional on validation |
 | E8/E14 | Existing Qwen-source EAGLE-3 | Qwen3-8B / Qwen3-14B | Original paper's second drafter architecture |
 
 These cover the original paper's important target sizes. Add Qwen4→Llama3 as a cross-family target-size extension after X8 passes. Do not create a full Cartesian product of every available model size. New source drafters or 32B/70B targets are outside this first replication matrix.
@@ -156,6 +156,18 @@ The existing Qwen→Llama code has explicit tokenizer bridging. Port and audit t
 - Any new vocabulary/head adapter must be identical across ZIP, CE, and AUF controls and disclosed as an architectural change. There must still be no live source transformer in the relay inference path.
 
 Cross-family integration can proceed alongside same-family experiments within the four-GPU cap. It cannot be replaced by an early Transformers benchmark just to produce a number.
+
+### User-authorized cross-family decision rule
+
+Attempt the required cross-family engineering and validation. If it is not feasible within this method, use the exact shared-vocabulary wording in Section 1 and scope the manuscript's new evidence to the validated configurations. No further approval is needed to take that fallback.
+
+1. Audit the existing tokenizer bridge and its relationship to per-position AUF labels. Static inspection found a source-token decode/target-token re-encode path, with optional token-ID lookup shortcuts. This produces proposals for greedy verification; it does not by itself define a differentiable target-vocabulary distribution for AUF. See `experiments/auf_vllm/reports/cross_family_static_audit.json`.
+2. Prototype the smallest compatible vLLM proposer/training contract. Check normalization/support, label positions, boundary changes, anchors, EOS, and source-free deployment before expensive capture or fitting.
+3. Run a bounded diagnostic pilot, then a 128-request development evaluation with a 2,048-token cap if the implementation passes. Apply the same vocabulary mechanism to all loss controls. Do not start the large cross-family sweep before that gate.
+4. If exact AUF requires a materially different learned vocabulary/head architecture, or training/inference alignment cannot be validated, record the concrete limitation and defer that separate extension. Do not invent a surrogate and label it the supplied AUF.
+5. On this fallback, omit X8 and its dependent scaling/serving rows from the new manuscript's empirical claims, retain the attempt and reason in the experiment ledger, use L3 for the planned second Transformers replication, and continue Q8/Q14/L3 studies as validated. The Qwen3 results retain precisely the shared-vocabulary scope supplied by the user.
+
+This fallback is for compatibility or correctness limitations, not disappointing performance. A valid cross-family experiment that yields no speedup must still be reported as a result. Historical cross-family results retain their original runtime and scope and are not rewritten as new AUF evidence.
 
 ## 6. Data protocol and cache design
 
@@ -215,6 +227,8 @@ Frozen weights reduce optimizer cost but AUF still backpropagates through the dr
 ## 8. Experiment matrix and priorities
 
 Do not take a Cartesian product of every axis. The rows below define separate controlled studies, with one shared reference configuration per pair.
+
+All X8-dependent rows are conditional on the cross-family decision rule above. Their presence in this matrix is an intended experiment, not a claim of supported heterogeneous-vocabulary DFlash.
 
 | Study | Planned settings | Controls and evaluation | Purpose |
 |---|---|---|---|
