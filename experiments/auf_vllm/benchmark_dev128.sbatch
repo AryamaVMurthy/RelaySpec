@@ -16,13 +16,17 @@ set -euo pipefail
 cd /home/aryama.murthy/relayspec-auf-20260911
 
 export OMP_NUM_THREADS=1 TOKENIZERS_PARALLELISM=false VLLM_BATCH_INVARIANT=1 HF_HUB_OFFLINE=1
-export PYTHONPATH="$PWD/experiments/auf_vllm/runtime_zip:$PWD"
+study_snapshot="outputs/source-${SLURM_ARRAY_JOB_ID}-${SLURM_ARRAY_TASK_ID}"
+mkdir -p "$study_snapshot/experiments"
+cp -r experiments/auf_vllm "$study_snapshot/experiments/"
+export PYTHONPATH="$PWD/$study_snapshot/experiments/auf_vllm/runtime_zip:$PWD/$study_snapshot"
 study_python=/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/bin/python
 study_original=/scratch/aryama.murthy/transfer-reproduction-20260907/work
 study_root=/scratch/aryama.murthy/relayspec-auf-20260911
 nvidia-smi --query-gpu=timestamp,index,uuid,name,utilization.gpu,memory.used,power.draw,temperature.gpu --format=csv -l 1 > "logs/gpu-${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}.csv" &
 monitor=$!
 trap 'kill "$monitor" 2>/dev/null || true' EXIT
+cd "$study_snapshot"
 # Keep each worker's preparation paths separate; both process the same128
 # manifest partitioned by index. These are development measurements.
 for objective in zip ce auf; do

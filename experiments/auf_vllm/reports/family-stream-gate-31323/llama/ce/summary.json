@@ -1,0 +1,38 @@
+{
+  "contract": {
+    "family": "llama",
+    "models": "/scratch/aryama.murthy/relayspec-auf-20260911/models",
+    "data": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-l3",
+    "validation_manifest": "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-l3/dev.json",
+    "out": "/scratch/aryama.murthy/relayspec-auf-20260911/stream-gate-31323/llama/ce",
+    "objective": "ce",
+    "records": 32,
+    "epochs": 1,
+    "seed": 42,
+    "lr": 0.0001,
+    "exploratory": true,
+    "manifests": {
+      "/scratch/aryama.murthy/relayspec-auf-20260911/pilot-l3/train.json": "cfb35560f654f6e300676f6296d671d5937f37c70541010c76509c1362cb5ad2"
+    },
+    "validation_sha256": "3e6205516e753d4022a89d07c876ce1a490a0dbaa57025164c171dd6d99879f5",
+    "target_adapters": null,
+    "token_batch": "4 records x 4 anchors x 8 accumulation",
+    "zip_positions": "deterministic stratified 25%; equal example mass; 2048-position batches"
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "steps": 1,
+      "records": 32,
+      "blocks": 128,
+      "active_tokens": 1128,
+      "valid_tokens": 1128,
+      "training_loss": 10.758981347084045,
+      "seconds": 3.315783659927547
+    }
+  ],
+  "peak_allocated_bytes": 20044196352,
+  "checkpoint_sha256": "94813358b4c5ae30a3e43ed0f6e3811ab03231bafd8619d3d90834916a1f041a",
+  "job_id": "31323",
+  "status": "fit_complete_offline_validation_pending"
+}

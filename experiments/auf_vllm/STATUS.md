@@ -20,7 +20,7 @@ paper-level performance claim has been established yet.
 
 - Turing preflight31246: L40S, CUDA GEMM, torch2.13.0+cu129,
   vLLM0.28.0, transformers5.16.1, pinned Qwen assets and rollout inventory.
-- Thirteen unit tests: exact AUF first-failure supervision, detached support,
+- Fourteen unit tests: exact AUF first-failure supervision, detached support,
   microbatch normalization, ZIP objective/folding, LoRA initialization,
   no future features, EOS/padding, and attention positions.
 - Pilot data31248: 32 archived Q8 training rollouts, eight separate development
@@ -72,7 +72,8 @@ and vLLM diagnostic31279 completed. All4 outputs match AR, but tiny mapped fits
 are slower: AR46.22TPS, AUF40.30, CE42.16, ZIP41.90. Preserve the untied source
 head; incorrect inherited source BOS/EOS metadata is corrected in exports.
 Q14 pinned download31297, preflight31315, pilot data31318 and pilot fits31321
-completed. Streaming family fitting is under GPU verification31323.
+completed. Streaming family fitting passed all six family/loss GPU cells31323, including
+folded-export checks.
 
 The benchmark overlap audit31289 found no exact matches, and four potential
 MATH template overlaps in the full16384-record calibration pool:31,58,226,336.
@@ -84,13 +85,20 @@ Exclude these from new benchmark subsets; this is not semantic decontamination.
   ZIP4096 endpoint and trains on512 existing records for3epochs. Charge its
  4096-record ZIP initialization. Only A/B train; original targets remain frozen.
   Initial31319 stopped at BF16 batch-shape argmax sensitivity; see NUMERICS.md.
+  Both completed31320. Epoch3 offline prefix: AUF5.8318, CE5.8154 versus F0
+  ZIP5.8091. The small AUF difference is about0.39%, not a demonstrated speedup.
+  Revised gate measured exact FP32 argmax and zero BF16 AUF-support differences
+  on this diagnostic, despite one BF16 greedy difference out of30 positions.
 - LR array31316: ZIP/CE/AUF x1e-4/3e-4/1e-3,512records/3epochs,1024 validation,
-  at most2 GPUs. It follows the LoRA screen and main offline validation.
+  at most2 GPUs. It is now running. Selected4096 refits31328 follow it,
+  then two-shard128x2048 Numina development decoding (ZIP/CE/AUF/native/AR).
 - Llama4096-record paired capture31290: eight512-record shards, one GPU.
   Family validation31325 follows it, using separate1024 archived validation
   problems rather than training or final benchmark prompts.
 - Q14 main data31324 follows successful streaming trainer gate31323; eight
- 512-record shards, one GPU. Main family fits and validation follow preparation.
+ 512-record shards, one GPU. Validation31327 follows Q14 data. Llama main fits31333 follow validation31325;
+  Q14 main fits31334 follow validation31327. Both also require the completed
+  Q8 LR screen archive31335, and transfer its fixed LR choices across families.
 - Node07 uses at most2 of our GPUs; node06 uses at most2. Dependencies enforce
   the four-GPU campaign cap. Check live Slurm state for current execution.
 
