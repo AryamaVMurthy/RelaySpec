@@ -1,3 +1,7 @@
+## 2026-09-12: compute-scaling aggregation wired
+
+Added CPU-only collectors 31667 (Q8, after 31612) and 31668 (Q14, after 31613). They require all 500/1000/1500/2000-update checkpoints for both architectures, three timing repetitions, 128 requests at cap2048, matching runtime/manifest and full AR token/finish equality. Checkpoint training provenance must show the same 2000-update schedule; the endpoint reuses main measurements. Reports retain cumulative AUF time and explicitly exclude shared ZIP initialization cost. This is continuous-fit checkpoint analysis, not independent budget optimization. Synthetic validation covers finish mismatch and schedule rejection. Four existing GPU jobs remained running; no extra GPU allocation submitted.
+
 ## Verified fit and scaling preparation update
 
 First-pass paired request analysis:BA faster91/128,5k paired bootstrap ratio

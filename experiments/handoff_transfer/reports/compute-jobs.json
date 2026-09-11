@@ -1,16 +1,51 @@
 {
   "jobs": [
-    {"job_id": "31612", "family": "q8", "node": "node07", "array": "0-5%1"},
-    {"job_id": "31613", "family": "q14", "node": "node06", "array": "0-5%1"}
+    {
+      "job_id": "31612",
+      "family": "q8",
+      "node": "node07",
+      "array": "0-5%1"
+    },
+    {
+      "job_id": "31613",
+      "family": "q14",
+      "node": "node06",
+      "array": "0-5%1"
+    }
   ],
   "dependency": "afterok:31609",
   "gpus_per_task": 1,
   "maximum_combined_gpus": 2,
-  "architectures": ["fusion_r56", "five_maps"],
-  "updates": [500, 1000, 1500],
+  "architectures": [
+    "fusion_r56",
+    "five_maps"
+  ],
+  "updates": [
+    500,
+    1000,
+    1500
+  ],
   "final_2000": "Reuse primary evaluation, not rerun",
   "training": "No new fitting; checkpoints from a continuous 2000-update schedule",
   "initialization": "Charge three-epoch ZIP initialization separately",
-  "evaluation": {"requests": 128, "cap": 2048, "timing_repetitions": 3},
-  "status_at_submission": "pending"
+  "evaluation": {
+    "requests": 128,
+    "cap": 2048,
+    "timing_repetitions": 3
+  },
+  "status_at_submission": "pending",
+  "collectors": [
+    {
+      "job_id": "31667",
+      "family": "q8",
+      "dependency": "afterok:31612",
+      "gpus": 0
+    },
+    {
+      "job_id": "31668",
+      "family": "q14",
+      "dependency": "afterok:31613",
+      "gpus": 0
+    }
+  ]
 }
