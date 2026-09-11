@@ -8,6 +8,20 @@ from experiments.auf_vllm.pilot_data import write,sha
 from experiments.auf_vllm.runtime_zip.sampling import positions
 from experiments.handoff_transfer.normal_interface import NormalInterface
 
+def timed_batches(iterator, timing):
+    """Measure time spent obtaining CPU feature batches without changing order."""
+    iterator = iter(iterator)
+    while True:
+        start = time.perf_counter()
+        try:
+            batch = next(iterator)
+        except StopIteration:
+            timing['feature_batch_wait_seconds'] += time.perf_counter() - start
+            return
+        timing['feature_batch_wait_seconds'] += time.perf_counter() - start
+        yield batch
+
+
 def main(a):
     transfer=json.loads((a.root/'transfer.json').read_text())
     assert transfer['status']=='complete' and transfer['target_adapters'] is None
@@ -54,8 +68,8 @@ def main(a):
         step,first,history=saved['step'],saved['epoch']+1,saved['history']
     write(out/'contract.json',contract)
     for epoch in range(first,a.epochs):
-        start=time.perf_counter();loss_sum=0
-        for index,(x,y,w) in enumerate(iterator(a.seed+epoch)):
+        start=time.perf_counter();loss_sum=0;timing={'feature_batch_wait_seconds':0.0}
+        for index,(x,y,w) in enumerate(timed_batches(iterator(a.seed+epoch),timing)):
             x,y,w=x.cuda(),y.cuda(),w.cuda()
             rate=(step+1)/warm if step<warm else .5*(1+math.cos(math.pi*(step-warm)/max(1,steps-warm)))
             opt.param_groups[0]['lr']=a.lr*rate;opt.zero_grad(set_to_none=True)
@@ -67,6 +81,9 @@ def main(a):
             step+=1;loss_sum+=weighted.item()
         assert index+1==steps_epoch
         event={'epoch':epoch+1,'step':step,'seconds':time.perf_counter()-start,'loss':loss_sum/4096}
+        event.update(timing)
+        event['remaining_fit_seconds']=event['seconds']-timing['feature_batch_wait_seconds']
+        event['timing_scope']='CPU feature-batch wait versus remaining transfer/forward/backward/optimizer/Python time; not isolated GPU kernel time.'
         history.append(event);print(json.dumps(event),flush=True)
         temp=checkpoint.with_suffix('.tmp')
         torch.save({'contract':contract,'model':model.state_dict(),'optimizer':opt.state_dict(),'epoch':epoch,'step':step,'history':history},temp);temp.replace(checkpoint)

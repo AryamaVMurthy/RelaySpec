@@ -1,0 +1,27 @@
+{
+  "family": "q14",
+  "records": 4096,
+  "epochs": 3,
+  "seed": 42,
+  "lr": 0.001,
+  "positions": 1292174,
+  "position_batch": 2048,
+  "input_eps": 1e-06,
+  "output_eps": 1e-06,
+  "trainable_parameters": 65536000,
+  "objective": "normal RelaySpec normalized context relative_interface_mse; equal-record weighting",
+  "initialization": "original random nn.Linear; not ZIP warm-start",
+  "base_export_sha256": "b548c8e07c2ed3b907738a580d44afca10f45117e4e151b23db00790b8ecfbe1",
+  "feature_manifests": {
+    "/scratch/aryama.murthy/relayspec-auf-20260911/main-q14-n4096/part-0/train.json": "489c9cb45b8327bf56179aaa342a2c2b5f60d8e91d7be85180da69b3aca0ccb7",
+    "/scratch/aryama.murthy/relayspec-auf-20260911/main-q14-n4096/part-1/train.json": "68250aa355cca5be1e1dfe8709bc809fcc6698408a79d643b1d2e50279f197e5",
+    "/scratch/aryama.murthy/relayspec-auf-20260911/main-q14-n4096/part-2/train.json": "a0051c62f6820e8f3169f8ba4a40dc1d36c6f8c35007b3572cd55177a53576d0",
+    "/scratch/aryama.murthy/relayspec-auf-20260911/main-q14-n4096/part-3/train.json": "6e4f44bd19cbb2d6c92b5e71e564a64e71fff36cdd66d26da3e9883902faf850",
+    "/scratch/aryama.murthy/relayspec-auf-20260911/main-q14-n4096/part-4/train.json": "75273a75c05715155971537f629f4420229e819978516eb5d6ef8fbbfda927e5",
+    "/scratch/aryama.murthy/relayspec-auf-20260911/main-q14-n4096/part-5/train.json": "f3cdd1d4490a31645964006718c2b7b430a16f1731131cc7126589c8901e9f50",
+    "/scratch/aryama.murthy/relayspec-auf-20260911/main-q14-n4096/part-6/train.json": "82251cb329b244168eb2672996e38940013531050962e3f52f51916ff4ebe567",
+    "/scratch/aryama.murthy/relayspec-auf-20260911/main-q14-n4096/part-7/train.json": "c4067775531a9d2d5fdcfa5a78b2698f5b2b9a8902335be06458551bf7e64c75"
+  },
+  "sampler": "same deterministic stratified25% positions and equal-record masses as ZIP",
+  "optimizer": "AdamW betas.9/.999 eps1e-8 weight_decay0 clip1, ZIP warmup/cosine"
+}

@@ -1,3 +1,9 @@
+## 2026-09-12: Q14 normal fit archived; future I/O timing added
+
+NormalQ14 completed4096-record/three-epoch fit:1115.416283seconds (18.5903minutes),1893updates over1,292,174 sampled positions,65,536,000parameters; export relativeMSE0. Training summary/contract and hashed cost evidence archived in reports/q14-normal-fit. First full evaluation reached64/128 when checked. Q14five31559 passed through its AR gate and remains active; no restart.
+
+Added feature-batch wait timing to future train_normal invocations without changing batch order, RNG, objective or optimizer. Logs separate time obtaining each CPU batch from the remaining fit loop; explicitly not GPU-only kernel time. Existing active jobs use their original source snapshots. This instrumentation addresses the current lack of evidence attributing the longer family fit time to I/O versus computation. Syntax validation passed; no timing claim made from unrun instrumentation.
+
 ## 2026-09-12: Q8 three timing passes complete; Llama seeds queued
 
 Q8 normal mean172.945143TPS; BA177.579371TPS, paired mean ratio1.02679599 (+2.6796%), timingstdev0.04077TPS; five164.455648TPS, ratio0.95091237 (-4.9088%),stdev0.03581TPS. All three repetitions128/128 full output/finish equality versus normal,122768tokens per pass. Archived all rows/summaries/hashes in q8-handoff-three-repeats. AR/ZIP/native/CE are still pending. Q14five job31559 started on two GPUs after Q8 tasks completed.
