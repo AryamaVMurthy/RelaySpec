@@ -68,3 +68,27 @@ class FusionLoRA(nn.Module):
 
     def folded(self):
         return self.base.float() + (self.alpha/self.rank)*(self.B @ self.A)
+
+
+class LowRankContext(nn.Module):
+    """Frozen compatible fusion plus A/B, then the frozen source RMSNorm."""
+    def __init__(self,fusion,norm,rank=56,alpha=56):
+        super().__init__()
+        if fusion.ndim != 2 or norm.shape != (fusion.shape[0],) or rank <= 0 or alpha <= 0:
+            raise ValueError("Invalid low-rank context dimensions")
+        self.register_buffer("fusion",fusion.detach().clone())
+        self.register_buffer("norm",norm.detach().clone())
+        self.rank,self.alpha=rank,alpha
+        self.A=nn.Parameter(torch.empty(rank,fusion.shape[1],dtype=torch.float32,device=fusion.device))
+        self.B=nn.Parameter(torch.zeros(fusion.shape[0],rank,dtype=torch.float32,device=fusion.device))
+        nn.init.kaiming_uniform_(self.A,a=math.sqrt(5))
+
+    def normalize(self,x):
+        return LayerContextMapper.normalize(self,x)
+
+    def forward(self,x):
+        context=F.linear(x,self.fusion)+(self.alpha/self.rank)*F.linear(F.linear(x,self.A),self.B)
+        return self.normalize(context),None
+
+    def folded(self):
+        return self.fusion.float()+(self.alpha/self.rank)*(self.B@self.A)

@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 import torch
 from .blocks import collate_blocks
-from .interfaces import LayerContextMapper
+from .interfaces import LayerContextMapper,LowRankContext
 from .losses import token_loss
 from .pilot_data import write,sha
 from .train_pilot import load_models,block_for,logits,export,batch_gate
@@ -61,6 +61,9 @@ def main(args):
         raise ValueError("Logical batch must be divisible by microbatch records")
     args.out.mkdir(parents=True,exist_ok=True)
     contract={key:str(value) if isinstance(value,Path) else value for key,value in vars(args).items()}
+    if args.lora_base is None:
+        contract.pop("lora_base")
+        contract.pop("rank")
     contract.update(train_manifest_sha256=sha(args.data/"train.json"),original_frozen_targets=True,
                     normalization="mean active-token CE inside each microbatch; equal microbatch means per update")
     contract_path=args.out/"contract.json"
@@ -80,7 +83,18 @@ def main(args):
     assert not ({x["group_id"] for x in train.rows} & {x["group_id"] for x in validation_rows})
     draft,embedding=load_models(Path(os.environ["TRANSFER_WORK"]))
     torch.manual_seed(args.seed)
-    mapper=LayerContextMapper(draft.fc.weight,draft.hidden_norm.weight).to("cuda")
+    if args.lora_base is None:
+        mapper=LayerContextMapper(draft.fc.weight,draft.hidden_norm.weight).to("cuda")
+    else:
+        from safetensors import safe_open
+        with safe_open(args.lora_base,framework="pt",device="cpu") as reader:
+            base=reader.get_tensor("fc.weight")
+            norm=reader.get_tensor("hidden_norm.weight")
+        assert base.shape == (2560,20480)
+        mapper=LowRankContext(base,norm,rank=args.rank,alpha=args.rank).to("cuda")
+        write(args.out/"initialization.json",{"source":str(args.lora_base),"sha256":sha(args.lora_base),
+              "rank":args.rank,"alpha":args.rank,"trainable_parameters":sum(p.numel() for p in mapper.parameters()),
+              "requires_charging_zip_initialization":True})
     gate=batch_gate(draft,embedding,mapper,[train[0],train[1]])
     write(args.out/"gate.json",gate)
     optimizer=torch.optim.AdamW(mapper.parameters(),lr=args.lr,weight_decay=0,fused=True)
@@ -175,4 +189,6 @@ if __name__ == "__main__":
     parser.add_argument("--lr",type=float,default=1e-4)
     parser.add_argument("--exploratory",action="store_true")
     parser.add_argument("--defer-validation",action="store_true",help="Fit fixed epochs while separately reserved validation labels are prepared")
+    parser.add_argument("--lora-base",type=Path)
+    parser.add_argument("--rank",type=int,default=56)
     main(parser.parse_args())

@@ -3,7 +3,7 @@ import unittest
 import torch
 from torch.nn import functional as F
 
-from experiments.auf_vllm.interfaces import FusionLoRA, LayerContextMapper
+from experiments.auf_vllm.interfaces import FusionLoRA, LayerContextMapper, LowRankContext
 
 
 class InterfaceTests(unittest.TestCase):
@@ -39,6 +39,22 @@ class InterfaceTests(unittest.TestCase):
         self.assertIsNone(layer.base.grad)
         with torch.no_grad(): layer.B.add_(.01)
         torch.testing.assert_close(layer(x), F.linear(x, layer.folded()), rtol=1e-5, atol=1e-6)
+
+    def test_context_lora_keeps_norm_and_fusion_frozen(self):
+        weight,norm=torch.randn(3,8),torch.randn(3)
+        layer=LowRankContext(weight,norm,rank=2,alpha=2)
+        x=torch.randn(5,8)
+        raw=F.linear(x,weight)
+        expected=norm*raw*torch.rsqrt(raw.square().mean(-1,keepdim=True)+1e-6)
+        torch.testing.assert_close(layer(x)[0],expected)
+        layer(x)[0].square().mean().backward()
+        self.assertEqual(set(dict(layer.named_parameters())),{"A","B"})
+        self.assertIsNone(layer.fusion.grad)
+        self.assertIsNone(layer.norm.grad)
+        torch.testing.assert_close(layer.A.grad,torch.zeros_like(layer.A))
+        with torch.no_grad():
+            layer.B.add_(.01)
+        torch.testing.assert_close(layer(x)[0],layer.normalize(F.linear(x,layer.folded())),rtol=1e-5,atol=1e-6)
 
 
 if __name__ == "__main__":
