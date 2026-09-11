@@ -27,17 +27,17 @@ def rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines()]
 
 
-def prepare(work, out):
+def prepare(work, out, count=32, reuse_dev=None):
     train = []
     sources = []
     for path in sorted((work / "common/rollouts/train").glob("*.jsonl")):
-        train.extend(rows(path)[:32-len(train)])
+        train.extend(rows(path)[:count-len(train)])
         sources.append({"path": str(path), "sha256": sha(path)})
-        if len(train) == 32:
+        if len(train) == count:
             break
     dev_path = work / "common/dataset/dev.jsonl"
     dev = rows(dev_path)[:8]
-    assert len(train) == 32 and len(dev) == 8
+    assert len(train) == count and len(dev) == 8
     assert not ({x["group_id"] for x in train} & {x["group_id"] for x in dev})
     for x in train:
         assert x["full_ids"] == x["prompt_token_ids"] + x["output_ids"]
@@ -50,7 +50,14 @@ def prepare(work, out):
             write(dest, data)
     write(out / "provenance.json", {"train_sources": sources, "dev_source": str(dev_path),
           "dev_sha256": sha(dev_path), "teacher": str((work/"models/8b/target").resolve()),
-          "target_adapters": None, "training_output_cap": 4096, "pilot_only": True})
+          "target_adapters": None, "training_output_cap": 4096, "records":count,
+          "pilot_only": count == 32})
+    if reuse_dev is not None:
+        prior = json.loads((reuse_dev/"provenance.json").read_text())
+        assert prior["teacher"] == str((work/"models/8b/target").resolve())
+        assert json.loads((reuse_dev/"dev-prompts.json").read_text()) == dev
+        write(out/"dev.json", json.loads((reuse_dev/"dev.json").read_text()))
+        write(out/"dev-reuse.json", {"source":str(reuse_dev/"dev.json"),"sha256":sha(reuse_dev/"dev.json")})
 
 
 def generate_dev(work, out):
@@ -106,6 +113,16 @@ def capture(work, out, size):
             features = result.outputs.data.to(torch.bfloat16).cpu()
             assert features.shape == (len(row["full_ids"]), 5*{4:2560, 8:4096}[size])
             assert torch.isfinite(features).all()
+            if index == 0:
+                boundary = max(2, len(row["full_ids"])//2)
+                prefix_result = model.encode([{"prompt_token_ids":row["full_ids"][:boundary]}],
+                    pooling_task="token_embed",pooling_params=PoolingParams(task="token_embed"),use_tqdm=False)[0]
+                prefix_features = prefix_result.outputs.data.cpu().float()
+                full_prefix = features[:boundary].float()
+                error = ((prefix_features-full_prefix).square().sum()/full_prefix.square().sum()).item()
+                assert error < 1e-6, {"causality_relative_mse":error}
+                write(out/f"features/{size}/{split}/causality.json", {"passed":True,
+                    "relative_mse":error,"prefix_tokens":boundary,"full_tokens":len(features)})
             dest.parent.mkdir(parents=True, exist_ok=True)
             temp = dest.with_suffix(".part")
             torch.save({"features": features, "group_id": row["group_id"],
@@ -114,7 +131,8 @@ def capture(work, out, size):
             write(meta, {"sha256": sha(dest), "manifest_sha256": sha(manifest),
                          "seconds": time.perf_counter()-start, "tokens": len(features),
                          "job_id": os.environ.get("SLURM_JOB_ID")})
-            print(json.dumps({"capture": str(dest), "tokens": len(features)}), flush=True)
+            if index % 16 == 0 or index+1 == len(examples):
+                print(json.dumps({"capture": str(dest), "records_done":index+1,"tokens": len(features)}), flush=True)
 
 
 if __name__ == "__main__":
@@ -122,11 +140,13 @@ if __name__ == "__main__":
     parser.add_argument("mode", choices=["prepare", "dev", "capture"])
     parser.add_argument("--size", type=int, choices=[4,8], default=8)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--records",type=int,default=32)
+    parser.add_argument("--reuse-dev",type=Path)
     args = parser.parse_args()
     work = Path(os.environ["TRANSFER_WORK"])
     args.out.mkdir(parents=True, exist_ok=True)
     if args.mode == "prepare":
-        prepare(work, args.out)
+        prepare(work, args.out, args.records, args.reuse_dev)
     elif args.mode == "dev":
         generate_dev(work, args.out)
     else:
