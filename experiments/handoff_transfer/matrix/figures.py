@@ -20,7 +20,7 @@ def render(paths,out):
     plt.rcParams.update({'font.size':10,'pdf.fonttype':42,'ps.fonttype':42})
     colors={'ce':'#3569a8','auf':'#d57a28'}
     families=['q8','llama','cross']
-    titles=['Qwen transfer','Llama transfer','Qwen-to-Llama transfer']
+    titles=['Qwen3 4B → 8B','Llama 3.1 8B → 3.2 3B','Qwen3 4B → Llama 3.1 8B']
     fig,axes=plt.subplots(1,3,figsize=(13,4.2),sharey=True,layout='constrained')
     for ax,family,title in zip(axes,families,titles):
         for loss,offset in [('ce',-.18),('auf',.18)]:
