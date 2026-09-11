@@ -43,13 +43,19 @@ def _dflash_objective_chunk_terms(
     ).reshape_as(target_ids)
 
     target_probability = torch.exp(-neg_log_q)
-    # Detached strict-prefix support: keep first failure, discard later labels.
+    # Argmax is shared by AUF support and accuracy: one vocabulary reduction.
     with torch.no_grad():
-        valid=weight_mask>0
-        correct=(objective_logits.argmax(-1)==target_ids) | ~valid
-        before=torch.cat([torch.ones_like(correct[...,:1]),correct[...,:-1]],dim=-1)
-        support=before.to(torch.int64).cumprod(-1).to(weight_mask.dtype)
-    loss_weights=weight_mask*support if self._matrix_objective=='auf' else weight_mask
+        predicted_ids = objective_logits.argmax(dim=-1)
+    if self._matrix_objective == 'auf':
+        # Detached strict-prefix support: keep first failure, discard later labels.
+        with torch.no_grad():
+            valid = weight_mask > 0
+            correct = (predicted_ids == target_ids) | ~valid
+            before = torch.cat([torch.ones_like(correct[..., :1]), correct[..., :-1]], dim=-1)
+            support = before.to(torch.int64).cumprod(-1).to(weight_mask.dtype)
+        loss_weights = weight_mask * support
+    else:
+        loss_weights = weight_mask
     loss_den=loss_weights.sum()
 
     ce_loss_num = (neg_log_q * loss_weights).sum()
@@ -72,7 +78,6 @@ def _dflash_objective_chunk_terms(
         )
 
     with torch.no_grad():
-        predicted_ids = objective_logits.argmax(dim=-1)
         correct_num = (
             ((predicted_ids == target_ids) & (weight_mask > 0.5)).sum().float()
         )
