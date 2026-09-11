@@ -43,6 +43,7 @@ if [ "$EVAL_SCOPE" = screen ]; then
  test "$MODE" = matrix
  data="$run/validation-data-$SLURM_JOB_ID";out="$run/screen-$TRAIN_STEPS"
  "$study_python" -m experiments.handoff_transfer.matrix.validation --family cross --target "$target" --source "$study/manifests/eval.jsonl" --train "$study/manifests/train.jsonl" --final "$study/manifests/dev.jsonl" --out "$data"
+ "$study_python" -m experiments.handoff_transfer.matrix.reuse_validation --source "$root/matrix/cross/validation-reference/ar-r0-w0.jsonl" --data "$data" --dest "$out" --family cross --target "$target"
  "$study_python" -m experiments.auf_vllm.family_benchmark --family cross --target-path "$target" --models "$study/models" --data "$data" --mode ar --count 32 --cap 512 --out "$out"
  "$study_python" -m experiments.auf_vllm.family_benchmark --family cross --target-path "$target" --models "$study/models" --data "$data" "${extra[@]}" --mode matrix --count 32 --cap 512 --out "$out"
  "$study_python" -m experiments.auf_vllm.compare_outputs --ar "$out/ar-r0-w0.jsonl" --method "$out/matrix-r0-w0.jsonl" --out "$out/comparison.json" --expected-count 32 --require-exact

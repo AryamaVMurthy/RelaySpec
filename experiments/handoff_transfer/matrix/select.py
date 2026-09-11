@@ -12,7 +12,7 @@ def select(runs,steps):
         if identity is None:identity=current
         assert current==identity,'Cannot tune across different architecture/loss cells'
         folder=run/f'screen-{steps}'
-        path=folder/'matrix-r0-w0.jsonl';ar=folder/'ar-r0-w0.jsonl'
+        path=folder/'matrix-r0-w0.jsonl';ar=run.parent/'validation-reference/ar-r0-w0.jsonl'
         measured=json.loads(path.with_suffix('.summary.json').read_text())
         assert measured['timing_valid']
         devices=tuple(g['device_name'] for g in measured['gpu_before'])
@@ -46,12 +46,12 @@ def select(runs,steps):
         assert evidence['exact_matches']==evidence['finish_matches']==32
         candidates.append({'run':str(run),'lr':cell['lr'],'tps':evidence['method_tps'],
             'ar_ratio':evidence['throughput_ratio'],'checkpoint_sha256':digest(export),
-            'rows_sha256':digest(path),'training_seconds':summary['training_seconds']})
+            'rows_sha256':digest(path),'ar_reference_path':str(ar),'ar_rows_sha256':digest(ar),'training_seconds':summary['training_seconds']})
     assert candidates and len({x['lr'] for x in candidates})==len(candidates)
     ranked=sorted(candidates,key=lambda x:(-x['ar_ratio'],x['lr']))
     return {'scope':'tuning only; not final evaluation','identity':identity,'steps':steps,
         'manifest_sha256':manifest,'gpu_hardware':hardware,'ranking_rule':'descending paired aggregate TPS/AR, lower LR for exact ties',
-        'ranked':ranked,'selected_lr':ranked[0]['lr'],'limitations':'best observed candidate at this budget; single timing measurement'}
+        'ranked':ranked,'selected_lr':ranked[0]['lr'],'limitations':'best observed candidate at this budget; single method timing and one shared measured AR reference per family'}
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--runs',type=Path,nargs='+',required=True)
     p.add_argument('--steps',type=int,required=True);p.add_argument('--out',type=Path,required=True)

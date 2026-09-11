@@ -27,6 +27,7 @@ esac
 data="$run/validation-data-$SLURM_JOB_ID"
 "$study_python" -m experiments.handoff_transfer.matrix.validation --family "$FAMILY" --target "$target" --source "$study/manifests/eval.jsonl" --train "$study/manifests/train.jsonl" --final "$study/manifests/dev.jsonl" --out "$data"
 "$study_python" -c "import json;v=json.load(open('$run/modules/steps-$SCREEN_STEPS/$KIND/verification.json'));assert v['status']=='passed'"
+"$study_python" -m experiments.handoff_transfer.matrix.reuse_validation --source "$root/matrix/$FAMILY/validation-reference/ar-r0-w0.jsonl" --data "$data" --dest "$run/screen-$SCREEN_STEPS" --family "$FAMILY" --target "$target"
 for mode in ar matrix; do
  extra=()
  if [ "$mode" = matrix ]; then extra+=(--export "$run/exports/steps-$SCREEN_STEPS/$KIND"); fi
