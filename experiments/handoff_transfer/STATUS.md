@@ -1,3 +1,7 @@
+## 2026-09-12: final confirmation Slurm wrappers prepared
+
+Added freeze_confirmation.sbatch (CPU2 per family), confirmation.sbatch (oneGPU task; workload/repetition array), and collect_confirmation.py. Confirmation uses frozen checkpoints/engine settings, isolated source snapshots, rawGPU telemetry, per-repeat protocol hashes and full-output checks. Collector requires all four reserved workloads and three repetitions with runtime equality to the frozen protocol; reports clearly distinguish confirmation from development and seed variation. Shell and Python syntax checks pass. These final-stage jobs are not yet submitted; they must follow all required development/seed/scaling/profiling results, then Transformers runs last. Q14five reached900/2000updates at latest check.
+
 ## 2026-09-12: concurrent benchmark JSON race fixed
 
 Found shared pilot_data.write used a fixed .tmp filename; concurrent workload repetitions preparing the same manifest/provenance could replace each other's temporary file and fail. Changed to unique per-write temporary names with atomic rename and cleanup. Concurrent test exercises64writes/eightthreads and validates complete JSON plus no temporary leftovers. Confirmation materialization also uses separate data-rN paths.21tests pass including20handoff checks. Synced writer for future jobs; currently running jobs retain their snapshots. Q14five reached720/2000updates; normalQ14 full evaluation still underway. No extra GPU work launched.
