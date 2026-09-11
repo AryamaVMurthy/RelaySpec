@@ -1,5 +1,13 @@
 ## Verified fit and scaling preparation update
 
+Implemented separate large-data fixed-epoch recipe:4K/8K/16K/32K,three-epoch
+matched ZIP initialization then four complete AUF epochs,both architectures,
+per-epoch checkpoints. A1,024-update sweep would expose at most8,192 record
+presentations and cannot claim full16K/32K training. This large-data study
+therefore reports variable compute explicitly. Packing supports verified
+prefixes of canonical manifests; trainer count handling reused unchanged.
+Only the first4K fit has been submitted; remaining large fits/evals to wire.
+
 32K data-only chain enabled:31488 generates only added16,384 records after
 31486;31489 captures frozen source/target features after31488;new CPU2
 assembly31645 follows31489. Each GPU array max2 tasks,serial data stages.

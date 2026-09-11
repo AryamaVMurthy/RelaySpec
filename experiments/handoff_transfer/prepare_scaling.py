@@ -12,6 +12,17 @@ import torch
 from experiments.handoff_transfer.pack_transfer import sha, write
 
 
+def training_source():
+    source = (Path(__file__).parent / 'port/train.py').read_text()
+    for old, new in [
+        ('else 4096;total_steps', "else TRANSFER['records'];total_steps"),
+        ("'unique_cached_examples':4096", "'unique_cached_examples':count"),
+    ]:
+        assert source.count(old) == 1
+        source = source.replace(old, new)
+    return source
+
+
 def prepare(parent, fit, out, records):
     assert records >= 16 and records % 16 == 0
     assert not out.exists(), 'Use a new output directory; never replace a running study'
@@ -64,14 +75,7 @@ def prepare(parent, fit, out, records):
                     initialization_training_seconds=sum(h['seconds'] for h in summary['history']))
     write(out / 'transfer.json', contract)
     # Preserve the audited main recipe; only count-dependent bookkeeping changes.
-    source = (Path(__file__).parent / 'port/train.py').read_text()
-    for old, new in [
-        ('else 4096;total_steps', "else TRANSFER['records'];total_steps"),
-        ("'unique_cached_examples':4096", "'unique_cached_examples':count"),
-    ]:
-        assert source.count(old) == 1
-        source = source.replace(old, new)
-    (out / 'scaling_train.py').write_text(source)
+    (out / 'scaling_train.py').write_text(training_source())
     write(out / 'scaling-provenance.json', {
         'records': records, 'parent': str(parent),
         'trainer_sha256': sha(out / 'scaling_train.py'),

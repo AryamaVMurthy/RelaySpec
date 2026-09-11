@@ -28,7 +28,7 @@ kinds=(none fusion_r56 five_maps)
 mode=${modes[$SLURM_ARRAY_TASK_ID]}
 kind=${kinds[$SLURM_ARRAY_TASK_ID]}
 if [ "$mode" = zip ]; then
-  model="$root/scaling-initializers/q8-n$RECORDS-s42/epoch-3/export"
+  model="${INITIALIZER_ROOT:-$root/scaling-initializers}/q8-n$RECORDS-s42/epoch-3/export"
 else
   "$study_python" -c "import json;assert json.load(open('$run/modules/full-$kind/$kind/verification.json'))['status']=='passed'"
   model="$run/exports/full-$kind/$kind"

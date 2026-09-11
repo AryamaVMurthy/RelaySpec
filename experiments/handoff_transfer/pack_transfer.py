@@ -25,6 +25,9 @@ def main(a):
         for i,row in enumerate(json.loads(p.read_text())):
             role='8' if a.family=='q8' else 'target'
             items.append((p,p.parent/f'features/{role}/train/{i:05d}.pt',row))
+    if getattr(a,'prefix',False):
+        assert len(items)>=a.records
+        items=items[:a.records]
     assert len(items)==a.records and len({r['group_id'] for _,_,r in items})==a.records
     a.out.mkdir(parents=True,exist_ok=True)
     shard_hashes={};checked=0
@@ -73,4 +76,5 @@ if __name__=='__main__':
     p.add_argument('--records',type=int,default=4096)
     p.add_argument('--data-name',default=None)
     p.add_argument('--base-export',type=Path,default=None)
+    p.add_argument('--prefix',action='store_true',help='Pack the declared prefix of a larger canonical capture manifest')
     main(p.parse_args())
