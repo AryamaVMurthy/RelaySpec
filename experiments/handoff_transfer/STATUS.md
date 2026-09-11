@@ -1,3 +1,7 @@
+## 2026-09-12: full-pipeline seed provenance preparation
+
+Added prepare_seed.py for Q8 seeds43/44. It requires a fresh4096-record/three-epoch ZIP initializer whose recorded seed matches, verifies exact cached sequence identity through existing prepare_scaling, and generates an isolated AUF trainer. Seed variation covers ZIP/AUF initialization, anchor sampling and shard shuffle. Main seed42 trainer remains unchanged. The generated trainer rejects an inconsistent --seed and fixes previously hardcoded seed42 summary wording for these extra runs. Normal baseline must also refit with the matching seed. No seed jobs launched yet; Llama initializer schema and launch/evaluation wiring remain pending. All17 tests pass. Live Q8 third repetitions progressing; no duplicate launches.
+
 ## 2026-09-12: hardware profiling collection wired
 
 CPU-only collectors31673(Q8 after31632) and31674(Llama after31633) require all five methods, four completed instrumented requests/cap2048, profiler max64 iterations, nonempty GPU kernel traces and nvidia-smi telemetry. Both compressed and plain PyTorch trace formats are supported. Reports retain kernel duration categories, busy-time union, top kernels and source hashes; scope explicitly excludes primary throughput, full-request profiling, SM occupancy and unverified attribution of whole-node GPU telemetry. Test rejects profile outputs labeled as valid primary timing. All16 tests pass. Active four GPU jobs still progressing; normalQ14 was loading its next engine at last check.
