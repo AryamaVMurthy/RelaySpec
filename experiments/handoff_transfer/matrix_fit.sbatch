@@ -56,6 +56,6 @@ fi
 # TRAIN_STEPS defaults to gate only. Tuning screens are explicit.
 
 if [ "${TRAIN_STEPS:-0}" -gt 0 ]; then
- "$study_python" -m torch.distributed.run --standalone --nproc_per_node=2 "$matrix_code/train.py" --kind "$KIND" --tag full --output-tag "steps-$TRAIN_STEPS" --lr "$MATRIX_LR" --epochs 4 --max-steps "$TRAIN_STEPS" --snapshot-every 100
+ "$study_python" -m torch.distributed.run --standalone --nproc_per_node=2 "$matrix_code/train.py" --kind "$KIND" --tag full --output-tag "steps-$TRAIN_STEPS" --lr "$MATRIX_LR" --epochs 4 --max-steps "$TRAIN_STEPS" --snapshot-every 500
  "$study_python" "$matrix_code/verify.py" --kind "$KIND" --tag "steps-$TRAIN_STEPS" --steps "$TRAIN_STEPS"
 fi

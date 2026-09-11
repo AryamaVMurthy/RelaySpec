@@ -41,11 +41,12 @@ def select(runs,steps):
         assert summary['objective']==cell['objective'] and summary['lr']==cell['lr']
         export=run/'exports'/f'steps-{steps}'/cell['kind']/'model.safetensors'
         assert verification['status']=='passed'
-        assert verification['export_sha256']==contract['export_sha256']==digest(export)
+        export_hash=digest(export)
+        assert verification['export_sha256']==contract['export_sha256']==export_hash
         evidence=compare([ar],[path])
         assert evidence['exact_matches']==evidence['finish_matches']==32
         candidates.append({'run':str(run),'lr':cell['lr'],'tps':evidence['method_tps'],
-            'ar_ratio':evidence['throughput_ratio'],'checkpoint_sha256':digest(export),
+            'ar_ratio':evidence['throughput_ratio'],'checkpoint_sha256':export_hash,
             'rows_sha256':digest(path),'ar_reference_path':str(ar),'ar_rows_sha256':digest(ar),'training_seconds':summary['training_seconds']})
     assert candidates and len({x['lr'] for x in candidates})==len(candidates)
     ranked=sorted(candidates,key=lambda x:(-x['ar_ratio'],x['lr']))
