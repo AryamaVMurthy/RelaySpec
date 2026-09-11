@@ -87,7 +87,10 @@ are verified (fiveBA CE/AUF, dense fusion CE, five dense CE). Cross-family16-rec
 CE/AUF integration fits are verified; heterogeneous-vocabulary decoding is still
 undergoing its GPU gate. Initial family arrays31771/31772 and the two additional
 LR arrays31780/31781 are queued. Complete32-request validation arrays31782/31783
-follow. Full2000-update fits and128/cap2048 matrix evaluations require validation
-selection and are not yet submitted. Older baseline pools31606/31607 are held
+follow. Promotion jobs31786/31787 select the best two LRs per cell for500-update
+arrays31788/31789. Validation31790/31791 then selects the final LR through
+31792/31793, enabling2000-update arrays31794/31795. These jobs are queued
+behind verified tuning evidence; none is a completed result. Final128/cap2048
+matrix evaluation submission and cross-family full-data work remain outstanding. Older baseline pools31606/31607 are held
 while the new matrix dependencies are assembled; release them deliberately.
 See reports/matrix-jobs.json for repaired failures and current dependencies.

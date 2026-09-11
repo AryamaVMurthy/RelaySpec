@@ -30,6 +30,13 @@ mkdir -p "$AUF_WORKDIR/logs"
 nvidia-smi --query-gpu=timestamp,index,uuid,name,utilization.gpu,memory.used,power.draw --format=csv -l 5 > "$AUF_WORKDIR/logs/gpu-$SLURM_JOB_ID.csv" &
 monitor=$!
 trap 'kill "$monitor"' EXIT
+if [ "${TRAIN_STEPS:-0}" -gt 100 ]; then
+ # A promoted fit has already passed a trained-checkpoint decoding screen.
+ # Revalidate those artifacts instead of repeating the two-update smoke run.
+ prior_steps=100
+ if [ "$TRAIN_STEPS" -eq 2000 ]; then prior_steps=500; fi
+ "$study_python" -m experiments.handoff_transfer.matrix.select --runs "$AUF_WORKDIR" --steps "$prior_steps" --out "$AUF_WORKDIR/promotion-preflight-$SLURM_JOB_ID.json"
+else
 "$study_python" -m torch.distributed.run --standalone --nproc_per_node=2 "$matrix_code/train.py" --kind "$KIND" --tag check --output-tag "gate-$SLURM_JOB_ID" --lr "$MATRIX_LR" --epochs 1 --max-steps 2
 "$study_python" "$matrix_code/verify.py" --kind "$KIND" --tag "gate-$SLURM_JOB_ID" --steps 2
 # Check the actual deployed decoder before any tuning fit.
@@ -45,6 +52,7 @@ for mode in ar matrix; do
 done
 "$study_python" -m experiments.auf_vllm.compare_outputs --ar "$AUF_WORKDIR/gate-$SLURM_JOB_ID/ar-r0-w0.jsonl" --method "$AUF_WORKDIR/gate-$SLURM_JOB_ID/matrix-r0-w0.jsonl" --out "$AUF_WORKDIR/gate-$SLURM_JOB_ID/exactness.json" --require-exact --expected-count 4
 export CUDA_VISIBLE_DEVICES="$training_gpus"
+fi
 # TRAIN_STEPS defaults to gate only. Tuning screens are explicit.
 
 if [ "${TRAIN_STEPS:-0}" -gt 0 ]; then
