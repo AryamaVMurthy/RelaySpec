@@ -176,6 +176,82 @@
         "experiments/handoff_transfer/reports/matrix-first-fits/auf/modules/steps-100/five_ba56/summary.json": "2227a88417add74bea76872837a724db4436f68b9561effd36d87891fd7621e1",
         "experiments/handoff_transfer/reports/matrix-first-fits/auf/modules/steps-100/five_ba56/verification.json": "aacbd37d07cc5ed6bb6e83aada881c082408e1d76c672f3a87a2d4b42c68486e"
       }
+    },
+    {
+      "id": "q8-fiveba512-ce-tuning100",
+      "status": "single_seed_single_timing_tuning_only",
+      "result": {
+        "count": 32,
+        "exact_matches": 32,
+        "finish_matches": 32,
+        "ar_tps": 24.530932798988875,
+        "method_tps": 146.03380879246959,
+        "throughput_ratio": 5.953047525306044,
+        "ar_output_tokens": 15940,
+        "method_output_tokens": 15940,
+        "mismatches": [],
+        "ratio_note": "aggregate output tokens divided by summed request wall times; workers are independent sequential streams"
+      },
+      "source": "experiments/handoff_transfer/reports/matrix-validation/five_ba56-ce/comparison.json",
+      "sha256": "716ae66ee07f77a24f60bc10c753bf35d4389136cb837bea079eca9ff31cd454",
+      "allowed_scope": "100 updates,32 separate validation requests,cap512; not final128/cap2048 or a resolved loss advantage"
+    },
+    {
+      "id": "cross-ce-integration-gate",
+      "status": "integration_only",
+      "result": {
+        "count": 4,
+        "exact_matches": 4,
+        "finish_matches": 4,
+        "ar_tps": 24.693679657107815,
+        "method_tps": 29.197898583408072,
+        "throughput_ratio": 1.1824037158027911,
+        "ar_output_tokens": 512,
+        "method_output_tokens": 512,
+        "mismatches": [],
+        "ratio_note": "aggregate output tokens divided by summed request wall times; workers are independent sequential streams"
+      },
+      "source": "experiments/handoff_transfer/reports/cross-decoding-gate/ce/exactness.json",
+      "sha256": "a1c750c09a3320cd1a112bddfd83c04a57b737d41b038220d8a59efd7ce86e56",
+      "allowed_scope": "16-record two-update pilot,4requests/cap128; not general correctness or paper-level speedup"
+    },
+    {
+      "id": "q8-fiveba512-auf-tuning100",
+      "status": "single_seed_single_timing_tuning_only",
+      "result": {
+        "count": 32,
+        "exact_matches": 32,
+        "finish_matches": 32,
+        "ar_tps": 24.563503956386224,
+        "method_tps": 149.07662286306075,
+        "throughput_ratio": 6.069029203966748,
+        "ar_output_tokens": 15940,
+        "method_output_tokens": 15940,
+        "mismatches": [],
+        "ratio_note": "aggregate output tokens divided by summed request wall times; workers are independent sequential streams"
+      },
+      "source": "experiments/handoff_transfer/reports/matrix-validation/five_ba56-auf/comparison.json",
+      "sha256": "7f2925a43e52fa56620c93440eefb96fe4bd7d70aee184656f4adb54b6e0a1fb",
+      "allowed_scope": "100 updates,32 separate validation requests,cap512; not final128/cap2048 or a resolved loss advantage"
+    },
+    {
+      "id": "cross-auf-integration-gate",
+      "status": "integration_only",
+      "result": {
+        "count": 4,
+        "exact_matches": 4,
+        "finish_matches": 4,
+        "ar_tps": 24.693679657107815,
+        "method_tps": 30.32679212089637,
+        "throughput_ratio": 1.228119605583655,
+        "ar_output_tokens": 512,
+        "method_output_tokens": 512,
+        "mismatches": [],
+        "ratio_note": "aggregate output tokens divided by summed request wall times; workers are independent sequential streams"
+      },
+      "source": "experiments/handoff_transfer/reports/cross-decoding-gate/auf/exactness.json",
+      "sha256": "a468fc7f42c5d90e0d55d9ac9a902c153cf12d96424495f6f462e8a77a9cc704",
+      "allowed_scope": "16-record two-update pilot,4requests/cap128; not general correctness or paper-level speedup"
     }
   ],
   "source_sha256": {

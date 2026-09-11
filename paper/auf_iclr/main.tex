@@ -129,14 +129,27 @@ The first Qwen8 five-BA fits completed 100 updates (800 presentations) with
 1,863,680 trainable parameters. AUF took 337.8 seconds and CE 339.7 seconds
 on two L40S GPUs; both peaked near 17.04 GB allocated memory on rank zero.
 These incremental fitting costs exclude ZIP initialization and rollouts.
-Both exports passed frozen-weight and folding checks. Their decoding
-validation is pending: completed four-request exactness checks used separate
-two-update pilots, not these 100-update checkpoints. No decoding advantage
-for either loss is established by these costs.
+Both exports passed frozen-weight and folding checks. On the separate
+32-request tuning set with a 512-token cap, these 100-update checkpoints
+achieved 149.1 tokens/s (AUF) and 146.0 tokens/s (CE), with exact token and
+finish-reason agreement with AR on all requests. This single fitting seed
+and single timing screen does not establish a resolved loss advantage or
+an improvement over unchanged RelaySpec. The final 128-request evaluation
+and learning-rate selection remain pending.
+
+Five rank-56 layer adapters are not parameter-matched to one rank-56 fusion
+adapter: in this Qwen setting they train 1,863,680 versus 1,290,240 parameters.
+Both are folded into a dense deployment matrix. Lower training parameter
+count therefore does not itself imply lower decoding FLOPs.
 
 Qwen-to-Llama additionally requires source-token labels, causal target-feature
 alignment, and proposal retokenization. Source-token AUF support is not
-target-token accepted progress. Cross-family results require validation of
-the complete decoding path.
+target-token accepted progress. An integration pilot using 16 rollout records
+and two updates passed full token and finish-reason checks on four requests
+at a 128-token cap for both CE and AUF. It measured 29.2 and 30.3 tokens/s,
+respectively, against 24.7 for AR, including text-bridge overhead. This small
+gate establishes executable integration on those requests; it does not
+establish general correctness or a paper-level speedup result. Full-data
+initializers, tuning, and 128-request comparisons are queued.
 
 \end{document}
