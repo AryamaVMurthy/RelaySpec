@@ -27,7 +27,21 @@ monitor=$!
 trap 'kill "$monitor"' EXIT
 "$study_python" -m torch.distributed.run --standalone --nproc_per_node=2 "$code/matrix/train.py" --kind "$KIND" --tag check --output-tag "gate-$SLURM_JOB_ID" --lr "$MATRIX_LR" --epochs 1 --max-steps 2
 "$study_python" "$code/matrix/verify.py" --kind "$KIND" --tag "gate-$SLURM_JOB_ID" --steps 2
-# TRAIN_STEPS defaults to a training-only GPU gate. Full screens are explicit.
+# Check the actual deployed decoder before any tuning fit.
+training_gpus="$CUDA_VISIBLE_DEVICES"
+export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES%%,*}" VLLM_BATCH_INVARIANT=1
+study=/scratch/aryama.murthy/relayspec-auf-20260911
+extra=()
+if [ "$FAMILY" = q8 ]; then extra+=(--target-path /scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target); fi
+for mode in ar matrix; do
+ export_args=()
+ if [ "$mode" = matrix ]; then export_args+=(--export "$AUF_WORKDIR/exports/gate-$SLURM_JOB_ID/$KIND"); fi
+ "$study_python" -u -m experiments.auf_vllm.family_benchmark --family "$FAMILY" --models "$study/models" "${extra[@]}" "${export_args[@]}" --data "$root/$FAMILY/evaluation" --mode "$mode" --count 4 --cap 128 --out "$AUF_WORKDIR/gate-$SLURM_JOB_ID"
+done
+"$study_python" -m experiments.auf_vllm.compare_outputs --ar "$AUF_WORKDIR/gate-$SLURM_JOB_ID/ar-r0-w0.jsonl" --method "$AUF_WORKDIR/gate-$SLURM_JOB_ID/matrix-r0-w0.jsonl" --out "$AUF_WORKDIR/gate-$SLURM_JOB_ID/exactness.json" --require-exact --expected-count 4
+export CUDA_VISIBLE_DEVICES="$training_gpus"
+# TRAIN_STEPS defaults to gate only. Tuning screens are explicit.
+
 if [ "${TRAIN_STEPS:-0}" -gt 0 ]; then
  "$study_python" -m torch.distributed.run --standalone --nproc_per_node=2 "$code/matrix/train.py" --kind "$KIND" --tag full --output-tag "steps-$TRAIN_STEPS" --lr "$MATRIX_LR" --epochs 4 --max-steps "$TRAIN_STEPS" --snapshot-every 100
  "$study_python" "$code/matrix/verify.py" --kind "$KIND" --tag "steps-$TRAIN_STEPS" --steps "$TRAIN_STEPS"

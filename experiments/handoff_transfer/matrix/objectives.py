@@ -3,11 +3,11 @@ from __future__ import annotations
 Decay uses the upstream implementation without changes. No new model inputs.
 """
 import types
-import os
 import torch
 from torch.nn import functional as F
 
 def configure(model,objective):
+    model._matrix_objective=objective
     if objective=='decay':
         model.loss_decay_gamma={16:7.,10:5.,8:4.}[model.block_size]
     elif objective in ('auf','ce'):
@@ -49,7 +49,7 @@ def _dflash_objective_chunk_terms(
         correct=(objective_logits.argmax(-1)==target_ids) | ~valid
         before=torch.cat([torch.ones_like(correct[...,:1]),correct[...,:-1]],dim=-1)
         support=before.to(torch.int64).cumprod(-1).to(weight_mask.dtype)
-    loss_weights=weight_mask*support if os.environ.get('MATRIX_OBJECTIVE','auf')=='auf' else weight_mask
+    loss_weights=weight_mask*support if self._matrix_objective=='auf' else weight_mask
     loss_den=loss_weights.sum()
 
     ce_loss_num = (neg_log_q * loss_weights).sum()
