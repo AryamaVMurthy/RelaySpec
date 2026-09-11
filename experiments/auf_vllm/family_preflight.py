@@ -19,6 +19,7 @@ def main(args):
         width,taps,architecture=5120,[1,10,19,28,37],"AUFCaptureQwen3"
     tt=AutoTokenizer.from_pretrained(target,local_files_only=True)
     st=AutoTokenizer.from_pretrained(source,local_files_only=True)
+    memory_fraction=.9 if args.family == "q14" else .7
     samples=["Hello, world!","def f(x):\n    return x + 1\n","café 日本語 😀", "  12.5\n\n"]
     shared=tt.get_vocab() == st.get_vocab()
     assert shared and all(tt.encode(x,add_special_tokens=False)==st.encode(x,add_special_tokens=False) for x in samples)
@@ -31,7 +32,7 @@ def main(args):
                      for name,path in [("target",target),("source",source),("draft",draft)]}}
     if args.mode == "generate":
         llm=LLM(model=str(target),dtype="bfloat16",enforce_eager=True,max_model_len=5120,
-                max_num_seqs=4,max_num_batched_tokens=8192,gpu_memory_utilization=.7,
+                max_num_seqs=4,max_num_batched_tokens=8192,gpu_memory_utilization=memory_fraction,
                 enable_prefix_caching=False,generation_config="vllm")
         output=llm.generate([{"prompt_token_ids":ids}],SamplingParams(temperature=0,max_tokens=32),use_tqdm=False)[0].outputs[0]
         info.update(text=output.text,output_ids=list(output.token_ids),passed=output.text.strip()=="4")
@@ -39,7 +40,7 @@ def main(args):
     else:
         llm=LLM(model=str(target),runner="pooling",hf_overrides={"architectures":[architecture]},
                 pooler_config={"task":"token_embed"},dtype="bfloat16",enforce_eager=True,
-                max_model_len=5120,max_num_seqs=4,max_num_batched_tokens=8192,gpu_memory_utilization=.7,
+                max_model_len=5120,max_num_seqs=4,max_num_batched_tokens=8192,gpu_memory_utilization=memory_fraction,
                 enable_prefix_caching=False,enable_chunked_prefill=False)
         full=ids+tt.encode("4. This is an extra suffix for the causal feature test.",add_special_tokens=False)
         kwargs=dict(pooling_task="token_embed",pooling_params=PoolingParams(task="token_embed"),use_tqdm=False)
