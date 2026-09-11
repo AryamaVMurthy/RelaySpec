@@ -38,10 +38,14 @@ def build(kind):
         draft.fc=projection
         inject_adapter_in_model(LoraConfig(r=56,lora_alpha=56,lora_dropout=0,bias='none',target_modules=['fc']),draft)
     elif kind in ('five_maps','five_ba56'):
-        checkpoint=base.parents[1]/'resume.pt'
+        checkpoint=Path(TRANSFER['map_checkpoint']) if 'map_checkpoint' in TRANSFER else base.parents[1]/'resume.pt'
         saved=torch.load(checkpoint,weights_only=True,map_location='cpu',mmap=True)
-        assert saved['epoch']==2, 'ZIP maps must be from the epoch-3 export'
-        maps=saved['mapper']
+        if TRANSFER.get('map_checkpoint_format')=='archived_cross_pilot':
+            assert sha(checkpoint)==TRANSFER['map_checkpoint_sha256']
+            maps=saved['model']
+        else:
+            assert saved['epoch']==2, 'ZIP maps must be from the epoch-3 export'
+            maps=saved['mapper']
         assert torch.equal(maps['fusion'],native_state['fc.weight'])
         assert torch.equal(maps['norm'],native_state['hidden_norm.weight'])
         projection_type=FiveMapProjection if kind=='five_maps' else FiveLowRankMaps
