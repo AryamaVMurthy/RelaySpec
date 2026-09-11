@@ -82,7 +82,12 @@ data/compute curves and total-cost plots as available. Update methods,main
 comparisons,contributions and limitations from the measured evidence. No claims
 of superiority or cross-vocabulary support without the matching experiment.
 
-Current implementation is incomplete: 512-anchor same-family gates exist;
-new five-BA and dense-fusion modules have CPU tests; cross source-label pilot
-completed but training/inference integration remains. Expanded tuning and final
-benchmarks are not yet submitted or complete.
+Current implementation remains incomplete. Four Qwen512-anchor100-update fits
+are verified (fiveBA CE/AUF, dense fusion CE, five dense CE). Cross-family16-record
+CE/AUF integration fits are verified; heterogeneous-vocabulary decoding is still
+undergoing its GPU gate. Initial family arrays31771/31772 and the two additional
+LR arrays31780/31781 are queued. Complete32-request validation arrays31782/31783
+follow. Full2000-update fits and128/cap2048 matrix evaluations require validation
+selection and are not yet submitted. Older baseline pools31606/31607 are held
+while the new matrix dependencies are assembled; release them deliberately.
+See reports/matrix-jobs.json for repaired failures and current dependencies.

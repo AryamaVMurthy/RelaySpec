@@ -18,6 +18,7 @@ def main(a):
     maps=torch.load(checkpoint,weights_only=True,map_location='cpu',mmap=True)['model']
     # The source head, embedding and backbone come from the audited Qwen pair.
     reference=json.loads((a.reference/'transfer.json').read_text())
+    assert digest(Path(reference['base_export'])/'model.safetensors')==reference['base_sha256']
     state=load_file(str(Path(reference['base_export'])/'model.safetensors'))
     assert torch.equal(maps['norm'],state['hidden_norm.weight'])
     fusion=maps['fusion'];width=2560

@@ -1,3 +1,26 @@
+## 2026-09-12: 512-anchor request implemented as isolated pilots
+
+Latest requested scope: Qwen8, Llama, and Qwen-to-Llama. Same-family scripts
+use 512 anchors, 4,096 cached records, rollout cap4,096 and planned2,000
+updates/globalbatch8 (=16,000 presentations). LM-head loss chunk16 preserves
+AUF summed numerator/denominator; CPU loss and gradient equivalence tested.
+
+- 31727: Qwen8 two-update, fold and4-request/cap128 exactness gate, node07.
+- 31728: Llama equivalent gate, node06, after31727.
+- 31734: cross labels attempt failed before generation because Llama8 assets
+  are node06-local.31735 resubmitted on node06; this is rollout and tokenizer
+  alignment work only, not cross training or a throughput result.
+- Main pools31606/31607 also wait31728 and31735. Max four GPUs preserved.
+- Full training/eval scripts prepared, not submitted before memory/timing gates.
+- New cross alignment utility tests exact shared text prefixes, rejects lossy
+  Unicode and uses source labels with target context strictly before anchor.
+  Cross training/inference still needs implementation and validation.
+- Existing Llama eight-anchor BA completed2,000 steps in555.195 fitting seconds.
+  Existing Q14 oldAUF finished128/cap2048 at67.0738TPS,128exactAR outputs;
+  this is the older recipe, not the new handoff512-anchor method.
+
+See ANCHORS512_PLAN.md. New512-anchor arms have no benchmark results yet.
+
 ## 2026-09-12 01:00 IST: live status audit and additional Q14 evidence
 
 User requested end-to-end status. Livejobs31560 LlamaBA2GPU (~340/2000updates at00:59),31580normalQ14second timingpass1GPU,31346olderQ14AUFevaluation1GPU (68/128requests when checked). Allnode06,fourGPUs. Llama gate exactness JSON confirms4/4token+finish equality; gate uses legacy path gate-fusion_r56 in originally submitted script, so an attempted archive using the newer job-suffixed path failed without affecting running work.
@@ -450,3 +473,18 @@ These are pending gates, not completed experiments or measured speedups.
 Origin gate31523 completed successfully. Origin full31525 remains running.
 Q8/Q14 dense-feature repacking31528/31529 ongoing; Llama31530 waits on31529.
 Full 128x2048 comparison results for the new pair are not available yet.
+
+## 2026-09-12 02:10–02:16 IST matrix continuation
+
+Four Qwen100-update/512-anchor fits verified. Dense-fusion CE took340.96s;
+five-dense CE342.03s. Both train52,428,800 parameters,800 record presentations,
+rank0actual175,645 anchors/400records. These are fitting costs, not decoding gains.
+Cross16-record CE/AUF integration fits completed31776; export/frozen-weight checks
+passed. Full cross-data study and decoding correctness are still outstanding.
+
+Repaired missing node-local reference/manifests and Transformers BatchEncoding
+serialization in validation. Screens31784/31785 replace failed31778/31779.
+Queued additional LR fits31780/31781 and all-candidate validation31782/31783.
+Four-GPU maximum is enforced through two2-GPU fitting lanes or two2-wide1-GPU
+validation arrays; old baseline pools31606/31607 remain explicitly held until
+new full-fit dependencies are installed. Routine next poll not before02:30:47.

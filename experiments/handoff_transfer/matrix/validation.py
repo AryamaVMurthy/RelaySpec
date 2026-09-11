@@ -24,7 +24,9 @@ def main(a):
         for row in items:
             extra={'enable_thinking':False} if a.family=='q8' else {}
             content=row['problem']+'\nSolve the problem and put your final answer within \\boxed{}.'
-            ids=tokenizer.apply_chat_template([{'role':'user','content':content}],tokenize=True,add_generation_prompt=True,**extra)
+            text=tokenizer.apply_chat_template([{'role':'user','content':content}],tokenize=False,add_generation_prompt=True,**extra)
+            ids=tokenizer.encode(text,add_special_tokens=False)
+            assert isinstance(ids,list) and all(isinstance(i,int) for i in ids)
             assert len(ids)+2048+16<=5120
             converted.append(dict(row,prompt_token_ids=ids))
         dest=a.out/f'{name}.json'

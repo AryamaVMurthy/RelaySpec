@@ -18,7 +18,7 @@ study_python=/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv
 export PYTHONPATH="$control:$code/matrix:$code/overlay:$code/vendor/code:$code/specforge"
 export AUF_WORKDIR="$root/anchors512/cross/pilot16" AUF_MODELS="$root/models/qwen4" AUF_DOMAIN=math SPECFORGE_ROOT="$code/specforge"
 export OMP_NUM_THREADS=4 TOKENIZERS_PARALLELISM=false HF_HUB_OFFLINE=1
-"$study_python" -m experiments.handoff_transfer.cross.initializer --archived "$root/archived-cross-pilot" --reference "$root/q8" --out "$AUF_WORKDIR"
+"$study_python" -m experiments.handoff_transfer.cross.initializer --archived "$root/archived-cross-pilot" --reference "$root/cross-reference" --out "$AUF_WORKDIR"
 for objective in ce auf; do
  export MATRIX_OBJECTIVE="$objective"
  "$study_python" -m torch.distributed.run --standalone --nproc_per_node=2 "$code/cross/train.py" --kind five_maps --steps 2
