@@ -11,7 +11,8 @@ def main(a):
         methods=['ar','normal','zip','handoff-r56','handoff-five']
         if family=='q8':methods+=['native','handoff-ce']
     assert {'ar','normal','zip'}<=set(methods)
-    files={m:[root/f'{m}-r{r}-w0.jsonl' for r in range(3)] for m in methods}
+    method_roots=getattr(a,'method_roots',{})
+    files={m:[method_roots.get(m,root)/f'{m}-r{r}-w0.jsonl' for r in range(3)] for m in methods}
     missing=[str(p) for paths in files.values() for p in paths if not p.exists() or not p.with_suffix('.summary.json').exists()]
     if missing:raise RuntimeError(f'Incomplete evaluation, missing {missing}')
     reports={}

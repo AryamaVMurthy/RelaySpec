@@ -126,7 +126,7 @@ if __name__=='__main__':
     parser.add_argument('--export',type=Path)
     parser.add_argument('--data',type=Path,required=True)
     parser.add_argument('--out',type=Path,required=True)
-    parser.add_argument('--mode',choices=['ar','native','zip','ce','auf','draft-ce','draft-auf','fusion-ce','fusion-auf','handoff-r56','handoff-five','normal','handoff-ce','handoff-capacity'],required=True)
+    parser.add_argument('--mode',choices=['ar','native','zip','ce','auf','draft-ce','draft-auf','fusion-ce','fusion-auf','handoff-r56','handoff-five','normal','handoff-ce','handoff-capacity','handoff-draft'],required=True)
     parser.add_argument('--count',type=int,default=128)
     parser.add_argument('--cap',type=int,default=2048)
     parser.add_argument('--workers',type=int,default=1)
