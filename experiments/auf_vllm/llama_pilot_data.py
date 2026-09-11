@@ -11,19 +11,23 @@ ROOT=Path("/scratch/aryama.murthy/relayspec-auf-20260911")
 MODELS=ROOT/"models"
 
 
-def generate(out):
+def generate(out,count=32,offset=0,dev_count=8):
     from transformers import AutoTokenizer
     from vllm import LLM,SamplingParams
     tokenizer=AutoTokenizer.from_pretrained(MODELS/"llama3-target",local_files_only=True)
-    parts={"train":rows(ROOT/"manifests/train.jsonl")[:32],"dev":rows(ROOT/"manifests/dev.jsonl")[:8]}
+    parts={"train":rows(ROOT/"manifests/train.jsonl")[offset:offset+count],"dev":rows(ROOT/"manifests/dev.jsonl")[:dev_count]}
+    assert len(parts["train"]) == count
     assert not ({x["group_id"] for x in parts["train"]} & {x["group_id"] for x in parts["dev"]})
     llm=LLM(model=str(MODELS/"llama3-target"),dtype="bfloat16",max_model_len=5120,
-            max_num_seqs=32,max_num_batched_tokens=8192,gpu_memory_utilization=.8,
+            max_num_seqs=64 if count>32 else 32,max_num_batched_tokens=8192,gpu_memory_utilization=.8,
             enable_prefix_caching=False,generation_config="vllm",
             compilation_config={"mode":0,"cudagraph_mode":"FULL_DECODE_ONLY"})
     params=SamplingParams(temperature=0,max_tokens=4096,seed=42,stop_token_ids=[tokenizer.eos_token_id])
     for split,items in parts.items():
         dest=out/f"{split}.json"
+        if not items:
+            write(dest,[])
+            continue
         if dest.exists():
             assert [x["group_id"] for x in json.loads(dest.read_text())] == [x["group_id"] for x in items]
             continue
@@ -91,9 +95,12 @@ if __name__ == "__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument("mode",choices=["generate","target","source"])
     parser.add_argument("--out",type=Path,default=ROOT/"pilot-l3")
+    parser.add_argument("--records",type=int,default=32)
+    parser.add_argument("--offset",type=int,default=0)
+    parser.add_argument("--dev-records",type=int,default=8)
     args=parser.parse_args()
     args.out.mkdir(parents=True,exist_ok=True)
     if args.mode == "generate":
-        generate(args.out)
+        generate(args.out,args.records,args.offset,args.dev_records)
     else:
         capture(args.out,args.mode)
