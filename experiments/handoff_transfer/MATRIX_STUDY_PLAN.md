@@ -95,3 +95,22 @@ native controls. Final128/cap2048×3 arrays31798/31799 follow verified baselines
 Cross-family full-data work and final paper synthesis remain outstanding. Older baseline pools31606/31607 are held
 while the new matrix dependencies are assembled; release them deliberately.
 See reports/matrix-jobs.json for repaired failures and current dependencies.
+
+## Cross-family full-data staging (prepared, not launched)
+
+`cross_data_array.sbatch` defines64 chunks of64 distinct records, target rollout
+cap4096, with64-request generation batching and4-request feature capture. It
+requires both pilot CE/AUF full-token and finish-reason checks to pass before
+collecting data. Launch only after checking node06 storage and reserving its
+GPU concurrency within the overall four-GPU schedule.
+
+`cross/assemble.py` verifies contiguous offsets, disjoint IDs, shared source
+manifest, rollout/alignment hashes and per-chunk causal-capture checks. It writes
+a feature index rather than copying the large tensors. `cross/dataset.py` uses
+memory mapping, a bounded metadata cache, and feature hashes checked on first
+use. Full-data initializer fitting and the full cross trainer still need to be
+connected; the16-record integration initializer must not be relabeled4096.
+
+The cross loss supervises source-vocabulary proposals on shared, stable text
+prefixes. It is not target-token AUF under a shared vocabulary. Both the train
+labels and inference text bridge must retain that distinction in reporting.

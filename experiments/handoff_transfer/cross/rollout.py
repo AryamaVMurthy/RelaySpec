@@ -55,11 +55,13 @@ def generate(out,count=32,offset=0,dev_count=8,family="llama",validation=False):
         write(out/f"{split}-generation.json",{"seconds":time.perf_counter()-start,"sha256":sha(dest),
             "teacher":"unsloth/Llama-3.1-8B-Instruct" if family == "llama" else "Qwen/Qwen3-14B",
             "revision":"4699cc75b550f9c6f3173fb80f4703b62d946aa5" if family == "llama" else "40c069824f4251a91eefaf281ebe4c544efd3e18",
-            "target_adapters":None,"records":len(items),"job_id":os.environ.get("SLURM_JOB_ID")})
+            "target_adapters":None,"records":len(items),"offset":offset,"output_cap":4096,"temperature":0,"seed":42,"source_manifest_sha256":sha(ROOT/"manifests/train.jsonl"),"job_id":os.environ.get("SLURM_JOB_ID")})
         print(json.dumps({"split":split,"generated":len(items),"seconds":time.perf_counter()-start}),flush=True)
 
 
 if __name__ == '__main__':
     p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--count',type=int,default=16);a=p.parse_args()
-    generate(a.out,count=a.count,dev_count=0,family='llama')
+    p.add_argument('--count',type=int,default=16);p.add_argument('--offset',type=int,default=0);a=p.parse_args()
+    assert a.count>0 and a.offset>=0
+    a.out.mkdir(parents=True,exist_ok=True)
+    generate(a.out,count=a.count,offset=a.offset,dev_count=0,family='llama')
