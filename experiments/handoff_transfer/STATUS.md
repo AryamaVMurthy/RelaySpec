@@ -1,5 +1,11 @@
 ## Verified fit and scaling preparation update
 
+Archived normal Q8 repetitions0/1 in reports/q8-normal-partial. Each contains
+128 complete timing-valid rows and122,768 output tokens; aggregate rates
+172.8651 and172.9689TPS (mean172.9170). Third repetition and matched AR
+agreement are pending. These are provisional absolute normal-baseline rates,
+not a measured AUF improvement. Q8 five-map fit last420/2,000 updates.
+
 Dense-feature packer now accepts explicit record counts/data directories and
 initializer exports while retaining4096 defaults. Added a32-record packing
 test that also rejects a mismatched capture-manifest hash; eleven CPU tests
