@@ -1,3 +1,9 @@
+## 2026-09-12 01:00 IST: live status audit and additional Q14 evidence
+
+User requested end-to-end status. Livejobs31560 LlamaBA2GPU (~340/2000updates at00:59),31580normalQ14second timingpass1GPU,31346olderQ14AUFevaluation1GPU (68/128requests when checked). Allnode06,fourGPUs. Llama gate exactness JSON confirms4/4token+finish equality; gate uses legacy path gate-fusion_r56 in originally submitted script, so an attempted archive using the newer job-suffixed path failed without affecting running work.
+
+Discovered completed olderQ14AR/ZIP/CE128-cap2048 passes and archived them in q14-older-completed. Verified runtime and manifest match current normalQ14, plus128/128fulltoken/finish equality to AR for every method. AR16.57624TPS; normal111.52430(6.72796xAR); ZIP111.31218(6.71516xAR); olderCE73.53547(4.43620xAR). One seed/one timingpass; olderCE is not matched handoffCE. OldAUF still partial and excluded. NewQ14BA/five full decoding remains pending.
+
 ## 2026-09-12: final Transformers result collection queued
 
 CPUcollectors31721(Q8 after31696)/31722(Llama after31697) now summarize both gate4/cap128 and full128/cap2048 standalone Transformers outputs. Require correct family/mode/repetition, backend/runtime consistency, identical primary checkpoint hashes/manifests, and full token/finish equality to the Transformers AR baseline. Report one timing repetition and do not compare raw TPS between backends. Synthetic test validates successful collection and rejects checkpoint mixups. Scripts syntax checked; actual Transformers runs remain pending at the end of the queue. LlamaBA is still in its decoding gate without reported failure at last check.
