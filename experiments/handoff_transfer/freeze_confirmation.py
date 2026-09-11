@@ -6,7 +6,11 @@ from pathlib import Path
 
 
 def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    checksum = hashlib.sha256()
+    with path.open('rb') as stream:
+        for chunk in iter(lambda: stream.read(8 * 1024 * 1024), b''):
+            checksum.update(chunk)
+    return checksum.hexdigest()
 
 
 def freeze(root, reports, workload_reports, out, selected_families=('q8', 'q14', 'llama')):

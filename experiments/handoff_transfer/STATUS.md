@@ -1,3 +1,9 @@
+## 2026-09-12: Q14 first complete normal evaluation archived
+
+Q14normal r0 completed128requests/cap2048:111.524295TPS,122902generated tokens,1102.019963summed requestseconds. Archived full rows/summary and SHA256 metrics in reports/q14-normal-first-pass. One fitting seed/one timing repetition so far; no AR or AUF comparison claim. Q14five reached1390/2000updates.
+
+Final-stage command audit found checkpoint digest used whole-file reads, risking memory exhaustion for large Llama exports in4GB CPUallocations. Changed confirmation freeze/runner shared digest to streamed8MiB chunks, preserving SHA256 results. Focused freeze/runner tests pass and remote source synced. Queued job scripts correctly reference modules through control PYTHONPATH.
+
 ## 2026-09-12: final confirmation and Transformers stages queued
 
 Freeze CPUjobs31687/31688/31689 wait for main comparisons, workloads, small/large scaling, capacity, compute, profiles, three-seed reports and matched drafter control. Confirmation arrays Q8=31690,Q14=31692,Llama=31694 run serially by family, each0-11%2 across four workloads/three repetitions. CPUcollectors31691/31693/31695 follow. Transformers replications Q8=31696,Llama=31697 wait for all confirmation collectors and therefore run last, oneGPU each. No new jobs running now; current4GPUlimit retained. Complete submission record persisted incrementally in reports/final-jobs.json; queue_final refuses duplicate/partial resubmission.20handoff tests pass, wrappers syntax checked. Final-stage runtime validation and all outcomes remain pending; manuscript rewrite/repro package still required after results.
