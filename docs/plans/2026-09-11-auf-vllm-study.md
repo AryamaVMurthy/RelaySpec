@@ -561,3 +561,51 @@ Every plotted checkpoint gets128x2048 decoding and1024-record validation.
 Current node07 chain:31447->31461->31450->31470->31480->31478->31479, with
 max2GPUs. Node06 has independent one-GPU Llama andQ14 chains. Preparations for
 8192/16384/32768 and capacity experiments remain outstanding.
+
+
+## Larger-data execution pipeline (2026-09-11)
+
+Preparation31485 completed in3m59s:16384 canonical archived Q8 rollouts,
+first4096 dense target captures verified by full SHA256 and full rollout-token
+identity,221327183872 bytes checked and linked without recapture. Twelve
+thousand two hundred eighty-eight target captures remain; array31486 has24
+512-record shards,max2GPUs, after preparation andQ8robustness31480.
+
+Node07 progression now:31480->31486->31478(small fixed updates)->31487
+(8192/16384 AUF/CE fixed updates)->31479(continuous epochs)->31488(new labels)
+->31489(extra paired capture)->31490(CPU assembly)->31491(32k3epoch fits)
+->31492(32k AUF/CE fixed-update fits). Max2GPUs throughout.
+
+-31488 generates only the added16384 records from the frozen32768 manifest,
+ 64shards of256 records. Pinned originalQ8 target; no adapters, cap4096,
+ prompt<=1024,greedy,64active sequences and8192batched tokens. All16384
+ appended prompt IDs were independently checked against the pinned tokenizer
+ andchat template locally. These labels remain UNGENERATED until jobs run.
+-31489 captures both Q8 andQ4 on identical new sequences (128tasks,max2GPUs).
+ Dense Q8 is for token-objective fitting; Q4 also supports original ZIP fitting.
+-31490 joins32768 dense target records and builds the paired sampled cache.
+ It preserves all original16384 paired-cache shards and applies the original
+ deterministic25% prompt/response-stratified sampler to the added half. It
+ checks token/group identity, source tensorSHA, shape/dtype/finite values.
+-31491 fits ZIP,CE,AUF at32768records3epochs; validates on1024 separate records
+ anddecodes128Numina development requests,cap2048. Every reference uses the
+ same original targets.31492 supplies the fixed1024-update AUF/CE point at32k.
+- These are queued work, not completed scaling results. ZIP fixed-update curves,
+ remaining matched-epoch data points andcapacity/MLP variants remain required.
+
+### Matched-epoch and timing-control completion (20:39 IST)
+
+- Array31494 follows31492: ZIP/CE/AUF at16,32,64,128,256,512,1024,2048,
+  8192,16384 records, three epochs each; existing4096 and queued32768 endpoints
+  fill the remaining two counts. Each receives separate offline validation and
+  128-request,2048-cap decoding. This axis matches passes through the data,
+  not optimizer steps or training compute.
+- Array31495 follows31494: ZIP twelve-epoch trajectories at512 and4096,
+  with1/3/6/12 checkpoint decoding, corresponding to the AUF/CE trajectories.
+- Array31496 follows31450: fresh unchanged ZIP/native controls with three
+  timings each,128 requests,2048 cap, one request stream, in the same legacy
+  runtime as the main LoRA continuations.31470 now follows31496. All node07
+  arrays remain throttled to two GPU workers; node06 retains two workers.
+- ZIP fixed-update sampling and capacity/MLP implementation remain missing.
+  Do not treat queued jobs as completed results or infer fair compute budgets
+  from equal epochs across distinct objectives.

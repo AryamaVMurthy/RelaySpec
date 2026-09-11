@@ -13,7 +13,9 @@ def invoke(module,*values):
 
 
 def main(args):
-    root=args.root;data=root/'main-q8-n4096';valid=root/'validation-q8-n1024'
+    root=args.root
+    data=root/('main-q8-n4096' if args.records<=4096 else 'main-q8-n16384' if args.records<=16384 else 'main-q8-n32768')
+    valid=root/'validation-q8-n1024'
     out=root/'scaling'/args.axis/f'q8-{args.loss}-n{args.records}-s42'
     if args.axis=='updates':
         while True:
@@ -22,10 +24,15 @@ def main(args):
             invoke('fit_updates','--objective',args.loss,'--data',data,'--validation-data',valid,
                    '--out',out,'--records',args.records,'--updates',1024,'--chunk-updates',128,'--lr','1e-3')
         endpoints=[1024];label='step'
+    elif args.loss=='zip':
+        assert args.axis in ('records','epochs')
+        invoke('train_zip','--manifest',data/'train.json','--out',out,'--records',args.records,
+               '--epochs',12 if args.axis=='epochs' else 3,'--lr','1e-3')
+        endpoints=[1,3,6,12] if args.axis=='epochs' else [3];label='epoch'
     else:
         invoke('train_tokens','--objective',args.loss,'--data',data,'--validation-data',valid,
-               '--out',out,'--records',args.records,'--epochs',12,'--lr','1e-3','--defer-validation')
-        endpoints=[1,3,6,12];label='epoch'
+               '--out',out,'--records',args.records,'--epochs',12 if args.axis=='epochs' else 3,'--lr','1e-3','--defer-validation')
+        endpoints=[1,3,6,12] if args.axis=='epochs' else [3];label='epoch'
     invoke('evaluate_offline','--fit',out,'--data',valid,'--'+label+'s',*endpoints)
     for endpoint in endpoints:
         checkpoint=f'{label}-{endpoint}'
@@ -54,7 +61,10 @@ def main(args):
 if __name__=='__main__':
     p=argparse.ArgumentParser()
     p.add_argument('--root',type=Path,required=True)
-    p.add_argument('--axis',choices=['updates','epochs'],required=True)
-    p.add_argument('--loss',choices=['ce','auf'],required=True)
+    p.add_argument('--axis',choices=['updates','epochs','records'],required=True)
+    p.add_argument('--loss',choices=['ce','auf','zip'],required=True)
     p.add_argument('--records',type=int,required=True)
-    main(p.parse_args())
+    args=p.parse_args()
+    if args.axis=='updates' and args.loss=='zip':
+        p.error('ZIP fixed-update sampling is not implemented; do not equate its feature batches with token-loss updates')
+    main(args)

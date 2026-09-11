@@ -87,7 +87,7 @@ def generate_dev(work, out):
           "job_id": os.environ.get("SLURM_JOB_ID"), "sha256": sha(dest)})
 
 
-def capture(work, out, size):
+def capture(work, out, size, start_record=0, capture_records=None):
     import torch
     from vllm import LLM, PoolingParams
     assert os.environ.get("AUF_CAPTURE") == "1"
@@ -101,8 +101,12 @@ def capture(work, out, size):
         manifest = out/f"{split}.json"
         examples = json.loads(manifest.read_text())
         manifest_hash = sha(manifest)
+        if split == 'train' and capture_records is not None:
+            assert 0 <= start_record < len(examples) and start_record+capture_records <= len(examples)
         pending = []
         for index, row in enumerate(examples):
+            if index < start_record or (capture_records is not None and index >= start_record+capture_records):
+                continue
             dest = out/f"features/{size}/{split}/{index:05d}.pt"
             if dest.exists():
                 saved = json.loads(dest.with_suffix(".json").read_text())
@@ -140,6 +144,16 @@ def capture(work, out, size):
                     "job_id":os.environ.get("SLURM_JOB_ID")})
             print(json.dumps({"size":size,"split":split,"records_done":group[-1][0]+1,
                               "batch_capture_seconds":capture_seconds}),flush=True)
+        if split == 'train' and capture_records is not None:
+            completed=[]
+            for index in range(start_record,start_record+capture_records):
+                path=out/f'features/{size}/{split}/{index:05d}.pt'
+                meta=json.loads(path.with_suffix('.json').read_text())
+                assert path.exists() and meta['manifest_sha256']==manifest_hash
+                completed.append({'index':index,'sha256':meta['sha256']})
+            write(out/f'capture-{size}-{start_record}-{capture_records}.json',
+                  {'manifest_sha256':manifest_hash,'records':completed,'status':'complete',
+                   'job_id':os.environ.get('SLURM_JOB_ID')})
 
 
 
@@ -150,6 +164,8 @@ if __name__ == "__main__":
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--records",type=int,default=32)
     parser.add_argument("--reuse-dev",type=Path)
+    parser.add_argument('--start-record',type=int,default=0)
+    parser.add_argument('--capture-records',type=int)
     args = parser.parse_args()
     work = Path(os.environ["TRANSFER_WORK"])
     args.out.mkdir(parents=True, exist_ok=True)
@@ -158,4 +174,5 @@ if __name__ == "__main__":
     elif args.mode == "dev":
         generate_dev(work, args.out)
     else:
-        capture(work, args.out, args.size)
+        assert args.start_record>=0 and (args.capture_records is None or args.capture_records>0)
+        capture(work, args.out, args.size,args.start_record,args.capture_records)

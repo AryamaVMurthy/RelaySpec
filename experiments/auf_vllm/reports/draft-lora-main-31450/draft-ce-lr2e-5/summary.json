@@ -1,0 +1,69 @@
+{
+  "contract": {
+    "data": "/scratch/aryama.murthy/relayspec-auf-20260911/main-q8-n4096",
+    "validation_data": "/scratch/aryama.murthy/relayspec-auf-20260911/validation-q8-n1024",
+    "validation_split": "dev",
+    "out": "/scratch/aryama.murthy/relayspec-auf-20260911/draft-lora-main/draft-ce-lr2e-5",
+    "objective": "ce",
+    "records": 4096,
+    "epochs": 3,
+    "microbatch_records": 4,
+    "logical_records": 32,
+    "seed": 42,
+    "lr": 2e-05,
+    "exploratory": false,
+    "defer_validation": true,
+    "lora_base": "/scratch/aryama.murthy/relayspec-auf-20260911/fits/q8-n4096-zip-lr1e-3-s42/epoch-3/export/model.safetensors",
+    "rank": 32,
+    "draft_lora": true,
+    "train_manifest_sha256": "f6be75508741b53ca50a098d4809fa683a8fce6ce87b0c9ade7044a74bbc5ec9",
+    "original_frozen_targets": true,
+    "normalization": "mean active-token CE inside each microbatch; equal microbatch means per update"
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "step": 128,
+      "records_visited": 4096,
+      "blocks": 16384,
+      "active_tokens": 242326,
+      "valid_tokens": 242326,
+      "mean_update_loss": 1.5322318899270613,
+      "training_seconds": 336.92141712410375,
+      "validation": {
+        "status": "pending_offline_evaluation"
+      }
+    },
+    {
+      "epoch": 2,
+      "step": 256,
+      "records_visited": 4096,
+      "blocks": 16384,
+      "active_tokens": 242457,
+      "valid_tokens": 242457,
+      "mean_update_loss": 1.491692898722249,
+      "training_seconds": 314.2186301308684,
+      "validation": {
+        "status": "pending_offline_evaluation"
+      }
+    },
+    {
+      "epoch": 3,
+      "step": 384,
+      "records_visited": 4096,
+      "blocks": 16384,
+      "active_tokens": 242754,
+      "valid_tokens": 242754,
+      "mean_update_loss": 1.4599055155122187,
+      "training_seconds": 316.6590467602946,
+      "validation": {
+        "status": "pending_offline_evaluation"
+      }
+    }
+  ],
+  "job_id": "31483",
+  "seconds_this_invocation": 976.617112420965,
+  "peak_allocated_bytes": 14956830720,
+  "checkpoint_sha256": "b7cd9033f9e557c20ce0a57f46ab124d27b5f30b60c29c6153b882c530605213",
+  "status": "training_complete_validation_pending"
+}

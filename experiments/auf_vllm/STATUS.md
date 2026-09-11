@@ -160,3 +160,53 @@ Main drafter-LoRA fits31450_0(CE) and31450_1(AUF) are now RUNNING on node07,
 4096records3epochs at selected2e-5; fusion branches follow within the same
 max2GPU array. Llama31445 evaluation andQ14validation31327_1 remain RUNNING
 on node06. Total4GPUs. This is diagnostic exactness, not full128-workload data.
+
+## Follow-up at20:27 IST: Llama ZIP result and larger data
+
+Llama8drafter->Llama3target ZIP now completed128 Numina development requests,
+cap2048,naturalEOS:186.93TPS vs46.01AR,4.063x,128/128 exact complete outputs,
+85900 output tokens. This is one timing repetition and one fitting seed;
+CE/AUF evaluations remain inprogress. Replayed locally against raw rows in
+reports/llama-selected-dev128. Do not substitute the short pilot numbers.
+
+Preparation31485 completed:16384 rollout manifest and4096 dense records reused
+with221327183872 bytes SHA-checked. No GPU used by this preparation job.
+Queued31486 captures the remaining12288 target records;31487 adds8192/16384
+fixed-update AUF/CE points. Queued31488/31489 generate/capture the added16384
+records for32k;31490assembles dense plus original-quarter paired caches;
+31491runs32k ZIP/CE/AUF3epoch fits and128x2048 decoding;31492adds the32k
+fixed-update AUF/CE points. New32k labels/features/training have NOT run yet.
+The active LoRA CE/AUF fits andLlama/Q14 work retain the4GPU cap.
+19tests pass; the original quarter-position sampler passed its exhaustive
+small-length/boundary check. All16384new prompt IDs match the pinned template.
+
+## Follow-up at 20:39 IST: matched epoch controls and LoRA evaluation
+
+Llama CE completed the same 128 development requests: 142.2308 tokens/s,
+3.0916x AR, 128/128 exact outputs, 85,900 output tokens. ZIP remains
+186.9255 tokens/s versus AR 46.0053. AUF is still running; no AUF endpoint
+claim yet. Raw CE/ZIP/AR rows and local comparison replays are archived.
+
+Both Q8 drafter-LoRA main fits completed (4096 records, three continuation
+epochs, rank32, selected LR2e-5). Each trains 9,175,040 parameters with the
+ZIP interface frozen. Both epoch3 merged-logit equality checks pass.
+Offline prefix lengths are CE5.816895 and AUF5.820312 versus ZIP5.809082;
+these are teacher-forced proxies, not measured speedups. Main decoding is
+running; no complete timing repetition was available at this check.
+Training reports are in reports/draft-lora-main-31450.
+
+New matched-epoch array31494 adds ZIP/CE/AUF three-epoch fits at
+16,32,64,128,256,512,1024,2048,8192,16384 records. Existing4096 and queued32768
+fits complete this data axis. Each endpoint receives1024-record offline
+validation and128-request cap2048 decoding. Array31495 adds ZIP continuous
+1/3/6/12-epoch checkpoints at512/4096, matching the AUF/CE trajectories.
+These follow31492 with max2 concurrent GPUs. Equal epochs do not imply
+equal updates, token exposure, or FLOPs across feature and token objectives.
+ZIP fixed-update sampling remains unimplemented and is explicitly rejected
+by the wrapper; AUF/CE fixed-update curves must not be presented as such a ZIP
+comparison. New wrappers compile and all19 existing tests pass.
+
+Array31496 repeats unchanged ZIP and native controls three times at128x2048,
+one sequential request stream per worker, immediately after31450.
+Q8 workload array31470 now depends on31496, retaining the max4GPU total.
+The initial one-timing ZIP baseline is preliminary until these controls finish.
