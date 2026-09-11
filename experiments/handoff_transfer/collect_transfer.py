@@ -5,7 +5,7 @@ from experiments.auf_vllm.compare_outputs import compare
 
 def main(a):
     root=a.root/'measurements'
-    methods=['ar','zip','handoff-r56','handoff-five']
+    methods=['ar','normal','zip','handoff-r56','handoff-five']
     files={m:[root/f'{m}-r{r}-w0.jsonl' for r in range(3)] for m in methods}
     missing=[str(p) for paths in files.values() for p in paths if not p.exists() or not p.with_suffix('.summary.json').exists()]
     if missing:raise RuntimeError(f'Incomplete evaluation, missing {missing}')
@@ -30,12 +30,13 @@ def main(a):
         tps=[v['method_tps'] for v in results]
         rows[m]={'mean_tps':statistics.mean(tps),'timing_repetition_stdev_tps':statistics.stdev(tps),
                  'mean_speedup_over_ar':statistics.mean(v['throughput_ratio'] for v in results),
+                 'mean_tps_ratio_to_normal':statistics.mean(v['method_tps']/reports['normal'][r]['method_tps'] for r,v in enumerate(results)),
                  'mean_tps_ratio_to_zip':statistics.mean(v['method_tps']/reports['zip'][r]['method_tps'] for r,v in enumerate(results)),
                  'exact_token_matches':[v['exact_matches'] for v in results],
                  'exact_finish_matches':[v['finish_matches'] for v in results]}
     result={'family':a.root.name,'status':'complete','evaluation':'128 Numina development requests, max2048, natural EOS, greedy',
             'training_seeds':[42],'timing_repetitions':3,'rows':rows,'per_repeat':reports,'source_sha256':hashes,
-            'normal_relayspec_control':'not yet present; ZIP is a separate baseline',
+            'normal_relayspec_control':'input-normalized dense linear map, normalized-context relative MSE; same ZIP records/position sampler/3 epochs; random initialization' ,
             'uncertainty':'Timing repetition variation only; not fitting-seed uncertainty; not untouched confirmation.'}
     a.out.parent.mkdir(parents=True,exist_ok=True)
     a.out.write_text(json.dumps(result,indent=2)+'\n')

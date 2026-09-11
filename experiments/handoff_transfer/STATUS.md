@@ -1,3 +1,18 @@
+## Latest update — approximately22:49 IST
+
+- Normal RelaySpec matched controls implemented and queued31579/31580/31581,
+  including explicit input RMSNorm in vLLM and a runtime numerical probe.
+- Six CPU tests pass, including the actual original feature loss and the
+  normalization-before-projection runtime path. GPU execution still pending.
+- Cross-tokenizer audit31582 completed: unequal vocabularies and69/132 probes
+  with different token counts. Direct unchanged handoff port is unsupported;
+  an explicit alignment/verification extension remains separate pending work.
+- Qwen14 cache31529 completed; Llama31530 live. Origin31525 has completed its
+  AR/native128 evaluations and is evaluating the trained mapper (last50/128).
+- Normal controls currently await shared account GPU quota. Existing live GPU
+  jobs have not been restarted or interrupted. Updated dependencies preserve
+  the four-GPU total as documented in the plan and job manifests.
+
 # Current state — 2026-09-11, approximately 22:40 IST
 
 - Original handoff Math fit: **complete**, 2,000 optimizer updates, 16,000

@@ -273,3 +273,30 @@ original development manifest; its SHA256 matches the node06 manifest:
 A missing node07 manifest path was linked to that existing immutable file.
 The original handoff fit completed in231.266 seconds; long evaluation is
 still running. This is evidence for fit efficiency, not transfer speedup.
+
+### Normal RelaySpec matched control and tokenizer audit
+
+Normal controls31579/31580/31581 implement the original input-normalized
+single linear relay, frozen released output normalization and coefficient-free
+normalized-context relative MSE. They use the ZIP control's exact record and
+position sampler, equal-record weighting,3 epochs,lr1e-3,seed42. Unlike the
+handoff variants they start from the original random linear initialization;
+report that difference and the additional ZIP initialization cost of AUF.
+These are matched-data controls, not loss-only ablations at identical starting
+weights. `NormalRelayDFlash.combine_hidden_states` preserves the input RMSNorm;
+a GPU runtime probe explicitly compares it against normalized projection and
+an unnormalized negative control. All target/draft body weights remain frozen.
+
+Normal training/evaluation uses one serial one-GPU lane. The second general
+evaluation lane now also waits on31581, so the maximum is four GPUs:
+old1+training2+normal1, then training2+normal1+evaluation1, and finally
+training2+evaluation2. The completed cache dependencies are verified before
+submission when Slurm has purged their job handles.
+
+Tokenizer audit31582 completed on CPU. Qwen model vocabulary151,936 versus
+Llama128,256; tokenizer vocabularies151,669 versus128,256. In132 texts
+(128 development problems plus4 code/math/Unicode probes),69 have different
+token counts;97.0828% of source token-end boundaries coincide. The unchanged
+handoff has no bridge for these unequal sequences. This is a failed direct
+port prerequisite, not a decoding performance result. A source-token AUF
+alignment and target-token verification extension requires separate validation.

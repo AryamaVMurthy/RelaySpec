@@ -36,6 +36,7 @@ class FamilyMetricsWorker(MetricsWorker):
         head=embedding if config.get('tie_word_embeddings',False) else tensor(target_path,'lm_head.weight')
         check(target.lm_head.weight,head)
         checks=['target_embedding','target_head']
+        normal_projection=None
         if export_path:
             draft=self.model_runner.get_draft_model() if hasattr(self.model_runner,'get_draft_model') else self.model_runner.drafter.model
             assert draft is not None
@@ -43,6 +44,21 @@ class FamilyMetricsWorker(MetricsWorker):
                                ('lm_head.weight',draft.lm_head.weight),('fc.weight',draft.model.fc.weight),
                                ('hidden_norm.weight',draft.model.hidden_norm.weight)]:
                 check(actual,tensor(export_path,key));checks.append('draft_'+key)
+            export_config=json.loads((Path(export_path)/'config.json').read_text())
+            if 'relayspec_normal_input_eps' in export_config:
+                import torch.nn.functional as F
+                weight=draft.model.fc.weight
+                x=torch.sin(torch.arange(3*weight.shape[1],device=weight.device,dtype=torch.float32)).reshape(3,-1)
+                x=(x*torch.tensor([.01,1.,100.],device=x.device)[:,None]).to(weight.dtype)
+                with torch.no_grad():
+                    actual=draft.combine_hidden_states(x)
+                    expected=F.linear(F.rms_norm(x,(x.shape[-1],),eps=export_config['relayspec_normal_input_eps']),weight)
+                    raw=F.linear(x,weight)
+                error=float((actual.float()-expected.float()).square().sum()/expected.float().square().sum().clamp_min(1e-12))
+                raw_error=float((actual.float()-raw.float()).square().sum()/expected.float().square().sum().clamp_min(1e-12))
+                assert error<1e-3 and raw_error>.1,(error,raw_error)
+                normal_projection={'normalized_reference_relative_mse':error,'unnormalized_negative_control_relative_mse':raw_error}
+                checks.append('normal_input_rms_before_projection')
         if native_path:
             draft=self.model_runner.get_draft_model() if hasattr(self.model_runner,'get_draft_model') else self.model_runner.drafter.model
             check(draft.model.embed_tokens.weight,embedding)
@@ -52,5 +68,5 @@ class FamilyMetricsWorker(MetricsWorker):
             checks.extend(['native_embedding','native_head','native_fc','native_norm'])
         projections=self.sd_verify_draft_projections(export_path) if export_path else None
         return {'passed':True,'checks':checks,'verification':'matrix shape and deterministic samples; full norm vector',
-                'draft_projections':projections,
+                'draft_projections':projections,'normal_projection':normal_projection,
                 'target_adapters':None}
