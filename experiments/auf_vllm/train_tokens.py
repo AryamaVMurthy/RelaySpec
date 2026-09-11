@@ -8,7 +8,7 @@ import time
 from pathlib import Path
 import torch
 from .blocks import collate_blocks
-from .interfaces import LayerContextMapper,LowRankContext
+from .interfaces import LayerContextMapper,LowRankContext,DirectFusionContext
 from .losses import token_loss
 from .pilot_data import write,sha
 from .train_pilot import load_models,block_for,logits,export,batch_gate
@@ -57,6 +57,8 @@ def validation(draft,embedding,mapper,records):
 
 
 def main(args):
+    if args.direct_fusion and args.draft_lora:
+        raise ValueError('Direct fusion and drafter LoRA are separate parameterization controls')
     if args.weight_decay < 0:
         raise ValueError('Weight decay must be nonnegative')
     if args.logical_records % args.microbatch_records:
@@ -67,9 +69,13 @@ def main(args):
         contract.pop('weight_decay')  # Preserve existing unregularized resume contracts.
     if not args.draft_lora:
         contract.pop('draft_lora')
+    if not args.direct_fusion:
+        contract.pop('direct_fusion')
     if args.lora_base is None:
         contract.pop("lora_base")
         contract.pop("rank")
+    elif args.direct_fusion:
+        contract.pop('rank')
     contract.update(train_manifest_sha256=sha(args.data/"train.json"),original_frozen_targets=True,
                     normalization="mean active-token CE inside each microbatch; equal microbatch means per update")
     contract_path=args.out/"contract.json"
@@ -91,16 +97,24 @@ def main(args):
     torch.manual_seed(args.seed)
     if args.lora_base is None:
         mapper=LayerContextMapper(draft.fc.weight,draft.hidden_norm.weight).to("cuda")
+        if args.direct_fusion:
+            mapper=DirectFusionContext(mapper.folded().detach(),mapper.norm).to('cuda')
+            write(args.out/'initialization.json',{'type':'folded random five-map initialization',
+                  'seed':args.seed,'trainable_parameters':sum(p.numel() for p in mapper.parameters()),
+                  'requires_charging_zip_initialization':False})
     else:
         from safetensors import safe_open
         with safe_open(args.lora_base,framework="pt",device="cpu") as reader:
             base=reader.get_tensor("fc.weight")
             norm=reader.get_tensor("hidden_norm.weight")
         assert base.shape == (2560,20480)
-        mapper=LowRankContext(base,norm,rank=args.rank,alpha=args.rank).to("cuda")
-        write(args.out/"initialization.json",{"source":str(args.lora_base),"sha256":sha(args.lora_base),
-              "rank":args.rank,"alpha":args.rank,"trainable_parameters":sum(p.numel() for p in mapper.parameters()),
-              "requires_charging_zip_initialization":True})
+        mapper=(DirectFusionContext(base,norm) if args.direct_fusion else
+                LowRankContext(base,norm,rank=args.rank,alpha=args.rank)).to("cuda")
+        initialization={"source":str(args.lora_base),"sha256":sha(args.lora_base),
+              "trainable_parameters":sum(p.numel() for p in mapper.parameters()),
+              "requires_charging_zip_initialization":True}
+        initialization.update({'type':'direct trainable fusion'} if args.direct_fusion else {'rank':args.rank,'alpha':args.rank})
+        write(args.out/"initialization.json",initialization)
     gate=batch_gate(draft,embedding,mapper,[train[0],train[1]])
     write(args.out/"gate.json",gate)
     if args.draft_lora:
@@ -217,6 +231,7 @@ if __name__ == "__main__":
     parser.add_argument("--seed",type=int,default=42)
     parser.add_argument("--lr",type=float,default=1e-4)
     parser.add_argument('--weight-decay',type=float,default=0.)
+    parser.add_argument('--direct-fusion',action='store_true',help='Train the folded dense matrix from the same initial function')
     parser.add_argument("--exploratory",action="store_true")
     parser.add_argument("--defer-validation",action="store_true",help="Fit fixed epochs while separately reserved validation labels are prepared")
     parser.add_argument("--lora-base",type=Path)

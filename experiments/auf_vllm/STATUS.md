@@ -265,3 +265,28 @@ incomplete. TEXINPUTS must put '.' first to avoid old-paper table collisions.
 This is an evidence scaffold, not a finished paper or completed study;
 related work, full contributions, remaining evaluations and final audit
 remain outstanding.
+
+## Follow-up at 20:58 IST: direct-fusion control and second LoRA timings
+
+The direct trainable fusion implementation starts from the folded random
+five-map initialization. A new test verifies algebraically equivalent
+initial contexts, intended gradients/frozen buffers, and exact export of
+the direct matrix after an optimizer update. Floating-point rounding can
+still differ from the unfused five-map path.20 tests pass; the existing
+LoRA learning-rate selector reproduces the prior2e-5 choice.
+
+Array31502 follows31500: direct-fusion CE/AUF screens at512 records using
+the same three rates as the original five-map screen (1e-4,3e-4,1e-3).
+Array31503 follows31502: selected512/4096 endpoints,1024-record validation,
+128-request cap2048 decoding. Selected512 fits are reused without additional
+epochs. This compares parameterization at the same initial mathematical
+function; no direct-fusion GPU result is available yet. Existing default
+training contracts remain compatible when the new option is omitted.
+
+Second completed LoRA timings: CE173.145338 TPS, AUF174.785229 TPS,
+128/128 exact each,122768 tokens. Both deployments again pass full projection
+and context-KV equality. Raw rows and local replays are archived under
+reports/draft-lora-decoding-31450. These are two timing repetitions, not two
+fitting seeds. Third repetitions are running; fresh ZIP controls remain
+pending. The preliminary paper intentionally still labels its table as
+the first timing until the complete repeated comparison is assembled.

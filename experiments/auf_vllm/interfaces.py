@@ -51,6 +51,27 @@ class LayerContextMapper(nn.Module):
                           for i, layer in enumerate(self.maps)], dim=1)
 
 
+class DirectFusionContext(nn.Module):
+    """Optimize one dense fusion matrix; preserve a supplied initial function."""
+    def __init__(self, fusion, norm):
+        super().__init__()
+        if fusion.ndim != 2 or norm.shape != (fusion.shape[0],):
+            raise ValueError('Invalid direct fusion dimensions')
+        # Keep initialization frozen for provenance and the common numerical gate.
+        self.register_buffer('fusion',fusion.detach().clone())
+        self.register_buffer('norm',norm.detach().clone())
+        self.weight=nn.Parameter(fusion.detach().float().clone())
+
+    def normalize(self,x):
+        return LayerContextMapper.normalize(self,x)
+
+    def forward(self,x):
+        return self.normalize(F.linear(x,self.weight)),None
+
+    def folded(self):
+        return self.weight.float()
+
+
 class FusionLoRA(nn.Module):
     def __init__(self, base, rank=56, alpha=56):
         super().__init__()

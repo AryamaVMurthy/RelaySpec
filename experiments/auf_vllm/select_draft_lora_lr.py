@@ -8,7 +8,7 @@ from .pilot_data import sha,write
 
 def main(args):
     candidates=[]
-    for rate in ['2e-5','1e-4','1e-3']:
+    for rate in args.rates:
         path=args.root/f'{args.location}-{args.loss}-lr{rate}/offline-validation.json'
         report=json.loads(path.read_text())
         assert report['records']==1024
@@ -28,6 +28,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser()
     p.add_argument('--root',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--location',choices=['draft','fusion'],required=True)
+    p.add_argument('--location',choices=['draft','fusion','direct'],required=True)
+    p.add_argument('--rates',nargs='+',default=['2e-5','1e-4','1e-3'])
     p.add_argument('--loss',choices=['ce','auf'],required=True)
     main(p.parse_args())

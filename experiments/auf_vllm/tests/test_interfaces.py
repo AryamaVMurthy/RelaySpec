@@ -3,7 +3,7 @@ import unittest
 import torch
 from torch.nn import functional as F
 
-from experiments.auf_vllm.interfaces import FusionLoRA, LayerContextMapper, LowRankContext
+from experiments.auf_vllm.interfaces import FusionLoRA, LayerContextMapper, LowRankContext, DirectFusionContext
 
 
 class InterfaceTests(unittest.TestCase):
@@ -39,6 +39,22 @@ class InterfaceTests(unittest.TestCase):
         self.assertIsNone(layer.base.grad)
         with torch.no_grad(): layer.B.add_(.01)
         torch.testing.assert_close(layer(x), F.linear(x, layer.folded()), rtol=1e-5, atol=1e-6)
+
+    def test_direct_fusion_preserves_initial_function_and_export(self):
+        original=LayerContextMapper(torch.randn(3,6),torch.randn(3),target_width=4,source_width=3,num_taps=2)
+        direct=DirectFusionContext(original.folded(),original.norm)
+        x=torch.randn(5,8)
+        torch.testing.assert_close(original(x)[0],direct(x)[0],rtol=1e-5,atol=1e-6)
+        self.assertEqual(set(dict(direct.named_parameters())),{'weight'})
+        optimizer=torch.optim.AdamW(direct.parameters(),lr=.01,weight_decay=0)
+        initial=direct(x)[0].detach().clone()
+        (direct(x)[0]-torch.randn(5,3)).square().mean().backward()
+        self.assertTrue(torch.isfinite(direct.weight.grad).all())
+        self.assertIsNone(direct.fusion.grad)
+        self.assertIsNone(direct.norm.grad)
+        optimizer.step()
+        self.assertFalse(torch.equal(initial,direct(x)[0]))
+        torch.testing.assert_close(direct(x)[0],direct.normalize(F.linear(x,direct.folded())),rtol=0,atol=0)
 
     def test_context_lora_keeps_norm_and_fusion_frozen(self):
         weight,norm=torch.randn(3,8),torch.randn(3)

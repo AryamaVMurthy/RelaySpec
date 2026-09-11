@@ -636,3 +636,16 @@ paper/auf_iclr. It is explicitly preliminary. build_paper_assets.py and
 claim_evidence.json tie its numeric claims to completed raw outputs and
 fitting contracts. Final writing and claims require the unfinished main
 experiments, repetitions, confirmation and backend replication.
+
+### Direct-fusion parameterization control (20:58 IST)
+
+DirectFusionContext trains one52,428,800-parameter fusion matrix initialized
+from the folded random five-map function. The frozen source normalization
+is retained. This changes optimization coordinates, while preserving the
+initial mathematical function; it does not promise BF16 bitwise identity
+with the unfused graph. Both export and the common GPU structural gate apply.
+Array31502 screens CE/AUF at512 records on1e-4/3e-4/1e-3, matching the
+five-map screen. Array31503 evaluates selected512 and4096 three-epoch fits
+with1024 offline validation and128x2048 decoding. The512 checkpoint is reused.
+These jobs follow31500 and stay under the existing max2 node07 workers.
+Factored bottlenecks and nonlinear MLP inference remain unimplemented.
