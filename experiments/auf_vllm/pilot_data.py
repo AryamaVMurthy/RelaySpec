@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import time
+import uuid
 from pathlib import Path
 
 
@@ -18,9 +19,12 @@ def sha(path):
 def write(path, data):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    temp = path.with_suffix(".tmp")
-    temp.write_text(json.dumps(data, indent=2) + "\n")
-    temp.replace(path)
+    temp = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
+    try:
+        temp.write_text(json.dumps(data, indent=2) + "\n")
+        temp.replace(path)
+    finally:
+        temp.unlink(missing_ok=True)
 
 
 def rows(path):

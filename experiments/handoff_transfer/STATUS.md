@@ -1,3 +1,7 @@
+## 2026-09-12: concurrent benchmark JSON race fixed
+
+Found shared pilot_data.write used a fixed .tmp filename; concurrent workload repetitions preparing the same manifest/provenance could replace each other's temporary file and fail. Changed to unique per-write temporary names with atomic rename and cleanup. Concurrent test exercises64writes/eightthreads and validates complete JSON plus no temporary leftovers. Confirmation materialization also uses separate data-rN paths.21tests pass including20handoff checks. Synced writer for future jobs; currently running jobs retain their snapshots. Q14five reached720/2000updates; normalQ14 full evaluation still underway. No extra GPU work launched.
+
 ## 2026-09-12: reserved confirmation runner prepared
 
 Added confirmation_runner.py. It requires a frozen protocol and exact checkpoint/config hashes before materializing reserved prompts, preserves all prespecified primary arms, rotates mode order by timing repetition, launches each vLLM engine in a separate subprocess for clean memory teardown, verifies runtime config equals the frozen development config, and retains full AR token/finish diagnostics for all128requests/cap2048. Output links pin protocol hash per repetition and prevent mixing frozen protocols. Validation test rejects changed weights before evaluation.20tests pass overall and focused freeze/runner validation passes. No GPU confirmation run or Slurm submission yet; scheduling remains after required development evidence. Q14five reached520/2000updates at last observation.

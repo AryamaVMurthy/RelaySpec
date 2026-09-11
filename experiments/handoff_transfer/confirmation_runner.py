@@ -43,7 +43,7 @@ def main(a):
         with link.open('x') as handle:
             handle.write(json.dumps(provenance, indent=2) + '\n')
     # Split materialization occurs only after the protocol and checkpoints pass.
-    data = out / 'data'
+    data = out / f'data-r{a.repeat}'
     prepare(argparse.Namespace(manifest=a.manifest, family=a.family, workload=a.workload,
                                split='confirmation', out=data))
     modes = list(arms)
