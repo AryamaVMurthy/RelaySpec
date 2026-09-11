@@ -9,10 +9,11 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def freeze(root, reports, workload_reports, out):
+def freeze(root, reports, workload_reports, out, selected_families=('q8', 'q14', 'llama')):
     assert not out.exists(), 'Never overwrite a frozen confirmation protocol'
+    assert selected_families and set(selected_families) <= {'q8', 'q14', 'llama'}
     evidence, families = {}, {}
-    for family in ('q8', 'q14', 'llama'):
+    for family in selected_families:
         required = [reports / f'{family}-comparison.json']
         required += [workload_reports / f'{family}-{w}.json' for w in ('math', 'gsm', 'code', 'chat')]
         if family in ('q8', 'llama'):
@@ -22,6 +23,8 @@ def freeze(root, reports, workload_reports, out):
             assert report['status'] == 'complete' and report['family'] == family
             if 'seeds-comparison' in path.name:
                 assert report['training_seeds'] == [42, 43, 44]
+                assert set(report['per_seed']) == {'42', '43', '44'}
+                assert report['timing_repetitions_per_seed'] == 3
                 assert all(r['all_exact'] for r in report['per_seed'].values())
             else:
                 assert report['all_exact'] and report['timing_repetitions'] == 3
@@ -65,4 +68,5 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     for name in ('root', 'reports', 'workload-reports', 'out'):
         p.add_argument('--' + name, type=Path, required=True)
-    a = p.parse_args(); freeze(a.root, a.reports, a.workload_reports, a.out)
+    p.add_argument('--families', nargs='+', choices=('q8', 'q14', 'llama'), default=['q8', 'q14', 'llama'])
+    a = p.parse_args(); freeze(a.root, a.reports, a.workload_reports, a.out, a.families)

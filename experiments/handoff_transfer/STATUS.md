@@ -1,3 +1,7 @@
+## 2026-09-12: confirmation freeze checks validated
+
+Added per-family freeze support so Q8 checkpoints can be checked on node07 and Q14/Llama on node06 without assuming a shared scratch namespace. Seed evidence now requires exactly42/43/44 and three repetitions per seed; empty or incomplete maps cannot pass. New tests exercise immutable output, changed-checkpoint rejection and absence of a frozen output on failed validation.20tests pass. Confirmation runner and combining per-family protocols remain pending; no confirmation data touched. Q14five training reached330/2000updates at latest live check.
+
 ## 2026-09-12: confirmation freeze preparation
 
 Added freeze_confirmation.py to pin all prespecified primary seed42 arms after complete three-repeat main/development-workload reports and Q8/Llama three-seed evidence. Requires exactness, family/protocol consistency and checkpoint hashes matching development measurements; writes exclusively and refuses overwrite. Preserves all normal/ZIP/BA/five arms (plusQ8native), avoiding selection on confirmation. Explicitly does not claim confirmation of every exploratory scaling/rank point. No confirmation prompts evaluated and no confirmation job submitted; runner integration and final sequencing remain pending. Q14five31559 reached120/2000updates after its decoding gate; four GPUs still allocated.
