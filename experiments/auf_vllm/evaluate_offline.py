@@ -35,7 +35,11 @@ def main(args):
         event={"epoch":epoch,"export_sha256":sha(path),"metrics":validation(draft,embedding,interface,records),
                "interface":"BF16 folded deployment matrix","job_id":os.environ.get("SLURM_JOB_ID")}
         result.append(event)
-        write(args.fit/"offline-validation.json",{"manifest_sha256":sha(args.data/"dev.json"),"records":1024,"results":result})
+        report={"manifest_sha256":sha(args.data/"dev.json"),"records":1024,"results":result}
+        write(args.fit/"offline-validation.json",report)
+        if args.fit.parent.name == "lr-screen":
+            control=Path(os.environ.get("AUF_CONTROL_ROOT","/home/aryama.murthy/relayspec-auf-20260911"))
+            write(control/"outputs/lr-screen"/args.fit.name/"offline-validation.json",report)
         print(json.dumps(event),flush=True)
 
 
