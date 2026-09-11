@@ -1,6 +1,9 @@
 """Dense frozen Qwen3 block-output capture through the pinned vLLM runner."""
+import json
+import os
 import torch
 from vllm.model_executor.models.qwen3 import Qwen3ForCausalLM
+from vllm.model_executor.models.llama import LlamaForCausalLM
 from vllm.model_executor.layers.pooler.abstract import Pooler
 from vllm.model_executor.layers.pooler.common import PoolingParamsUpdate
 
@@ -26,12 +29,27 @@ class AUFCaptureQwen3(Qwen3ForCausalLM):
     def __init__(self, *, vllm_config, prefix=""):
         super().__init__(vllm_config=vllm_config, prefix=prefix)
         # Input-side hooks 2,10,... are block outputs 1,9,..., zero indexed.
-        self.model._set_aux_hidden_state_layers((2, 10, 18, 26, 34))
+        layers=json.loads(os.environ.get("AUF_TARGET_TAPS","[1,9,17,25,33]"))
+        self.model._set_aux_hidden_state_layers(tuple(index+1 for index in layers))
         self.pooler = DensePooler()
 
     def forward(self, input_ids, positions, intermediate_tensors=None, inputs_embeds=None):
         _, aux = self.model(input_ids, positions, intermediate_tensors, inputs_embeds)
         return torch.cat(aux, dim=-1)
+
+
+class AUFCaptureLlama(LlamaForCausalLM):
+    is_pooling_model = True
+
+    def __init__(self, *, vllm_config, prefix=""):
+        super().__init__(vllm_config=vllm_config,prefix=prefix)
+        layers=json.loads(os.environ["AUF_TARGET_TAPS"])
+        self.model._set_aux_hidden_state_layers(tuple(index+1 for index in layers))
+        self.pooler=DensePooler()
+
+    def forward(self,input_ids,positions,intermediate_tensors=None,inputs_embeds=None):
+        _,aux=self.model(input_ids,positions,intermediate_tensors,inputs_embeds)
+        return torch.cat(aux,dim=-1)
 
 
 DUMMY = False
@@ -57,3 +75,4 @@ def install():
 
     GPUModelRunner._dummy_pooler_run = dummy
     ModelRegistry.register_model("AUFCaptureQwen3", "experiments.auf_vllm.capture_runtime:AUFCaptureQwen3")
+    ModelRegistry.register_model("AUFCaptureLlama", "experiments.auf_vllm.capture_runtime:AUFCaptureLlama")
