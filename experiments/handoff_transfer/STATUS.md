@@ -1,5 +1,13 @@
 ## Verified fit and scaling preparation update
 
+Loss-independent dense-feature capture array31486 released with replacement
+dependency afterok:31606:31607 (24 tasks,512 records/task,max2 GPUs).
+It completes records4096–16383 from existing frozen-target rollouts; the first
+4096 captures are already verified and reused. This is data capture only,
+not release of any old-loss training array. Concurrent small-data fit/eval
+uses at most two more GPUs,so the combined maximum remains four. Larger-data
+packing/fits/evaluations still require follow-up after capture verification.
+
 Q8 fusion job31584 completed0,2,000 updates in633.58 seconds; export verifier
 passed (onlyA/B train,frozen non-fc exact,folded relativeMSE0.0). Proof archived
 in reports/q8-handoff-r56-fit. Q8 five-map31585 has started. Full transfer
