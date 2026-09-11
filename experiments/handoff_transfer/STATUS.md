@@ -1,3 +1,7 @@
+## 2026-09-12: complete Q14 fitting cost comparison
+
+Archived Q14 ZIP fitting summary and generalized measured cost ledger. Normal1115.416s=18.59min, ZIP1137.869s=18.96min, ZIP+AUFBA1845.847s=30.76min/0.7094GPUh, ZIP+AUFfive1909.900s=31.83min/0.7450GPUh. BA continuation trains1,576,960params but preceding ZIP trains65,536,000; ledger explicitly counts both phases and excludes rollout/capture/packing/loading/gates/queue/evaluation. Existing Q8 rows and evidence hashes reproduced exactly after generalization. LlamaBA two-update training gate completed1.4235s; export/decoding gate still ongoing when checked.
+
 ## 2026-09-12: Q14 five-map full training complete and verified
 
 Job31559 completed all2000updates/16000record presentations in772.031363seconds (12.8672minutes) on2GPUs. Export verifier passed: exactly the five fc.maps weights trained, folded relativeMSE0, every non-fc exported tensor unchanged. Full summary/verification archived in reports/q14-handoff-five-fit. This completes both Q14 AUF fits (BA already complete); full decoding comparison still pending. Success released LlamaBA job31560, now running on2GPUs alongside normalQ14 and olderQ14evaluation (four total). No job restarted.

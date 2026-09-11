@@ -1,20 +1,28 @@
-"""Build measured Q8 fitting costs; cached-feature preparation is excluded."""
+"""Build measured fitting costs; cached-feature preparation is excluded."""
 import argparse
 import hashlib
 import json
 from pathlib import Path
 
 
-def build(reports):
+def build(reports, family="q8"):
+    assert family in ("q8", "q14", "llama")
     sources={}
     def read(name):
         path=reports/name/'summary.json'
         sources[str(path)]=hashlib.sha256(path.read_bytes()).hexdigest()
         return json.loads(path.read_text())
-    normal=read('q8-normal-fit');zip_fit=read('q8-zip-fit')
-    assert normal['status']==zip_fit['status']=='complete'
-    assert normal['contract']['records']==zip_fit['config']['records']==4096
-    assert normal['contract']['epochs']==zip_fit['config']['epochs']==3
+    normal=read(f'{family}-normal-fit');zip_fit=read(f'{family}-zip-fit')
+    assert normal['status']=='complete'
+    if family=='q8':
+        assert zip_fit['status']=='complete'
+        config=zip_fit['config']
+    else:
+        assert zip_fit['status']=='fit_complete_offline_validation_pending'
+        config=zip_fit['contract']
+        assert config['family']==family and config['objective']=='zip'
+    assert normal['contract']['records']==config['records']==4096
+    assert normal['contract']['epochs']==config['epochs']==3
     zip_seconds=sum(h['seconds'] for h in zip_fit['history'])
     rows=[{'method':'Normal RelaySpec','trainable_parameters':normal['contract']['trainable_parameters'],
            'initialization_seconds':0,'second_stage_seconds':normal['training_seconds'],
@@ -22,8 +30,9 @@ def build(reports):
           {'method':'Older ZIP','trainable_parameters':normal['contract']['trainable_parameters'],
            'initialization_seconds':zip_seconds,'second_stage_seconds':0,
            'sequential_fit_seconds':zip_seconds,'fit_gpu_hours':zip_seconds/3600}]
-    for folder,label in [('q8-handoff-r56-fit','ZIP + AUF BA'),
-                         ('q8-handoff-five-fit','ZIP + AUF five maps'),('q8-ce-fit','ZIP + uniform CE BA')]:
+    continuations=[(f'{family}-handoff-r56-fit','ZIP + AUF BA'), (f'{family}-handoff-five-fit','ZIP + AUF five maps')]
+    if family=='q8':continuations.append(('q8-ce-fit','ZIP + uniform CE BA'))
+    for folder,label in continuations:
         summary=read(folder)
         verified_path=reports/folder/'verification.json'
         verified=json.loads(verified_path.read_text())
@@ -34,17 +43,18 @@ def build(reports):
                      'sequential_fit_seconds':zip_seconds+summary['training_seconds'],
                      'fit_gpu_hours':zip_seconds/3600+summary['training_gpu_hours']})
         sources[str(verified_path)]=hashlib.sha256(verified_path.read_bytes()).hexdigest()
-    return {'status':'complete_fitting_costs_only','family':'q8','records':4096,'rows':rows,
+    return {'status':'complete_fitting_costs_only','family':family,'records':4096,'rows':rows,
             'source_sha256':sources,'exclusions':['rollout generation','source and target feature capture',
                 'packing','model loading','diagnostic gates','queue time','decoding evaluation'],
             'interpretation':'Measured fit times from one seed/run. ZIP initialization uses one GPU; '
                 'AUF/CE continuation uses two. BA parameter counts describe continuation only; '
-                'the preceding ZIP stage fits 52,428,800 parameters. This is not total adaptation cost.'}
+                f"the preceding ZIP stage fits {normal['contract']['trainable_parameters']:,} parameters. This is not total adaptation cost."}
 
 
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--reports',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
-    args=p.parse_args();result=build(args.reports)
+    p.add_argument('--family',choices=('q8','q14','llama'),default='q8')
+    args=p.parse_args();result=build(args.reports,args.family)
     args.out.parent.mkdir(parents=True,exist_ok=True);args.out.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result['rows'],indent=2))
