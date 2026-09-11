@@ -1,5 +1,13 @@
 ## Verified fit and scaling preparation update
 
+Full small-sweep CPU collector31630 scheduled after31629. It requires all
+nineN16–4096 points,128 exact outputs/finishes across3 timing repetitions,
+verified1,024-update/8,192-presentation AUF fits,and retains training costs.
+The sweep fixes AUF work only:three-epoch ZIP initialization cost grows withN
+and must be charged separately; do not describe total optimization as fixed.
+Normal Q8 job31579 completed0. Next normal Q14 job31580 is scheduler-pending
+withAssocGrpGRES; other live work continues,so no restart is needed.
+
 Normal Q8 all three timing repetitions archived:172.8651,172.9689,173.0015TPS;
 mean172.9451, sample timing SD0.0713. Full outputs and finish reasons identical
 across repetitions; matched AR verification still pending. See timing-summary
