@@ -146,3 +146,13 @@ and ZIP initializers31808, tuning31809–31814, full fitting31815, baseline
 repetitions31816–31818 and final128/cap2048 array31819 follow with strict gates.
 These submissions supersede earlier notes saying the scripts were unsubmitted.
 Implementation beyond the small decoder gate remains unvalidated on full data.
+
+## Tuning baseline reuse
+
+All LR rankings now use one verified32/cap512 AR reference per family, with
+its original rows, job ID and timing provenance retained. Qwen uses the measured
+AR from31784; Llama31820 and cross31821 generate their references once.
+This avoids rerunning identical AR decoding for every candidate and does not
+create synthetic timing repetitions. Existing per-cell AR measurements remain
+preserved; the selector uses the common reference for consistent normalization.
+Final128/cap2048 comparisons retain the three measured repetitions.
