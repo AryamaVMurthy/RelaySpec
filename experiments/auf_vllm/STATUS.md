@@ -99,3 +99,25 @@ Our reported Qwen3 experiments use a shared tokenizer and token-ID vocabulary;
 the mapper adapts hidden representations or the fusion interface, not vocabulary
 IDs. Consequently, these results do not demonstrate heterogeneous-vocabulary
 DFlash support.
+
+## Follow-up at19:51 IST: workloads and profiling analysis
+
+- Prepared1040 distinct requests:128development+128reserved confirmation+4warmup
+  each for MATH, GSM8K, LiveCodeBench and ShareGPT-derived single-turn chat.
+  Audited16427 local artifacts and80030 normalized groups, plus complete32k
+  calibration and original held-out manifests; no parse failures. Matching is
+  normalized exact/template only. Prompt IDs fit both pinned tokenizers.
+- Confirmation is unused. Development workload arrays queued:31470Q8,
+  31471Llama,31472Q14, each four workloads xthree repeats. AR and every trained
+  objective run within each job; Q8 also includes native DFlash. Method order
+  rotates over repetitions. Existing Numina results are a separate workload.
+- New generic Q8 runner gate31461 follows screens31447; main LoRA31450 now
+  follows gate31461. New Q8 workload31470 follows31450. Node07 max2GPU.
+  Onnode06 Llama31471 follows31445; Q14chain ends in31472. Each max1GPU,
+  for max2GPU/node06 and max4 total. These arrays are queued, not complete.
+- Kernel analysis finds96.2--97.0% of recorded kernel duration in matrix
+  multiplication. This is a bounded instrumented window; not SM occupancy,
+  per-output-token cost, or a substitute for unprofiled timing.
+- Added figures/q8_selected_decoding.{pdf,png} with10000 paired request
+  bootstrap resamples, and figures/q8_gpu_kernel_share.{pdf,png}. Request
+  intervals exclude seed, timing-order and selection uncertainty.

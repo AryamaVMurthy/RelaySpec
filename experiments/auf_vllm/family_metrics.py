@@ -3,7 +3,7 @@ from .runtime_zip.metrics import MetricsWorker
 
 
 class FamilyMetricsWorker(MetricsWorker):
-    def sd_verify_family_assets(self,target_path,export_path=None):
+    def sd_verify_family_assets(self,target_path,export_path=None,native_path=None):
         import json
         from pathlib import Path
         import torch
@@ -43,5 +43,12 @@ class FamilyMetricsWorker(MetricsWorker):
                                ('lm_head.weight',draft.lm_head.weight),('fc.weight',draft.model.fc.weight),
                                ('hidden_norm.weight',draft.model.hidden_norm.weight)]:
                 check(actual,tensor(export_path,key));checks.append('draft_'+key)
+        if native_path:
+            draft=self.model_runner.get_draft_model() if hasattr(self.model_runner,'get_draft_model') else self.model_runner.drafter.model
+            check(draft.model.embed_tokens.weight,embedding)
+            check(draft.lm_head.weight,head)
+            for key,actual in [('fc.weight',draft.model.fc.weight),('hidden_norm.weight',draft.model.hidden_norm.weight)]:
+                check(actual,tensor(native_path,key))
+            checks.extend(['native_embedding','native_head','native_fc','native_norm'])
         return {'passed':True,'checks':checks,'verification':'matrix shape and deterministic samples; full norm vector',
                 'target_adapters':None}

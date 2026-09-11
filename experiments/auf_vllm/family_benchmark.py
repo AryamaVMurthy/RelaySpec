@@ -20,7 +20,8 @@ def main(args):
     from transformers import AutoTokenizer
     assert os.environ.get('VLLM_BATCH_INVARIANT')=='1'
     assert 0<=args.worker_index<args.workers
-    target=args.models/('llama3-target' if args.family=='llama' else 'qwen14-target')
+    target=args.target_path or args.models/{'llama':'llama3-target','q14':'qwen14-target','q8':'qwen8-target'}[args.family]
+    assert not (args.export and args.native_draft)
     if args.export:
         os.environ['TRANSFER_MAPPED']='1'
         runtime=str(Path(__file__).resolve().parent/'runtime_zip')
@@ -29,7 +30,7 @@ def main(args):
         from mapper_runtime import install
         install()
     config=dict(model=str(target),dtype='bfloat16',max_model_len=5120,max_num_seqs=8,
-                max_num_batched_tokens=8192,gpu_memory_utilization=.8 if args.family=='llama' else .9,
+                max_num_batched_tokens=8192,gpu_memory_utilization=.9 if args.family=='q14' else .8,
                 enable_prefix_caching=False,generation_config='vllm',async_scheduling=False,
                 seed=0,disable_log_stats=False,worker_extension_cls='experiments.auf_vllm.family_metrics.FamilyMetricsWorker',
                 compilation_config={'mode':0,'cudagraph_mode':'FULL_DECODE_ONLY'})
@@ -37,6 +38,10 @@ def main(args):
         export_config=json.loads((args.export/'config.json').read_text())
         block=export_config['block_size']
         config['speculative_config']={'method':'dflash','model':str(args.export),'num_speculative_tokens':block-1}
+    elif args.native_draft:
+        assert args.family=='q8' and args.mode=='native'
+        block=json.loads((args.native_draft/'config.json').read_text())['block_size']
+        config['speculative_config']={'method':'dflash','model':str(args.native_draft),'num_speculative_tokens':block-1}
     else:
         assert args.mode=='ar'
     if args.profile_dir:
@@ -65,7 +70,8 @@ def main(args):
         path.rename(path.with_name(path.name+f'.incomplete-{time.time_ns()}'))
     start=time.perf_counter();llm=LLM(**config);setup=time.perf_counter()-start
     llm.collective_rpc('sd_install_monitor')
-    assets=llm.collective_rpc('sd_verify_family_assets',args=(str(target),str(args.export) if args.export else None))
+    assets=llm.collective_rpc('sd_verify_family_assets',args=(str(target),str(args.export) if args.export else None,
+                                str(args.native_draft) if args.native_draft else None))
     extra={} if args.family=='llama' else {'enable_thinking':False}
     text=tokenizer.apply_chat_template([{'role':'user','content':'What is 2 + 2? Answer with only the number.'}],tokenize=False,add_generation_prompt=True,**extra)
     reference=llm.generate([{'prompt_token_ids':tokenizer.encode(text,add_special_tokens=False)}],SamplingParams(temperature=0,max_tokens=32),use_tqdm=False)[0].outputs[0]
@@ -113,12 +119,14 @@ def main(args):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--family',choices=['llama','q14'],required=True)
+    parser.add_argument('--family',choices=['llama','q14','q8'],required=True)
     parser.add_argument('--models',type=Path,required=True)
+    parser.add_argument('--target-path',type=Path)
+    parser.add_argument('--native-draft',type=Path)
     parser.add_argument('--export',type=Path)
     parser.add_argument('--data',type=Path,required=True)
     parser.add_argument('--out',type=Path,required=True)
-    parser.add_argument('--mode',choices=['ar','zip','ce','auf'],required=True)
+    parser.add_argument('--mode',choices=['ar','native','zip','ce','auf','draft-ce','draft-auf','fusion-ce','fusion-auf'],required=True)
     parser.add_argument('--count',type=int,default=128)
     parser.add_argument('--cap',type=int,default=2048)
     parser.add_argument('--workers',type=int,default=1)

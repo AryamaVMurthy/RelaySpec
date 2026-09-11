@@ -1,0 +1,137 @@
+{
+  "seed": 20260911,
+  "sources": [
+    {
+      "path": "/home/aryamavmurthy/work/RelaySpec-scaling/data/scaling/math-reference/data/test-00000-of-00001.parquet",
+      "sha256": "7dca8d6e41af88ecf82f2b5f36eb5530e083aaaa86ee325f62bd5c31535178c6",
+      "records": 5000
+    },
+    {
+      "path": "/home/aryamavmurthy/.cache/huggingface/hub/datasets--openai--gsm8k/snapshots/740312add88f781978c0658806c59bc2815b9866/main/test-00000-of-00001.parquet",
+      "sha256": "ee7b8da9e381df27b9e3f7758a159ab2bdaa4dbaa910546cbbc47e0cb44e4f59",
+      "records": 1319
+    },
+    {
+      "path": "/home/aryamavmurthy/.cache/huggingface/hub/datasets--livecodebench--code_generation_lite/snapshots/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test.jsonl",
+      "sha256": "2bd02b38beb48e8c46b5b9987095d999ff38cd8efc255ea5d58974317c48f63f",
+      "records": 400
+    },
+    {
+      "path": "/home/aryamavmurthy/.cache/huggingface/hub/datasets--livecodebench--code_generation_lite/snapshots/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test2.jsonl",
+      "sha256": "095df7c5daf15f882c51a9deb84085cff1e073495a5dbcf95015a564d485f3a3",
+      "records": 111
+    },
+    {
+      "path": "/home/aryamavmurthy/.cache/huggingface/hub/datasets--livecodebench--code_generation_lite/snapshots/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test3.jsonl",
+      "sha256": "28ed26cc83363ce3f1fe2d5fad9f8393077beb1907b167a31bd3b32f80801b79",
+      "records": 101
+    },
+    {
+      "path": "/home/aryamavmurthy/.cache/huggingface/hub/datasets--livecodebench--code_generation_lite/snapshots/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test4.jsonl",
+      "sha256": "d711138ddaebfcf5f8ec6a4283ee677298c0f5c5d374a235af92aaf0584510da",
+      "records": 101
+    },
+    {
+      "path": "/home/aryamavmurthy/.cache/huggingface/hub/datasets--livecodebench--code_generation_lite/snapshots/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test5.jsonl",
+      "sha256": "7f77571c2a6df0c2a72a3277650309f67e01e0008e18117e624633df53f81214",
+      "records": 167
+    },
+    {
+      "path": "/home/aryamavmurthy/.cache/huggingface/hub/datasets--livecodebench--code_generation_lite/snapshots/0fe84c3912ea0c4d4a78037083943e8f0c4dd505/test6.jsonl",
+      "sha256": "bb4c364f71921c4495a6ad15abe1a927350b720009f4933e2e71f8af0f6fd1f5",
+      "records": 175
+    },
+    {
+      "path": "/home/aryamavmurthy/.cache/huggingface/hub/datasets--openbmb--UltraFeedback/snapshots/40b436560ca83a8dba36114c22ab3c66e43f6d5e/sharegpt.jsonl",
+      "sha256": "f0b7ef2bf54d100acb056646c2993c5f66429ee6d621e2e19105041aa271ef4c",
+      "records": 19949
+    }
+  ],
+  "workloads": {
+    "math": {
+      "candidate_count": 5000,
+      "skipped_until_full": {
+        "exposed_or_other_workload": 52,
+        "duplicate_or_empty": 2
+      },
+      "splits": {
+        "development": {
+          "records": 128,
+          "sha256": "57a712ee28cddd9acc1540071302c90831df8fd4a48a7cabf6c138cc7e234320"
+        },
+        "confirmation": {
+          "records": 128,
+          "sha256": "c3c60c7144c0275d89300023129963c856dca9c9b34c4ede79a5a085040c81e5"
+        },
+        "warmup": {
+          "records": 4,
+          "sha256": "6f97b63688b116ff5063a9ff96e61858ba5101900e845b6a43c314a86c45dae4"
+        }
+      }
+    },
+    "gsm": {
+      "candidate_count": 1319,
+      "skipped_until_full": {
+        "exposed_or_other_workload": 252
+      },
+      "splits": {
+        "development": {
+          "records": 128,
+          "sha256": "cce8e2a4b2b14dfae3ab296046ae0029e23db3c6fdf53159a4092f4796c194be"
+        },
+        "confirmation": {
+          "records": 128,
+          "sha256": "a74aba02edea663a2960dddfea2749ad893a7049ff7bf697828a8dbd8dd1c368"
+        },
+        "warmup": {
+          "records": 4,
+          "sha256": "1ace0421c6399d9b1fe4351ca35436d1c03ba8e7f0e73ee017885570fa48acc3"
+        }
+      }
+    },
+    "code": {
+      "candidate_count": 1055,
+      "skipped_until_full": {},
+      "splits": {
+        "development": {
+          "records": 128,
+          "sha256": "b0ddbdb032baa3a52477f8467e00eb147785ccce8e28c2e76aeaee6510741cbe"
+        },
+        "confirmation": {
+          "records": 128,
+          "sha256": "3c570b45bb99dc810ea3d5c32f6666ee9a49c60fa542c8f0cdd31d0b47b9a4b7"
+        },
+        "warmup": {
+          "records": 4,
+          "sha256": "bf4f76b34120b437ffa81044715f908b3a4dbcee7c41c36881390a6f332f8872"
+        }
+      }
+    },
+    "chat": {
+      "candidate_count": 19949,
+      "skipped_until_full": {},
+      "splits": {
+        "development": {
+          "records": 128,
+          "sha256": "7922339709f5d94ff099c69aa86c212ae73610912d45b8d090191f81a1bb51d8"
+        },
+        "confirmation": {
+          "records": 128,
+          "sha256": "164e9ecd98a5d498dce47793fc22faa7a0c565557ade1300a34f48adab465463"
+        },
+        "warmup": {
+          "records": 4,
+          "sha256": "75a13cc06bc1c13502561556207b4d2a1dcc944b97783c641bd85c93ef8f4da9"
+        }
+      }
+    }
+  },
+  "exposure_report_sha256": "31ae060cb70fa58c7db1454b6da6f5fe86704521092e5a19ec66ca747f1ff9ad",
+  "exposed_groups": 80030,
+  "scope": "MATH test; GSM8K test; pinned LiveCodeBench releases; ShareGPT-derived single-turn instructions from UltraFeedback",
+  "output_cap": 2048,
+  "natural_eos": true,
+  "max_prompt_tokens": 3056,
+  "confirmation_policy": "Do not evaluate until selection rules and all compared checkpoints are frozen",
+  "limitation": "Normalized exact/template exclusion over inventoried local artifacts; not proof of semantic or pretraining independence"
+}

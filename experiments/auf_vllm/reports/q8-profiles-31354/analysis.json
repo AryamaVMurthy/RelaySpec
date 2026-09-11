@@ -1,0 +1,387 @@
+{
+  "ar8-31354": {
+    "source_sha256": "347acbe174e4a96d2447baf0a2012456e8c2b4b01f8e5637404645f54aa13cf3",
+    "kernel_events": 31340,
+    "summed_kernel_ms": 2380.4072549999987,
+    "kernel_union_ms": 2379.695326171875,
+    "first_to_last_kernel_ms": 2782.829373046875,
+    "kernel_union_fraction": 0.8551351905439983,
+    "category_fraction": {
+      "Other kernels": 0.00982228648097389,
+      "Normalization": 0.010096444610272764,
+      "Matrix multiplication": 0.9703380596527388,
+      "Attention": 0.00974320925601453
+    },
+    "top_kernels": [
+      {
+        "name": "matmul_kernel_persistent",
+        "milliseconds": 2309.7997570000007,
+        "fraction": 0.9703380596527388
+      },
+      {
+        "name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<128, 64, 64, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<128, 64, 64, 4, cutlass::bfloat16_t> >, false, false, false, false, true, false, false, false>(flash::Flash_fwd_params)",
+        "milliseconds": 22.69590400000012,
+        "fraction": 0.009534462622867503
+      },
+      {
+        "name": "std::enable_if<((0)==(0))||(!vllm::_typeConvert<c10::BFloat16>::exists), void>::type vllm::fused_add_rms_norm_kernel<c10::BFloat16, 0, true>(c10::BFloat16*, long, c10::BFloat16*, c10::BFloat16 const*, float, int, int, long)",
+        "milliseconds": 16.965238999999947,
+        "fraction": 0.007127032134675609
+      },
+      {
+        "name": "_rms_norm_kernel",
+        "milliseconds": 7.068411000000017,
+        "fraction": 0.0029694124755975933
+      },
+      {
+        "name": "void vllm::act_and_mul_kernel<c10::BFloat16, __nv_bfloat162, &(c10::BFloat16 vllm::silu_kernel<c10::BFloat16>(c10::BFloat16 const&, float)), &(__nv_bfloat162 vllm::packed_silu_kernel<__nv_bfloat162>(__nv_bfloat162 const&, float)), true, true, false, false>(c10::BFloat16*, c10::BFloat16 const*, int, float, float, float)",
+        "milliseconds": 7.020846000000123,
+        "fraction": 0.0029494306006894303
+      },
+      {
+        "name": "void vllm::rotary_embedding_kernel<c10::BFloat16, c10::BFloat16, true>(long const*, c10::BFloat16*, c10::BFloat16*, c10::BFloat16 const*, int, long, long, long, int, int, int, long, bool)",
+        "milliseconds": 5.882526000000068,
+        "fraction": 0.0024712267145228775
+      },
+      {
+        "name": "void vllm::reshape_and_cache_flash_kernel<__nv_bfloat16, __nv_bfloat16, (vllm::Fp8KVCacheDataType)0>(__nv_bfloat16 const*, __nv_bfloat16 const*, __nv_bfloat16*, __nv_bfloat16*, long const*, long, long, long, long, long, int, int, int, float const*, float const*, int)",
+        "milliseconds": 4.103828000000081,
+        "fraction": 0.0017240024753663772
+      },
+      {
+        "name": "memcpy32_post",
+        "milliseconds": 2.2405290000000493,
+        "fraction": 0.0009412376790962396
+      },
+      {
+        "name": "_gumbel_sample_kernel",
+        "milliseconds": 1.4060979999999996,
+        "fraction": 0.0005906964016541786
+      },
+      {
+        "name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<128, 64, 64, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<128, 64, 64, 4, cutlass::bfloat16_t> >, true, false, false, false, true, false, false, false>(flash::Flash_fwd_params)",
+        "milliseconds": 0.49690199999999995,
+        "fraction": 0.00020874663314702436
+      },
+      {
+        "name": "void at::native::index_elementwise_kernel<128, 4, at::native::gpu_index_kernel<at::native::index_kernel_impl<at::native::OpaqueType<2> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_kernel_impl<at::native::OpaqueType<2> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1}>(long, at::native::gpu_index_kernel<at::native::index_kernel_impl<at::native::OpaqueType<2> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_kernel_impl<at::native::OpaqueType<2> >(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1})",
+        "milliseconds": 0.26966300000000004,
+        "fraction": 0.00011328439679117019
+      },
+      {
+        "name": "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<float, at::native::ArgMaxOps<float>, unsigned int, long, 4, 4> >(at::native::ReduceOp<float, at::native::ArgMaxOps<float>, unsigned int, long, 4, 4>)",
+        "milliseconds": 0.23635800000000012,
+        "fraction": 9.929309344169356e-05
+      }
+    ],
+    "scope": "At most64 profiled engine iterations from four128-cap requests; not a full2048-output profile or SM occupancy measurement"
+  },
+  "auf-31354": {
+    "source_sha256": "47422fc2a31a4da78f6d384d07de99ec94cc9f1b96d7a76965c571e66b910245",
+    "kernel_events": 39018,
+    "summed_kernel_ms": 2522.645114000005,
+    "kernel_union_ms": 2522.011591796875,
+    "first_to_last_kernel_ms": 2815.1348134765626,
+    "kernel_union_fraction": 0.8958759558240503,
+    "category_fraction": {
+      "Other kernels": 0.015849173067630652,
+      "Normalization": 0.011150562100032388,
+      "Matrix multiplication": 0.9623704125193097,
+      "Attention": 0.010629852313027283
+    },
+    "top_kernels": [
+      {
+        "name": "matmul_kernel_persistent",
+        "milliseconds": 2427.7190190000056,
+        "fraction": 0.9623704125193097
+      },
+      {
+        "name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<128, 64, 64, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<128, 64, 64, 4, cutlass::bfloat16_t> >, true, false, false, false, true, false, false, false>(flash::Flash_fwd_params)",
+        "milliseconds": 23.583073999999964,
+        "fraction": 0.009348550007736016
+      },
+      {
+        "name": "std::enable_if<((0)==(0))||(!vllm::_typeConvert<c10::BFloat16>::exists), void>::type vllm::fused_add_rms_norm_kernel<c10::BFloat16, 0, true>(c10::BFloat16*, long, c10::BFloat16*, c10::BFloat16 const*, float, int, int, long)",
+        "milliseconds": 18.102148000000273,
+        "fraction": 0.007175859933503211
+      },
+      {
+        "name": "_rms_norm_kernel",
+        "milliseconds": 9.756939999999823,
+        "fraction": 0.003867741818241265
+      },
+      {
+        "name": "void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1} const&)::{lambda(int)#1})",
+        "milliseconds": 8.852595000000541,
+        "fraction": 0.0035092510440216146
+      },
+      {
+        "name": "void vllm::act_and_mul_kernel<c10::BFloat16, __nv_bfloat162, &(c10::BFloat16 vllm::silu_kernel<c10::BFloat16>(c10::BFloat16 const&, float)), &(__nv_bfloat162 vllm::packed_silu_kernel<__nv_bfloat162>(__nv_bfloat162 const&, float)), true, true, false, false>(c10::BFloat16*, c10::BFloat16 const*, int, float, float, float)",
+        "milliseconds": 8.393195999999858,
+        "fraction": 0.0033271410050584875
+      },
+      {
+        "name": "void vllm::rotary_embedding_kernel<c10::BFloat16, c10::BFloat16, true>(long const*, c10::BFloat16*, c10::BFloat16*, c10::BFloat16 const*, int, long, long, long, int, int, int, long, bool)",
+        "milliseconds": 6.8326689999998464,
+        "fraction": 0.0027085335793292377
+      },
+      {
+        "name": "void vllm::reshape_and_cache_flash_kernel<__nv_bfloat16, __nv_bfloat16, (vllm::Fp8KVCacheDataType)0>(__nv_bfloat16 const*, __nv_bfloat16 const*, __nv_bfloat16*, __nv_bfloat16*, long const*, long, long, long, long, long, int, int, int, float const*, float const*, int)",
+        "milliseconds": 5.295394000000003,
+        "fraction": 0.0020991434627930755
+      },
+      {
+        "name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<128, 64, 64, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<128, 64, 64, 4, cutlass::bfloat16_t> >, false, false, false, false, true, false, false, false>(flash::Flash_fwd_params)",
+        "milliseconds": 3.2322710000000034,
+        "fraction": 0.0012813023052912853
+      },
+      {
+        "name": "_compute_local_logits_stats_kernel",
+        "milliseconds": 1.9933260000000004,
+        "fraction": 0.0007901729771411663
+      },
+      {
+        "name": "_resample_kernel",
+        "milliseconds": 1.888396,
+        "fraction": 0.0007485777486178725
+      },
+      {
+        "name": "void at::native::(anonymous namespace)::indexSelectSmallIndex<c10::BFloat16, long, unsigned int, 2, 2, -2>(at::cuda::detail::TensorInfo<c10::BFloat16, unsigned int>, at::cuda::detail::TensorInfo<c10::BFloat16 const, unsigned int>, at::cuda::detail::TensorInfo<long const, unsigned int>, int, int, unsigned int, long)",
+        "milliseconds": 1.233897,
+        "fraction": 0.0004891282539712788
+      }
+    ],
+    "scope": "At most64 profiled engine iterations from four128-cap requests; not a full2048-output profile or SM occupancy measurement"
+  },
+  "ce-31354": {
+    "source_sha256": "754c5cb06554dfbbfa5a522e67e1b1d7a67a03f90a4a8cc0c1643b07f697151b",
+    "kernel_events": 39022,
+    "summed_kernel_ms": 2522.314737000002,
+    "kernel_union_ms": 2521.677287109375,
+    "first_to_last_kernel_ms": 2803.5741630859375,
+    "kernel_union_fraction": 0.8994508939024198,
+    "category_fraction": {
+      "Other kernels": 0.014623428019878476,
+      "Normalization": 0.011136801679797744,
+      "Matrix multiplication": 0.9634341160335542,
+      "Attention": 0.010805654266769596
+    },
+    "top_kernels": [
+      {
+        "name": "matmul_kernel_persistent",
+        "milliseconds": 2430.0840690000036,
+        "fraction": 0.9634341160335542
+      },
+      {
+        "name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<128, 64, 64, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<128, 64, 64, 4, cutlass::bfloat16_t> >, true, false, false, false, true, false, false, false>(flash::Flash_fwd_params)",
+        "milliseconds": 23.966829999999874,
+        "fraction": 0.009501918871752543
+      },
+      {
+        "name": "std::enable_if<((0)==(0))||(!vllm::_typeConvert<c10::BFloat16>::exists), void>::type vllm::fused_add_rms_norm_kernel<c10::BFloat16, 0, true>(c10::BFloat16*, long, c10::BFloat16*, c10::BFloat16 const*, float, int, int, long)",
+        "milliseconds": 18.08259200000023,
+        "fraction": 0.00716904664384087
+      },
+      {
+        "name": "_rms_norm_kernel",
+        "milliseconds": 9.740147999999847,
+        "fraction": 0.003861591044575433
+      },
+      {
+        "name": "void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1} const&)::{lambda(int)#1})",
+        "milliseconds": 8.88721700000046,
+        "fraction": 0.003523436972251434
+      },
+      {
+        "name": "void vllm::act_and_mul_kernel<c10::BFloat16, __nv_bfloat162, &(c10::BFloat16 vllm::silu_kernel<c10::BFloat16>(c10::BFloat16 const&, float)), &(__nv_bfloat162 vllm::packed_silu_kernel<__nv_bfloat162>(__nv_bfloat162 const&, float)), true, true, false, false>(c10::BFloat16*, c10::BFloat16 const*, int, float, float, float)",
+        "milliseconds": 8.414999999999862,
+        "fraction": 0.0033362212401805646
+      },
+      {
+        "name": "void vllm::rotary_embedding_kernel<c10::BFloat16, c10::BFloat16, true>(long const*, c10::BFloat16*, c10::BFloat16*, c10::BFloat16 const*, int, long, long, long, int, int, int, long, bool)",
+        "milliseconds": 6.823497999999869,
+        "fraction": 0.0027052524016553227
+      },
+      {
+        "name": "void vllm::reshape_and_cache_flash_kernel<__nv_bfloat16, __nv_bfloat16, (vllm::Fp8KVCacheDataType)0>(__nv_bfloat16 const*, __nv_bfloat16 const*, __nv_bfloat16*, __nv_bfloat16*, long const*, long, long, long, long, long, int, int, int, float const*, float const*, int)",
+        "milliseconds": 5.291888999999992,
+        "fraction": 0.002098028815505425
+      },
+      {
+        "name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<128, 64, 64, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<128, 64, 64, 4, cutlass::bfloat16_t> >, false, false, false, false, true, false, false, false>(flash::Flash_fwd_params)",
+        "milliseconds": 3.2884310000000028,
+        "fraction": 0.0013037353950170415
+      },
+      {
+        "name": "void at::native::(anonymous namespace)::indexSelectSmallIndex<c10::BFloat16, long, unsigned int, 2, 2, -2>(at::cuda::detail::TensorInfo<c10::BFloat16, unsigned int>, at::cuda::detail::TensorInfo<c10::BFloat16 const, unsigned int>, at::cuda::detail::TensorInfo<long const, unsigned int>, int, int, unsigned int, long)",
+        "milliseconds": 1.1900339999999994,
+        "fraction": 0.00047180234192954263
+      },
+      {
+        "name": "void at::native::reduce_kernel<512, 1, at::native::ReduceOp<c10::BFloat16, at::native::ArgMaxOps<float>, unsigned int, long, 4, 4> >(at::native::ReduceOp<c10::BFloat16, at::native::ArgMaxOps<float>, unsigned int, long, 4, 4>)",
+        "milliseconds": 0.764399,
+        "fraction": 0.0003030545668179234
+      },
+      {
+        "name": "_compute_local_logits_stats_kernel",
+        "milliseconds": 0.5605209999999999,
+        "fraction": 0.00022222484441678918
+      }
+    ],
+    "scope": "At most64 profiled engine iterations from four128-cap requests; not a full2048-output profile or SM occupancy measurement"
+  },
+  "native8-31354": {
+    "source_sha256": "58efffa8ff9af3c3a309ff7c667e51d1ee31eccfd8b3d2026e7957cfe3713915",
+    "kernel_events": 38399,
+    "summed_kernel_ms": 2611.38178,
+    "kernel_union_ms": 2610.645646484375,
+    "first_to_last_kernel_ms": 2871.271267578125,
+    "kernel_union_fraction": 0.9092298857176306,
+    "category_fraction": {
+      "Other kernels": 0.014832287372396018,
+      "Normalization": 0.010934761136305657,
+      "Matrix multiplication": 0.964313192075653,
+      "Attention": 0.00991975941564543
+    },
+    "top_kernels": [
+      {
+        "name": "matmul_kernel_persistent",
+        "milliseconds": 2518.1899000000008,
+        "fraction": 0.964313192075653
+      },
+      {
+        "name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<128, 64, 64, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<128, 64, 64, 4, cutlass::bfloat16_t> >, true, false, false, false, true, false, false, false>(flash::Flash_fwd_params)",
+        "milliseconds": 22.756011999999963,
+        "fraction": 0.008714165111468289
+      },
+      {
+        "name": "std::enable_if<((0)==(0))||(!vllm::_typeConvert<c10::BFloat16>::exists), void>::type vllm::fused_add_rms_norm_kernel<c10::BFloat16, 0, true>(c10::BFloat16*, long, c10::BFloat16*, c10::BFloat16 const*, float, int, int, long)",
+        "milliseconds": 18.45676900000026,
+        "fraction": 0.007067817176851199
+      },
+      {
+        "name": "_rms_norm_kernel",
+        "milliseconds": 9.819795999999824,
+        "fraction": 0.003760383133254389
+      },
+      {
+        "name": "void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1} const&)::{lambda(int)#1})",
+        "milliseconds": 8.786473000000587,
+        "fraction": 0.0033646834282502294
+      },
+      {
+        "name": "void vllm::act_and_mul_kernel<c10::BFloat16, __nv_bfloat162, &(c10::BFloat16 vllm::silu_kernel<c10::BFloat16>(c10::BFloat16 const&, float)), &(__nv_bfloat162 vllm::packed_silu_kernel<__nv_bfloat162>(__nv_bfloat162 const&, float)), true, true, false, false>(c10::BFloat16*, c10::BFloat16 const*, int, float, float, float)",
+        "milliseconds": 8.587587999999913,
+        "fraction": 0.003288522599709611
+      },
+      {
+        "name": "void vllm::rotary_embedding_kernel<c10::BFloat16, c10::BFloat16, true>(long const*, c10::BFloat16*, c10::BFloat16*, c10::BFloat16 const*, int, long, long, long, int, int, int, long, bool)",
+        "milliseconds": 6.76562899999984,
+        "fraction": 0.0025908233915914966
+      },
+      {
+        "name": "void vllm::reshape_and_cache_flash_kernel<__nv_bfloat16, __nv_bfloat16, (vllm::Fp8KVCacheDataType)0>(__nv_bfloat16 const*, __nv_bfloat16 const*, __nv_bfloat16*, __nv_bfloat16*, long const*, long, long, long, long, long, int, int, int, float const*, float const*, int)",
+        "milliseconds": 5.2347580000000224,
+        "fraction": 0.002004593139192394
+      },
+      {
+        "name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<128, 64, 64, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<128, 64, 64, 4, cutlass::bfloat16_t> >, false, false, false, false, true, false, false, false>(flash::Flash_fwd_params)",
+        "milliseconds": 3.1482670000000037,
+        "fraction": 0.0012055943041771563
+      },
+      {
+        "name": "_compute_local_logits_stats_kernel",
+        "milliseconds": 1.353541,
+        "fraction": 0.0005183236746026465
+      },
+      {
+        "name": "_resample_kernel",
+        "milliseconds": 1.2737659999999997,
+        "fraction": 0.00048777471366136265
+      },
+      {
+        "name": "void at::native::(anonymous namespace)::indexSelectSmallIndex<c10::BFloat16, long, unsigned int, 2, 2, -2>(at::cuda::detail::TensorInfo<c10::BFloat16, unsigned int>, at::cuda::detail::TensorInfo<c10::BFloat16 const, unsigned int>, at::cuda::detail::TensorInfo<long const, unsigned int>, int, int, unsigned int, long)",
+        "milliseconds": 1.1927389999999998,
+        "fraction": 0.0004567463130572963
+      }
+    ],
+    "scope": "At most64 profiled engine iterations from four128-cap requests; not a full2048-output profile or SM occupancy measurement"
+  },
+  "zip-31354": {
+    "source_sha256": "c16855a4d21d5fa1d441c1e7103fa83d9b0156cafbe6b6065faa7567b30433a2",
+    "kernel_events": 38397,
+    "summed_kernel_ms": 2477.381845999999,
+    "kernel_union_ms": 2476.773677734375,
+    "first_to_last_kernel_ms": 2822.0410263671874,
+    "kernel_union_fraction": 0.8776533206261444,
+    "category_fraction": {
+      "Other kernels": 0.015217388898230736,
+      "Normalization": 0.011328488196244109,
+      "Matrix multiplication": 0.9633073294103733,
+      "Attention": 0.010146793495151747
+    },
+    "top_kernels": [
+      {
+        "name": "matmul_kernel_persistent",
+        "milliseconds": 2386.48009,
+        "fraction": 0.9633073294103733
+      },
+      {
+        "name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<128, 64, 64, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<128, 64, 64, 4, cutlass::bfloat16_t> >, true, false, false, false, true, false, false, false>(flash::Flash_fwd_params)",
+        "milliseconds": 22.09631799999983,
+        "fraction": 0.00891922173228028
+      },
+      {
+        "name": "std::enable_if<((0)==(0))||(!vllm::_typeConvert<c10::BFloat16>::exists), void>::type vllm::fused_add_rms_norm_kernel<c10::BFloat16, 0, true>(c10::BFloat16*, long, c10::BFloat16*, c10::BFloat16 const*, float, int, int, long)",
+        "milliseconds": 18.037418000000244,
+        "fraction": 0.007280838853777672
+      },
+      {
+        "name": "_rms_norm_kernel",
+        "milliseconds": 9.757811999999877,
+        "fraction": 0.003938759790201466
+      },
+      {
+        "name": "void at::native::elementwise_kernel<128, 4, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1} const&)::{lambda(int)#1}>(int, at::native::gpu_kernel_impl_nocast<at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1}>(at::TensorIteratorBase&, at::native::direct_copy_kernel_cuda(at::TensorIteratorBase&)::{lambda()#3}::operator()() const::{lambda()#12}::operator()() const::{lambda(c10::BFloat16)#1} const&)::{lambda(int)#1})",
+        "milliseconds": 8.771093000000574,
+        "fraction": 0.003540468746940425
+      },
+      {
+        "name": "void vllm::act_and_mul_kernel<c10::BFloat16, __nv_bfloat162, &(c10::BFloat16 vllm::silu_kernel<c10::BFloat16>(c10::BFloat16 const&, float)), &(__nv_bfloat162 vllm::packed_silu_kernel<__nv_bfloat162>(__nv_bfloat162 const&, float)), true, true, false, false>(c10::BFloat16*, c10::BFloat16 const*, int, float, float, float)",
+        "milliseconds": 8.47370699999985,
+        "fraction": 0.0034204283097018597
+      },
+      {
+        "name": "void vllm::rotary_embedding_kernel<c10::BFloat16, c10::BFloat16, true>(long const*, c10::BFloat16*, c10::BFloat16*, c10::BFloat16 const*, int, long, long, long, int, int, int, long, bool)",
+        "milliseconds": 6.753607999999869,
+        "fraction": 0.00272610700320756
+      },
+      {
+        "name": "void vllm::reshape_and_cache_flash_kernel<__nv_bfloat16, __nv_bfloat16, (vllm::Fp8KVCacheDataType)0>(__nv_bfloat16 const*, __nv_bfloat16 const*, __nv_bfloat16*, __nv_bfloat16*, long const*, long, long, long, long, long, int, int, int, float const*, float const*, int)",
+        "milliseconds": 5.232279999999987,
+        "fraction": 0.0021120199974210955
+      },
+      {
+        "name": "void flash::flash_fwd_splitkv_kernel<Flash_fwd_kernel_traits<128, 64, 64, 4, false, false, cutlass::bfloat16_t, Flash_kernel_traits<128, 64, 64, 4, cutlass::bfloat16_t> >, false, false, false, false, true, false, false, false>(flash::Flash_fwd_params)",
+        "milliseconds": 3.0411640000000006,
+        "fraction": 0.0012275717628714722
+      },
+      {
+        "name": "void at::native::(anonymous namespace)::indexSelectSmallIndex<c10::BFloat16, long, unsigned int, 2, 2, -2>(at::cuda::detail::TensorInfo<c10::BFloat16, unsigned int>, at::cuda::detail::TensorInfo<c10::BFloat16 const, unsigned int>, at::cuda::detail::TensorInfo<long const, unsigned int>, int, int, unsigned int, long)",
+        "milliseconds": 1.2101509999999993,
+        "fraction": 0.000488479804578337
+      },
+      {
+        "name": "_compute_local_logits_stats_kernel",
+        "milliseconds": 0.9785639999999999,
+        "fraction": 0.0003949992616519723
+      },
+      {
+        "name": "_resample_kernel",
+        "milliseconds": 0.8825699999999997,
+        "fraction": 0.0003562510968686577
+      }
+    ],
+    "scope": "At most64 profiled engine iterations from four128-cap requests; not a full2048-output profile or SM occupancy measurement"
+  }
+}

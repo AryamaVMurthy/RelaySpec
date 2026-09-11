@@ -507,3 +507,31 @@ questions/tokens. New jobs31447/31450 expand this comparison.
   time matching is a separate analysis. Shared ZIP start tests whether changing
   drafter weights improves upon a functional transfer interface. It does not
   demonstrate transfer without any dimensional compatibility interface.
+
+
+## Frozen workload manifests and execution (2026-09-11)
+
+Local `data/auf_vllm/workloads-20260911` and matching node06/node07 copies
+contain128development,128confirmation and4warmup requests per workload.
+All1040 groups are disjoint. The manifest provenance pins every input file SHA;
+`reports/workload-exposure-20260911.json` inventories16427 prior local artifacts
+and80030 normalized groups. Full calibration32k and original dev/eval prompts
+are included. This audit does not establish semantic or pretraining independence.
+
+- MATH test: DigitalLearningGmbH/MATH-lighteval, revision0530c78699ea5e8eb5530600900e1f328b48acad.
+- GSM8K test: openai/gsm8k, revision740312add88f781978c0658806c59bc2815b9866.
+- Code: LiveCodeBench code_generation_lite, revision0fe84c3912ea0c4d4a78037083943e8f0c4dd505,
+  combined pinned test releases; public/private tests remain in the source for
+  later execution grading, not model prompts. This is a new breadth benchmark.
+- Dialogue: ShareGPT-derived instructions in openbmb/UltraFeedback,
+  revision40b436560ca83a8dba36114c22ab3c66e43f6d5e. Single-turn prompts only;
+  do not describe this as MT-Bench or multi-turn conversational evaluation.
+- Render with the pinned target tokenizers. Require prompt<=3056tokens to
+  reserve2048 output plus16 speculative positions in5120context. No prompt
+  truncation. NaturalEOS. Runtime settings are common within each family;
+  this unified breadth runner is separately identified from original Q8 runtime.
+- Arrays31470/31471/31472 evaluate only DEVELOPMENT, each12cells(4workloads x
+  3timing repetitions), including AR+ZIP+CE+AUF andQ8native. Rotate method order.
+- Keep confirmation unused until selections are frozen. Add original paper's
+  exposed legacy benchmarks as separately named replications; these new sources
+  do not silently replace the remaining legacy breadth/quality requirements.
