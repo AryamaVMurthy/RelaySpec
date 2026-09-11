@@ -1,3 +1,19 @@
+## Evaluation scheduling and timing update
+
+Pending evaluation jobs31562–31573,31587/31588 replaced (none were running)
+by pools31606 (Q8,node07,two GPUs maximum) and31607 (Q14/Llama,node06,two
+GPUs maximum). They wait for the current training,normal-control and old
+jobs,then use four GPUs across independent method evaluations. Each GPU
+still measures sequential requests;128 requests,cap2,048,three repetitions
+are unchanged. Collection dependencies repaired to the new arrays.
+
+Planning estimate from measured rates:main queued comparison matrix about
+6–10 more hours with balanced pools;full remaining scaling,confirmation,
+profiling,backend checks and paper provisionally24–48 hours. These are not
+finish guarantees; queue waits,validation failures and extension engineering
+remain uncertain. Measured fits:origin3.85 minutes,normalQ8 4.72 minutes,
+Q14 AUF11.8 minutes. Long AR references dominate remaining GPU time.
+
 ## Current execution update — approximately23:10 IST
 
 Four GPUs active:Q14 AUF fusion full training31558 (last880/2000 updates),

@@ -1,0 +1,52 @@
+{
+  "replaced_pending_jobs": [
+    31562,
+    31563,
+    31564,
+    31565,
+    31566,
+    31567,
+    31568,
+    31569,
+    31570,
+    31571,
+    31572,
+    31573,
+    31587,
+    31588
+  ],
+  "running_jobs_untouched": true,
+  "start_after": [
+    31561,
+    31581,
+    31346,
+    31589
+  ],
+  "pools": [
+    {
+      "job_id": 31606,
+      "node": "node07",
+      "array": "0-5%2",
+      "families": [
+        "q8"
+      ],
+      "gpus_per_task": 1
+    },
+    {
+      "job_id": 31607,
+      "node": "node06",
+      "array": "0-7%2",
+      "families": [
+        "q14",
+        "llama"
+      ],
+      "gpus_per_task": 1
+    }
+  ],
+  "maximum_total_gpus": 4,
+  "requests_per_method": 128,
+  "max_output_tokens": 2048,
+  "timing_repetitions": 3,
+  "per_gpu_request_concurrency": 1,
+  "reason": "Balance expensive AR runs across nodes and occupy four GPUs after training/normal/older jobs finish; preserve per-request latency protocol."
+}

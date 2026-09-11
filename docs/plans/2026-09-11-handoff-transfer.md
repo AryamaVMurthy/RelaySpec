@@ -323,3 +323,22 @@ repetitions1/2 still run fresh. Reuse failure does not block fresh measurement.
 The first evaluation lane starts after either old31346 or final two-GPU fit31561
 finishes; the second still waits on old31346 and the normal-control lane.
 This permits earlier evaluation without exceeding four GPUs.
+
+### Balanced evaluation pools
+
+The earlier serial method chains placed most AR reference work in one lane.
+Only their pending evaluation jobs were replaced by31606 (six Q8 methods,
+array concurrency2 on node07) and31607 (eight Q14/Llama methods,concurrency2
+on node06). Both wait for training31561,normal31581,old31346 and reuse31589.
+No running work was canceled. Thus all four GPUs can evaluate after those
+stages,with the expensive Qwen8,Qwen14 and Llama AR tasks distributed across
+available devices. Per-request concurrency1,128 requests,cap2048 and all
+three timing repetitions remain unchanged. No batching-throughput metric is
+substituted for latency. Collectors now depend on the corresponding pools.
+
+Measured fit times are3.85 minutes for origin,4.72 for normalQ8 and11.8 for
+Q14 AUF. Q8's122,768-token AR reference costs roughly83 minutes per pass at
+24.6TPS; Llama's85,900 tokens roughly31 minutes at46TPS. Q14 AR is slower.
+This motivates a6–10-hour remaining main-matrix planning range after balancing,
+not a10-minute end-to-end promise. Whole-study24–48-hour planning remains
+provisional pending scaling runtime and confirmation requirements.
