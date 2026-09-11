@@ -1,5 +1,11 @@
 ## Verified fit and scaling preparation update
 
+Scaling preparation now hashes each reused full shard once,retaining that
+verified digest for its symlink instead of rereading the same tensor file.
+Main comparison collector now fails its job on any token or finish mismatch
+while preserving the diagnostic report. Added a regression case with identical
+tokens but differing finish reasons; all12 CPU tests pass.
+
 GPU profiling arrays31632(Q8,node07) and31633(Llama,node06),eachmax1GPU,
 queued after31629. AR/normal/ZIP/BA/five-map,4 requests capped2048; separate
 instrumented outputs have timing_valid=false. Traces limited to64 engine

@@ -33,17 +33,18 @@ def prepare(parent, fit, out, records):
     for path in sorted((parent / 'features/full').glob('*.pt')):
         if offset == records:
             break
-        assert contract['shards'][str(path)] == sha(path)
+        digest = sha(path)
+        assert contract['shards'][str(path)] == digest
         shard = torch.load(path, weights_only=True, mmap=True, map_location='cpu')
         take = min(records - offset, len(shard['rows']))
         assert shard['rows'][:take] == expected[offset:offset + take], 'Initializer/capture sequence mismatch'
-        selected.append((path, take, len(shard['rows'])))
+        selected.append((path, take, len(shard['rows']), digest))
         offset += take
     assert offset == records, 'Dense captures are incomplete for this data size'
     out.mkdir(parents=True)
     shards = {}
     offset = 0
-    for path, take, available in selected:
+    for path, take, available, digest in selected:
         dest = out / f'features/full/{offset:05d}.pt'
         dest.parent.mkdir(parents=True, exist_ok=True)
         if take == available:
@@ -52,7 +53,9 @@ def prepare(parent, fit, out, records):
             shard = torch.load(path, weights_only=True, mmap=True, map_location='cpu')
             torch.save({'rows': shard['rows'][:take],
                         'features': [h.clone() for h in shard['features'][:take]]}, dest)
-        shards[str(dest)] = sha(dest)
+        # A complete shard is the identical verified file through a symlink.
+        # Only a newly materialized partial shard needs another hash pass.
+        shards[str(dest)] = digest if take == available else sha(dest)
         offset += take
     contract.update(records=records, base_export=str(export),
                     base_sha256=sha(export / 'model.safetensors'), shards=shards,

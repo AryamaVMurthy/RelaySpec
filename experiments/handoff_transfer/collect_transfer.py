@@ -39,13 +39,15 @@ def main(a):
         for m,results in reports.items():
             rows[m]['mean_tps_ratio_to_native']=statistics.mean(v['method_tps']/reports['native'][r]['method_tps'] for r,v in enumerate(results))
         rows['handoff-r56']['matched_auf_vs_ce_tps_ratio']=statistics.mean(v['method_tps']/reports['handoff-ce'][r]['method_tps'] for r,v in enumerate(reports['handoff-r56']))
-    result={'family':a.root.name,'status':'complete','evaluation':'128 Numina development requests, max2048, natural EOS, greedy',
+    all_exact=all(v['exact_matches']==v['finish_matches']==128 for values in reports.values() for v in values)
+    result={'family':a.root.name,'status':'complete','all_exact':all_exact,'evaluation':'128 Numina development requests, max2048, natural EOS, greedy',
             'training_seeds':[42],'timing_repetitions':3,'rows':rows,'per_repeat':reports,'source_sha256':hashes,
             'normal_relayspec_control':'input-normalized dense linear map, normalized-context relative MSE; same ZIP records/position sampler/3 epochs; random initialization' ,
             'uncertainty':'Timing repetition variation only; not fitting-seed uncertainty; not untouched confirmation.'}
     a.out.parent.mkdir(parents=True,exist_ok=True)
     a.out.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(rows),flush=True)
+    assert all_exact,'Full token/finish agreement failed; comparison report retains the mismatches'
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);main(p.parse_args())
