@@ -13,8 +13,9 @@ We investigate whether acceptance-aware token supervision improves a
 transferred feature-conditioned speculative drafter. This working report
 records completed development experiments from an ongoing study, rather
 than a finished submission. With 4,096 training records and three epochs,
-the reproduced feature objective currently outperforms uniform and
-accept-until-fail token cross-entropy on two within-family transfers.
+the reproduced feature objective outperformed the token-loss configurations
+in the earlier development comparison. A separate 512-anchor study crosses
+adapter architecture with CE and AUF; its final results are not yet available.
 Additional drafter LoRA training from the feature-fitted checkpoint gives
 near-parity throughput in its first full timing. Repeated timing, broader
 workloads, scaling, and confirmation experiments remain unfinished.
@@ -46,7 +47,7 @@ Pure AUF is used for this token intervention; no simultaneous MSE or KL
 term is added. ZIP denotes the reproduced layer and normalized fused-context
 feature objective, with its original position sampling and example weighting.
 
-\section{Completed development evidence}
+\section{Earlier development evidence}
 Each result below uses 128 Numina development requests, a maximum of
 2,048 generated tokens with natural EOS, fitting seed42, and one warmed
 timing. The inference backend is vLLM0.28.0 on L40S hardware. These are
@@ -107,4 +108,35 @@ Related work, contribution claims and the full discussion will be written
 against the completed evidence. This report does not claim a new
 state-of-the-art method or submission readiness. Machine-readable claim
 and source hashes are recorded in \texttt{claim\_evidence.json}.
+
+\section{Controlled 512-anchor study in progress}
+The new study separates initialization, architecture, and token objective.
+Original RelaySpec and ZIP are feature-fitting procedures, not CE losses.
+Their unchanged checkpoints remain controls for CE and AUF continuations.
+Interfaces include the normalized RelaySpec map, a residual fusion adapter,
+five dense layer maps, one unrestricted fusion matrix, and five independent
+rank-56 residual layer adapters. The source drafter and target remain frozen.
+
+DFlash's Appendix A.1 reports 512 sampled anchors per sequence and
+position-decayed CE\footnote{\url{https://arxiv.org/html/2602.06036v1}}.
+Uniform CE and AUF are explicit objective interventions. Our protocol uses
+4,096 cached records, a 4,096-token rollout cap, and 16,000 presentations at
+global batch eight. Short records supply fewer distinct anchors. Tuning uses
+a separate 32-request validation set; final comparisons require 128 requests,
+a 2,048-token cap, and three timing repetitions.
+
+The first Qwen8 five-BA fits completed 100 updates (800 presentations) with
+1,863,680 trainable parameters. AUF took 337.8 seconds and CE 339.7 seconds
+on two L40S GPUs; both peaked near 17.04 GB allocated memory on rank zero.
+These incremental fitting costs exclude ZIP initialization and rollouts.
+Both exports passed frozen-weight and folding checks. Their decoding
+validation is pending: completed four-request exactness checks used separate
+two-update pilots, not these 100-update checkpoints. No decoding advantage
+for either loss is established by these costs.
+
+Qwen-to-Llama additionally requires source-token labels, causal target-feature
+alignment, and proposal retokenization. Source-token AUF support is not
+target-token accepted progress. Cross-family results require validation of
+the complete decoding path.
+
 \end{document}
