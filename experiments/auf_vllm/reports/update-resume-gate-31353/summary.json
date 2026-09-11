@@ -1,0 +1,58 @@
+{
+  "contract": {
+    "objective": "microbatch-normalized auf",
+    "data": "/scratch/aryama.murthy/relayspec-auf-20260911/main-q8-n4096",
+    "validation_data": "/scratch/aryama.murthy/relayspec-auf-20260911/validation-q8-n1024",
+    "out": "/scratch/aryama.murthy/relayspec-auf-20260911/updates-gate-31353",
+    "records": 16,
+    "updates": 1024,
+    "seed": 42,
+    "lr": 0.001,
+    "training_manifest_sha256": "f6be75508741b53ca50a098d4809fa683a8fce6ce87b0c9ade7044a74bbc5ec9",
+    "validation_manifest_sha256": "39c2e811322b2241a824519d967243ca6d78bce0a51ce73e42ccab9b9c324c83",
+    "target_adapters": null,
+    "record_visits_per_update": 32,
+    "anchors_per_visit": 4,
+    "microbatch_records": 4,
+    "small_data_policy": "cycle shuffled passes; retain32 visits per update",
+    "code_sha256": {
+      "losses.py": "cef3c3b46e6fa5201032662feb85917afe67c91dc9aef8b7b9218af9de4189cb",
+      "blocks.py": "a03664f07de1c66dc467264cba31fad92a8404d68a58e194507fb56166e95a2e",
+      "interfaces.py": "8a30e9ec8e1d3d2e9364f70dee306dbdf75a42970d1626720fddf06a96145730",
+      "fit_updates.py": "8e1f24541431c762c2fcb539baf0a7ccae5499b41761f0cb8d692b7ebea75598"
+    }
+  },
+  "step": 32,
+  "history": [
+    {
+      "start_step": 0,
+      "step": 16,
+      "record_visits": 512,
+      "total_record_visits": 512,
+      "equivalent_passes": 32.0,
+      "active_tokens": 2281,
+      "valid_tokens": 30228,
+      "blocks": 2048,
+      "mean_update_loss": 5.938907131552696,
+      "training_seconds": 23.004635613877326,
+      "peak_allocated_bytes": 8718757376,
+      "job_id": "31353"
+    },
+    {
+      "start_step": 16,
+      "step": 32,
+      "record_visits": 512,
+      "total_record_visits": 1024,
+      "equivalent_passes": 64.0,
+      "active_tokens": 2700,
+      "valid_tokens": 30375,
+      "blocks": 2048,
+      "mean_update_loss": 3.9253893345594406,
+      "training_seconds": 23.3977908231318,
+      "peak_allocated_bytes": 9011523584,
+      "job_id": "31353"
+    }
+  ],
+  "checkpoint_sha256": "b3745d0df06ee1b9b9e6d25bea875809e1ab33fafa5b008fd86e82a15cfb6893",
+  "status": "chunk_complete_fit_remaining"
+}
