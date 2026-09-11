@@ -1,5 +1,14 @@
 ## Verified fit and scaling preparation update
 
+Priority scheduling update:Q8 AUF evaluation tasks31606_2/3 materialized as
+31648/31649 and their unrelated-family dependencies cleared after both fits,
+CE,and normal Q8 finished. Q14 two-GPU fit31559 now waits for these two tasks;
+normal Q14 may use1GPU alongside old Q14's1GPU and Q8 evals'2GPUs,total<=4.
+Remaining pool tasks keep original dependencies. Slurm rejected an initial
+circular update; corrected by clearing the two task dependencies first,then
+adding31559's dependency on their materialized IDs. No running work canceled.
+CE31586 completed0:2,000 updates,538.65 seconds,export verifier passed.
+
 Implemented separate large-data fixed-epoch recipe:4K/8K/16K/32K,three-epoch
 matched ZIP initialization then four complete AUF epochs,both architectures,
 per-epoch checkpoints. A1,024-update sweep would expose at most8,192 record
