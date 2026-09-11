@@ -579,3 +579,15 @@ kernels alreadyusedbyfullcrossdata; addedrequiredsettinganderrormetadata,
 rerun31913after31861. No tolerancechange; numericalcauseunconfirmeduntilrerun.
 QwenLR31780waits31913completion;crossdata31806requires31913success. This
 preserves<=4GPUwhenLlamarecovery/LRoverlaps. Next routinecheck04:41:45IST.
+
+## 2026-09-12 04:41:45 IST
+
+Scheduled check: four GPUs running Qwen LR task31780_2 and Llama LR
+task31781_1, two GPUs each on node07/node06. Qwen LR tasks0/1 and
+Llama task0 completed. Llama recovery31842 and AR reference31820 completed.
+Cross paired repair31913 passed with relative MSE0.0 at unchanged1e-6
+threshold, batch-invariant kernels enabled. Batch gate31861 passed8/8
+full-token and finish matches at batch4 and8: aggregate396.36/756.48TPS
+versus AR96.64/192.03TPS (4.10x/3.94x). These are8-request,128-token
+integration gates, not final benchmarks. Evidence archived under
+reports/validation-gates-20260912. Next routine check05:06:45IST.
