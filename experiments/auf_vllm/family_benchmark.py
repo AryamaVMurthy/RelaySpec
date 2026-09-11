@@ -22,6 +22,8 @@ def main(args):
     assert 0<=args.worker_index<args.workers
     target=args.target_path or args.models/{'llama':'llama3-target','q14':'qwen14-target','q8':'qwen8-target'}[args.family]
     assert not (args.export and args.native_draft)
+    if args.family=='cross':
+        assert args.target_path is not None,'Cross target must be explicit'
     if args.export:
         os.environ['TRANSFER_MAPPED']='1'
         runtime=str(Path(__file__).resolve().parent/'runtime_zip')
@@ -29,6 +31,12 @@ def main(args):
         os.environ['PYTHONPATH']=runtime+os.pathsep+os.environ.get('PYTHONPATH','')
         from mapper_runtime import install
         install()
+        if args.family=='cross':
+            os.environ['CROSS_BRIDGE']='1'
+            os.environ['CROSS_TARGET_TOKENIZER']=str(target)
+            assert os.environ.get('CROSS_SOURCE_TOKENIZER'),'Cross source tokenizer must be explicit'
+            from experiments.handoff_transfer.cross.runtime import install as install_cross
+            install_cross()
     config=dict(model=str(target),dtype='bfloat16',max_model_len=5120,max_num_seqs=8,
                 max_num_batched_tokens=8192,gpu_memory_utilization=.9 if args.family=='q14' else .8,
                 enable_prefix_caching=False,generation_config='vllm',async_scheduling=False,
@@ -72,7 +80,7 @@ def main(args):
     llm.collective_rpc('sd_install_monitor')
     assets=llm.collective_rpc('sd_verify_family_assets',args=(str(target),str(args.export) if args.export else None,
                                 str(args.native_draft) if args.native_draft else None))
-    extra={} if args.family=='llama' else {'enable_thinking':False}
+    extra={} if args.family in ('llama','cross') else {'enable_thinking':False}
     text=tokenizer.apply_chat_template([{'role':'user','content':'What is 2 + 2? Answer with only the number.'}],tokenize=False,add_generation_prompt=True,**extra)
     reference=llm.generate([{'prompt_token_ids':tokenizer.encode(text,add_special_tokens=False)}],SamplingParams(temperature=0,max_tokens=32),use_tqdm=False)[0].outputs[0]
     assert reference.text.strip()=='4',reference.text
@@ -119,7 +127,7 @@ def main(args):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--family',choices=['llama','q14','q8'],required=True)
+    parser.add_argument('--family',choices=['llama','q14','q8','cross'],required=True)
     parser.add_argument('--models',type=Path,required=True)
     parser.add_argument('--target-path',type=Path)
     parser.add_argument('--native-draft',type=Path)

@@ -17,7 +17,7 @@ def main(args):
         converted=[]
         for row in items:
             content=row['problem']+'\nSolve the problem and put your final answer within \\boxed{}.'
-            extra={} if args.family=='llama' else {'enable_thinking':False}
+            extra={} if args.family in ('llama','cross') else {'enable_thinking':False}
             text=tokenizer.apply_chat_template([{'role':'user','content':content}],tokenize=False,add_generation_prompt=True,**extra)
             ids=tokenizer.encode(text,add_special_tokens=False)
             assert len(ids)+2048+16<=5120
@@ -34,7 +34,7 @@ def main(args):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()
-    parser.add_argument('--family',choices=['llama','q14','q8'],required=True)
+    parser.add_argument('--family',choices=['llama','q14','q8','cross'],required=True)
     parser.add_argument('--models',type=Path,required=True)
     parser.add_argument('--target-path',type=Path)
     parser.add_argument('--manifest',type=Path,required=True)
