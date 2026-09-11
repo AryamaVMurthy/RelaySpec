@@ -1,3 +1,7 @@
+## 2026-09-12: confirmation freeze preparation
+
+Added freeze_confirmation.py to pin all prespecified primary seed42 arms after complete three-repeat main/development-workload reports and Q8/Llama three-seed evidence. Requires exactness, family/protocol consistency and checkpoint hashes matching development measurements; writes exclusively and refuses overwrite. Preserves all normal/ZIP/BA/five arms (plusQ8native), avoiding selection on confirmation. Explicitly does not claim confirmation of every exploratory scaling/rank point. No confirmation prompts evaluated and no confirmation job submitted; runner integration and final sequencing remain pending. Q14five31559 reached120/2000updates after its decoding gate; four GPUs still allocated.
+
 ## 2026-09-12: Q14 normal fit archived; future I/O timing added
 
 NormalQ14 completed4096-record/three-epoch fit:1115.416283seconds (18.5903minutes),1893updates over1,292,174 sampled positions,65,536,000parameters; export relativeMSE0. Training summary/contract and hashed cost evidence archived in reports/q14-normal-fit. First full evaluation reached64/128 when checked. Q14five31559 passed through its AR gate and remains active; no restart.
