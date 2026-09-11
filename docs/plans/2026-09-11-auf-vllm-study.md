@@ -27,6 +27,12 @@ The ZIP's Qwen transfer used Qwen3-4B's drafter with Qwen3-8B, five linear maps,
 
 The current paper also contains Qwen3-14B, Llama-3.1-8B drafter to Llama-3.2-3B, Qwen3-4B drafter to Llama-3.1-8B, and EAGLE-3 studies. The archived full Llama/cross-family evaluations used a different runtime and FP32 configuration. Their TPS must not be used as the new vLLM loss baseline without rerunning.
 
+User-specified wording for the experimental scope and new manuscript:
+
+> Our reported Qwen3 experiments use a shared tokenizer and token-ID vocabulary; the mapper adapts hidden representations or the fusion interface, not vocabulary IDs. Consequently, these results do not demonstrate heterogeneous-vocabulary DFlash support.
+
+This statement describes the reported Qwen3-to-Qwen3 experiments. The planned Qwen-to-Llama experiments are a separate, unvalidated extension of the new vLLM/AUF study; their vocabulary compatibility cannot be inferred from the Qwen3 results.
+
 ## 2. Questions the experiments must answer
 
 1. Does supervising the correct prefix and first failure improve actual accepted progress and throughput relative to ordinary token CE?
@@ -116,7 +122,7 @@ An arrow always means **drafter's original source target → new verification ta
 
 These cover the original paper's important target sizes. Add Qwen4→Llama3 as a cross-family target-size extension after X8 passes. Do not create a full Cartesian product of every available model size. New source drafters or 32B/70B targets are outside this first replication matrix.
 
-For every row pin model/tokenizer IDs and revisions, selected layers, vocabulary mapping, embedding/head provenance, target adapter if applicable, context normalization, and draft length. The Llama models currently archived are the specific `unsloth/Llama-3.1-8B-Instruct` and `unsloth/Llama-3.2-3B-Instruct` revisions; do not substitute another publisher's weights under the same short label.
+For every row pin model/tokenizer IDs and revisions, selected layers, vocabulary contract, embedding/head provenance, target adapter if applicable, context normalization, and draft length. For Qwen3-to-Qwen3, record shared tokenizer/token-ID compatibility and no vocabulary remapping; record an explicit bridge only for a separately validated heterogeneous-vocabulary configuration. The Llama models currently archived are the specific `unsloth/Llama-3.1-8B-Instruct` and `unsloth/Llama-3.2-3B-Instruct` revisions; do not substitute another publisher's weights under the same short label.
 
 DFlash AUF is the initial implementation. EAGLE's autoregressive proposal path must use its own correct runtime-conditioned prefixes; applying a parallel DFlash mask to teacher-forced EAGLE logits is not an equivalent experiment. Develop and validate that extension after the DFlash core, then repeat the Qwen8/14 transfer comparison.
 
@@ -133,6 +139,8 @@ Primary-source integration references checked during planning:
 - [Speculators DFlash training integration](https://github.com/vllm-project/speculators/blob/main/docs/user_guide/algorithms/dflash.md): candidate training/export integration, to be pinned and tested.
 
 ### Same-family gate
+
+For Qwen3-to-Qwen3, verify the shared tokenizer and token-ID vocabulary, including special tokens. Keep token IDs unchanged: the learned map changes hidden representations or the fusion interface only. This gate is not a test of heterogeneous-vocabulary support.
 
 Verify hidden tap indices, positional offsets, block-attention semantics, frozen source embeddings/head, mask token, target logits, KV truncation, EOS, and folded checkpoint export. A drafter input contains the true anchor and masked future positions, never the future gold tokens being predicted. Conditioning features may contain only the context available at that draft step.
 
@@ -407,6 +415,7 @@ Files: `transformers_reference.py`, `backend_comparison.json`.
 Files: `paper/auf_iclr/main.tex`, `references.bib`, `generated/`, `figures/`, `experiments/auf_vllm/build_paper_assets.py`, `claim_evidence.json`, `REPRODUCE.md`.
 
 1. Create a separate manuscript scaffold; copy only relevant background/template material with existing results clearly marked historical.
+   Include the exact user-specified Qwen3 scope statement from Section 1 in the experimental setup and retain its distinction in the limitations and comparison-table captions. Do not use shared-vocabulary Qwen3 results as evidence for heterogeneous-vocabulary DFlash support.
 2. Generate every new result table/plot from audited new evidence. A missing cell stays pending or N/A; it never inherits old TPS.
 3. Verify related-work novelty and cite acceptance-aware training, drafter adaptation, DFlash/EAGLE, and vocabulary-transfer methods accurately.
 4. Write contributions from supported findings, including negative scaling/transfer results and total cost. Separate the AUF extension's contribution from RelaySpec's original drafter-reuse contribution.
