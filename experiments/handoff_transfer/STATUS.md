@@ -1,5 +1,17 @@
 ## Verified fit and scaling preparation update
 
+Normal Q8 all three timing repetitions archived:172.8651,172.9689,173.0015TPS;
+mean172.9451, sample timing SD0.0713. Full outputs and finish reasons identical
+across repetitions; matched AR verification still pending. See timing-summary
+in reports/q8-normal-partial (directory name retained from initial archive).
+
+Remaining small-data fits31614–31621 and evaluation arrays31622–31629 submitted
+forN32/64/128/256/512/1024/2048/4096,matched per-N ZIP initialization,both AUF
+architectures,1,024 updates. They wait for successful N16 end-to-end collection
+and both compute arrays. Fits run serially on2GPUs,then evaluation arrays run
+serially with max2GPUs each. Dense capture may use2 more; total stays<=4.
+These are queued work,not completed evidence; result collection remains to wire.
+
 Compute evaluations31612 (Q8,node07,max1GPU) and31613 (Q14,node06,max1GPU)
 queued after31609. Each evaluates both architectures at500/1000/1500 updates
 with128 requests,cap2048,three repetitions; final2000 endpoint comes from
