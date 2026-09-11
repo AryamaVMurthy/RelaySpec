@@ -32,3 +32,19 @@ five-map or rank32 drafter-LoRA recipes.
 
 Plan: docs/plans/2026-09-11-handoff-transfer.md. Shared maximum remains4 GPUs;
 external account quota can delay allocation even when fewer study GPUs run.
+
+### Five-map AUF variant added
+
+Implemented both `fusion_r56` and `five_maps` transfer parameterizations.
+Five maps restore the ZIP epoch-3 W_i checkpoint; the fusion residual uses
+the same checkpoint's folded export. Frozen-body/export checks, initial
+folded-weight equivalence, trainable-key checks and per-job GPU telemetry
+are included. Three CPU tests passed (unchanged training contract, AUF
+chunk loss/gradient equivalence, five-map folding/freezing/gradient flow).
+
+Qwen8 GPU gates submitted:31551 fusion residual,31552 five maps, sequential
+and dependent on cache preparation and completion of older evaluation31346.
+These are pending gates, not completed experiments or measured speedups.
+Origin gate31523 completed successfully. Origin full31525 remains running.
+Q8/Q14 dense-feature repacking31528/31529 ongoing; Llama31530 waits on31529.
+Full 128x2048 comparison results for the new pair are not available yet.

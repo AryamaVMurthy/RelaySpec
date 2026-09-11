@@ -221,3 +221,39 @@ principal results, all128 outputs verified at2048 caps, repeated timing,
 cost accounting, supported size/family coverage, a documented cross-family
 outcome, required breadth/confirmation/profiling/backend checks and a rebuilt
 audited manuscript. Pending jobs or passing unit tests do not satisfy these.
+
+## Added architecture comparison: fusion residual versus five maps
+
+User requested both parameterizations. At the same ZIP epoch-3 initialization,
+compare handoff AUF with (a) frozen transfer fusion F0 plus rank-56 BA and
+(b) the five independently trainable, bias-free W_i followed by frozen native
+fusion F. Preserve the frozen native normalization in both cases. Handoff's
+original parameterization includes F0; it is not BA alone.
+
+| Transfer | Target feature width | F0+BA parameters | Five-map parameters |
+|---|---:|---:|---:|
+| Qwen4 drafter to Qwen8 | 20,480 | 1,290,240 | 52,428,800 |
+| Qwen4 drafter to Qwen14 | 25,600 | 1,576,960 | 65,536,000 |
+| Llama8 drafter to Llama3 | 15,360 | 1,089,536 | 62,914,560 |
+
+Both use 4,096 records, 2,000 optimizer updates, effective batch eight,
+eight anchors per record, unchanged AUF chunk/reduction/RNG/schedule, and
+fixed final checkpoints. Initialization is checked against the same ZIP
+export and its cost is reported separately. Trainable matrices are FP32;
+forwards are BF16. Five-map training performs the original two-stage
+projection; deployment folds it to one matrix. BF16 folding discrepancies
+must be measured, not asserted to be bitwise absent. This is a capacity
+comparison, not parameter-count matching.
+
+Main decoding remains 128 requests, maximum 2,048 output tokens with natural
+EOS, identical prompts and runtime, full token/finish agreement with AR,
+and three timing repetitions. Report TPS, speedup over AR/ZIP/normal
+RelaySpec when matched controls are complete, accepted progress, training
+GPU hours and peak memory. Both variants deploy the same dense fusion shape.
+Normal RelaySpec remains a distinct required control, not a synonym for ZIP.
+
+First bounded Qwen8 gates: jobs 31551 (fusion_r56), 31552 (five_maps).
+Each performs two optimizer updates and verifies frozen weights and export.
+They wait for cache pack31528 and the older one-GPU evaluation31346, then
+run sequentially beside the two-GPU origin reproduction31525; max four GPUs.
+Full architecture runs follow successful numerical and decoding gates.
