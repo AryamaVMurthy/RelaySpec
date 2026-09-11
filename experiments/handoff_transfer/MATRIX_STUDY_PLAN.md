@@ -179,3 +179,9 @@ learning rate alongside the AUF/CE throughput ratios. Because each loss tunes
 its learning rate separately,this measures the best registered loss recipe;
 it must not be described as a fixed-learning-rate causal ablation. Training
 seed variation remains unmeasured in this initial matrix.
+
+Cross-family assembly now records the distribution of eligible shared-prefix
+anchors,records below512,and total distinct anchors available in a complete
+epoch. These availability counts must be distinguished from actual sampled
+anchors in the training logs,especially at100/500updates and the final partial
+epoch. Never report4096x512 as consumed supervision without measured evidence.

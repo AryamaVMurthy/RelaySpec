@@ -1,8 +1,19 @@
 """Index full cross-family data without loading hundreds of GB of feature tensors."""
 import argparse
 import json
+import statistics
 from pathlib import Path
 from experiments.handoff_transfer.matrix.prepare import digest
+
+
+def anchor_coverage(counts, limit=512):
+    assert counts and all(type(n) is int and n>0 for n in counts)
+    return {'records':len(counts),'anchor_limit':limit,
+            'minimum_eligible':min(counts),'median_eligible':statistics.median(counts),
+            'mean_eligible':statistics.mean(counts),'maximum_eligible':max(counts),
+            'records_below_limit':sum(n<limit for n in counts),
+            'distinct_anchors_available_per_complete_epoch':sum(min(n,limit) for n in counts),
+            'scope':'Availability in each record, not actual anchors consumed by a shuffled partial-epoch fit'}
 
 
 def assemble(chunks, records=4096):
@@ -42,6 +53,7 @@ def assemble(chunks, records=4096):
             seen.add(key)
     assert len(index) == records and len(manifest_hashes) == 1
     return {'records': records, 'source_manifest_sha256': next(iter(manifest_hashes)),
+            'anchor_coverage':anchor_coverage([r['eligible_anchors'] for r in index]),
             'scope': 'cross-family full-data index; not a fitted model or benchmark',
             'feature_hash_validation': 'required on first use by trainer', 'index': index}
 
