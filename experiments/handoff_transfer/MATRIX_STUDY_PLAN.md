@@ -114,3 +114,12 @@ connected; the16-record integration initializer must not be relabeled4096.
 The cross loss supervises source-vocabulary proposals on shared, stable text
 prefixes. It is not target-token AUF under a shared vocabulary. Both the train
 labels and inference text bridge must retain that distinction in reporting.
+
+`cross/full_train.py` now implements the100/500/2000-update streamed CE/AUF
+fits, shared batch8,512-anchor limit, warmup/cosine schedule, clipping, resumable
+optimizer state, and frozen-weight/folded-export checks. It rejects the512-record
+pilot initializer: a4096-record initializer and index hash are required. This
+trainer has syntax validation and data-loader tests but has NOT passed a GPU
+full-data run. The paired source-feature cache and full-data initializers remain
+the prerequisite implementation work. Chunk-shuffled record order keeps the
+metadata cache bounded while visiting every record once per epoch.
