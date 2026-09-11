@@ -156,3 +156,15 @@ This avoids rerunning identical AR decoding for every candidate and does not
 create synthetic timing repetitions. Existing per-cell AR measurements remain
 preserved; the selector uses the common reference for consistent normalization.
 Final128/cap2048 comparisons retain the three measured repetitions.
+
+### Additional serving throughput protocol (2026-09-12)
+
+The benchmark now exposes `--request-batch-size 4` or `8` for fixed synchronous
+single-GPU batches. This is a separate serving workload: filenames and summary
+contracts identify batch size, and per-row wall time is explicitly amortized.
+Aggregate TPS divides all generated tokens by the sum of batch wall times.
+Compilation-affected batches are retried once with cold time retained; counters
+exclude the cold pass. Output ordering is checked against input token IDs.
+Main latency selectors and final collectors explicitly reject batched contracts.
+CPU measurement tests passed; GPU validation and matched AR/finalist batch4/8
+measurements remain outstanding and must not be presented as completed results.

@@ -20,6 +20,9 @@ def main(args):
     from transformers import AutoTokenizer
     assert os.environ.get('VLLM_BATCH_INVARIANT')=='1'
     assert 0<=args.worker_index<args.workers
+    batch_size=getattr(args,'request_batch_size',1)
+    assert batch_size in (1,4,8)
+    if batch_size>1:assert args.workers==1, 'Fixed-batch serving is a single-GPU workload'
     target=args.target_path or args.models/{'llama':'llama3-target','q14':'qwen14-target','q8':'qwen8-target'}[args.family]
     assert not (args.export and args.native_draft)
     if args.family=='cross':
@@ -65,12 +68,14 @@ def main(args):
     selected=list(enumerate(rows))[args.worker_index::args.workers]
     warm=json.loads((args.data/'warmup.json').read_text())
     args.out.mkdir(parents=True,exist_ok=True)
-    path=args.out/f'{args.mode}-r{args.repeat}-w{args.worker_index}.jsonl'
+    suffix=f'-b{batch_size}' if batch_size>1 else ''
+    path=args.out/f'{args.mode}-r{args.repeat}-w{args.worker_index}{suffix}.jsonl'
     summary_path=path.with_suffix('.summary.json')
     contract={'family':args.family,'mode':args.mode,'manifest_sha256':sha(args.data/'eval.json'),
               'count':args.count,'cap':args.cap,'worker_index':args.worker_index,'workers':args.workers,
               'repeat':args.repeat,'export_sha256':sha(args.export/'model.safetensors') if args.export else None,
               'runtime_config':config}
+    if batch_size>1:contract.update(request_batch_size=batch_size,workload='fixed synchronous request batches')
     if summary_path.exists():
         assert json.loads(summary_path.read_text())['contract']==contract
         return
@@ -94,35 +99,40 @@ def main(args):
     def counters():
         return {serial(x)['name']:serial(x).get('value',0) for x in llm.get_metrics()}
 
-    with path.open('x') as handle:
-        for index,row in selected:
-            status0=llm.collective_rpc('sd_stats')[0];counts0=counters()
-            start=time.perf_counter()
-            output=llm.generate([{'prompt_token_ids':row['prompt_token_ids']}],params,use_tqdm=False)[0]
-            seconds=time.perf_counter()-start
-            status1=llm.collective_rpc('sd_stats')[0];cold=None
-            if any(status0[k]!=status1[k] for k in ['jit_events','teacher_graph_captures']):
-                cold=seconds;counts0=counters();start=time.perf_counter()
+    batch_measurements=None
+    if batch_size>1:
+        from .batch_measurement import measure
+        batch_measurements=measure(llm,selected,params,path,batch_size,counters,bool(args.profile_dir))
+    else:
+        with path.open('x') as handle:
+            for index,row in selected:
+                status0=llm.collective_rpc('sd_stats')[0];counts0=counters()
+                start=time.perf_counter()
                 output=llm.generate([{'prompt_token_ids':row['prompt_token_ids']}],params,use_tqdm=False)[0]
                 seconds=time.perf_counter()-start
-                status2=llm.collective_rpc('sd_stats')[0]
-                assert all(status1[k]==status2[k] for k in ['jit_events','teacher_graph_captures'])
-            counts1=counters()
-            delta=lambda key:counts1.get('vllm:'+key,0)-counts0.get('vllm:'+key,0)
-            result=output.outputs[0]
-            record={'index':index,'group_id':row['group_id'],'row_id':row['row_id'],'output_ids':list(result.token_ids),
-                    'output_text':result.text,'output_tokens':len(result.token_ids),'prompt_ids':row['prompt_token_ids'],
-                    'prompt_tokens':len(row['prompt_token_ids']),'wall_seconds':seconds,'cold_wall_seconds':cold,
-                    'finish_reason':result.finish_reason,'verification_iterations':delta('spec_decode_num_drafts'),
-                    'accepted_draft_tokens':delta('spec_decode_num_accepted_tokens'),'timing_valid':not bool(args.profile_dir)}
-            handle.write(json.dumps(record,default=serial)+'\n');handle.flush()
-            if (index//args.workers+1)%16==0:
-                print(json.dumps({'mode':args.mode,'completed':index//args.workers+1,'last_seconds':seconds}),flush=True)
+                status1=llm.collective_rpc('sd_stats')[0];cold=None
+                if any(status0[k]!=status1[k] for k in ['jit_events','teacher_graph_captures']):
+                    cold=seconds;counts0=counters();start=time.perf_counter()
+                    output=llm.generate([{'prompt_token_ids':row['prompt_token_ids']}],params,use_tqdm=False)[0]
+                    seconds=time.perf_counter()-start
+                    status2=llm.collective_rpc('sd_stats')[0]
+                    assert all(status1[k]==status2[k] for k in ['jit_events','teacher_graph_captures'])
+                counts1=counters()
+                delta=lambda key:counts1.get('vllm:'+key,0)-counts0.get('vllm:'+key,0)
+                result=output.outputs[0]
+                record={'index':index,'group_id':row['group_id'],'row_id':row['row_id'],'output_ids':list(result.token_ids),
+                        'output_text':result.text,'output_tokens':len(result.token_ids),'prompt_ids':row['prompt_token_ids'],
+                        'prompt_tokens':len(row['prompt_token_ids']),'wall_seconds':seconds,'cold_wall_seconds':cold,
+                        'finish_reason':result.finish_reason,'verification_iterations':delta('spec_decode_num_drafts'),
+                        'accepted_draft_tokens':delta('spec_decode_num_accepted_tokens'),'timing_valid':not bool(args.profile_dir)}
+                handle.write(json.dumps(record,default=serial)+'\n');handle.flush()
+                if (index//args.workers+1)%16==0:
+                    print(json.dumps({'mode':args.mode,'completed':index//args.workers+1,'last_seconds':seconds}),flush=True)
     if args.profile_dir:llm.stop_profile()
     write(summary_path,{'contract':contract,'setup_seconds':setup,'warmup_seconds':warm_seconds,
                         'asset_checks':assets,'gpu_before':before,'gpu_after':llm.collective_rpc('sd_stats'),
                         'job_id':os.environ.get('SLURM_JOB_ID'),'timing_valid':not bool(args.profile_dir),
-                        'timing_contract':'per-request generate wall; compilation-affected request retried once, cold time retained; prefix cache off'})
+                        'batch_measurements':batch_measurements,'timing_contract':('fixed-batch generate wall; per-row wall is amortized, not individual latency' if batch_size>1 else 'per-request generate wall; compilation-affected request retried once, cold time retained; prefix cache off')})
 
 
 if __name__=='__main__':
@@ -141,4 +151,5 @@ if __name__=='__main__':
     parser.add_argument('--worker-index',type=int,default=0)
     parser.add_argument('--repeat',type=int,default=0)
     parser.add_argument('--profile-dir',type=Path)
+    parser.add_argument('--request-batch-size',type=int,choices=[1,4,8],default=1)
     main(parser.parse_args())

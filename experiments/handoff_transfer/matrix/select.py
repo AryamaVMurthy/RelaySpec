@@ -20,6 +20,7 @@ def select(runs,steps):
         if hardware is None:hardware=devices
         assert devices==hardware, 'Different tuning GPU hardware'
         contract=measured['contract']
+        assert contract.get('request_batch_size',1)==1, 'Latency tuning requires single-request measurements'
         assert contract['mode']=='matrix'
         assert contract['count']==32 and contract['cap']==512 and contract['repeat']==0
         if manifest is None:manifest=contract['manifest_sha256']
@@ -30,6 +31,7 @@ def select(runs,steps):
         ar_measured=json.loads(ar.with_suffix('.summary.json').read_text())
         assert ar_measured['timing_valid'] and tuple(g['device_name'] for g in ar_measured['gpu_before'])==hardware
         ar_contract=ar_measured['contract']
+        assert ar_contract.get('request_batch_size',1)==1
         assert ar_contract['mode']=='ar'
         ar_config=dict(ar_contract['runtime_config']);ar_config.pop('speculative_config',None)
         assert ar_config==config and ar_contract['manifest_sha256']==manifest

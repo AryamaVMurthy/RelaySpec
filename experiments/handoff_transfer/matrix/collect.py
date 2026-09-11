@@ -27,6 +27,7 @@ def collect(run,baseline):
         assert len(devices)==1, 'Single-GPU latency protocol required'
         if hardware is None:hardware=devices
         assert devices==hardware, 'Unmatched GPU hardware'
+        assert summary['contract'].get('request_batch_size',1)==1, 'Batched throughput cannot enter latency results'
         return summary['contract']
     for repeat in range(3):
         method=run/'measurements'/f'matrix-r{repeat}-w0.jsonl'
