@@ -136,3 +136,13 @@ Full cross fits now have immutable per-architecture/loss/LR directories via
 model-contract files or resume checkpoints. The full initializer hash and data
 index are checked before fitting. This launch script is prepared but unsubmitted;
 its prerequisites are still awaiting the cross decoding gate and data runs.
+
+## Queued full cross pipeline
+
+The cross decoding integration gate31800 passed CE/AUF4/4 exact token+finish
+checks atcap128. Full data collection31806 (node07,4GPU maximum) follows the
+same-family final arrays and paired-feature pilot31803. Assembly31807, original
+and ZIP initializers31808, tuning31809–31814, full fitting31815, baseline
+repetitions31816–31818 and final128/cap2048 array31819 follow with strict gates.
+These submissions supersede earlier notes saying the scripts were unsubmitted.
+Implementation beyond the small decoder gate remains unvalidated on full data.

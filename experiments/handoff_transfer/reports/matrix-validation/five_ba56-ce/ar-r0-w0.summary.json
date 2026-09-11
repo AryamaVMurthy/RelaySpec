@@ -1,0 +1,71 @@
+{
+  "contract": {
+    "family": "q8",
+    "mode": "ar",
+    "manifest_sha256": "702907a20441ea8fc68af39c15dbddc607ad52ba7f4a2ff0a939f2cb2629c2de",
+    "count": 32,
+    "cap": 512,
+    "worker_index": 0,
+    "workers": 1,
+    "repeat": 0,
+    "export_sha256": null,
+    "runtime_config": {
+      "model": "/scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target",
+      "dtype": "bfloat16",
+      "max_model_len": 5120,
+      "max_num_seqs": 8,
+      "max_num_batched_tokens": 8192,
+      "gpu_memory_utilization": 0.8,
+      "enable_prefix_caching": false,
+      "generation_config": "vllm",
+      "async_scheduling": false,
+      "seed": 0,
+      "disable_log_stats": false,
+      "worker_extension_cls": "experiments.auf_vllm.family_metrics.FamilyMetricsWorker",
+      "compilation_config": {
+        "mode": 0,
+        "cudagraph_mode": "FULL_DECODE_ONLY"
+      }
+    }
+  },
+  "setup_seconds": 13.254217248875648,
+  "warmup_seconds": 83.49981833109632,
+  "asset_checks": [
+    {
+      "passed": true,
+      "checks": [
+        "target_embedding",
+        "target_head"
+      ],
+      "verification": "matrix shape and deterministic samples; full norm vector",
+      "draft_projections": null,
+      "normal_projection": null,
+      "target_adapters": null
+    }
+  ],
+  "gpu_before": [
+    {
+      "jit_events": 0,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "4d825216-3c4e-c5a8-972f-06cc316c634c",
+      "allocated": 37192759296,
+      "reserved": 37209767936,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "gpu_after": [
+    {
+      "jit_events": 0,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "4d825216-3c4e-c5a8-972f-06cc316c634c",
+      "allocated": 37192759296,
+      "reserved": 37209767936,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "job_id": "31785",
+  "timing_valid": true,
+  "timing_contract": "per-request generate wall; compilation-affected request retried once, cold time retained; prefix cache off"
+}

@@ -47,7 +47,7 @@ if [ "$EVAL_SCOPE" = screen ]; then
  "$study_python" -m experiments.auf_vllm.family_benchmark --family cross --target-path "$target" --models "$study/models" --data "$data" "${extra[@]}" --mode matrix --count 32 --cap 512 --out "$out"
  "$study_python" -m experiments.auf_vllm.compare_outputs --ar "$out/ar-r0-w0.jsonl" --method "$out/matrix-r0-w0.jsonl" --out "$out/comparison.json" --expected-count 32 --require-exact
 elif [ "$EVAL_SCOPE" = final ]; then
- data="$base/evaluation"
+ data="$base/evaluation-$SLURM_JOB_ID"
  "$study_python" -m experiments.auf_vllm.prepare_family_benchmark --family cross --target-path "$target" --models "$study/models" --manifest "$study/manifests/dev.jsonl" --out "$data"
  out="$base/measurements"
  if [ "$MODE" = matrix ]; then test "$TRAIN_STEPS" = 2000;out="$run/measurements";fi

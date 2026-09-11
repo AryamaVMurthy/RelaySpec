@@ -1,0 +1,85 @@
+{
+  "contract": {
+    "family": "cross",
+    "mode": "matrix",
+    "manifest_sha256": "1bcf0c62c3d27923acdecce0383dcf8adb1b71464025a7ac3225b5d2f0435fa9",
+    "count": 4,
+    "cap": 128,
+    "worker_index": 0,
+    "workers": 1,
+    "repeat": 0,
+    "export_sha256": "7214cf54f1af5534e2e51a21005fac6b2959475f66195626c65be5fd6e07238d",
+    "runtime_config": {
+      "model": "/scratch/aryama.murthy/relayspec-auf-20260911/models/llama8-source",
+      "dtype": "bfloat16",
+      "max_model_len": 5120,
+      "max_num_seqs": 8,
+      "max_num_batched_tokens": 8192,
+      "gpu_memory_utilization": 0.8,
+      "enable_prefix_caching": false,
+      "generation_config": "vllm",
+      "async_scheduling": false,
+      "seed": 0,
+      "disable_log_stats": false,
+      "worker_extension_cls": "experiments.auf_vllm.family_metrics.FamilyMetricsWorker",
+      "compilation_config": {
+        "mode": 0,
+        "cudagraph_mode": "FULL_DECODE_ONLY"
+      },
+      "speculative_config": {
+        "method": "dflash",
+        "model": "/scratch/aryama.murthy/handoff-transfer-20260911/anchors512/cross/pilot16/cross-fits/five_maps-ce/export",
+        "num_speculative_tokens": 15
+      }
+    }
+  },
+  "setup_seconds": 17.093139029107988,
+  "warmup_seconds": 16.380822950042784,
+  "asset_checks": [
+    {
+      "passed": true,
+      "checks": [
+        "target_embedding",
+        "target_head",
+        "draft_embed_tokens.weight",
+        "draft_lm_head.weight",
+        "draft_fc.weight",
+        "draft_hidden_norm.weight"
+      ],
+      "verification": "matrix shape and deterministic samples; full norm vector",
+      "draft_projections": {
+        "passed": true,
+        "projection_elements_verified": 504627200,
+        "full_tensor_equality": true,
+        "fused_context_kv_verified": true
+      },
+      "normal_projection": null,
+      "target_adapters": null
+    }
+  ],
+  "gpu_before": [
+    {
+      "jit_events": 5,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "572dc83a-20be-00e6-4cb7-aeb018a03fb6",
+      "allocated": 36999628288,
+      "reserved": 37165727744,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "gpu_after": [
+    {
+      "jit_events": 5,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "572dc83a-20be-00e6-4cb7-aeb018a03fb6",
+      "allocated": 36999628288,
+      "reserved": 37165727744,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "job_id": "31800",
+  "timing_valid": true,
+  "timing_contract": "per-request generate wall; compilation-affected request retried once, cold time retained; prefix cache off"
+}

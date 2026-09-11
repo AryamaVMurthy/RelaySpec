@@ -499,3 +499,19 @@ Llama normal job31581 completed. Cross gate31777 failed during synthetic
 vLLM non-greedy sampler warmup; explicit warmup-only handling added and31800
 resubmitted. Real requests remain greedy-only and target verified. Node06 has
 2.1TB free at check; node07 has11TB. Next routine check not before02:51:02.
+
+## 2026-09-12 02:51 IST
+
+Four GPUs actively fitting initial cells:31771_0 onnode07 and31772_0 onnode06,
+two each. Cross gate31800 passed both CE/AUF4/4 token+finish checks,cap128.
+Pilot TPS:AR24.69,CE29.20,AUF30.33; these are two-update integration results.
+Qwen fiveBA CE100-update screen:146.03TPS,5.953×AR,32/32 exact,cap512,
+versus AUF149.08TPS/6.069×AR. No normal-RelaySpec gain established yet.
+
+Cross target and references staged onnode07. Paired-feature pilot31803 follows
+Qwen initial fits. Cross full pipeline31806–31819 queued after same-family finals,
+with at most4 GPUs onnode07 and strict stage checks. Additional old baseline
+pools31606/31607 remain held to prevent overlap. Broad grid fitting is substantial:
+Qwen39600 optimizer updates at observed~3.4sec/update implies~37hours on its
+two-GPU lane before evaluation; this is an extrapolation, not a full-study ETA.
+Next routine poll not before03:11:10IST.
