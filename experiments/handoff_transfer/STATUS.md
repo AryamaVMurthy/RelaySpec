@@ -1,5 +1,12 @@
 ## Verified fit and scaling preparation update
 
+Frozen workload development arrays31659(Q8),31660(Q14),31661(Llama) queued
+serially after both main pools. Each4workloads x3timing repeats,128/cap2048,
+AR/normal/ZIP/BA/five plus Q8native; all full token/finish checks mandatory.
+Small-data gate31608 now waits for31661 so workload breadth precedes scaling;
+data-preparation chain can use2 GPUs alongside workloads'2,total<=4.
+Confirmation split remains reserved. No old-loss workload arrays released.
+
 Prepared standalone Transformers runner/final script for Q8 and Llama. Uses
 pinned official DFlash plus existing verified relay generator,folded exports,
 normal-input RMS only for normal arm,and its own synchronized AR reference.

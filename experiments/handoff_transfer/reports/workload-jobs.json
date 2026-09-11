@@ -1,0 +1,19 @@
+{
+  "jobs": [
+    {"job_id": "31659", "family": "q8", "node": "node07", "dependency": "afterok:31606:31607"},
+    {"job_id": "31660", "family": "q14", "node": "node06", "dependency": "afterok:31659"},
+    {"job_id": "31661", "family": "llama", "node": "node06", "dependency": "afterok:31660"}
+  ],
+  "array_each": "0-11%2",
+  "workloads": ["math", "gsm", "code", "chat"],
+  "split": "development",
+  "requests": 128,
+  "output_cap": 2048,
+  "repetitions": 3,
+  "methods": ["ar", "normal", "zip", "handoff-r56", "handoff-five"],
+  "q8_extra": "native",
+  "next_small_data_fit_31608_dependency": "afterok:31661",
+  "gpu_budget": "Two workload GPUs plus at most two data-preparation GPUs",
+  "confirmation": "Reserved; no confirmation runs submitted",
+  "status_at_submission": "pending"
+}
