@@ -123,3 +123,10 @@ trainer has syntax validation and data-loader tests but has NOT passed a GPU
 full-data run. The paired source-feature cache and full-data initializers remain
 the prerequisite implementation work. Chunk-shuffled record order keeps the
 metadata cache bounded while visiting every record once per epoch.
+
+Full cross initializers are now implemented through`cross_initializers.sbatch`:
+ZIP feature loss and original normalized RelaySpec both consume the same paired
+features and equal-record weights. The original normalized interface uses the
+Llama target RMSNorm epsilon and frozen Qwen source output norm. These are
+implemented controls, not completed measurements; the GPU gate, data capture,
+initializer fitting, training and full evaluations must still pass.

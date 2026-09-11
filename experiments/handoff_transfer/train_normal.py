@@ -31,7 +31,17 @@ def main(a):
     native_config=json.loads((native/'config.json').read_text())
     target_config=json.loads((a.target/'config.json').read_text())
     weights=load_file(str(native/'model.safetensors'))
-    if a.family=='q8':
+    cross_total=None
+    if a.family=='cross':
+        from experiments.handoff_transfer.cross.paired_batches import paired_index,batches as cross_batches
+        from experiments.handoff_transfer.matrix.prepare import digest
+        index_path=Path(transfer['full_data_index_path'])
+        assert digest(index_path)==transfer['full_data_index_sha256']
+        items=paired_index(index_path)
+        selected=[{'group_id':item['group_id']} for item in items]
+        cross_total=sum(item['positions'] for item in items)
+        iterator=lambda seed:cross_batches(items,2048,seed)
+    elif a.family=='q8':
         sys.path.insert(0,str(Path(__file__).parents[1]/'auf_vllm/runtime_zip'))
         from data import CACHE,rows,pairs,batches
         assert json.loads((CACHE/'manifest.json').read_text())['complete']
@@ -46,7 +56,7 @@ def main(a):
         selected=records.rows
         iterator=lambda seed:paired_batches(records,seed)
     assert len(selected)==4096 and len({r['group_id'] for r in selected})==4096
-    total=sum(len(positions(len(r['full_ids']),len(r['prompt_token_ids']),r['group_id'])) for r in selected)
+    total=cross_total if cross_total is not None else sum(len(positions(len(r['full_ids']),len(r['prompt_token_ids']),r['group_id'])) for r in selected)
     torch.manual_seed(a.seed)
     model=NormalInterface(weights['fc.weight'],weights['hidden_norm.weight'],transfer['input_width']//5,
                           target_config['rms_norm_eps'],native_config['rms_norm_eps']).cuda()
@@ -58,7 +68,7 @@ def main(a):
       'output_eps':native_config['rms_norm_eps'],'trainable_parameters':sum(p.numel() for p in model.parameters()),
       'objective':'normal RelaySpec normalized context relative_interface_mse; equal-record weighting',
       'initialization':'original random nn.Linear; not ZIP warm-start','base_export_sha256':transfer['base_sha256'],
-      'feature_manifests':transfer['feature_manifests'],'sampler':'same deterministic stratified25% positions and equal-record masses as ZIP',
+      'feature_manifests':transfer['feature_manifests'],'sampler':'same deterministic stratified25% positions and equal-record masses as ZIP; cross uses only verified shared boundaries' if a.family=='cross' else 'same deterministic stratified25% positions and equal-record masses as ZIP',
       'optimizer':'AdamW betas.9/.999 eps1e-8 weight_decay0 clip1, ZIP warmup/cosine'}
     checkpoint=out/'resume.pt';step=0;first=0;history=[]
     if checkpoint.exists():
@@ -103,8 +113,11 @@ def main(a):
     write(out/'summary.json',{'status':'complete','contract':contract,'history':history,'training_seconds':sum(r['seconds'] for r in history),
       'peak_cuda_bytes':torch.cuda.max_memory_allocated(),'export_relative_mse':error,'export_sha256':sha(dest/'model.safetensors'),
       'job_id':os.environ.get('SLURM_JOB_ID')})
+    if a.family=='cross':
+        transfer.update(normal_export=str(dest),normal_sha256=sha(dest/'model.safetensors'))
+        write(a.root/'transfer.json',transfer)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--family',choices=['q8','q14','llama'],required=True)
+    p=argparse.ArgumentParser();p.add_argument('--family',choices=['q8','q14','llama','cross'],required=True)
     p.add_argument('--root',type=Path,required=True);p.add_argument('--study',type=Path,required=True);p.add_argument('--target',type=Path,required=True)
     p.add_argument('--epochs',type=int,default=3);p.add_argument('--seed',type=int,default=42);p.add_argument('--lr',type=float,default=1e-3);main(p.parse_args())

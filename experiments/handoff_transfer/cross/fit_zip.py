@@ -60,7 +60,7 @@ def main(args):
     write(args.out/'transfer.json',dict(status='complete',family='cross',target_adapters=None,input_width=20480,
         draft=str(native),base_export=str(export),base_sha256=digest(export/'model.safetensors'),
         base_training_epochs=3,records=4096,initializer_records=4096,map_checkpoint=str(resume),
-        full_data_index_sha256=digest(args.index),scope='full cross-family ZIP initializer; no decoding claim'))
+        full_data_index_sha256=digest(args.index),full_data_index_path=str(args.index),feature_manifests={str(args.index):digest(args.index)},scope='full cross-family ZIP initializer; no decoding claim'))
     write(args.out/'summary.json',dict(status='feature_fit_complete',contract=contract,history=history,
         steps=step,checkpoint_sha256=digest(resume),export_sha256=digest(export/'model.safetensors'),
         frozen_non_fc_exact=True,training_seconds=sum(h['seconds'] for h in history)))
