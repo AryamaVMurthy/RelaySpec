@@ -1,5 +1,13 @@
 ## Verified fit and scaling preparation update
 
+First-pass paired request analysis:BA faster91/128,5k paired bootstrap ratio
+interval[1.0202,1.0342];five-map faster30/128,interval[0.9431,0.9603]. These
+exclude seed/repeated-timing uncertainty. Mean accepted draft tokens per
+verification normal6.1919,BA6.3885,five5.8353; measured total request wall
+per verification about41.5ms for all (includes prefill,not kernel latency).
+This is consistent with acceptance driving the speed difference,not proof
+of a causal mechanism. Source hashes,report and viewed figure archived.
+
 FIRST COMPLETE Q8 AUF128/cap2048 PASS (repeat0):BA177.5331TPS,+2.7004%
 versus normal172.8651TPS;five-map164.4955TPS,-4.8417%. Both128/128 full
 token and finish matches to normal,122,768 output tokens. Common runtime and
