@@ -1,5 +1,10 @@
 ## Verified fit and scaling preparation update
 
+Capacity collector31644 queued after31643. It retains every declared rank,
+all timing repetitions,trainable parameter counts and fitting costs; compares
+against matched AR and primary rank56,checks common runtime/request manifests,
+and fails on token/finish disagreement. Capacity remains pending runtime work.
+
 Capacity evaluation31635 follows rank8 fit31634,with128/cap2048/3repetitions
 and full token/finish checks. Ranks16/32/128/256 fits/evals31636–31643 form
 a serial chain after successful rank8 evaluation. Rank56 reuses the primary
