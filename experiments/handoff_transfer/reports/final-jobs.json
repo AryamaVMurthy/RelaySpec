@@ -1,0 +1,187 @@
+{
+  "status": "submitted",
+  "jobs": [
+    {
+      "stage": "freeze",
+      "family": "q8",
+      "node": "node07",
+      "job_id": "31687",
+      "dependencies": [
+        "31575",
+        "31576",
+        "31577",
+        "31664",
+        "31665",
+        "31666",
+        "31630",
+        "31644",
+        "31657",
+        "31667",
+        "31668",
+        "31673",
+        "31674",
+        "31679",
+        "31684",
+        "31671"
+      ],
+      "array": null
+    },
+    {
+      "stage": "freeze",
+      "family": "q14",
+      "node": "node06",
+      "job_id": "31688",
+      "dependencies": [
+        "31575",
+        "31576",
+        "31577",
+        "31664",
+        "31665",
+        "31666",
+        "31630",
+        "31644",
+        "31657",
+        "31667",
+        "31668",
+        "31673",
+        "31674",
+        "31679",
+        "31684",
+        "31671"
+      ],
+      "array": null
+    },
+    {
+      "stage": "freeze",
+      "family": "llama",
+      "node": "node06",
+      "job_id": "31689",
+      "dependencies": [
+        "31575",
+        "31576",
+        "31577",
+        "31664",
+        "31665",
+        "31666",
+        "31630",
+        "31644",
+        "31657",
+        "31667",
+        "31668",
+        "31673",
+        "31674",
+        "31679",
+        "31684",
+        "31671"
+      ],
+      "array": null
+    },
+    {
+      "stage": "confirmation",
+      "family": "q8",
+      "node": "node07",
+      "job_id": "31690",
+      "dependencies": [
+        "31687",
+        "31688",
+        "31689"
+      ],
+      "array": "0-11%2"
+    },
+    {
+      "stage": "collect_confirmation",
+      "family": "q8",
+      "node": "node07",
+      "job_id": "31691",
+      "dependencies": [
+        "31690"
+      ],
+      "array": null
+    },
+    {
+      "stage": "confirmation",
+      "family": "q14",
+      "node": "node06",
+      "job_id": "31692",
+      "dependencies": [
+        "31690",
+        "31688"
+      ],
+      "array": "0-11%2"
+    },
+    {
+      "stage": "collect_confirmation",
+      "family": "q14",
+      "node": "node06",
+      "job_id": "31693",
+      "dependencies": [
+        "31692"
+      ],
+      "array": null
+    },
+    {
+      "stage": "confirmation",
+      "family": "llama",
+      "node": "node06",
+      "job_id": "31694",
+      "dependencies": [
+        "31692",
+        "31689"
+      ],
+      "array": "0-11%2"
+    },
+    {
+      "stage": "collect_confirmation",
+      "family": "llama",
+      "node": "node06",
+      "job_id": "31695",
+      "dependencies": [
+        "31694"
+      ],
+      "array": null
+    },
+    {
+      "stage": "transformers_last",
+      "family": "q8",
+      "node": "node07",
+      "job_id": "31696",
+      "dependencies": [
+        "31691",
+        "31693",
+        "31695"
+      ],
+      "array": null
+    },
+    {
+      "stage": "transformers_last",
+      "family": "llama",
+      "node": "node06",
+      "job_id": "31697",
+      "dependencies": [
+        "31691",
+        "31693",
+        "31695"
+      ],
+      "array": null
+    }
+  ],
+  "prerequisites": [
+    "31575",
+    "31576",
+    "31577",
+    "31664",
+    "31665",
+    "31666",
+    "31630",
+    "31644",
+    "31657",
+    "31667",
+    "31668",
+    "31673",
+    "31674",
+    "31679",
+    "31684",
+    "31671"
+  ],
+  "gpu_schedule": "Confirmation families serialized, array maximum2 GPUs. Final two Transformers jobs use one GPU each. All earlier experiment/data lanes must complete first."
+}
