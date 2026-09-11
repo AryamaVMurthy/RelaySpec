@@ -1,3 +1,7 @@
+## 2026-09-12: final Transformers result collection queued
+
+CPUcollectors31721(Q8 after31696)/31722(Llama after31697) now summarize both gate4/cap128 and full128/cap2048 standalone Transformers outputs. Require correct family/mode/repetition, backend/runtime consistency, identical primary checkpoint hashes/manifests, and full token/finish equality to the Transformers AR baseline. Report one timing repetition and do not compare raw TPS between backends. Synthetic test validates successful collection and rejects checkpoint mixups. Scripts syntax checked; actual Transformers runs remain pending at the end of the queue. LlamaBA is still in its decoding gate without reported failure at last check.
+
 ## 2026-09-12: complete Q14 fitting cost comparison
 
 Archived Q14 ZIP fitting summary and generalized measured cost ledger. Normal1115.416s=18.59min, ZIP1137.869s=18.96min, ZIP+AUFBA1845.847s=30.76min/0.7094GPUh, ZIP+AUFfive1909.900s=31.83min/0.7450GPUh. BA continuation trains1,576,960params but preceding ZIP trains65,536,000; ledger explicitly counts both phases and excludes rollout/capture/packing/loading/gates/queue/evaluation. Existing Q8 rows and evidence hashes reproduced exactly after generalization. LlamaBA two-update training gate completed1.4235s; export/decoding gate still ongoing when checked.

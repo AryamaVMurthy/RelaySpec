@@ -183,5 +183,17 @@
     "31684",
     "31671"
   ],
-  "gpu_schedule": "Confirmation families serialized, array maximum2 GPUs. Final two Transformers jobs use one GPU each. All earlier experiment/data lanes must complete first."
+  "gpu_schedule": "Confirmation families serialized, array maximum2 GPUs. Final two Transformers jobs use one GPU each. All earlier experiment/data lanes must complete first.",
+  "transformers_collectors": [
+    {
+      "family": "q8",
+      "job_id": "31721",
+      "dependency": "afterok:31696"
+    },
+    {
+      "family": "llama",
+      "job_id": "31722",
+      "dependency": "afterok:31697"
+    }
+  ]
 }
