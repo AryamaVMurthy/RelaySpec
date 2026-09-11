@@ -5,7 +5,7 @@ from experiments.auf_vllm.compare_outputs import compare
 from experiments.handoff_transfer.matrix.prepare import digest
 
 def select(runs,steps):
-    candidates=[];identity=None;manifest=None;runtime=None
+    candidates=[];identity=None;manifest=None;runtime=None;hardware=None
     for run in runs:
         cell=json.loads((run/'cell.json').read_text())
         current=(cell['family'],cell['kind'],cell['objective'])
@@ -13,14 +13,24 @@ def select(runs,steps):
         assert current==identity,'Cannot tune across different architecture/loss cells'
         folder=run/f'screen-{steps}'
         path=folder/'matrix-r0-w0.jsonl';ar=folder/'ar-r0-w0.jsonl'
-        contract=json.loads(path.with_suffix('.summary.json').read_text())['contract']
+        measured=json.loads(path.with_suffix('.summary.json').read_text())
+        assert measured['timing_valid']
+        devices=tuple(g['device_name'] for g in measured['gpu_before'])
+        assert len(devices)==1
+        if hardware is None:hardware=devices
+        assert devices==hardware, 'Different tuning GPU hardware'
+        contract=measured['contract']
+        assert contract['mode']=='matrix'
         assert contract['count']==32 and contract['cap']==512 and contract['repeat']==0
         if manifest is None:manifest=contract['manifest_sha256']
         assert contract['manifest_sha256']==manifest,'Different validation prompts'
         config=dict(contract['runtime_config']);config.pop('speculative_config',None)
         if runtime is None:runtime=config
         assert config==runtime,'Different tuning runtime'
-        ar_contract=json.loads(ar.with_suffix('.summary.json').read_text())['contract']
+        ar_measured=json.loads(ar.with_suffix('.summary.json').read_text())
+        assert ar_measured['timing_valid'] and tuple(g['device_name'] for g in ar_measured['gpu_before'])==hardware
+        ar_contract=ar_measured['contract']
+        assert ar_contract['mode']=='ar'
         ar_config=dict(ar_contract['runtime_config']);ar_config.pop('speculative_config',None)
         assert ar_config==config and ar_contract['manifest_sha256']==manifest
         assert ar_contract['count']==32 and ar_contract['cap']==512
@@ -40,7 +50,7 @@ def select(runs,steps):
     assert candidates and len({x['lr'] for x in candidates})==len(candidates)
     ranked=sorted(candidates,key=lambda x:(-x['ar_ratio'],x['lr']))
     return {'scope':'tuning only; not final evaluation','identity':identity,'steps':steps,
-        'manifest_sha256':manifest,'ranking_rule':'descending paired aggregate TPS/AR, lower LR for exact ties',
+        'manifest_sha256':manifest,'gpu_hardware':hardware,'ranking_rule':'descending paired aggregate TPS/AR, lower LR for exact ties',
         'ranked':ranked,'selected_lr':ranked[0]['lr'],'limitations':'best observed candidate at this budget; single timing measurement'}
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--runs',type=Path,nargs='+',required=True)

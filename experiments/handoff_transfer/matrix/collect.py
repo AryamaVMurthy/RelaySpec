@@ -13,12 +13,27 @@ def collect(run,baseline):
     assert fit['optimizer_steps']==2000 and fit['processed_examples']==16000
     assert fit['anchors_per_example']==512 and fit['objective']==cell['objective']
     assert verification['status']=='passed' and verification['export_sha256']==digest(export)
+    transfer=json.loads((run/'transfer.json').read_text())
+    normal=Path(transfer.get('normal_export',str(baseline/'normal/export')))
+    control_hashes={'normal':digest(normal/'model.safetensors'),'zip':transfer['base_sha256']}
+    assert digest(Path(transfer['base_export'])/'model.safetensors')==control_hashes['zip']
     results=[];sources={};controls={'normal':[],'zip':[]}
+    hardware=None
+    def checked_summary(path):
+        nonlocal hardware
+        summary=json.loads(path.with_suffix('.summary.json').read_text())
+        assert summary['timing_valid'], 'Profiled run cannot supply timing'
+        devices=tuple(g['device_name'] for g in summary['gpu_before'])
+        assert len(devices)==1, 'Single-GPU latency protocol required'
+        if hardware is None:hardware=devices
+        assert devices==hardware, 'Unmatched GPU hardware'
+        return summary['contract']
     for repeat in range(3):
         method=run/'measurements'/f'matrix-r{repeat}-w0.jsonl'
         ar=baseline/'measurements'/f'ar-r{repeat}-w0.jsonl'
-        m=json.loads(method.with_suffix('.summary.json').read_text())['contract']
-        a=json.loads(ar.with_suffix('.summary.json').read_text())['contract']
+        m=checked_summary(method)
+        a=checked_summary(ar)
+        assert m['mode']=='matrix' and a['mode']=='ar'
         assert m['count']==a['count']==128 and m['cap']==a['cap']==2048
         assert m['repeat']==a['repeat']==repeat and m['family']==a['family']==cell['family']
         assert m['manifest_sha256']==a['manifest_sha256']
@@ -31,7 +46,8 @@ def collect(run,baseline):
         results.append(result)
         for control in controls:
             path=baseline/'measurements'/f'{control}-r{repeat}-w0.jsonl'
-            c=json.loads(path.with_suffix('.summary.json').read_text())['contract']
+            c=checked_summary(path)
+            assert c['mode']==control and c['export_sha256']==control_hashes[control], 'Wrong control checkpoint'
             assert c['count']==128 and c['cap']==2048 and c['repeat']==repeat
             assert c['manifest_sha256']==m['manifest_sha256'] and c['family']==cell['family']
             runtime=dict(c['runtime_config']);runtime.pop('speculative_config',None)
@@ -47,7 +63,7 @@ def collect(run,baseline):
         'repeats':results,'mean_tps':statistics.mean(tps),'timing_std_tps':statistics.stdev(tps),
         'mean_paired_ar_speedup':statistics.mean(r['throughput_ratio'] for r in results),
         'uncertainty_scope':'three timing repetitions, one fitting seed; not fitting-seed uncertainty',
-        'sources':sources}
+        'control_export_sha256':control_hashes,'gpu_hardware':hardware,'sources':sources}
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--run',type=Path,required=True);p.add_argument('--baseline',type=Path,required=True)
