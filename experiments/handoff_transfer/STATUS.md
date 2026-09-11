@@ -1,5 +1,13 @@
 ## Verified fit and scaling preparation update
 
+GPU profiling arrays31632(Q8,node07) and31633(Llama,node06),eachmax1GPU,
+queued after31629. AR/normal/ZIP/BA/five-map,4 requests capped2048; separate
+instrumented outputs have timing_valid=false. Traces limited to64 engine
+iterations plus1sGPU telemetry; neither full-run SM occupancy nor valid TPS.
+Combined profile lanes plus possible2GPU capture remain within4GPUs.
+Q14 normal31580 dependency is cleared but Slurm reportsAssocGrpGRES; do not
+restart or bypass account limits. Main active jobs continue advancing.
+
 Full small-sweep CPU collector31630 scheduled after31629. It requires all
 nineN16–4096 points,128 exact outputs/finishes across3 timing repetitions,
 verified1,024-update/8,192-presentation AUF fits,and retains training costs.
