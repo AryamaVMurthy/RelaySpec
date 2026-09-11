@@ -42,3 +42,21 @@ def test_reordered_outputs_rejected(tmp_path):
     engine=Engine(reverse=True)
     with pytest.raises(AssertionError):
         bm.measure(engine,selected(4),None,tmp_path/'rows.jsonl',4,engine.counters)
+
+def test_comparison_requires_matched_batch_protocol(tmp_path):
+    from experiments.auf_vllm.compare_outputs import compare
+    engine=Engine();a=tmp_path/'ar.jsonl';b=tmp_path/'method.jsonl'
+    batches=bm.measure(engine,selected(4),None,a,4,engine.counters)
+    b.write_text(a.read_text())
+    summary=dict(timing_valid=True,contract=dict(cap=2048,workers=1,request_batch_size=4),batch_measurements=batches)
+    for path in (a,b):path.with_suffix('.summary.json').write_text(json.dumps(summary))
+    result=compare([a],[b])
+    assert result['exact_matches']==4 and result['throughput_ratio']==1
+    assert result['request_batch_size']==4 and 'not individual latency' in result['ratio_note']
+    summary['contract']['request_batch_size']=8
+    b.with_suffix('.summary.json').write_text(json.dumps(summary))
+    with pytest.raises(AssertionError,match='Unequal serving batch sizes'):compare([a],[b])
+    summary['contract']['request_batch_size']=4
+    summary['batch_measurements'][0]['wall_seconds']*=2
+    b.with_suffix('.summary.json').write_text(json.dumps(summary))
+    with pytest.raises(AssertionError):compare([a],[b])
