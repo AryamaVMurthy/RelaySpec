@@ -69,10 +69,15 @@ def main(args):
     else:
         write(contract_path,contract)
     train=Records(args.data,count=args.records)
-    valid=Records(args.validation_data,split=args.validation_split)
-    if not args.exploratory and len(valid) < 1024:
+    if args.defer_validation:
+        valid=None
+        validation_rows=json.loads((args.validation_data/"dev-prompts.json").read_text())
+    else:
+        valid=Records(args.validation_data,split=args.validation_split)
+        validation_rows=valid.rows
+    if not args.exploratory and len(validation_rows) < 1024:
         raise ValueError("Main fitting requires the separate 1024-record offline validation manifest")
-    assert not ({x["group_id"] for x in train.rows} & {x["group_id"] for x in valid.rows})
+    assert not ({x["group_id"] for x in train.rows} & {x["group_id"] for x in validation_rows})
     draft,embedding=load_models(Path(os.environ["TRANSFER_WORK"]))
     torch.manual_seed(args.seed)
     mapper=LayerContextMapper(draft.fc.weight,draft.hidden_norm.weight).to("cuda")
@@ -140,7 +145,7 @@ def main(args):
                "active_tokens":total_active,"valid_tokens":total_valid,
                "mean_update_loss":loss_sum/math.ceil(len(train)/args.logical_records),
                "training_seconds":time.perf_counter()-epoch_start,
-               "validation":validation(draft,embedding,mapper,valid)}
+               "validation":validation(draft,embedding,mapper,valid) if valid is not None else {"status":"pending_offline_evaluation"}}
         history.append(event)
         temporary=resume.with_suffix(".part")
         torch.save({"contract":contract,"mapper":mapper.state_dict(),"optimizer":optimizer.state_dict(),
@@ -152,7 +157,7 @@ def main(args):
     assert all(p.grad is None and p._version == frozen_versions[name] for name,p in draft.named_parameters())
     write(args.out/"summary.json",{"contract":contract,"history":history,"job_id":os.environ.get("SLURM_JOB_ID"),
           "seconds_this_invocation":time.perf_counter()-invocation,"peak_allocated_bytes":torch.cuda.max_memory_allocated(),
-          "checkpoint_sha256":sha(resume),"status":"complete"})
+          "checkpoint_sha256":sha(resume),"status":"training_complete_validation_pending" if valid is None else "complete"})
 
 
 if __name__ == "__main__":
@@ -169,4 +174,5 @@ if __name__ == "__main__":
     parser.add_argument("--seed",type=int,default=42)
     parser.add_argument("--lr",type=float,default=1e-4)
     parser.add_argument("--exploratory",action="store_true")
+    parser.add_argument("--defer-validation",action="store_true",help="Fit fixed epochs while separately reserved validation labels are prepared")
     main(parser.parse_args())

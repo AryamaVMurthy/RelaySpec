@@ -34,5 +34,5 @@ cd "$study_snapshot"
 if [ "$LOSS" = zip ]; then
   "$study_python" -u -m experiments.auf_vllm.train_zip --records 4096 --epochs 3 --seed 42 --lr "$LR" --manifest "$study_data/train.json" --out "$study_out"
 else
-  "$study_python" -u -m experiments.auf_vllm.train_tokens --objective "$LOSS" --records 4096 --epochs 3 --seed 42 --lr "$LR" --microbatch-records 4 --logical-records 32 --data "$study_data" --validation-data "$study_valid" --out "$study_out"
+  "$study_python" -u -m experiments.auf_vllm.train_tokens --objective "$LOSS" --records 4096 --epochs 3 --seed 42 --lr "$LR" --microbatch-records 4 --logical-records 32 --data "$study_data" --validation-data "$study_valid" --defer-validation --out "$study_out"
 fi
