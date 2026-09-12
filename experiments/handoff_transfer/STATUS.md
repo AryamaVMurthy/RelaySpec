@@ -685,3 +685,11 @@ each, approximately six minutes elapsed. Remaining23 tasks per family
 are queued. No failures observed in this check. Final128x2048 evaluations
 remain pending; screen artifacts and selected learning rates still need
 archival and detailed review. Next routine check09:41:45IST.
+
+## 2026-09-12 09:41:45 IST
+
+First500-update fits completed successfully: Qwen31788_0 in28m50s and
+Llama31789_0 in20m56s (Slurm wall time, including wrapper work).
+Task1 is running in each family, two GPUs each on node07/node06;
+22 further tasks per family pending. No failures observed. Final
+128x2048 evaluations remain pending. Next routine check10:06:45IST.
