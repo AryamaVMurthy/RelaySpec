@@ -58,3 +58,40 @@ subsequent token-loss fit is one epoch in each case. Original-interface CE uses
 its own original-MSE initializer. Current audit/report output now exposes this
 distinction. Any later data-efficiency accounting must include initializer data
 and calibration cost, not only records seen by the refinement stage.
+
+## Additional appendix protocols checked
+
+- **Task complexity** (line1834): retrospective stratification of the same128
+  MATH development requests by benchmark difficulty, subject and input token
+  length. Groups do not depend on generated length, success or latency. These
+  plots are analyses of existing outputs, not new training cells.
+- **Acceptance and numerical agreement** (line2279): historical progress
+  includes target-supplied positions; current vLLM accepted-proposal counters
+  exclude them. The new paper must label these separately. The eight-prompt
+  BF16 diagnostic was selected for early disagreements and does not establish
+  the cause of every mismatch.
+- **Sampling** (line2334): original DFlash and EAGLE maps; temperatures0.6/1.0,
+  32 exposed GSM8K questions, two sampling seed bases, three methods,768 total
+  outputs, cap2048. Released DFlash uses greedy proposals while its target
+  samples. Earlier mismatched-proposal-policy runs were superseded. The
+  current one-seed study constraint must be applied explicitly in the later
+  plan, rather than copying historical seed replication without accounting.
+- **Source-removal memory** (line2630): isolated fresh-process EAGLE8B/14B,
+  eight paired prompts per target, RTX6000 Ada. Peak allocated memory is
+  distinct from reserved memory and from total vLLM preallocated KV capacity.
+- **Selective capture** (line2661): full hidden-state return versus selective
+  taps, two/five-tap frozen maps, constructed long inputs, cap64, two reversed
+  executions per input. A release-prefill control isolates buffer lifetime.
+  This is a memory implementation study, not training-record scaling or
+  long-context quality evidence. The accompanying code/dialogue checks use
+  eight code requests and eight two-turn conversations.
+- **GB10 replication** (line3037): frozen4096-record DFlash4B→8B map,32 exposed
+  requests (eight MATH/GSM8K/HumanEval/MT-first-turn each), batch1, cap2048,
+  two rotated timing passes. Four methods: AR/source/native/RelaySpec.
+  Separate fresh-process memory uses four requests; Nsight Systems uses one
+  warmed MATH request cap256; Nsight Compute samples eight filtered kernels
+  per conditioning path cap64. Device energy uses one-second power samples.
+  These profiler executions are separate from unprofiled throughput.
+
+These entries document the old evidence only. No historical result becomes an
+AUF result by relabeling it, and this inventory does not launch new experiments.
