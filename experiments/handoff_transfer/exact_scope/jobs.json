@@ -1245,7 +1245,9 @@
     },
     "dependency": 32325,
     "script": "transformers.sbatch",
-    "gpus": 1
+    "gpus": 1,
+    "status": "withdrawn",
+    "reason": "User narrowed active work to single-request seven-method comparison on existing Qwen8 and Llama8 checkpoints; interrupted live jobs and retained prior/partial artifacts"
   },
   {
     "job": 32305,
@@ -1288,7 +1290,9 @@
     ],
     "script": "collect.sbatch",
     "gpus": 0,
-    "dependency_change_reason": "User added native-drafter comparisons; retain corrected standalone jobs and include native pair completion before final audit"
+    "dependency_change_reason": "User added native-drafter comparisons; retain corrected standalone jobs and include native pair completion before final audit",
+    "status": "withdrawn",
+    "reason": "User narrowed active work to single-request seven-method comparison on existing Qwen8 and Llama8 checkpoints; interrupted live jobs and retained prior/partial artifacts"
   },
   {
     "job": 32325,
@@ -1395,9 +1399,9 @@
     "dependency": null,
     "script": "transformers.sbatch",
     "gpus": 1,
-    "status": "submitted",
+    "status": "withdrawn",
     "supersedes": 32305,
-    "reason": "Correct working directory so the archived RelaySpec package is imported; original failed in warmup before evaluation"
+    "reason": "User narrowed active work to single-request seven-method comparison on existing Qwen8 and Llama8 checkpoints; interrupted live jobs and retained prior/partial artifacts"
   },
   {
     "job": 32468,
@@ -1409,9 +1413,9 @@
     "dependency": null,
     "script": "transformers.sbatch",
     "gpus": 1,
-    "status": "submitted",
+    "status": "withdrawn",
     "supersedes": 32306,
-    "reason": "Correct working directory so the archived RelaySpec package is imported; original failed in warmup before evaluation"
+    "reason": "User narrowed active work to single-request seven-method comparison on existing Qwen8 and Llama8 checkpoints; interrupted live jobs and retained prior/partial artifacts"
   },
   {
     "job": 32472,
@@ -1420,7 +1424,31 @@
     "env": {},
     "script": "native_comparison.sbatch",
     "gpus": 1,
+    "status": "withdrawn",
+    "scope": "User-requested native Qwen8/Llama8 comparisons against current five-map AUF; batch128,count128,cap2048,three paired timing passes,no training",
+    "reason": "User narrowed active work to single-request seven-method comparison on existing Qwen8 and Llama8 checkpoints; interrupted live jobs and retained prior/partial artifacts"
+  },
+  {
+    "job": 32473,
+    "name": "single128-seven-methods",
+    "node": "node07",
+    "script": "single_request.sbatch",
+    "gpus": 1,
+    "array": "0-7%4",
+    "env": {},
     "status": "submitted",
-    "scope": "User-requested native Qwen8/Llama8 comparisons against current five-map AUF; batch128,count128,cap2048,three paired timing passes,no training"
+    "scope": "Two target settings,seven methods each,128 requests,cap2048,batch1,one timing pass,four paired shards per target,no retraining"
+  },
+  {
+    "job": 32478,
+    "name": "single128-final-results",
+    "node": "node07",
+    "script": "collect_single_request.sbatch",
+    "gpus": 0,
+    "env": {},
+    "dependency": [
+      32473
+    ],
+    "status": "submitted"
   }
 ]

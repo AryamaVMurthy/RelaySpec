@@ -127,7 +127,8 @@ def main(args):
                         'output_text':result.text,'output_tokens':len(result.token_ids),'prompt_ids':row['prompt_token_ids'],
                         'prompt_tokens':len(row['prompt_token_ids']),'wall_seconds':seconds,'cold_wall_seconds':cold,
                         'finish_reason':result.finish_reason,'verification_iterations':delta('spec_decode_num_drafts'),
-                        'accepted_draft_tokens':delta('spec_decode_num_accepted_tokens'),'timing_valid':not bool(args.profile_dir)}
+                        'accepted_draft_tokens':delta('spec_decode_num_accepted_tokens'),'timing_valid':not bool(args.profile_dir),
+                        'engine_metrics':serial(output.metrics) if output.metrics is not None else None}
                 handle.write(json.dumps(record,default=serial)+'\n');handle.flush()
                 if (index//args.workers+1)%16==0:
                     print(json.dumps({'mode':args.mode,'completed':index//args.workers+1,'last_seconds':seconds}),flush=True)
