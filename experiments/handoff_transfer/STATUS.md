@@ -667,3 +667,11 @@ No Slurm failures observed. Completed task16 Qwen and task3 Llama logs
 confirm32/32 token and finish matches; these are32-request screening
 runs, not final128x2048 benchmarks. Promotions31786/31787 pending.
 Next routine check08:51:45IST.
+
+## 2026-09-12 08:51:45 IST
+
+Validation arrays: Qwen32/36 completed, tasks32/33 running; Llama24/36
+completed, tasks24/25 running. Four GPUs allocated across node07/node06.
+No Slurm failures observed. Promotions31786/31787 pending. These are
+32-request tuning screens; final128x2048 benchmarks remain pending.
+Next routine check09:16:45IST.
