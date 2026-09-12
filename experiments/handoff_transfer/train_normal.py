@@ -68,7 +68,7 @@ def main(a):
       'output_eps':native_config['rms_norm_eps'],'trainable_parameters':sum(p.numel() for p in model.parameters()),
       'objective':a.objective,'feature_distribution':('softmax over normalized fused feature coordinates, temperature1, no positional weighting' if a.objective!='relative_mse' else None),
       'initialization':'original random nn.Linear; not ZIP warm-start','base_export_sha256':transfer['base_sha256'],
-      'feature_manifests':transfer['feature_manifests'],'sampler':'same deterministic stratified25% positions and equal-record masses as ZIP; cross uses only verified shared boundaries' if a.family=='cross' else 'same deterministic stratified25% positions and equal-record masses as ZIP',
+      'feature_manifests':transfer['feature_manifests'],'sampler':'same deterministic stratified25% positions and equal-record masses as ZIP; cross uses verified source-token prefixes under native source normalization' if a.family=='cross' else 'same deterministic stratified25% positions and equal-record masses as ZIP',
       'optimizer':'AdamW betas.9/.999 eps1e-8 weight_decay0 clip1, ZIP warmup/cosine'}
     checkpoint=out/'resume.pt';step=0;first=0;history=[]
     if checkpoint.exists():

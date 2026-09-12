@@ -24,7 +24,7 @@ def main(args):
     warm=max(1,int(.05*steps));history=[];step=0;first_epoch=0
     contract=dict(records=4096,epochs=args.epochs,lr=.001,seed=42,position_batch=2048,
         index_sha256=digest(args.index),paired_files_sha256={r['path']:r['sha256'] for r in items},
-        base_sha256=reference['base_sha256'],sampling='25% target strata intersected with exact shared text boundaries',
+        base_sha256=reference['base_sha256'],sampling='25% target strata intersected with exact source-token prefixes under native source normalization',
         weighting='equal total example mass',objective='layer relative MSE + normalized fused-context relative MSE')
     args.out.mkdir(parents=True,exist_ok=True);resume=args.out/'resume.pt'
     if resume.exists():
