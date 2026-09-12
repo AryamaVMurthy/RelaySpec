@@ -15,3 +15,5 @@ Raw results: scratch/handoff-transfer-20260911/optimized-ar128-20260912. Final r
 Validation: Python syntax checks, shell syntax check, and existing pooled-request metric tests passed. Initial live logs confirmed compilation (~33 seconds), full/piecewise graph capture, and one active request.
 
 Reference: https://docs.vllm.ai/en/latest/configuration/optimization/
+
+Completed: all four array tasks and final audit passed. Maximum array elapsed 25m58s. Optimized AR throughput: Qwen 46.1472 TPS, Llama 46.9285 TPS. Exact output agreement with previous invariant execution: Qwen 22/128, Llama 36/128. Results therefore remain a cross-runtime throughput comparison, not an identical-output lossless latency comparison. Final JSON/Markdown reports are in reports/optimized-ar-final.*; local raw archive checksum verified. No optimized speculative reruns were performed.
