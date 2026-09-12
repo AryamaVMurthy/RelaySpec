@@ -1,0 +1,101 @@
+{
+  "status": "pass",
+  "hypothesis": "Replicate two-tap EAGLE behavior and check identical-checkpoint state isolation.",
+  "summary": {
+    "requests": 32,
+    "clusters": 32,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.63086266659191,
+        "throughput_ratio": 0.44022520578640306,
+        "throughput_ci95": [
+          0.41724006009983583,
+          0.4635670271463985
+        ],
+        "request_time_ratio": 0.44022520578640306,
+        "request_time_ci95": [
+          0.41724006009983583,
+          0.4635670271463986
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 18,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 108.84682703902945
+      },
+      "native_target_eagle3": {
+        "tokens_per_second": 91.30733388859201,
+        "throughput_ratio": 1.0681602015623848,
+        "throughput_ci95": [
+          1.0266616466488574,
+          1.112475011539203
+        ],
+        "request_time_ratio": 1.0681602015623846,
+        "request_time_ci95": [
+          1.0266616466488574,
+          1.112475011539203
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.277289836888332,
+        "request_seconds": 44.85948527418077
+      },
+      "relay_base": {
+        "tokens_per_second": 85.48093605719245,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 4.344755970924195,
+        "request_seconds": 47.91711683245376
+      },
+      "relay_duplicate": {
+        "tokens_per_second": 85.51206666281068,
+        "throughput_ratio": 1.0003641818521665,
+        "throughput_ci95": [
+          0.9990697607897199,
+          1.0018584781882258
+        ],
+        "request_time_ratio": 1.0003641818521665,
+        "request_time_ci95": [
+          0.9990697607897199,
+          1.0018584781882256
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 4.344755970924195,
+        "request_seconds": 47.89967264095321
+      },
+      "relay_last2": {
+        "tokens_per_second": 82.29018034495273,
+        "throughput_ratio": 0.9626728969123023,
+        "throughput_ci95": [
+          0.9395825326225373,
+          0.9853217731368136
+        ],
+        "request_time_ratio": 0.9626728969123022,
+        "request_time_ci95": [
+          0.9395825326225372,
+          0.9853217731368137
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 4.155688622754491,
+        "request_seconds": 49.775076234247535
+      }
+    }
+  },
+  "scope": "Exposed development questions at the recorded output cap; exploratory screen, no full-answer quality or confirmatory significance claim.",
+  "duplicate_control": {
+    "status": "pass",
+    "differences": []
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "family": "dflash",
+  "transform": "existing",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt": "b4562dc664748ec2da6e0f1ccac13820bfd0fa9c413a7a3235ebec5f1d84b613"
+  },
+  "config": "configs/autoresearch/20260907/dflash8b-precision-lane2.yaml",
+  "candidates": {},
+  "requests": 8,
+  "max_new_tokens": 512,
+  "include_ar": true,
+  "include_native": false,
+  "hypothesis": "Does within-precision greedy AR agreement improve under full FP32 for the main8B verifier on the same sixteen questions used for the0.6B diagnostic?",
+  "scope": "Eight exposed GSM8K questions per shard, two shards per precision. Same frozen8B dense mapper. FP32 changes all model/mapper execution and kernel dispatch, with TF32 disabled. Numerical diagnostic, not proof of exactness for all prompts."
+}

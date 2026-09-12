@@ -1,0 +1,97 @@
+{
+  "status": "pass",
+  "hypothesis": "Frozen primary: native two-layer distilled interface retains at least95% throughput versus released native on64 new questions.",
+  "summary": {
+    "requests": 16,
+    "clusters": 16,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_dflash": {
+        "tokens_per_second": 169.05334429215208,
+        "throughput_ratio": 1.0077982162542183,
+        "throughput_ci95": [
+          1.0065301870037437,
+          1.008883853959523
+        ],
+        "request_time_ratio": 1.0077982162542183,
+        "request_time_ci95": [
+          1.006530187003744,
+          1.008883853959523
+        ],
+        "mean_output_tokens": 288.125,
+        "token_matches": 16,
+        "progress_per_cycle": 6.261517615176151,
+        "request_seconds": 27.269498981535435
+      },
+      "relay_base": {
+        "tokens_per_second": 167.7452307074814,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 288.125,
+        "token_matches": 16,
+        "progress_per_cycle": 6.261517615176151,
+        "request_seconds": 27.48215243173763
+      },
+      "relay_one": {
+        "tokens_per_second": 145.66984029439718,
+        "throughput_ratio": 0.8683992962424077,
+        "throughput_ci95": [
+          0.8422930464247125,
+          0.8968158469726788
+        ],
+        "request_time_ratio": 0.8683992962424077,
+        "request_time_ci95": [
+          0.8422930464247126,
+          0.8968158469726788
+        ],
+        "mean_output_tokens": 288.125,
+        "token_matches": 16,
+        "progress_per_cycle": 5.4070175438596495,
+        "request_seconds": 31.64690776541829
+      },
+      "relay_svd1536": {
+        "tokens_per_second": 165.28694527754374,
+        "throughput_ratio": 0.985345124749183,
+        "throughput_ci95": [
+          0.9719740087506462,
+          0.9998915690376918
+        ],
+        "request_time_ratio": 0.985345124749183,
+        "request_time_ci95": [
+          0.9719740087506461,
+          0.9998915690376918
+        ],
+        "mean_output_tokens": 288.125,
+        "token_matches": 16,
+        "progress_per_cycle": 6.151797603195739,
+        "request_seconds": 27.89088994450867
+      },
+      "relay_two": {
+        "tokens_per_second": 163.7553261634447,
+        "throughput_ratio": 0.976214497859588,
+        "throughput_ci95": [
+          0.9530906383996636,
+          1.0034551341068891
+        ],
+        "request_time_ratio": 0.976214497859588,
+        "request_time_ci95": [
+          0.9530906383996637,
+          1.0034551341068891
+        ],
+        "mean_output_tokens": 288.125,
+        "token_matches": 16,
+        "progress_per_cycle": 6.0895915678524375,
+        "request_seconds": 28.15175608638674
+      }
+    }
+  },
+  "scope": "Fixed64 questions (reserve sorted positions64:128), four disjoint shards; all candidates fixed before decoding. Two-layer primary; one-layer and SVD1536 secondary descriptive controls. No optional extension, tuning or sample removal."
+}

@@ -1,0 +1,172 @@
+{
+  "methods": {
+    "native_ar": {
+      "decode_seconds": 26.57966002030298,
+      "decode_tokens_per_second": 38.52569969735555,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "mean_acceptance_length": 1.0,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 1.0
+    },
+    "native_target_dflash": {
+      "decode_seconds": 6.928616193588823,
+      "decode_tokens_per_second": 147.79285955361854,
+      "exact_sequence_match_rate": 0.75,
+      "exact_sequence_matches": 6,
+      "mean_acceptance_length": 5.850193846594776,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 3.8362148050425473
+    },
+    "relay_base": {
+      "decode_seconds": 7.532703152857721,
+      "decode_tokens_per_second": 135.94057527828105,
+      "exact_sequence_match_rate": 0.75,
+      "exact_sequence_matches": 6,
+      "mean_acceptance_length": 5.1210311789659615,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 3.5285686268174947
+    },
+    "relay_svd1024": {
+      "decode_seconds": 8.037915915250778,
+      "decode_tokens_per_second": 127.3962070263896,
+      "exact_sequence_match_rate": 0.75,
+      "exact_sequence_matches": 6,
+      "mean_acceptance_length": 4.784824199059131,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 3.3067850299195016
+    },
+    "relay_svd256": {
+      "decode_seconds": 28.17108896980062,
+      "decode_tokens_per_second": 36.34932256604375,
+      "exact_sequence_match_rate": 0.75,
+      "exact_sequence_matches": 6,
+      "mean_acceptance_length": 1.2690972258990605,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 0.9435084333728224
+    },
+    "relay_svd512": {
+      "decode_seconds": 16.058476788923144,
+      "decode_tokens_per_second": 63.766944614967294,
+      "exact_sequence_match_rate": 0.75,
+      "exact_sequence_matches": 6,
+      "mean_acceptance_length": 2.263530543850024,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 1.6551794027337117
+    }
+  },
+  "paired_requests": 8,
+  "pairwise": {
+    "native_target_dflash_vs_native_ar": {
+      "candidate_method": "native_target_dflash",
+      "exact_sequence_match_rate": 0.75,
+      "exact_sequence_matches": 6,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.8362148050425473
+    },
+    "relay_base_vs_native_ar": {
+      "candidate_method": "relay_base",
+      "exact_sequence_match_rate": 0.75,
+      "exact_sequence_matches": 6,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.5285686268174947
+    },
+    "relay_base_vs_native_target_dflash": {
+      "candidate_method": "relay_base",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.9198047570692173
+    },
+    "relay_svd1024_vs_native_ar": {
+      "candidate_method": "relay_svd1024",
+      "exact_sequence_match_rate": 0.75,
+      "exact_sequence_matches": 6,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.3067850299195016
+    },
+    "relay_svd1024_vs_native_target_dflash": {
+      "candidate_method": "relay_svd1024",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.8619916240281613
+    },
+    "relay_svd1024_vs_relay_base": {
+      "candidate_method": "relay_svd1024",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.9371462991501952
+    },
+    "relay_svd1024_vs_relay_svd256": {
+      "candidate_method": "relay_svd1024",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_svd256",
+      "throughput_speedup": 3.5047752759331647
+    },
+    "relay_svd1024_vs_relay_svd512": {
+      "candidate_method": "relay_svd1024",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_svd512",
+      "throughput_speedup": 1.9978408530567628
+    },
+    "relay_svd256_vs_native_ar": {
+      "candidate_method": "relay_svd256",
+      "exact_sequence_match_rate": 0.75,
+      "exact_sequence_matches": 6,
+      "reference_method": "native_ar",
+      "throughput_speedup": 0.9435084333728224
+    },
+    "relay_svd256_vs_native_target_dflash": {
+      "candidate_method": "relay_svd256",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.24594775874714295
+    },
+    "relay_svd256_vs_relay_base": {
+      "candidate_method": "relay_svd256",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.2673912663061329
+    },
+    "relay_svd512_vs_native_ar": {
+      "candidate_method": "relay_svd512",
+      "exact_sequence_match_rate": 0.75,
+      "exact_sequence_matches": 6,
+      "reference_method": "native_ar",
+      "throughput_speedup": 1.6551794027337117
+    },
+    "relay_svd512_vs_native_target_dflash": {
+      "candidate_method": "relay_svd512",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.43146160651849996
+    },
+    "relay_svd512_vs_relay_base": {
+      "candidate_method": "relay_svd512",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.4690795554192069
+    },
+    "relay_svd512_vs_relay_svd256": {
+      "candidate_method": "relay_svd512",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_svd256",
+      "throughput_speedup": 1.7542815137505783
+    }
+  }
+}

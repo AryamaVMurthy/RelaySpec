@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "hypothesis": "Does selective layer capture preserve exact output and acceptance trajectories on code and multi-turn dialogue, for full and two-layer frozen mappers?",
+  "summary": {
+    "requests": 16,
+    "clusters": 16,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 122.37165305541359,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 16,
+        "progress_per_cycle": 4.432671081677705,
+        "request_seconds": 32.81805793847889
+      },
+      "relay_selected": {
+        "tokens_per_second": 122.63659587658567,
+        "throughput_ratio": 1.002165066946118,
+        "throughput_ci95": [
+          0.9994964567867097,
+          1.0062936172164243
+        ],
+        "request_time_ratio": 1.002165066946118,
+        "request_time_ci95": [
+          0.9994964567867096,
+          1.006293617216424
+        ],
+        "mean_output_tokens": 251.0,
+        "token_matches": 16,
+        "progress_per_cycle": 4.432671081677705,
+        "request_seconds": 32.74715814879164
+      }
+    }
+  },
+  "scope": "Eight exposed code requests or eight two-turn dialogue conversations; two repetitions, reversed method order, prompt prefill release in both arms. Engineering correctness, not new quality or speed claims.",
+  "duplicate_control": {
+    "status": "pass",
+    "differences": []
+  }
+}

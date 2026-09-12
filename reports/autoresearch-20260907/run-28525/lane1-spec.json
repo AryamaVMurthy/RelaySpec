@@ -1,0 +1,48 @@
+{
+  "family": "dflash",
+  "transform": "fit_reduced_taps",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt",
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt": "d669e6334a5cc018fb6a70febda5e710cb8033152ecd1152d5bc219b6ef7a643"
+  },
+  "config": "configs/autoresearch/20260907/downscale-dflash-06b-trained-screen.yaml",
+  "trial": {
+    "name": "downscale-taps-7-19",
+    "study": "downscale_depth",
+    "architecture": "dense",
+    "seed": 1729,
+    "steps": 8192,
+    "distinct_examples": 512,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      1024,
+      8192
+    ],
+    "validation_records": 128,
+    "diagnostic_train_records": 256,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": true,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 8192,
+        "presentations": 32768
+      }
+    },
+    "target_layer_ids": [
+      7,
+      19
+    ],
+    "cache_backend": "buffer",
+    "device_cache": false
+  },
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/downscale-full-28448",
+  "pilot_gate": "/home/aryama.murthy/relayspec-autoresearch-w22/outputs/rs-research-w22-28455/batch-gate.json",
+  "requests": 8,
+  "max_new_tokens": 512,
+  "include_ar": false,
+  "include_native": false,
+  "hypothesis": "Does the late-layer conditioning advantage survive downward retargeting from a4B-trained drafter to a0.6B verifier?",
+  "scope": "Eight previously exposed GSM8K requests,512-token cap,512 fitting records and8192updates seed1729. Equal parameter count for three two-layer fits; one-layer boundary has half their parameters. Each worker has paired frozen full-five-layer control. Development mechanism test, not fresh confirmation."
+}

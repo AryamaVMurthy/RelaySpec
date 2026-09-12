@@ -1,0 +1,224 @@
+{
+  "methods": {
+    "native_ar": {
+      "decode_seconds": 19.6169595499523,
+      "decode_tokens_per_second": 52.19973041145869,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "mean_acceptance_length": 1.0,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 1.0
+    },
+    "optimized_source_reuse": {
+      "decode_seconds": 10.571865285281092,
+      "decode_tokens_per_second": 96.86086346802831,
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "mean_acceptance_length": 5.593434671535175,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 1.8555816802985976
+    },
+    "relay_dense_a": {
+      "decode_seconds": 23.90650944970548,
+      "decode_tokens_per_second": 42.833522064536076,
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "mean_acceptance_length": 1.1500752137781018,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 0.8205697946503843
+    },
+    "relay_dense_b": {
+      "decode_seconds": 23.97751223668456,
+      "decode_tokens_per_second": 42.706682406914766,
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "mean_acceptance_length": 1.1500752137781018,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 0.818139903602643
+    },
+    "relay_factor512": {
+      "decode_seconds": 23.624307534191757,
+      "decode_tokens_per_second": 43.34518582260885,
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "mean_acceptance_length": 1.1638699017196938,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 0.8303718329758629
+    },
+    "relay_mlp512": {
+      "decode_seconds": 24.493559701368213,
+      "decode_tokens_per_second": 41.806908121354006,
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "mean_acceptance_length": 1.1208680613637725,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 0.8009027593019276
+    },
+    "relay_mlp512_l2": {
+      "decode_seconds": 24.429735402576625,
+      "decode_tokens_per_second": 41.9161314326801,
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "mean_acceptance_length": 1.1231785573000719,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 0.8029951707083689
+    }
+  },
+  "paired_requests": 8,
+  "pairwise": {
+    "optimized_source_reuse_vs_native_ar": {
+      "candidate_method": "optimized_source_reuse",
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "reference_method": "native_ar",
+      "throughput_speedup": 1.8555816802985976
+    },
+    "relay_dense_a_vs_native_ar": {
+      "candidate_method": "relay_dense_a",
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "reference_method": "native_ar",
+      "throughput_speedup": 0.8205697946503843
+    },
+    "relay_dense_a_vs_optimized_source_reuse": {
+      "candidate_method": "relay_dense_a",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "optimized_source_reuse",
+      "throughput_speedup": 0.4422170165628815
+    },
+    "relay_dense_b_vs_native_ar": {
+      "candidate_method": "relay_dense_b",
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "reference_method": "native_ar",
+      "throughput_speedup": 0.818139903602643
+    },
+    "relay_dense_b_vs_optimized_source_reuse": {
+      "candidate_method": "relay_dense_b",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "optimized_source_reuse",
+      "throughput_speedup": 0.44090751287811225
+    },
+    "relay_dense_b_vs_relay_dense_a": {
+      "candidate_method": "relay_dense_b",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_dense_a",
+      "throughput_speedup": 0.9970387759047644
+    },
+    "relay_dense_b_vs_relay_factor512": {
+      "candidate_method": "relay_dense_b",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_factor512",
+      "throughput_speedup": 0.985269334908214
+    },
+    "relay_dense_b_vs_relay_mlp512": {
+      "candidate_method": "relay_dense_b",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_mlp512",
+      "throughput_speedup": 1.0215221437315805
+    },
+    "relay_factor512_vs_native_ar": {
+      "candidate_method": "relay_factor512",
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "reference_method": "native_ar",
+      "throughput_speedup": 0.8303718329758629
+    },
+    "relay_factor512_vs_optimized_source_reuse": {
+      "candidate_method": "relay_factor512",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "optimized_source_reuse",
+      "throughput_speedup": 0.44749947781454746
+    },
+    "relay_factor512_vs_relay_dense_a": {
+      "candidate_method": "relay_factor512",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_dense_a",
+      "throughput_speedup": 1.011945404753358
+    },
+    "relay_mlp512_l2_vs_native_ar": {
+      "candidate_method": "relay_mlp512_l2",
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "reference_method": "native_ar",
+      "throughput_speedup": 0.8029951707083689
+    },
+    "relay_mlp512_l2_vs_optimized_source_reuse": {
+      "candidate_method": "relay_mlp512_l2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "optimized_source_reuse",
+      "throughput_speedup": 0.4327457956898734
+    },
+    "relay_mlp512_l2_vs_relay_dense_a": {
+      "candidate_method": "relay_mlp512_l2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_dense_a",
+      "throughput_speedup": 0.9785824142484999
+    },
+    "relay_mlp512_l2_vs_relay_dense_b": {
+      "candidate_method": "relay_mlp512_l2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_dense_b",
+      "throughput_speedup": 0.981488822599185
+    },
+    "relay_mlp512_l2_vs_relay_factor512": {
+      "candidate_method": "relay_mlp512_l2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_factor512",
+      "throughput_speedup": 0.9670308394621451
+    },
+    "relay_mlp512_l2_vs_relay_mlp512": {
+      "candidate_method": "relay_mlp512_l2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_mlp512",
+      "throughput_speedup": 1.0026125661101044
+    },
+    "relay_mlp512_vs_native_ar": {
+      "candidate_method": "relay_mlp512",
+      "exact_sequence_match_rate": 0.25,
+      "exact_sequence_matches": 2,
+      "reference_method": "native_ar",
+      "throughput_speedup": 0.8009027593019276
+    },
+    "relay_mlp512_vs_optimized_source_reuse": {
+      "candidate_method": "relay_mlp512",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "optimized_source_reuse",
+      "throughput_speedup": 0.43161816470027203
+    },
+    "relay_mlp512_vs_relay_dense_a": {
+      "candidate_method": "relay_mlp512",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_dense_a",
+      "throughput_speedup": 0.9760324649083187
+    },
+    "relay_mlp512_vs_relay_factor512": {
+      "candidate_method": "relay_mlp512",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "relay_factor512",
+      "throughput_speedup": 0.9645109907349279
+    }
+  }
+}

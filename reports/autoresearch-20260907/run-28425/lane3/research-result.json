@@ -1,0 +1,114 @@
+{
+  "status": "pass",
+  "hypothesis": "Assess whether native projection weights tolerate4/8-bit rounding, keeping BF16 execution. Numerical sensitivity only, not integer-kernel performance.",
+  "summary": {
+    "requests": 32,
+    "clusters": 32,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.403442800465655,
+        "throughput_ratio": 0.2719508045897582,
+        "throughput_ci95": [
+          0.2555630886248696,
+          0.28889909982272116
+        ],
+        "request_time_ratio": 0.2719508045897582,
+        "request_time_ci95": [
+          0.2555630886248696,
+          0.28889909982272116
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 20,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 109.50863592559472
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 137.08904145634963,
+        "throughput_ratio": 0.9967391323674852,
+        "throughput_ci95": [
+          0.9898275403158071,
+          1.0034076671012322
+        ],
+        "request_time_ratio": 0.9967391323674853,
+        "request_time_ci95": [
+          0.9898275403158072,
+          1.0034076671012322
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.3740554156171285,
+        "request_seconds": 29.8783911280334
+      },
+      "relay_base": {
+        "tokens_per_second": 137.5375331464428,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.331632653061225,
+        "request_seconds": 29.780961649492383
+      },
+      "relay_fakeq2": {
+        "tokens_per_second": 31.57720787471455,
+        "throughput_ratio": 0.2295897501745417,
+        "throughput_ci95": [
+          0.21545374764182462,
+          0.24445514433092042
+        ],
+        "request_time_ratio": 0.2295897501745417,
+        "request_time_ci95": [
+          0.21545374764182465,
+          0.24445514433092042
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 1.157655093910074,
+        "request_seconds": 129.71381181804463
+      },
+      "relay_fakeq4": {
+        "tokens_per_second": 124.19150147126774,
+        "throughput_ratio": 0.9029644390890383,
+        "throughput_ci95": [
+          0.877294653779774,
+          0.9304630813243961
+        ],
+        "request_time_ratio": 0.9029644390890385,
+        "request_time_ci95": [
+          0.877294653779774,
+          0.9304630813243963
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 4.806192660550459,
+        "request_seconds": 32.98132280772552
+      },
+      "relay_fakeq8": {
+        "tokens_per_second": 138.0125327451086,
+        "throughput_ratio": 1.003453599812351,
+        "throughput_ci95": [
+          0.9927953197340866,
+          1.0140426482544647
+        ],
+        "request_time_ratio": 1.0034535998123513,
+        "request_time_ci95": [
+          0.9927953197340866,
+          1.0140426482544647
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.350383631713555,
+        "request_seconds": 29.678464111406356
+      }
+    }
+  },
+  "scope": "Exposed development questions at the recorded output cap; exploratory screen, no full-answer quality or confirmatory significance claim."
+}

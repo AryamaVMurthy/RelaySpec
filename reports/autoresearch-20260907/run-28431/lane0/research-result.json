@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "hypothesis": "Measure the math/dialogue tradeoff of matched-count calibration composition for a compact native or retargeted interface. Same checkpoints as the code screen.",
+  "summary": {
+    "requests": 32,
+    "clusters": 32,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_dflash": {
+        "tokens_per_second": 173.73406482634095,
+        "throughput_ratio": 1.0227636084273637,
+        "throughput_ci95": [
+          0.9842586371235632,
+          1.063215832185816
+        ],
+        "request_time_ratio": 1.0227636084273635,
+        "request_time_ci95": [
+          0.9842586371235631,
+          1.063215832185816
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 6.812600969305331,
+        "request_seconds": 23.576262974645942
+      },
+      "relay_base": {
+        "tokens_per_second": 169.86727274495072,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 6.462962962962963,
+        "request_seconds": 24.11294379318133
+      },
+      "relay_math": {
+        "tokens_per_second": 165.22416001629446,
+        "throughput_ratio": 0.9726662313839127,
+        "throughput_ci95": [
+          0.9413554121081686,
+          1.0050866498742954
+        ],
+        "request_time_ratio": 0.9726662313839126,
+        "request_time_ci95": [
+          0.9413554121081686,
+          1.0050866498742956
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 6.266068759342302,
+        "request_seconds": 24.79056331468746
+      },
+      "relay_mixed": {
+        "tokens_per_second": 167.06354318625455,
+        "throughput_ratio": 0.9834945866064155,
+        "throughput_ci95": [
+          0.9407602777292869,
+          1.0281513314680426
+        ],
+        "request_time_ratio": 0.9834945866064154,
+        "request_time_ci95": [
+          0.9407602777292868,
+          1.0281513314680428
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 6.359090909090909,
+        "request_seconds": 24.517617200501263
+      }
+    }
+  },
+  "scope": "Exposed development workload; fixed512-record math versus256math+256instruction fitting, same compact shape and update count. Domain tradeoff screen, not quality confirmation."
+}

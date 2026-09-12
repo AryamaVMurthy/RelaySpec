@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Does the late-layer conditioning advantage survive downward retargeting from a4B-trained drafter to a0.6B verifier?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 159.4409275541597,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 201.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.588068181818182,
+        "request_seconds": 10.08523987326771
+      },
+      "relay_reduced": {
+        "tokens_per_second": 83.64751369751838,
+        "throughput_ratio": 0.5246301246529349,
+        "throughput_ci95": [
+          0.4772144147022307,
+          0.604213611759665
+        ],
+        "request_time_ratio": 0.5246301246529349,
+        "request_time_ci95": [
+          0.47721441470223075,
+          0.6042136117596649
+        ],
+        "mean_output_tokens": 201.0,
+        "token_matches": 8,
+        "progress_per_cycle": 2.3405797101449277,
+        "request_seconds": 19.223524154163897
+      }
+    }
+  },
+  "scope": "Eight previously exposed GSM8K requests,512-token cap,512 fitting records and8192updates seed1729. Equal parameter count for three two-layer fits; one-layer boundary has half their parameters. Each worker has paired frozen full-five-layer control. Development mechanism test, not fresh confirmation."
+}

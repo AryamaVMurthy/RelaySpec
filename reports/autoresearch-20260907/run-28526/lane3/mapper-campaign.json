@@ -1,0 +1,67 @@
+{
+  "variants": {
+    "relay_base": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt",
+      "sha256": "d669e6334a5cc018fb6a70febda5e710cb8033152ecd1152d5bc219b6ef7a643",
+      "parameters": 13107200,
+      "resident_parameter_bytes": 26214400,
+      "target_layer_ids": [
+        1,
+        7,
+        13,
+        19,
+        25
+      ]
+    },
+    "relay_reduced": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28526/lane3/fitting/downscale-late-factorized-1137-s1730/step-008192.pt",
+      "sha256": "60f2c69eb0a9dff0a8f65644c9e89f48301fe5cd356fe60c7d0095084af7579a",
+      "parameters": 5239296,
+      "resident_parameter_bytes": 10478592,
+      "target_layer_ids": [
+        19,
+        25
+      ]
+    },
+    "relay_late_dense": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28525/lane2/fitting/downscale-taps-19-25/step-008192.pt",
+      "sha256": "5254f2a3fa288266fa1e4154ba29eb85e6f90b5ff9c907974b1f0b222a198b6e",
+      "parameters": 5242880,
+      "resident_parameter_bytes": 10485760,
+      "target_layer_ids": [
+        19,
+        25
+      ]
+    }
+  },
+  "adapted_drafter_variants": [],
+  "methods": [
+    "relay_base",
+    "relay_reduced",
+    "relay_late_dense"
+  ],
+  "selective_capture": {},
+  "release_capture_buffers": {},
+  "runtime_precision": "bfloat16",
+  "target_head_precision": "bfloat16",
+  "target_head_diagnostic": null,
+  "matmul_allow_tf32": false,
+  "target_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "drafter_parameter_dtypes": [
+    "torch.bfloat16"
+  ],
+  "mapper_parameter_dtypes": {
+    "relay_base": [
+      "torch.bfloat16"
+    ],
+    "relay_reduced": [
+      "torch.bfloat16"
+    ],
+    "relay_late_dense": [
+      "torch.bfloat16"
+    ]
+  },
+  "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+}

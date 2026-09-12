@@ -1,0 +1,40 @@
+{
+  "parent_sha256": "65ec1581b2047344c7ba0f3503c9addceefeb7cab1f3ad6b42c9cde6611d8817",
+  "shape": [
+    2560,
+    25600
+  ],
+  "transform": "fit_reduced_taps",
+  "fit_trial": {
+    "name": "dflash14-last2-n512",
+    "study": "reduced_taps",
+    "architecture": "dense",
+    "seed": 1729,
+    "steps": 8192,
+    "distinct_examples": 512,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      1024,
+      8192
+    ],
+    "validation_records": 1024,
+    "diagnostic_train_records": 256,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": true,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 8192,
+        "presentations": 32768
+      }
+    },
+    "target_layer_ids": [
+      28,
+      37
+    ],
+    "cache_backend": "buffer",
+    "device_cache": false
+  },
+  "cache_sha256": "6db523b44d7cac89e9b59cb250dea29a6c06729d2381a9d486d9d23b8da91c07"
+}

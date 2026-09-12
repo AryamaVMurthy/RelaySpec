@@ -1,0 +1,1528 @@
+\documentclass{article}
+\usepackage{iclr2027_conference,times}
+\usepackage{amsmath,amssymb,booktabs,graphicx,microtype,xcolor,array}
+\usepackage{hyperref,url}
+\usepackage{algorithm,algpseudocode}
+\usepackage{float}
+\hypersetup{hidelinks}
+\newcommand{\method}{RelaySpec}
+\title{RelaySpec: Retargeting Frozen Speculative Drafters\\with Small-Data Linear Interfaces}
+\author{Anonymous Authors}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Feature-conditioned speculative drafters depend on the hidden states of
+ the model used to train them. Reusing such a drafter with a larger target
+ can therefore require running its source model alongside that target.
+RelaySpec replaces this dependency with a learned linear interface while
+keeping the target and drafter frozen. Across DFlash and EAGLE-3 drafters
+retargeted from Qwen3-4B to 8B and 14B, the original 4,096-record fits
+achieve 2.35--5.11 times autoregressive throughput on MATH-500.
+Separate EAGLE-3 measurements reduce peak allocated memory by
+7.63--7.80 GiB relative to source reuse. Controlled scaling studies show
+that the interface can be learned from substantially fewer records:
+a 512-example DFlash-8B map retains 97.8\% of a 2,048-example map's
+throughput on 128 development questions. Increasing mapper capacity
+improves feature fitting initially, but wider MLPs and longer training
+do not consistently improve decoding. Under matched warm-training
+budgets, feature regression outperforms the tested connector-CE and
+LoRA alternatives. These results identify a low-cost reuse regime and
+its limits, including task-dependent slowdowns relative to source reuse,
+optimization sensitivity and finite-precision output differences.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+A developer may have a DFlash drafter trained for Qwen3-4B but want to
+serve Qwen3-8B or Qwen3-14B. The new target can check its proposals,
+but supplies different hidden states. This creates a deployment choice:
+train a new target-specific drafter, or reuse the existing drafter while
+paying for its source model to provide compatible features. RelaySpec
+addresses deployments that seek to reuse this training investment with
+limited additional fitting work. It learns a replacement for the source
+conditioning path, allowing the new target to supply the drafter's input.
+The practical goal is faster generation than plain AR while retaining
+much of a native target-specific drafter's throughput.
+
+Speculative decoding accelerates autoregressive (AR) generation by checking
+several proposed tokens in one target pass \citep{leviathan2023speculative}.
+DFlash and EAGLE-3 improve proposals using features computed inside a
+language model \citep{chen2026dflash,li2025eagle3}. We call the model that
+provided these features during drafter training the \emph{source}.
+The \emph{target} is the model whose token choices govern deployment.
+Running the source alongside a new target supplies compatible features,
+but also retains its transformer computation and memory.
+
+RelaySpec runs the source and new target on shared text during fitting.
+It learns a linear map from the target's hidden states to the context
+that the source supplies to the drafter. At inference, the target already
+computes these states when checking proposals. Applying the map supplies
+the next drafting input without another source-transformer pass. The
+existing target verifier still decides which tokens to commit.
+
+Only the map is trained. The target, drafter, inherited embedding and
+vocabulary projection stay fixed. We apply this procedure to DFlash and
+EAGLE-3, matching each released decoder's input normalization.
+We measure speed relative to AR (Figure~\ref{fig:headline}), native-drafter
+throughput retained, and additional fitting data and work. Source reuse
+isolates source-removal savings. Ablations test how fitting data,
+normalization and draft length affect accepted progress and runtime.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.90\linewidth]{figures/ar_main_throughput.pdf}
+\caption{MATH-500 throughput relative to plain AR, measured within each
+paired run. RelaySpec reuses the 4B drafter. The native control uses a
+drafter released for the evaluated target. Whiskers show RelaySpec's 95\%
+paired intervals. Native controls show the three evaluated releases.
+Each runtime uses one request per GPU.}
+\label{fig:headline}
+\end{figure}
+
+\section{Related work and positioning}
+\label{sec:related}
+
+\paragraph{Reuse and adaptation are different deployment choices.}
+DFlash and EAGLE-3 train drafters using their target's internal features
+\citep{chen2026dflash,li2025eagle3}. RelaySpec inherits such a trained
+component and changes only its input interface. PARD builds a parallel
+drafter independently of a particular target \citep{an2026pard}.
+SD$^2$ learns target-feature steering inside drafter MLPs, including
+frozen-drafter variants \citep{berdoz2026sd2}. Its token-distribution
+objective differs from regressing the source context already consumed
+by an inherited feature-conditioned drafter. OmniDraft adapts online
+through hybrid distillation and vocabulary handling
+\citep{ramakrishnan2025omnidraft}. Our setting is offline retargeting
+within a shared vocabulary. Heterogeneous verification addresses other
+vocabulary settings \citep{timor2025heterogeneous}.
+
+\paragraph{A small interface, not a new alignment principle.}
+Adapters, low-rank updates and model stitching already connect or adapt
+frozen networks \citep{houlsby2019adapters,hu2022lora,bansal2021stitching}.
+Our contribution is identifying and replacing the source-conditioning
+interface in existing speculative decoders, then measuring the data,
+capacity and runtime tradeoffs of doing so. Feature agreement does not
+establish equivalent representations \citep{smith2025stitching}.
+We therefore evaluate actual decoding, compare equal-capacity linear
+and nonlinear maps, and test cheap drafter adaptation under measured
+training budgets. Appendix~\ref{app:additionalrelated} discusses broader
+methods. Public SD$^2$ and PARD evaluations are reported separately in
+the appendix because their runtime and inherited models differ.
+
+\section{Preliminaries}
+\label{sec:preliminaries}
+\subsection{Drafting and target verification}
+An autoregressive model generates one token at a time. Blockwise and
+speculative methods propose several tokens, then check them in a target
+pass \citep{stern2018blockwise,xia2023specdec,leviathan2023speculative}.
+In greedy decoding, the verifier commits the longest matching prefix
+and a target-selected next token. RelaySpec preserves this decoder and
+changes the features supplied to its drafter.
+
+\subsection{Throughput and accepted progress}
+\label{sec:cost}
+
+Our primary metric is end-to-end output throughput: total generated tokens
+divided by total request time, including prompt processing. Let $T_A$,
+$T_R$ and $T_N$ denote this throughput for plain AR, RelaySpec and the
+native target-specific drafter. We report
+\begin{equation}
+\text{AR speedup}=T_R/T_A,\qquad
+\text{native throughput retained}=100\,T_R/T_N\ \%.
+\label{eq:metrics}
+\end{equation}
+A retention value of 90\% means the reused drafter produces 90\% as many
+tokens per second as the target's own drafter. It is not the fraction of
+speedup above AR. We also report the ratio of summed AR request time to
+summed relay request time. This differs from a throughput ratio when
+output lengths differ.
+
+Acceptance explains how speed is obtained. We report the pooled number
+of tokens advanced per proposal-verification cycle, including the
+implementation's target-supplied progress. This is distinct from the
+fraction of proposed draft tokens accepted. Appendix~\ref{app:acceptance}
+gives the position-wise curves and precise counting convention.
+
+Let $c_R$ be the average relay cycle time and $a_R$ its average progress.
+Its decode time per output token is approximately $c_R/a_R$.
+If $c_A$ is AR time per token, then the decode-only approximation is
+\begin{equation}
+\text{AR-relative decode speed}\ \approx\ \frac{a_R c_A}{c_R}.
+\label{eq:cycle}
+\end{equation}
+Removing source conditioning reduces cycle cost. Imperfect feature
+matching may reduce progress. The map is useful when the saved computation
+outweighs the extra cycles. We measure end-to-end speed directly and use
+this approximation to interpret the component measurements.
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Fit the input consumed by the frozen drafter}
+We run the source and new target on the same text and collect hidden
+states after five selected transformer blocks. Concatenating these states
+gives the target vector $h_t$ and source vector $s_t$ at position $t$.
+The drafter's frozen projection $F$ converts source features to its input
+width. We learn a bias-free matrix $W$ that supplies this input from $h_t$.
+Figure~\ref{fig:fit} separates fitting from generation.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.90\linewidth]{figures/retargeting_workflow.pdf}
+\caption{Fit once, then reuse the frozen drafter. The source and target
+process identical text during fitting. Only the map is updated. During
+generation, target features from committed positions feed the next draft.}
+\label{fig:fit}
+\end{figure}
+
+The correct input depends on the released drafter. DFlash consumes a
+normalized projection. Let $N_{\rm in}$ denote fixed root-mean-square
+normalization of joined target features \citep{zhang2019rmsnorm}, which rescales a vector by the
+square root of its mean squared coordinate. Let $N_{\rm out}$ be the
+released drafter's frozen output normalization. EAGLE-3 consumes the raw
+projection. The teacher context $c_t$ and mapped context $\widehat c_t$ are
+\begin{equation}
+\begin{aligned}
+\text{DFlash:}\quad c_t&=N_{\rm out}(Fs_t), &
+\widehat c_t&=N_{\rm out}(WN_{\rm in}(h_t)),\\
+\text{EAGLE-3:}\quad c_t&=Fs_t, &\widehat c_t&=Wh_t.
+\end{aligned}
+\label{eq:interfaces}
+\end{equation}
+Preserving feature magnitude matters for the raw EAGLE-3 input.
+DFlash's output normalization is applied to both teacher and prediction.
+The normalization ablation tests these choices directly.
+
+We fit $W$ by minimizing the squared context error relative to the teacher's
+squared magnitude. For a record with $n$ token positions,
+\begin{equation}
+\mathcal L(W)=\frac1n\sum_{t=1}^{n}
+\frac{\|\widehat c_t-c_t\|_2^2}{\max(\|c_t\|_2^2,\epsilon)}.
+\label{eq:loss}
+\end{equation}
+Here $\|v\|_2^2$ sums the squared coordinates of $v$, and $\epsilon$ is
+the smallest positive normal FP32 value. Dividing by teacher magnitude
+prevents larger context vectors from dominating the objective. We average
+positions within each record and record losses across workers. DFlash's
+normalization makes this objective different from raw linear least
+squares. Both selected maps are fitted with gradient updates.
+
+Fitting uses 4,096 distinct math problem-and-solution records rendered as
+conversations, with the resulting text truncated to 192 tokens. The
+supervision is a source context vector. Solution text remains part of the
+input. The fitted map has 52.43M weights for an 8B target and 65.54M for a
+14B target. Appendix~\ref{app:protocol} specifies the layers and dimensions.
+
+\subsection{Draft with the new target's features}
+The target first processes the prompt and retains its attention cache and
+selected hidden states. The map supplies drafter context. The frozen
+drafter proposes tokens, and the target checks them in parallel with a
+causal mask. The decoder commits the longest matching prefix and the
+target-selected next token, then crops the cache to the committed prefix.
+Mapped target states supply the next cycle, as shown in
+Figure~\ref{fig:verify}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.90\linewidth]{figures/verification_flow.pdf}
+\caption{One generation cycle. RelaySpec changes the drafter's context.
+The target retains control over committed tokens and the shared decoder
+retains responsibility for positions, stopping and cache updates.}
+\label{fig:verify}
+\end{figure}
+
+The standard greedy equivalence argument requires block verification to
+return the same token choices as single-token evaluation of each identical
+prefix \citep{leviathan2023speculative}. Finite-precision implementations
+can change those choices. We therefore measure task accuracy and token
+agreement separately from throughput. The map itself never supplies the
+scores used for target verification.
+
+\section{Experiments}
+\subsection{Experimental setup}
+\label{sec:setup}
+
+\paragraph{Models and runtime.}
+We retarget the released Qwen3-4B DFlash and DeepSpec EAGLE-3 drafters to
+Qwen3-8B and Qwen3-14B \citep{yang2025qwen3,deepspec2026software}.
+DFlash uses block length 16. EAGLE-3 uses the supported chain procedure
+with seven draft positions. Native controls use released target-specific
+drafters within the same implementation and proposal setting. The main
+AR comparisons use four NVIDIA L40S GPUs, with one sequential request
+per worker. Historical block-size and isolated-memory studies use RTX
+6000 Ada GPUs. We compare methods within runs on the same hardware.
+Serving systems such as vLLM and SGLang also optimize cache use and
+request execution \citep{kwon2023pagedattention,zheng2024sglang}.
+Our timing isolates the stated per-request decoder rather than a
+concurrent serving workload.
+
+\begin{table}[H]
+\caption{Evaluation protocol. Main fitting choices remain fixed across
+workloads. Full identifiers and runtime versions are in Appendix~\ref{app:protocol}.}
+\label{tab:setup}
+\centering\small
+\begin{tabular}{p{.23\linewidth}p{.70\linewidth}}
+\toprule
+Component & Setting \\
+\midrule
+Primary baseline & Plain greedy AR with the same target, prompt and runtime \\
+Other controls & Native target-specific drafter and optimized source reuse \\
+Generation & BF16, SDPA attention, thinking disabled, maximum 2,048 new tokens \\
+Relay fitting & 4,096 records, 192-token cap, 1,024 AdamW updates \citep{loshchilov2019adamw}, four records/update \\
+Optimizer & Learning rate $6\times10^{-4}$, zero weight decay, gradient clipping 1.0 \\
+Timing & Synchronized request timer, warmup excluded, rotated method order \\
+Uncertainty & 10,000 paired resamples, whole conversations for two-turn chat \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Workloads and data use.}
+We evaluate math, code and conversation workloads because speculative
+speed varies across tasks \citep{xia2024specbench,abramovich2026speedbench}.
+MATH-500 supplies 500 questions \citep{lightman2023verify}. The breadth suite contains 128 GSM8K
+questions, 164 HumanEval tasks, 378 MBPP tasks and 80 two-turn MT-Bench
+conversations \citep{hendrycks2021math,cobbe2021gsm8k,chen2021humaneval,austin2021mbpp,zheng2023mtbench}.
+The 32-question development set informed interface and loss choices.
+Historical evaluations retain this exposure history. Fitting and evaluation
+problem texts have zero normalized exact matches. Appendix~\ref{app:data}
+quantifies related templates using token overlap. All completed workload
+cells in each reported suite are included.
+
+\paragraph{Quality and pairing.}
+We score the same math outputs used for the AR timing comparison with the
+pinned Qwen math scorer. Historical code comparisons use EvalPlus base
+and expanded tests \citep{liu2023evalplus}. MT-Bench measures two-turn
+generation time, with each method conditioning its second turn on its own
+first answer. Its bootstrap unit is the conversation. Other confidence
+intervals resample matched requests and condition on the fitted checkpoint.
+Model loading and external task scoring sit outside the request timer.
+
+\label{sec:results}
+
+\subsection{Acceleration over plain autoregressive decoding}
+
+Table~\ref{tab:main} reports absolute end-to-end throughput and AR-relative
+speed. DFlash RelaySpec reaches 186.49 tokens/s at 8B and 116.88 at 14B,
+compared with AR at 37.37 and 22.88. EAGLE-3 RelaySpec reaches 84.92 and
+59.18 tokens/s, compared with 36.15 and 22.88 for AR. The resulting
+throughput ratios are 4.99, 5.11, 2.35 and 2.59. Each paired interval is
+above one.
+
+\begin{table}[H]
+\caption{MATH-500 end-to-end tokens/s, including prompt processing.
+Progress R is mean recorded relay progress per cycle.
+Ratios and intervals use the AR arm of that same run.
+Native-drafter comparisons are in Table~\ref{tab:retention}.}
+\label{tab:main}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\input{generated/ar_main_table.tex}
+\end{table}
+
+DFlash's parallel proposal step and longer accepted progress yield higher
+throughput than the sequential EAGLE-3 path in these implementations.
+This is a comparison of the stated released models and decoding settings.
+The two integrations use different pinned Transformers versions, so their
+cross-family difference is not an isolated architectural effect.
+
+\subsection{Retaining target-specific drafter performance}
+For the motivating 4B-to-8B case, RelaySpec reaches 186.49 tokens/s
+against native DFlash-8B's 206.58, retaining 90.3\% of its throughput.
+EAGLE-3 retains 90.2\% at 8B and 89.1\% at 14B
+(Table~\ref{tab:retention}). These are within-runtime comparisons to
+released target-specific drafters. They measure the performance of
+reuse, not a matched experiment on the cost of originally training
+those releases. We evaluate marginal adaptation cost directly below.
+
+\subsection{Acceptance and the source-removal mechanism}
+
+Table~\ref{tab:retention} pairs retained throughput with accepted progress.
+RelaySpec advances 6.98 tokens per DFlash-8B cycle versus 7.89 for its
+native drafter. EAGLE-3 advances 4.33 versus 5.40 at 8B and 4.01 versus
+5.28 at 14B. Acceptance and speed retention therefore answer different
+questions: per-cycle work also changes with drafter size and implementation.
+
+\begin{table}[H]
+\caption{Native throughput retained and mean recorded progress per cycle.
+N and R denote native drafting and RelaySpec. Progress includes the
+implementation's target-supplied token.}
+\label{tab:retention}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\input{generated/native_retention_table.tex}
+\end{table}
+
+Against source reuse, the relay's throughput ratios are 1.531 and 1.268
+for DFlash, and 1.278 and 1.097 for EAGLE-3, at 8B and 14B respectively.
+This secondary comparison holds the inherited drafter fixed and isolates
+source replacement. The source's computation disappears from each cycle,
+while the target's retained states already contain useful context.
+The matched EAGLE-3 normalization result in Section~\ref{sec:ablations}
+supports the importance of supplying that context at its expected scale.
+
+\subsection{Math accuracy and output agreement}
+
+Table~\ref{tab:quality} scores the exact outputs timed in Table~\ref{tab:main}.
+Observed AR-to-relay accuracy differences range from $-0.2$ to $+0.8$
+percentage points, and each paired interval includes zero. These measured
+outcomes support the accuracy comparison without treating token equality
+as a substitute for task quality.
+
+\begin{table}[H]
+\caption{MATH-500 accuracy in percent. Difference is RelaySpec minus AR
+in percentage points. Token matches count identical full output sequences.}
+\label{tab:quality}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\input{generated/ar_quality_table.tex}
+\end{table}
+
+In BF16, AR and block verification can select different tokens on an
+identical prefix. Traces of eight selected DFlash early-divergence prompts show
+changes in the leading target scores shared by native drafting, source
+reuse and RelaySpec. This diagnostic is separate from the timed runs.
+We report measured quality and agreement rather than claiming bitwise
+identity from the verifier's mathematical contract.
+
+\subsection{Speed across workloads}
+
+Figure~\ref{fig:breadth} and Table~\ref{tab:breadth-ar} report the completed
+DFlash AR-paired breadth suite. RelaySpec is 1.85--3.69 times faster than
+AR across these eight cells. Code gains at 14B remain substantial relative
+to AR even where source reuse is faster than the relay. The useful
+comparison depends on the deployment choice: AR measures the acceleration
+obtained, while source reuse measures the benefit of removing its source.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.94\linewidth]{figures/ar_breadth.pdf}
+\caption{DFlash RelaySpec throughput relative to AR across workloads.
+Whiskers are paired 95\% intervals. Chat intervals resample whole two-turn
+conversations. Full absolute values are in Table~\ref{tab:breadth-ar}.}
+\label{fig:breadth}
+\end{figure}
+
+\subsection{Fitting work and deployment memory}
+
+The selected maps have 52.43--65.54M trainable weights. Recorded fitting
+loops take 85.6--118.5 seconds on four RTX 6000 Ada GPUs with models
+already loaded. The interval covers feature computation and optimization.
+Loading, checkpoint writing and deployment initialization are separate
+setup costs. Appendix~\ref{app:cost} gives each measured fitting loop.
+
+Separate EAGLE-3 processes measure memory after removing source layers.
+Peak allocated memory falls from 25.56 to 17.76 GiB at 8B and from 37.56
+to 29.94 GiB at 14B. These are savings of 7.80 and 7.63 GiB.
+Source token embeddings and vocabulary projections required by a drafter
+remain part of deployment. The claim concerns the removed source
+transformer, not every tensor inherited from the source.
+
+\subsection{Ablation studies}
+\label{sec:ablations}
+
+\subsubsection{How much data and mapper capacity are needed?}
+\label{sec:controlled-scaling}
+
+We separate distinct training examples from optimization work. With
+1,024 updates and four examples per update held fixed, DFlash-8B
+throughput increases from 134.4 tokens/s at 64 examples to 181.9 at
+512, then ranges from 183.8 to 184.6 at 1,024--4,096 examples.
+Thus 512 is the smallest tested count within 5\% of the observed best
+point, not a confirmed universal data threshold. The right panel of
+Figure~\ref{fig:scaling} separately follows one continuous fit.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.94\linewidth]{figures/controlled_fitting.pdf}
+\caption{DFlash-8B on 128 development requests. Left: distinct-data
+scaling at fixed optimization work. Right: checkpoints from one
+continuous fit. Paired 95\% request intervals exclude fitting-seed
+variation and selection uncertainty.}
+\label{fig:scaling}
+\end{figure}
+
+A separate NuminaMath study crosses 512/2,048 examples with dense,
+factored linear and GELU MLP maps over seven widths, using 8,192
+updates per cell. This holds parameter count equal between each
+factored map and MLP. Validation error decreases with capacity and
+then flattens (Appendix~\ref{app:design}). The measured 128-question,
+2,048-token decoding comparison gives dense $N=512$ 193.68 tokens/s
+versus 198.09 for dense $N=2048$, retaining 97.78\% [97.09, 98.47]\%.
+Linear-1024 at $N=512$ retains 95.00\% [94.14, 95.85]\% with 23.59M
+parameters instead of 52.43M. The latter interval crosses the 95\%
+boundary. These are development comparisons with fixed fitting seeds.
+
+\paragraph{Better feature fitting need not mean faster decoding.}
+The 94.37M-parameter MLP-4096 at $N=2048$ reaches 190.15 tokens/s,
+below dense. Extending the width-512 MLP from 8,192 to 32,768 updates
+on the same 2,048 records raises throughput only from 154.39 to 157.68.
+All tested mappers score 105/128 at this cap, versus AR's 104/128,
+which does not establish a one-percentage-point noninferiority margin.
+The regularization study finds no matched endpoint benefit from its
+L2 settings and only small weight-decay gains in feature validation.
+Complete positive and negative results appear in the appendix.
+
+\paragraph{Replication and workload dependence.}
+The complete 14B grids repeat the small-data/capacity comparison in
+both drafter families. DFlash's wide MLP fits its training features
+better than dense but has worse validation error and lower capped
+decoding throughput. EAGLE-3 shows late degradation in both dense
+512-example seeds and a transient wide-linear loss spike.
+These results delimit the shared optimization recipe rather than prove
+a disadvantage of a function class (Appendix~\ref{app:target14-capacity}).
+On the 8B full-answer development set, dense $N=512$ retains
+97.4--97.9\% of dense $N=2048$ throughput across MATH difficulty groups.
+Very long inputs have too few examples for a reliable generalization claim.
+
+\subsubsection{Is feature fitting a useful adaptation budget?}
+We compare DFlash feature regression with connector cross-entropy and
+rank-32 drafter LoRA on the same 512 records. An equal three-rate screen
+sets CE and LoRA rates. Budgets of 22.85, 91.41 and 365.65 warm-training
+seconds count the initial mapper required by CE and LoRA. At the middle
+budget, feature regression reaches 144.80 tokens/s, connector CE 109.60,
+and two LoRA initializations 115.02 and 115.49. Across all three budgets,
+CE retains 73.2--76.6\% and LoRA 79.4--82.7\% of feature throughput.
+This supports the tested reuse procedure under limited update time.
+It is not a general ranking of LoRA or an end-to-end training-cost
+comparison: preparation and export are reported separately, and decoding
+uses sixteen development questions capped at 256 tokens. The appendix
+provides all budgets, fitting histories and uncertainty intervals.
+
+\subsubsection{Draft length and interface choices}
+
+The block-size experiment directly compares AR, native DFlash and the
+relay at lengths 8, 16 and 32 on 64 fixed requests. Block 16 gives the
+highest relay throughput, 210.15 tokens/s. Block 8 retains more source
+progress proportionally but advances fewer tokens per cycle. Block 32
+adds verification width while reducing accepted progress for the
+released block-16 drafter. This supports keeping its trained block length
+instead of maximizing the relative gain over source reuse.
+
+\begin{table}[H]
+\caption{DFlash-8B block-size ablation on 64 questions, a 512-token cap
+and RTX 6000 Ada hardware. AR is measured in each run.}
+\label{tab:block}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\input{generated/block_ablation_table.tex}
+\end{table}
+
+The EAGLE-3 normalization comparison holds parameter count, data and
+128-update budget fixed. Raw target features reduce relative context
+error from 0.413 to 0.266 and increase the source-relative throughput
+ratio from 1.035 to 1.237. The raw interface consumes feature magnitude,
+which input normalization removes. This gives a concrete reason for
+preserving scale in the selected map.
+
+For DFlash, the selected relative-error objective improves throughput
+by 1.009 and 1.011 times over squared error plus cosine distance on the
+32-question comparison at 8B and 14B. The ridge and nonlinear variants
+in Appendix~\ref{app:design} provide additional fitting alternatives.
+Their different objectives and capacities make them comparisons of
+complete recipes rather than isolated tests of the optimizer or
+nonlinearity.
+
+\section{Conclusion and limitations}
+\label{sec:scope}
+RelaySpec replaces source-model conditioning with a learned input map,
+reusing frozen speculative drafters across the tested target sizes.
+The controlled studies identify a small-data regime and diminishing
+returns from mapper capacity and additional updates. Feature fitting
+is a useful surrogate, but deployment decisions require measured
+acceptance, speed and quality. Results concern shared-vocabulary Qwen3
+models, greedy decoding and one request per worker. Existing development
+exposure and limited fitting seeds prevent universal minimum-data or
+noninferiority claims. Code workloads can favor source reuse, and
+EAGLE-3 optimization is sensitive to the training recipe. We report these
+boundaries alongside the speed and memory benefit.
+
+\label{maintextend}
+\section*{AI use statement}
+Generative AI assisted with implementation, code review, literature search,
+analysis and manuscript editing. Numerical tables and plots are generated
+from recorded artifacts with checked method, request and scorer identity.
+Scientific interpretation and submission decisions remain the authors'
+responsibility.
+
+\section*{Reproducibility statement}
+The appendix specifies model identifiers, feature layers, fitting settings,
+measurement boundaries, complete workload results and data checks.
+The accompanying implementation includes configurations, request records,
+scorer provenance and scripts that regenerate the reported assets.
+
+\bibliography{references}
+\bibliographystyle{iclr2027_conference}
+\clearpage
+\appendix
+\raggedbottom
+\section*{Appendix}
+The appendix gives implementation details (Appendix~\ref{app:protocol}),
+complete workload results (Appendix~\ref{app:breadth}), fitting studies
+(Appendix~\ref{app:design}), acceptance measurements
+(Appendix~\ref{app:acceptance}), data checks (Appendix~\ref{app:data})
+and fitting-time and memory measurements (Appendix~\ref{app:cost}).
+
+\section{Implementation and measurement details}
+\label{app:protocol}
+
+\paragraph{Released models.}
+The source is \texttt{Qwen/Qwen3-4B}. Targets are
+\texttt{Qwen/Qwen3-8B} and \texttt{Qwen/Qwen3-14B}.
+The source DFlash is \texttt{z-lab/Qwen3-4B-DFlash-b16}, and its native
+8B control is \texttt{z-lab/Qwen3-8B-DFlash-b16}. EAGLE-3 uses DeepSpec's
+\texttt{eagle3\_qwen3\_4b\_ttt7}, \texttt{eagle3\_qwen3\_8b\_ttt7}
+and \texttt{eagle3\_qwen3\_14b\_ttt7} releases. All model and upstream
+revisions are fixed in the accompanying configurations.
+
+\paragraph{Features and dimensions.}
+Layer indices count transformer blocks from zero. Source and Qwen3-8B
+states come from blocks $[1,9,17,25,33]$. Qwen3-14B states come from
+$[1,10,19,28,37]$. Joining five 4,096-wide states gives a 20,480-wide
+8B input. Joining five 5,120-wide states gives a 25,600-wide 14B input.
+Both drafter interfaces have width 2,560. The matrix dimensions are
+therefore $2,560\times20,480$ and $2,560\times25,600$.
+The DFlash input normalization has no trainable gain or bias. The
+released output normalization remains frozen.
+
+\paragraph{Training.}
+Four workers average record losses at each update. Seed 1729 fixes the
+selected fit. AdamW uses learning rate 0.0006, zero weight decay and
+gradient clipping at 1.0. Computation uses BF16, with the feature loss
+computed in FP32. Each of 1,024 updates processes four records, each
+capped at 192 rendered tokens. The same map remains fixed across tasks.
+
+\paragraph{Runtime and timing.}
+The main AR runs use Python 3.12.13 and PyTorch 2.9.1 with CUDA 12.8.
+DFlash uses Transformers 5.3.0. EAGLE-3 uses the pinned 5.10.2 overlay.
+Each worker owns a full target replica on one L40S GPU. Four workers
+process independent requests rather than splitting one model over GPUs.
+One warmup per method precedes measured requests. Method order rotates
+across requests. The synchronized timer includes prompt processing,
+drafting, verification, feature updates and runtime bookkeeping.
+The historical block and memory experiments use RTX 6000 Ada GPUs.
+
+\paragraph{Stopping and conversation history.}
+Generation stops at the first end token or the output cap. Capped requests
+remain in both timing and quality aggregates. Each MT-Bench method uses
+its own first-turn output as second-turn context. Two turns form one
+resampling unit. The breadth run has 750 initial records and 830 timed
+requests after expanding 80 conversations to two turns.
+
+\paragraph{Aggregation.}
+Each method's throughput is the sum of its output-token counts divided
+by the sum of its request times. Each of 10,000 resamples recomputes this
+ratio from matched requests, using bootstrap seed 1729. Confidence bounds
+are the central 95\% of resampled estimates. The request-time ratio uses
+summed times alone. Table~\ref{tab:ar-details} reports both measurements
+and output lengths.
+
+\begin{table}[H]
+\caption{Additional MATH-500 measurements. A is AR, S is source reuse and
+R is RelaySpec. Time ratio divides summed AR time by summed relay time.}
+\label{tab:ar-details}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\input{generated/ar_details_table.tex}
+\end{table}
+
+\section{Complete workload results}
+\label{app:breadth}
+
+\begin{table}[H]
+\caption{Complete DFlash breadth comparisons with paired AR. Ratios use
+end-to-end throughput. Every planned task and target cell is included.}
+\label{tab:breadth-ar}
+\centering\small
+\setlength{\tabcolsep}{3.5pt}
+\input{generated/ar_breadth_table.tex}
+\end{table}
+
+The earlier fixed-map source comparisons in Table~\ref{tab:historical}
+provide all four workloads for both drafter families on RTX 6000 Ada.
+They are a separate paired experiment with their own denominator.
+The EAGLE-3 14B code cells show the reduced margin when lower accepted
+progress outweighs source-removal savings. This operating range complements
+the AR acceleration measured in the main comparison.
+
+\begin{table}[H]
+\caption{Historical paired source-reuse breadth measurements on RTX 6000
+Ada. Ratios compare relay with source throughput within these runs.
+They are not normalized by an AR arm from another experiment.}
+\label{tab:historical}
+\centering\small
+\setlength{\tabcolsep}{3.5pt}
+\input{generated/breadth_table.tex}
+\end{table}
+
+\begin{table}[H]
+\caption{Task scores for the historical fixed-map breadth runs.
+Source reuse and RelaySpec share each reported score. Code columns are
+single-program pass percentages under base and expanded EvalPlus tests.}
+\label{tab:historical-quality}
+\centering\small
+\input{generated/quality_table.tex}
+\end{table}
+
+Across these historical math/code comparisons, all 4,680 paired task
+outcomes agree between source reuse and RelaySpec. This count is four
+model/drafter pairs times $500+128+164+378=1,170$ problems. Expanded code
+tests evaluate the same programs and do not add independent examples.
+For the current AR-paired DFlash GSM8K runs, the scorer gives 120/128
+correct for all arms at 8B and 121/128 at 14B. Code scores above refer
+specifically to the historical outputs, preserving scorer/run identity.
+
+\paragraph{AR-paired EAGLE-3 code quality.}
+We additionally score the saved programs from the EAGLE-3 AR-paired
+breadth runs with official EvalPlus base and expanded tests.
+Table~\ref{tab:eagle-code-ar} compares one program per task against AR
+from the same run. At 8B, RelaySpec passes four fewer MBPP tasks under
+both suites. At 14B, it passes two more. HumanEval expanded-test totals
+match AR at both target sizes, although individual task outcomes differ.
+RelaySpec and source reuse have identical per-task outcomes in all eight
+cells. The paired intervals cover zero. This does not establish equality
+or noninferiority. These retrospective comparisons use one fitted map
+per setting and do not include fitting-seed uncertainty. Conversation
+quality remains unmeasured.
+
+\begin{table}[H]
+\caption{EAGLE-3 AR-paired code quality. Counts are passed tasks. The intervals resample paired tasks. Expanded tests reuse the same programs
+and do not add independent samples.}
+\label{tab:eagle-code-ar}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\input{generated/eagle3_paired_code_quality.tex}
+\end{table}
+
+\section{Fitting and interface studies}
+\label{app:design}
+
+\paragraph{Distinct records at fixed fitting work.}
+A separate controlled DFlash-8B study holds fitting at 1,024 updates
+and four records per update while varying distinct records from 64
+to 4,096. Smaller sets repeat in the same ordered schedule.
+Table~\ref{tab:controlled-data} reports end-to-end throughput on the
+same 128 development-exposed MATH questions. Of the measured settings,
+512 is the smallest within 5\% of the best observed mapper throughput.
+The 256-record setting retains 91.4\% of that observed best. This is a
+descriptive, single-seed boundary, not a minimum across settings or a
+confirmed optimum. The 512--4,096 settings form an unresolved plateau. Selecting
+the reference from the same evaluations does not provide independent
+confirmation. Every relay scores 105/128, versus AR's 104/128.
+
+\begin{table}[H]
+\caption{Distinct-data study at 4,096 presentations for every row.
+Native retention uses each run's paired native-drafter control.
+Best retention uses the observed best relay across these settings.
+All results condition on one fitting seed.}
+\label{tab:controlled-data}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\input{generated/controlled_data_table.tex}
+\end{table}
+
+\paragraph{Continuous optimization.}
+We also save checkpoints from one uninterrupted 4,096-record fit at
+128, 256, 512, 1,024 and 2,048 updates. They have seen respectively
+512, 1,024, 2,048, 4,096 and 4,096 distinct records. The final point
+therefore measures a second pass, not 8,192 distinct examples.
+End-to-end AR-relative throughput increases from 3.65 to 5.03 across
+this trajectory. All five checkpoints score 105/128. Unlike the earlier
+separately fitted budget configurations, these checkpoints share one
+optimization trajectory. Figure~\ref{fig:controlled-fitting} separates
+this experiment from the fixed-work data study.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/controlled_fitting.pdf}
+\caption{Controlled data and optimization studies on 128 fixed
+development requests. Error bars are paired 95\% request-bootstrap
+intervals within each run. They exclude fitting-seed variation and
+selection uncertainty. Connecting lines do not imply unmeasured results.}
+\label{fig:controlled-fitting}
+\end{figure}
+
+\begin{table}[H]
+\caption{Completed DFlash-8B fitting studies on the same 128-question
+set. Records count distinct fitting examples. Two passes over 4,096
+records give 8,192 presentations. Source reuse is paired within each run.}
+\label{tab:fit-ablation}
+\centering\small
+\setlength{\tabcolsep}{3.5pt}
+\input{generated/fit_ablation_table.tex}
+\end{table}
+
+The data-budget configurations use the same normalized linear interface
+and relative-error objective. The nonlinear map uses an intermediate
+width of 512 and about 11.8M parameters, compared with 52.4M for the dense
+8B map. Its lower throughput is consistent with a less effective fitted
+interface, but the comparison also changes capacity. It does not isolate
+a disadvantage of nonlinear functions. The ridge configuration solves a
+raw linear surrogate with ridge coefficient 1.0. Since the deployed DFlash
+interface includes output normalization, this is a different objective
+from Equation~\ref{eq:loss}.
+
+\paragraph{Matched capacity on a separate fitting source.}
+We additionally fit 30 DFlash-8B configurations on nested sets of 512
+and 2,048 NuminaMath-CoT records,\footnote{\texttt{AI-MO/NuminaMath-CoT}, revision \texttt{9d8d210c9f6a}, training shard 0 of 5.} using a fixed 1,024-record fitting
+validation split. The source-stratified sets include \texttt{cn\_k12},
+\texttt{orca\_math} and \texttt{synthetic\_math} examples. Their lexical
+filter excludes exact normalized problem/solution matches and near
+matches at five-shingle Jaccard similarity at least 0.6 for texts with
+at least ten unique shingles. This filter does not
+establish semantic or template independence. These results use a separate
+fitting source from the historical MATH study above.
+
+Each configuration receives 8,192 updates with four records per update:
+64 passes at $N=512$ and 16 at $N=2048$. Frozen features are cached once.
+Factored linear maps and bias-free two-layer GELU MLPs use widths
+64, 128, 256, 512, 1,024, 2,048 and 4,096, giving matched parameter counts
+$h(20{,}480+2{,}560)$. The dense reference has 52.43M parameters.
+The rank of a linear function remains bounded by 2,560 even when its
+factorization width is larger. All cells share the data order,
+relative-interface objective, learning rate $6\times10^{-4}$ and seed 1729.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/numina_capacity.pdf}
+\caption{Complete primary capacity study at 8,192 updates per cell.
+Markers compare validation interface error, with one fitting seed.
+The curves do not establish decoding speed or answer quality.}
+\label{fig:numina-capacity}
+\end{figure}
+
+\begin{table}[H]
+\caption{Validation relative interface MSE for the capacity study.
+Linear and MLP entries at the same width have equal parameter counts.
+The dense row supplies the single-linear-layer reference.}
+\label{tab:numina-capacity}
+\centering\small
+\setlength{\tabcolsep}{3pt}
+\input{generated/numina_capacity_table.tex}
+\end{table}
+
+At this optimization budget, wider factorizations approach the dense
+reference, while MLPs have higher validation error at every matched width.
+Increasing MLP width from 2,048 to 4,096 at $N=512$ lowers diagnostic
+training error from 0.1586 to 0.1278 but raises validation error from
+0.2438 to 0.2501. At $N=2048$, validation error instead decreases from
+0.1982 to 0.1936. This interaction motivates checking regularization and
+convergence before attributing the ranking to function class.
+
+\paragraph{More epochs on fixed smaller datasets.}
+We continue the width-512 linear and MLP fits to 32,768 total updates,
+preserving Adam moments, random states and cyclic data position.
+A separate bounded pilot reproduced uninterrupted fitting bit for bit.
+Figure~\ref{fig:numina-epochs} shows late-training diagnostics on the
+same first 256 training records and all 1,024 validation records.
+The $N=2048$ MLP improves from 0.2878 to 0.2787 validation error between
+8,192 and 32,768 updates. At $N=512$, linear training error falls from
+0.2443 to 0.2350 while validation error rises from 0.2862 to 0.2873.
+The latter is consistent with mild overfitting on this diagnostic split.
+These single-seed fitting trajectories require separate decoding and
+quality evaluation, including replication across targets and workloads.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/numina_epochs.pdf}
+\caption{Late-training trajectories, starting at 2,048 updates.
+Dashed lines use the fixed training diagnostic subset. Solid lines use
+fitting validation. The horizontal axis counts updates, while the
+distinct datasets remain fixed at 512 or 2,048 records.}
+\label{fig:numina-epochs}
+\end{figure}
+
+\paragraph{Explicit regularization on fixed smaller datasets.}
+We complete 42 nonzero-penalty fits for the dense, width-512 factored
+linear and width-512 GELU MLP connectors at $N\in\{512,2048\}$.
+Each fit uses 8,192 updates, the same 1,024 validation records and seed 1729.
+Explicit L2 coefficients are $10^{-7},10^{-6},10^{-5},10^{-4}$.
+Separate AdamW arms use decay $10^{-4},10^{-3},10^{-2}$.
+No tested L2 coefficient improves its matched zero-penalty endpoint.
+The largest AdamW improvement is a 0.17\% relative decrease in validation
+error for the width-512 linear connector at $N=512$.
+Neither MLP setting improves with either penalty family.
+Table~\ref{tab:numina-regularization} reports the best validation value
+within each penalty family, so these minima are development selections.
+Figure~\ref{fig:numina-regularization} retains all tested coefficients.
+This grid does not establish a decoding gain or a penalty effect across
+seeds, and it does not resolve regularization for the wider MLPs.
+
+\begin{table}[H]
+\caption{Matched regularization endpoints. Lower relative interface MSE
+is better. Each nonzero minimum is selected from four L2 or three AdamW
+coefficients using the same fitting validation split.}
+\label{tab:numina-regularization}
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\input{generated/numina_regularization_table.tex}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/numina_regularization.pdf}
+\caption{All 42 penalty endpoints relative to their matched zero-penalty
+validation error. Positive values indicate worse fitting validation.
+The two curves are separate objective-L2 and AdamW experiments.}
+\label{fig:numina-regularization}
+\end{figure}
+
+\begin{table}[H]
+\caption{Matched EAGLE-3 8B normalization comparison on 32 development
+questions after 128 updates. Throughput ratios use source reuse.}
+\label{tab:scale}
+\centering\small
+\setlength{\tabcolsep}{3.5pt}
+\input{generated/scale_table.tex}
+\end{table}
+
+\begin{table}[H]
+\caption{DFlash objective comparison on 32 development questions.
+Candidates share fitting data, update count, normalization and optimizer.
+Each ratio uses the source-reuse arm of that candidate's paired run.}
+\label{tab:objective}
+\centering\small
+\input{generated/objective_table.tex}
+\end{table}
+
+Relative error weights a record's feature mismatch by teacher magnitude.
+Squared error plus 0.1 times cosine distance combines coordinate error
+with directional agreement. Direct candidate-to-candidate throughput
+ratios are 1.0085 [1.0005, 1.0174] at 8B and 1.0114 [1.0046, 1.0177] at
+14B. These are modest gains with one fewer mixing coefficient.
+
+\clearpage
+\subsection{EAGLE-3 fitting replication}
+
+We repeat the fixed smaller-data fitting study with the EAGLE-3 source
+drafter and the 8B target. The grid contains dense, factored linear and
+GELU MLP connectors, with widths 128, 512 and 2048 for the latter two.
+Each primary fit uses 8,192 updates at $N\in\{512,2048\}$ and the same
+1,024 fitting-validation records. Two additional seeds repeat the dense
+$N=2048$ setting. This experiment uses the EAGLE input convention without
+the DFlash input normalization. Error values are interpreted within each
+drafter family's conditioning interface.
+
+\begin{table}[H]
+\caption{EAGLE-3 fitting validation. End denotes the 8,192-update endpoint.
+Best denotes the minimum saved fitting-validation error, with its update
+count. These are development selections for seed 1729, not decoding results.
+M weights counts millions of trainable mapper parameters.}
+\label{tab:eagle-small-capacity}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/eagle_small_capacity_table.tex}
+\end{table}
+
+The dense $N=512$ mapper reaches 0.21666 at 1,024 updates, then rises to
+0.24787 at the final update. Its endpoint is worse than the width-2048
+linear mapper, but its best saved validation value is better than that
+linear mapper's 0.22877. At $N=2048$, the dense and width-2048 linear
+minima are 0.21061 and 0.21132. Thus endpoint rankings alone can reflect
+different convergence trajectories. At every matched width in this grid,
+the MLP's best saved validation error exceeds the linear mapper's minimum.
+The three dense $N=2048$ endpoints range from 0.212034 to 0.212043.
+This narrow seed spread concerns one fitting setting. It does not establish
+seed stability for the other architectures or for decoding performance.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/eagle_small_epochs.pdf}
+\caption{EAGLE-3 fitting-validation trajectories at fixed distinct-data
+counts. Additional updates can worsen validation, most visibly for the
+dense mapper at $N=512$. The horizontal axis counts updates rather than
+new examples. The subsequent checkpoint comparison measures actual decoding.}
+\label{fig:eagle-small-epochs}
+\end{figure}
+
+\clearpage
+\subsection{Feature-validation minima and decoding}
+
+We compare each distinct saved feature-validation minimum with its
+8,192-update endpoint in two declared decoding campaigns. Each uses
+16 paired development questions, greedy decoding and a 256-token cap.
+Checkpoint selection precedes decoding. Table~\ref{tab:checkpoint-decoding}
+includes every distinct early-versus-endpoint pair in these campaigns.
+
+\begin{table}[H]
+\caption{Decoding throughput at the minimum feature-validation checkpoint
+relative to the same fit's endpoint. Intervals resample paired requests
+10,000 times. They are descriptive, without multiple-comparison adjustment,
+and do not measure variation across fitting seeds.}
+\label{tab:checkpoint-decoding}
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{generated/checkpoint_decoding_table.tex}
+\end{table}
+
+Lower feature-validation loss does not consistently predict faster decoding.
+For EAGLE-3's dense $N=512$ fit, the selected 1,024-update checkpoint
+retains 94.99\% of endpoint throughput, with interval [92.39, 97.59]\%.
+For the DFlash width-4096 MLP at $N=512$ and learning rate 0.0006,
+the selected 4,096-update checkpoint retains 97.77\%, with interval
+[96.09, 99.76]\%. Other intervals cross equal throughput. These results
+support treating feature regression as a surrogate and measuring decoding
+when selecting a connector. They do not establish full-answer quality
+or justify selection on untouched evaluation data.
+
+\begin{table}[H]
+\caption{Observed throughput ranges across three fitting seeds in a
+separate 16-question, 256-token development campaign. Selected uses each
+fit's minimum saved feature-validation checkpoint. These ranges describe
+the three measured fits and runtime variation, not confidence intervals.}
+\label{tab:seed-decoding}
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{generated/seed_decoding_table.tex}
+\end{table}
+
+All six settings in Table~\ref{tab:seed-decoding} use the same cached
+features and seeds 1729, 1730 and 1731. The dense $N=512$ endpoints
+span 184.34--184.68 tokens/s. The width-4096 $N=2048$ MLP improves on its
+$N=512$ counterpart, while the dense connector remains competitive.
+These short development runs do not establish the minimum sufficient
+data count or distinguish small architecture gaps from runtime variation.
+
+\clearpage
+\subsection{Longer development outputs for small-data mappers}
+
+We evaluate nine saved DFlash connectors on 128 paired MATH development
+questions with a 2,048-token cap, greedy decoding and the same source,
+target and native-drafter references. These exposed questions provide a
+larger development comparison than the 16-question, 256-token screen.
+They are separate from any untouched confirmation set. The continued
+width-512 fits reuse the same 2,048 distinct training examples.
+
+\begin{table}[H]
+\caption{Capped development outcomes for small-data DFlash fitting.
+Throughput retention uses the dense $N=2048$, 8,192-update connector.
+Intervals use 10,000 paired request bootstrap samples. Correct counts
+scored answers. Cap counts outputs reaching 2,048 tokens, which can include
+EOS exactly at the limit and are not exact truncation counts.}
+\label{tab:small-quality}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/small_quality_table.tex}
+\end{table}
+
+Dense fitting on 512 examples retains 97.78\% of the dense $N=2048$
+throughput, with interval [97.09, 98.47]\%. This establishes a lower-data
+performance point in this setting, but does not establish that 512 is
+minimal. The width-1024 linear mapper at $N=512$ retains 95.00\%, with
+interval [94.14, 95.85]\%, leaving its 95\% boundary unresolved.
+The width-4096 linear mapper is slightly below the dense connector in
+this larger sample, so the earlier short-screen point ranking should
+not be interpreted as an established architecture advantage.
+
+All nine connectors score 105 of 128 answers, compared with 104 for AR.
+Their paired accuracy-difference intervals are $[-0.03125,0.046875]$.
+These intervals do not establish a one-percentage-point noninferiority
+margin. Nine connector outputs and eleven AR outputs reach the token cap.
+The observed scores therefore concern the configured capped evaluation,
+not uncapped answer quality. Longer width-512 fitting gives modest
+throughput increases while remaining below the wider or dense connectors.
+This comparison does not treat additional updates as additional data.
+
+\clearpage
+\subsection{Input-only task complexity}
+
+We stratify the same 128 development requests using the benchmark's
+original difficulty levels and subjects, together with shared tokenized
+input length. Group definitions are fixed before computing subgroup
+outcomes. They do not use candidate success, generated output length or
+latency. This is a retrospective analysis of exposed development data,
+not a new confirmatory test. All twelve methods and all requests remain
+in the analysis.
+
+\begin{table}[H]
+\caption{Throughput retained from dense $N=2048$ within each MATH
+difficulty group, in percent with descriptive paired 95\% intervals.
+All fits use 8,192 updates except the continued width-512 fits, which use
+32,768 updates on the same 2,048 examples. For fitted maps, unspecified $N$ is 2,048.
+Intervals do not adjust for multiple subgroup comparisons or model selection.}
+\label{tab:task-difficulty}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/task_difficulty_table.tex}
+\end{table}
+
+Dense $N=512$ retains 97.4--97.9\% of dense $N=2048$ throughput across
+the three difficulty groups. The width-1024 linear map stays near the
+95\% boundary, while MLP-4096 retains 95.4--96.8\%. The smaller width-512
+maps remain slower in every group. These results describe the tested
+capacities and workloads. They do not establish an optimal size across settings.
+
+For levels 1--2, level 3 and levels 4--5, respectively, AR answers
+38/42, 19/21 and 47/65 questions correctly. Every mapper answers
+38/42, 18/21 and 49/65 correctly. All eleven AR cap hits occur in the
+highest difficulty group, as do eight of the nine mapper cap hits.
+Difficulty therefore coincides with changes in capped answer quality
+and output length. It is not a controlled intervention on decoding cost.
+
+Input-length bins of at most 64, 65--128, 129--256 and more than 256
+tokens contain 52, 57, 15 and 4 requests. In the final four-request
+group, dense $N=512$ retains 94.5\% [91.3, 96.4]\% and linear-1024 retains
+90.8\% [88.2, 94.4]\% of dense $N=2048$ throughput. The small sample and
+multiple comparisons make this a signal for replication, not evidence
+of a causal length effect or a new tuning rule. All seven original
+subject strata, input assignments, method outcomes and conservative
+paired accuracy intervals are retained in the accompanying artifacts.
+No additional generation or fitting is used for this analysis.
+
+\clearpage
+\subsection{Capacity replication with a 14B target}
+\label{app:target14-capacity}
+
+We repeat the fixed-data capacity comparison with Qwen3-14B for both
+DFlash and EAGLE-3. Each family has fourteen primary fits: dense,
+factored linear and GELU MLP widths 512, 1,024 and 4,096 at each of
+$N=512$ and $N=2048$. Two additional dense fits use seed 1730.
+All receive 8,192 batch-four updates at learning rate $6\times10^{-4}$,
+with no L2 penalty or weight decay. Validation uses the same 1,024
+records within each family. Training diagnostics use a 256-record prefix.
+The five target taps give 25,600 input dimensions and the output has
+2,560 dimensions. Dense therefore has 65.54M parameters, versus
+14.42M, 28.84M and 115.34M at the three matched factorized/MLP widths.
+Width 4,096 does not increase the maximum rank of a linear function
+beyond the output dimension.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/target14_dflash_fitting.pdf}
+\caption{DFlash with Qwen3-14B. Validation error across the saved
+training trajectory, with all capacities and both dense seeds retained.
+The decoding endpoint remains fixed at 8,192 updates.}
+\label{fig:target14-dflash-fitting}
+\end{figure}
+
+\begin{table}[H]
+\caption{DFlash-14B fixed endpoints. Throughput retention uses dense
+$N=2048$, seed 1729. Intervals are paired 95\% request-bootstrap
+intervals on sixteen exposed questions capped at 256 output tokens.
+They exclude fitting-seed and selection uncertainty.}
+\label{tab:target14-dflash}
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\input{generated/target14_dflash_table.tex}
+\end{table}
+
+With DFlash, the wide MLP at $N=2048$ has lower training error than
+dense, but higher validation error and lower measured throughput.
+The width-1024 linear map nearly matches dense throughput with fewer
+parameters. These comparisons use fixed endpoints, not checkpoints
+chosen after inspecting decoding. Every method reaches the output cap
+on these sixteen questions, so the short scores do not establish
+full-answer quality. The runtime includes AR and source-reuse controls.
+No native 14B DFlash checkpoint is substituted from another target.
+
+\clearpage
+\begin{figure}[H]
+\centering
+\includegraphics[width=.98\linewidth]{figures/target14_eagle3_fitting.pdf}
+\caption{EAGLE-3 with Qwen3-14B under the same data-count and update
+budgets. The width-4096 linear trajectory retains its intermediate
+validation spike. Curves show optimization behavior, not a ranking
+of decoding performance or a selected stopping rule.}
+\label{fig:target14-eagle-fitting}
+\end{figure}
+
+\begin{table}[H]
+\caption{EAGLE-3-14B fixed endpoints under its own runtime.
+Retention and intervals use the same within-family protocol as
+Table~\ref{tab:target14-dflash}. Absolute throughput across the two
+tables is not an algorithm-only comparison.}
+\label{tab:target14-eagle}
+\centering\scriptsize
+\setlength{\tabcolsep}{3pt}
+\input{generated/target14_eagle3_table.tex}
+\end{table}
+
+EAGLE-3 differs from DFlash in its fitting dynamics. At $N=512$,
+both dense seeds have their lowest saved validation error at 384
+updates, followed by substantial increases. At $N=2048$, the wide
+linear endpoint has lower validation error than dense, but nearly
+equal decoding throughput. Its intermediate spike also shows that
+the shared learning rate does not produce uniformly smooth training.
+These observations motivate matched learning-rate checks before
+attributing a difference to the mapper function class. Lower feature
+error alone does not establish a decoding gain. Full-answer quality,
+broader workloads and additional fitting seeds remain separate from
+this capped comparison.
+
+\clearpage
+\subsection{Matched warm-training budgets on 512 examples}
+
+We compare feature regression, connector cross-entropy (CE) and rank-32
+drafter LoRA on the same 512-example pool. CE updates the connector while
+LoRA holds the initial connector fixed. Both use target-greedy teacher
+labels on the last 15 proposal positions. An equal three-rate development
+screen selects learning rate $2\times10^{-5}$ for each adaptation family.
+Feature regression uses its declared rate $6\times10^{-4}$.
+The two LoRA seeds vary the update initialization and share the same
+initial mapper. They do not measure variation across initial mapper fits.
+
+We measure 91.413 seconds of optimizer-update time for the 8,192-update
+feature baseline and declare budgets of 0.25, 1 and 4 times that cost.
+CE and LoRA begin with a 128-update mapper, whose measured 1.546 seconds
+of training counts toward each budget. Each worker stops after the first
+completed update reaching its remaining budget. Recorded overshoot is at
+most one update, ranging from 0.002 to 0.201 seconds across the twelve fits.
+The three four-GPU fitting jobs finish in 2m33s, 2m35s and 7m12s.
+
+\begin{table}[H]
+\caption{Measured training costs and subsequent decoding in one common
+development campaign. Worker time includes model/cache setup, validation
+and export where performed, plus the measured initial mapper worker cost
+for CE and LoRA. It excludes Python startup and shared cache construction.
+Ratios compare against feature regression at the same warm budget.}
+\label{tab:timed-budget}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/timed_budget_table.tex}
+\end{table}
+
+\begin{table}[H]
+\caption{References measured within the same budget-decoding campaign.
+The initial mapper has 128 feature-regression updates. The 8,192-update
+reference is an existing saved checkpoint.}
+\label{tab:timed-controls}
+\centering\footnotesize
+\input{generated/timed_budget_controls_table.tex}
+\end{table}
+
+Feature regression reaches 145.05, 144.80 and 144.55 tokens/s at the
+three budgets. Relative to the quarter-budget fit, the 1-times and
+4-times fits retain 99.83\% [97.18, 102.53]\% and 99.66\%
+[97.35, 102.11]\%, respectively. These intervals do not establish a
+benefit from longer fitting. Connector CE retains 73.2--76.6\% of
+same-budget feature throughput, and the two LoRA seeds retain
+79.4--82.7\%. This result concerns the declared teacher-forced objective,
+initialization, rank and development-selected learning rates. It does not
+establish that other adaptation objectives or full drafter training fail.
+
+Warm training is a marginal cost with cached features available. The
+historical full-cache extraction took 712.58 seconds and produced
+292.8 GB. We reuse its first 512 training records and report the original
+construction cost separately. Dividing that cost by the record count
+would not measure a fresh 512-example extraction. The timed fits do not
+add training examples or repeat large-data scaling.
+
+All seventeen methods decode the same sixteen exposed development
+questions with a 256-token cap. Tables~\ref{tab:timed-budget}
+and~\ref{tab:timed-controls} report descriptive paired request bootstrap
+intervals. They do not provide full-answer quality, untouched confirmation
+or corrections for selecting among multiple comparisons. Absolute
+throughput is interpreted within this common campaign and its deterministic
+training/runtime configuration.
+
+\clearpage
+\section{External baselines in their public runtimes}
+\label{app:externalbaselines}
+
+We evaluate SD$^2$'s public frozen-drafter option and the released PARD
+parallel drafter on sixteen exposed MATH development requests with a
+256-token cap. Each system has a correct cached AR control using its
+own target runtime and identical pretokenized inputs. These are short
+development comparisons. Below we separately evaluate capped answer
+quality. Untouched confirmation remains a separate requirement.
+
+SD$^2$ trains 402,665,472 steering parameters with merged guidance from
+target layers 3, 16 and 33 into all drafter layers. Inherited target and
+drafter weights remain frozen. Each of six objective/rate settings sees
+512 distinct records once, using 128 batch-four updates and 95,835
+non-padding supervised positions. Records are capped at 192 tokens.
+Training takes 47.0--48.6 seconds per fit. The initial TVD and KL settings
+also have exact fitting replicas, whose costs remain in the experiment
+record. This supervision differs from the feature-regression and
+last-15-position adaptation objectives in the preceding study.
+
+\begin{table}[H]
+\caption{One-epoch SD$^2$ development comparison. Intervals resample
+paired requests 10,000 times and do not adjust for rate selection.
+Exact AR counts identical capped token sequences.}
+\label{tab:sd-square-development}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/sd_square_development_table.tex}
+\end{table}
+
+The public SD$^2$ evaluation configuration uses FP16 target storage,
+BF16 drafter and steering storage, and BF16 autocast under
+Transformers 4.52.4. We verify original FP32 training weights before
+conversion and separately fingerprint the BF16 inference tensors.
+The best fitted point, KL at $4\times10^{-6}$, retains 99.11\%
+[96.19, 101.62]\% of independent-drafter throughput. This screen does
+not establish a steering gain. We freeze this rate before checking
+additional epochs on the same small pool.
+
+\begin{table}[H]
+\caption{Released PARD with zero new-target fitting, Transformers
+4.51.3, BF16 weights, eager attention and static caches. The released
+checkpoint carries inherited proposer training.}
+\label{tab:pard-development}
+\centering\footnotesize
+\input{generated/pard_development_table.tex}
+\end{table}
+
+Every SD$^2$ committed token matches its actual verifier decision, and
+immediate versus deferred observation preserves tokens and acceptance.
+Each timed PARD request has a separate verifier-observed replica with
+identical raw output and acceptance counts. PARD's measured generation
+omits that added observer. Both timers include prefills and cache setup,
+preserve raw EOS/cap overshoot and exclude detokenization.
+Earlier failed exact-AR gates remain failed. Controlled cache, query and
+attention replays expose changes in rounded target scores, while
+future-query perturbations preserve earlier logits in the tested calls.
+The sequence differences in these tables require separate task-quality
+evidence. Absolute speeds across these public runtimes do not isolate
+algorithm effects, and shared model residency does not measure isolated
+serving memory.
+
+\clearpage
+\subsection{Additional epochs and capped answer quality}
+
+After the six-rate screen, we fix KL and the selected learning rate
+and fit for 1, 2, 4 and 8 epochs on the same 512 examples. These are
+four fresh fits, each with its own learning-rate decay horizon, rather
+than checkpoints from one training trajectory. The one-epoch fit exactly
+reproduces the selected earlier training fingerprint. All four endpoints
+are evaluated together on the same sixteen development requests, with
+the public SD$^2$ runtime and matched controls.
+
+\begin{table}[H]
+\caption{SD$^2$ epoch budget at fixed 512 distinct examples. Training KL
+is the mean over updates in each final epoch. It is not held-out loss.
+Independent-drafter throughput is 18.75 tokens/s. Intervals resample
+paired requests and do not adjust for model selection.}
+\label{tab:sd-square-epochs}
+\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\input{generated/sd_square_epoch_table.tex}
+\end{table}
+
+Training KL decreases from 0.3923 to 0.1254, while every fitted endpoint
+has a throughput point below the independent drafter. Additional epochs
+do not establish a decoding improvement in this fixed-pool setting.
+The highest-throughput fitted endpoint remains one epoch. We freeze
+this checkpoint before longer quality evaluation. This result concerns
+the tested frozen-drafter configuration, supervision and pool, and does
+not establish a general failure of SD$^2$ or its other training options.
+
+\begin{table}[H]
+\caption{PARD capped answer quality on 128 exposed MATH development
+requests, after an eight-request pilot passed. Both methods use the
+same 2048-token cap and public BF16 eager runtime. Cap hits include
+all outputs reaching the cap. None ends in EOS exactly at the cap.}
+\label{tab:pard-quality}
+\centering\footnotesize
+\input{generated/pard_quality_table.tex}
+\end{table}
+
+PARD has five beneficial and three adverse correctness discordances
+against AR, a difference of $+1.56$ percentage points. A conservative
+paired 95\% interval is $[-6.34,9.30]$ points: form exact 97.5\%
+Clopper--Pearson intervals for each discordance probability and combine
+their opposite endpoints using a Bonferroni bound. This construction
+requires IID request pairs and a fixed candidate. It does not establish
+the final one-point noninferiority margin. The descriptive paired
+bootstrap interval is $[-2.34,5.47]$ points. Sparse or absent discordances
+can make such intervals misleadingly narrow. The conservative method
+was fixed for final confirmation before generating that set, without
+changing its margin, sample count or reserve rules.
+
+PARD matches AR's full capped token sequence on 28 of 128 requests.
+Its mean output length is 664.5 tokens versus AR's 690.4, so the
+3.34-fold token-throughput ratio differs from the 3.47-fold request-time
+ratio. Every measured PARD request retains a separate, exactly matching
+verifier-observed replica. These are development outcomes under the
+specified runtime and scorer, not untouched confirmation or an isolated
+algorithm ranking across runtimes.
+
+\clearpage
+\begin{table}[H]
+\caption{Selected one-epoch SD$^2$ on the same 128 exposed MATH
+development requests, with a 2048-token cap. The public mixed-precision
+runtime and matched AR control are retained. Both have 11 cap-length
+outputs, none with EOS exactly at the cap.}
+\label{tab:sd-square-quality}
+\centering\footnotesize
+\input{generated/sd_square_quality_table.tex}
+\end{table}
+
+SD$^2$ and matched AR both score 103 of 128, with three beneficial
+and three adverse correctness discordances. The conservative paired
+95\% interval is $[-7.04,7.04]$ percentage points, which does not
+establish the one-point noninferiority margin. The descriptive paired
+bootstrap interval is $[-3.91,3.91]$ points. Full capped sequences agree
+on 42 requests. Mean output lengths are 679.1 versus 680.9 tokens,
+so the 1.60-fold token-throughput and request-time ratios are close.
+Both shards retain the same selected training and inference fingerprints,
+and saved answers reproduce under the pinned scorer.
+
+The public physical-buffer limit can end an untimed warmup before its
+token cap. We record this termination only during warmup. Measured
+requests must still reach EOS or the cap and pass all actual-verifier
+checks. A replacement eight-request pilot passed before the complete
+quality run. Failed preliminary attempts remain excluded from the
+reported timings. These results concern the tested frozen-drafter
+configuration and its public runtime, not all SD$^2$ training options.
+
+\clearpage
+\section{Acceptance and numerical agreement}
+\label{app:acceptance}
+
+We pool all recorded proposal cycles rather than averaging each request's
+mean. This weights cycles equally. DFlash's recorded length is one
+already target-selected position plus the accepted draft prefix.
+EAGLE-3's length follows its shared decoder's progress count. These
+quantities measure work advanced per cycle, including target-supplied
+progress. A proposed-token acceptance fraction requires separating those
+positions and accounting for the number proposed.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.95\linewidth]{figures/acceptance_survival.pdf}
+\caption{Historical 8B source-reuse comparisons. Each curve gives the
+fraction of recorded cycles reaching each position. Summing the curve
+values gives mean recorded progress per cycle. Solid and dashed lines
+show source reuse and RelaySpec, respectively.}
+\label{fig:survival}
+\end{figure}
+
+The main MATH-500 table reports measured full-sequence agreement with AR.
+A fresh diagnostic selects eight prompts with early differences and saves
+target inputs, cache lengths, positions and the two leading logits at
+every call. The DFlash paths share the same first differing choice across
+native, source and relay drafting. The observed BF16 logits include ties
+or changed ordering with gaps up to 0.25 at those positions. Such traces
+identify numerical score differences in the selected cases. They do not
+establish that all mismatches have the same cause. The task-quality
+intervals in Table~\ref{tab:quality} remain the empirical quality evidence.
+
+\section{Data checks and development exposure}
+\label{app:data}
+
+The 4,096-record fitting manifest contains distinct problems with solutions.
+The loader renders both fields before applying the 192-token cap.
+Repeating the manifest changes presentations, not distinct records.
+The 32-question development set informed normalization and objective
+choices. The historical 468-question complement is computed from saved
+full-run outputs and retains that exposure history.
+
+Normalized exact matching finds zero overlaps between the 4,096 fitting
+and 1,250 evaluation problem texts. For a second check, each text is split
+into unique normalized tokens. Token-set Jaccard overlap is the number of
+shared tokens divided by the number of tokens in either set. Each
+evaluation question is compared with its closest fitting record.
+Table~\ref{tab:similarity} reports the resulting similarities.
+
+\begin{table}[H]
+\caption{Closest fitting-to-evaluation token-set overlap. Threshold
+columns count evaluation records at or above the stated overlap.}
+\label{tab:similarity}
+\centering\small
+\input{generated/similarity_table.tex}
+\end{table}
+
+MATH-500 includes 47 questions above 0.80 overlap and four above 0.95.
+These shared templates qualify the interpretation of math generalization.
+The fixed-map code and conversation evaluations give additional task
+coverage without changing the fitted map.
+
+\clearpage
+\section{Fitting time and isolated memory}
+\label{app:cost}
+
+\begin{table}[H]
+\caption{Selected map size and warm fitting-loop duration on four RTX
+6000 Ada GPUs. Models are loaded before the recorded loop begins.}
+\label{tab:resource}
+\centering\small
+\input{generated/resource_table.tex}
+\end{table}
+
+The fitting-loop timer covers source and target feature computation and
+matrix optimization. A complete setup also loads model weights, writes
+the map, reloads it and initializes generation. Published original
+training counts in Table~\ref{tab:data-cost} provide context for the
+additional-data requirement. They are not a wall-time or token-budget
+comparison with fitting a new native drafter.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.83\linewidth]{figures/memory_reduction.pdf}
+\caption{Isolated EAGLE-3 peak allocated memory on RTX 6000 Ada.
+Each method runs in a fresh process on eight paired prompts per target.
+Source removal saves 7.80 GiB at 8B and 7.63 GiB at 14B.}
+\label{fig:memory}
+\end{figure}
+
+GPU peak counters are reset before the measured request. Allocated memory
+counts live tensor allocations and differs from reserved allocator
+memory. The mixed-arm processes used for timing are not the basis of
+this source-removal measurement.
+\section{Additional related work}
+\label{app:additionalrelated}
+\paragraph{Improving drafting.}
+EAGLE predicts future features with shifted tokens \citep{li2024eagle}.
+EAGLE-3 combines feature layers and simulated drafting steps
+\citep{li2025eagle3}. DFlash predicts a block in parallel
+\citep{chen2026dflash}, while Medusa uses several prediction heads
+\citep{cai2024medusa}. GRIFFIN addresses training-to-decoding token
+alignment \citep{hu2025griffin}. RepSpec changes the training structure
+\citep{huo2026repspec}, while VSD and Draft-OPD optimize accepted
+proposals \citep{zou2026vsd,lei2026draftopd}. RelaySpec inherits the
+trained drafter and changes only its conditioning input.
+
+\paragraph{Proposal structure and execution.}
+EAGLE-2 and OPT-Tree adapt proposal trees
+\citep{li2024eagle2,wang2025opttree}. SpecInfer organizes tree verification
+\citep{miao2024specinfer}. Distributed speculative inference and
+speculative speculative decoding overlap computation
+\citep{timor2025dsi,kumar2026ssd}. Draft \& Verify skips target layers
+\citep{zhang2024draftverify}, LayerSkip trains early exits
+\citep{elhoushi2024layerskip}, and Lookahead checks candidates without an
+auxiliary drafter \citep{fu2024lookahead}. RelaySpec retains an external
+drafter and holds its released proposal structure fixed. We evaluate the
+cost and accepted progress of changing its feature source.
+
+\section{Inherited drafter training context}
+\begin{figure}[H]
+\centering
+\includegraphics[width=.90\linewidth]{figures/reuse_tradeoff.pdf}
+\caption{Left: fraction of native target-specific drafter throughput
+retained by RelaySpec in paired MATH-500 runs. Right: published original
+DFlash and EAGLE-3 recipe sizes versus the additional RelaySpec fitting
+set. Recipe counts provide training-scale context, not a matched training
+experiment or an audit of each released checkpoint.}
+\label{fig:budget}
+\end{figure}
+
+\begin{table}[H]
+\caption{Original drafter training and additional target adaptation.
+Record counts describe different training stages and objectives.}
+\label{tab:data-cost}
+\centering\small
+\begin{tabular}{lrrl}
+\toprule
+Stage & Records & Relative to relay fit & Weights learned \\
+\midrule
+Published DFlash recipe \citep{chen2026dflash} & $\sim$800,000 & $\sim$195$\times$ & Drafter \\
+Published EAGLE-3 recipe \citep{li2025eagle3} & $\sim$532,000 & $\sim$130$\times$ & Drafter \\
+RelaySpec target adaptation & 4,096 & 1$\times$ & Feature map \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The DFlash recipe reports about 800K target-generated records. The
+EAGLE-3 recipe uses about 68K ShareGPT and 464K UltraChat entries.
+Relay fitting uses 0.51\% and 0.77\% of these respective record counts.
+This comparison describes marginal adaptation: the original drafter's
+training remains inherited. Record lengths, objectives and hardware differ,
+so these ratios do not represent equivalent reductions in training compute.
+The evaluated EAGLE-3 checkpoints come from DeepSpec, while the table's
+EAGLE-3 count refers specifically to the published training recipe.
+
+
+\end{document}

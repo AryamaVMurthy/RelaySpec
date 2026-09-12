@@ -1,0 +1,150 @@
+{
+  "trials": [
+    {
+      "name": "composition-mixed-dense-n2048-s1729",
+      "study": "matched_count_composition",
+      "architecture": "dense",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        2048,
+        8192
+      ],
+      "validation_records": 2048,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "report_domain_diagnostics": true,
+      "validation_required_domains": [
+        "general_instruction",
+        "math"
+      ],
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "composition-mixed-factorized512-n2048-s1729",
+      "study": "matched_count_composition",
+      "architecture": "factorized",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        2048,
+        8192
+      ],
+      "validation_records": 2048,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "width": 512,
+      "report_domain_diagnostics": true,
+      "validation_required_domains": [
+        "general_instruction",
+        "math"
+      ],
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "composition-mixed-mlp512-n2048-s1729",
+      "study": "matched_count_composition",
+      "architecture": "mlp",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        2048,
+        8192
+      ],
+      "validation_records": 2048,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "width": 512,
+      "report_domain_diagnostics": true,
+      "validation_required_domains": [
+        "general_instruction",
+        "math"
+      ],
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "composition-mixed-dense-n2048-s1730",
+      "study": "matched_count_composition",
+      "architecture": "dense",
+      "seed": 1730,
+      "steps": 8192,
+      "distinct_examples": 2048,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        2048,
+        8192
+      ],
+      "validation_records": 2048,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_exposure": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "fixed_passes": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "report_domain_diagnostics": true,
+      "validation_required_domains": [
+        "general_instruction",
+        "math"
+      ],
+      "cache_backend": "buffer",
+      "device_cache": false
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "status": "pass",
+  "hypothesis": "Compare direct-teacher rank1024 fitting against activation-aware compression on32 exposed MATH requests.",
+  "summary": {
+    "requests": 32,
+    "clusters": 32,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 36.324163156766424,
+        "throughput_ratio": 0.4149483125599353,
+        "throughput_ci95": [
+          0.3864167089132684,
+          0.4476098352071924
+        ],
+        "request_time_ratio": 0.4149483125599353,
+        "request_time_ci95": [
+          0.3864167089132684,
+          0.4476098352071924
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 19,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 112.76240507792681
+      },
+      "native_target_eagle3": {
+        "tokens_per_second": 89.91799189795614,
+        "throughput_ratio": 1.0271762860938622,
+        "throughput_ci95": [
+          0.9861520398744053,
+          1.0684245643211832
+        ],
+        "request_time_ratio": 1.0271762860938622,
+        "request_time_ci95": [
+          0.9861520398744053,
+          1.0684245643211832
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.300761421319797,
+        "request_seconds": 45.552618708927184
+      },
+      "relay_activation1024": {
+        "tokens_per_second": 84.67211559850341,
+        "throughput_ratio": 0.967250128704863,
+        "throughput_ci95": [
+          0.9463419896194101,
+          0.988720054106153
+        ],
+        "request_time_ratio": 0.9672501287048632,
+        "request_time_ci95": [
+          0.9463419896194101,
+          0.988720054106153
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 4.452709883103082,
+        "request_seconds": 48.37483947398141
+      },
+      "relay_base": {
+        "tokens_per_second": 87.53900680466015,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 4.597587719298246,
+        "request_seconds": 46.79056970728561
+      },
+      "relay_trained1024": {
+        "tokens_per_second": 84.4594570394675,
+        "throughput_ratio": 0.9648208281359126,
+        "throughput_ci95": [
+          0.9378011702172874,
+          0.9915735809227588
+        ],
+        "request_time_ratio": 0.9648208281359126,
+        "request_time_ci95": [
+          0.9378011702172873,
+          0.9915735809227587
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 4.438559322033898,
+        "request_seconds": 48.496641389559954
+      },
+      "relay_weight1024": {
+        "tokens_per_second": 52.0077625376298,
+        "throughput_ratio": 0.5941095796721007,
+        "throughput_ci95": [
+          0.5637990804333421,
+          0.6252823701784642
+        ],
+        "request_time_ratio": 0.5941095796721008,
+        "request_time_ci95": [
+          0.5637990804333423,
+          0.6252823701784642
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 2.6901226597805037,
+        "request_seconds": 78.75747388741001
+      }
+    }
+  },
+  "scope": "Exposed development questions at the recorded output cap; exploratory screen, no full-answer quality or confirmatory significance claim."
+}

@@ -1,0 +1,127 @@
+{
+  "methods": {
+    "native_ar": {
+      "decode_seconds": 105.92200072295964,
+      "decode_tokens_per_second": 38.6699644270612,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "mean_acceptance_length": 1.0,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 1.0
+    },
+    "native_target_dflash": {
+      "decode_seconds": 28.374148892238736,
+      "decode_tokens_per_second": 144.3567528864413,
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "mean_acceptance_length": 5.544658579646814,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 3.7330459188480813
+    },
+    "relay_base": {
+      "decode_seconds": 30.830583701841533,
+      "decode_tokens_per_second": 132.85509089324646,
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "mean_acceptance_length": 4.925118122403721,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 3.435614510166826
+    },
+    "relay_factor1024": {
+      "decode_seconds": 31.853634929750115,
+      "decode_tokens_per_second": 128.58815042720565,
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "mean_acceptance_length": 4.75806292470124,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 3.325272012332646
+    },
+    "relay_last2": {
+      "decode_seconds": 31.590866454411298,
+      "decode_tokens_per_second": 129.65772894867976,
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "mean_acceptance_length": 4.758116004336996,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 3.352931166855313
+    }
+  },
+  "paired_requests": 32,
+  "pairwise": {
+    "native_target_dflash_vs_native_ar": {
+      "candidate_method": "native_target_dflash",
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.7330459188480813
+    },
+    "relay_base_vs_native_ar": {
+      "candidate_method": "relay_base",
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.435614510166826
+    },
+    "relay_base_vs_native_target_dflash": {
+      "candidate_method": "relay_base",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.920324738793185
+    },
+    "relay_factor1024_vs_native_ar": {
+      "candidate_method": "relay_factor1024",
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.325272012332646
+    },
+    "relay_factor1024_vs_native_target_dflash": {
+      "candidate_method": "relay_factor1024",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.8907664370115052
+    },
+    "relay_factor1024_vs_relay_base": {
+      "candidate_method": "relay_factor1024",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.9678827477565806
+    },
+    "relay_factor1024_vs_relay_last2": {
+      "candidate_method": "relay_factor1024",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "relay_last2",
+      "throughput_speedup": 0.9917507538490246
+    },
+    "relay_last2_vs_native_ar": {
+      "candidate_method": "relay_last2",
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.352931166855313
+    },
+    "relay_last2_vs_native_target_dflash": {
+      "candidate_method": "relay_last2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.898175709526214
+    },
+    "relay_last2_vs_relay_base": {
+      "candidate_method": "relay_last2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.9759334631208383
+    }
+  }
+}

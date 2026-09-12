@@ -1,0 +1,57 @@
+{
+  "family": "dflash",
+  "transform": "fit_reduced_taps",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+  "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full.yaml",
+  "hypothesis": "Can nonlinearity compensate for early-layer inputs? Compare GELU MLP with exactly parameter-matched factorized linear map at width1950, and paired existing early-dense and late-dense controls.",
+  "ranks": [
+    256,
+    512,
+    1024
+  ],
+  "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt",
+  "trial": {
+    "name": "dflash-early-mlp-w1950",
+    "study": "early_layer_nonlinearity",
+    "architecture": "mlp",
+    "seed": 1729,
+    "steps": 8192,
+    "distinct_examples": 512,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      1024,
+      8192
+    ],
+    "validation_records": 1024,
+    "diagnostic_train_records": 256,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": true,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 8192,
+        "presentations": 32768
+      }
+    },
+    "target_layer_ids": [
+      1,
+      9
+    ],
+    "cache_backend": "mmap",
+    "device_cache": true,
+    "width": 1950
+  },
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+  "pilot_gate": "/home/aryama.murthy/relayspec-matrix-v2-20260905/outputs/rs-capacity-pilot-27725/batch-gate.json",
+  "access_gate": "/home/aryama.murthy/relayspec-cache-access-20260906/outputs/rs-cache-access-27730/cache-access-gate.json",
+  "requests": 8,
+  "max_new_tokens": 128,
+  "include_ar": false,
+  "include_native": false,
+  "controls": {
+    "relay_early": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28421/lane0/fitting/dflash-two-taps-1-9/step-008192.pt",
+    "relay_last2": "/home/aryama.murthy/relayspec-autoresearch-w03/outputs/rs-research-w03-28393/lane0/fitting/dflash-last2-n512/step-008192.pt"
+  },
+  "scope": "Exploratory eight-request GSM8K screen; layers1,9; 512 records,8192updates,seed1729. MLP and factorized maps each20966400 parameters; dense controls20971520. No information-theoretic impossibility claim from a negative fit."
+}

@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Primary fixed comparison: last-two-layer DFlash relay retains at least95% of full-five-layer relay throughput on64 fresh GSM8K requests.",
+  "summary": {
+    "requests": 16,
+    "clusters": 16,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 154.7498161870554,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 364.75,
+        "token_matches": 16,
+        "progress_per_cycle": 5.610576923076923,
+        "request_seconds": 37.71248421352357
+      },
+      "relay_last2": {
+        "tokens_per_second": 148.39796594605983,
+        "throughput_ratio": 0.9589540692357418,
+        "throughput_ci95": [
+          0.9374887572333037,
+          0.9785268881128457
+        ],
+        "request_time_ratio": 0.9589540692357418,
+        "request_time_ci95": [
+          0.9374887572333037,
+          0.9785268881128457
+        ],
+        "mean_output_tokens": 364.75,
+        "token_matches": 16,
+        "progress_per_cycle": 5.373848987108656,
+        "request_seconds": 39.326684586238116
+      }
+    }
+  },
+  "scope": "One shard of preregistered64-request confirmation-v1. Aggregate all4 shards before inference. Full-answer scoring and truncation analysis required; per-lane intervals are not the confirmatory test."
+}

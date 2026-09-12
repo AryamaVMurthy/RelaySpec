@@ -1,0 +1,35 @@
+{
+  "name": "eagle3-factor1024-n512",
+  "study": "reduced_taps",
+  "architecture": "factorized",
+  "seed": 1729,
+  "steps": 8192,
+  "distinct_examples": 512,
+  "learning_rate": 0.0006,
+  "l2_weight": 0.0,
+  "weight_decay": 0.0,
+  "checkpoint_steps": [
+    1024,
+    8192
+  ],
+  "validation_records": 1024,
+  "diagnostic_train_records": 256,
+  "feature_objective": "relative_interface_mse",
+  "normalize_input": false,
+  "budget_panels": {
+    "fixed_updates": {
+      "checkpoint_step": 8192,
+      "presentations": 32768
+    }
+  },
+  "target_layer_ids": [
+    1,
+    9,
+    17,
+    25,
+    33
+  ],
+  "cache_backend": "buffer",
+  "device_cache": false,
+  "width": 1024
+}

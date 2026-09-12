@@ -1,0 +1,69 @@
+protocol_version: 1
+run_name: composition-evaluation-pilot
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 256
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/submission/scaling/composition-small-v1/evaluation-pilot-manifest.json
+  benchmarks:
+  - math500
+  - gsm8k
+  - humaneval
+  - mtbench
+  methods:
+  - native_ar
+  - native_target_dflash
+  - optimized_source_reuse
+  - relay_composition_math_dense_n2048_s1729
+  - relay_composition_math_factorized512_n2048_s1729
+  - relay_composition_math_mlp512_n2048_s1729
+  - relay_composition_math_dense_n2048_s1730
+  - relay_composition_mixed_dense_n2048_s1729
+  - relay_composition_mixed_factorized512_n2048_s1729
+  - relay_composition_mixed_mlp512_n2048_s1729
+  - relay_composition_mixed_dense_n2048_s1730
+  max_prompts: 8
+  warmups: 1
+  block_size: 16
+  profile_regions: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants:
+    relay_composition_math_dense_n2048_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-math-full-28137/composition-math-dense-n2048-s1729/step-008192.pt
+    relay_composition_math_factorized512_n2048_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-math-full-28137/composition-math-factorized512-n2048-s1729/step-008192.pt
+    relay_composition_math_mlp512_n2048_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-math-full-28137/composition-math-mlp512-n2048-s1729/step-008192.pt
+    relay_composition_math_dense_n2048_s1730: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-math-full-28137/composition-math-dense-n2048-s1730/step-008192.pt
+    relay_composition_mixed_dense_n2048_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-mixed-full-28138/composition-mixed-dense-n2048-s1729/step-008192.pt
+    relay_composition_mixed_factorized512_n2048_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-mixed-full-28138/composition-mixed-factorized512-n2048-s1729/step-008192.pt
+    relay_composition_mixed_mlp512_n2048_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-mixed-full-28138/composition-mixed-mlp512-n2048-s1729/step-008192.pt
+    relay_composition_mixed_dense_n2048_s1730: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-comp-mixed-full-28138/composition-mixed-dense-n2048-s1730/step-008192.pt
+native_target_proposer:
+  id: z-lab/Qwen3-8B-DFlash-b16
+  revision: 9b41424b7109f9c5413454f481b09a82b85333f4

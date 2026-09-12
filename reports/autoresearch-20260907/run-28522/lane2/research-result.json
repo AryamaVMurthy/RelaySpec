@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "hypothesis": "Do selective-capture peak-memory savings persist when both paths immediately release prefill outputs and concatenated features after conditioning?",
+  "summary": {
+    "requests": 2,
+    "clusters": 2,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 6.217453410082319,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 64.0,
+        "token_matches": 2,
+        "progress_per_cycle": 1.4651162790697674,
+        "request_seconds": 20.587206941097975
+      },
+      "relay_selected": {
+        "tokens_per_second": 6.210609143023074,
+        "throughput_ratio": 0.9988991848257124,
+        "throughput_ci95": [
+          0.9965079348951716,
+          1.0012835725635758
+        ],
+        "request_time_ratio": 0.9988991848257124,
+        "request_time_ci95": [
+          0.9965079348951715,
+          1.0012835725635758
+        ],
+        "mean_output_tokens": 64.0,
+        "token_matches": 2,
+        "progress_per_cycle": 1.4651162790697674,
+        "request_seconds": 20.60989462584257
+      }
+    }
+  },
+  "scope": "Synthetic document,480 or900 paragraphs; actual token counts recorded by tokenizer. Two repetitions with reversed method order. Same checkpoint and resident candidates for full-state and selective capture. Memory/trajectory diagnostic, not task quality or independent-sample inference. Lifetime control: both methods release prefill buffers after conditioning; this isolates retained-layer capture from avoidable decode-time prefill residency.",
+  "duplicate_control": {
+    "status": "pass",
+    "differences": []
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "variants": {
+    "relay_base": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28400/lane3/native-fc.pt",
+      "sha256": "ece1269540becf19b73b75b0ca48a5dfd6178ffe372c6606870efbbab8ae580a",
+      "parameters": 83886080,
+      "resident_parameter_bytes": 167772160,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ]
+    },
+    "relay_math": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28430/lane2/fitting/native-two-composition-math/step-008192.pt",
+      "sha256": "e380e912999b05eedebe1075b00559b72dc54c096762bc0e9b5a17161a17582c",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    },
+    "relay_mixed": {
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28430/lane3/fitting/native-two-composition-mixed/step-008192.pt",
+      "sha256": "01852332da8fb98d11f4c416f52448e827ce200d8fcd5caa10f46a0da3ffd165",
+      "parameters": 33554432,
+      "resident_parameter_bytes": 67108864,
+      "target_layer_ids": [
+        25,
+        33
+      ]
+    }
+  },
+  "adapted_drafter_variants": [],
+  "methods": [
+    "native_target_dflash",
+    "relay_base",
+    "relay_math",
+    "relay_mixed"
+  ],
+  "measurement": "All candidates and baselines measured on the same requests with rotated method order. All candidate maps resident during every arm. Memory is campaign residency, not isolated deployment."
+}

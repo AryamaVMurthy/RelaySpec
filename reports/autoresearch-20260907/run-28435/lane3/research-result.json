@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "hypothesis": "Can nonlinearity compensate for early-layer inputs? Compare GELU MLP with exactly parameter-matched factorized linear map at width1950, and paired existing early-dense and late-dense controls.",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 88.65182620487398,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.5064935064935066,
+        "request_seconds": 11.550805480685085
+      },
+      "relay_early": {
+        "tokens_per_second": 50.04951309442349,
+        "throughput_ratio": 0.5645626856998894,
+        "throughput_ci95": [
+          0.5308191581460135,
+          0.6011663716508617
+        ],
+        "request_time_ratio": 0.5645626856998894,
+        "request_time_ci95": [
+          0.5308191581460135,
+          0.6011663716508617
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 2.50363196125908,
+        "request_seconds": 20.4597394997254
+      },
+      "relay_last2": {
+        "tokens_per_second": 82.09163765736534,
+        "throughput_ratio": 0.9260005255577243,
+        "throughput_ci95": [
+          0.8751385355462232,
+          0.9828682280028744
+        ],
+        "request_time_ratio": 0.9260005255577243,
+        "request_time_ci95": [
+          0.8751385355462232,
+          0.9828682280028744
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.164,
+        "request_seconds": 12.473864929750562
+      },
+      "relay_reduced": {
+        "tokens_per_second": 50.84561354191511,
+        "throughput_ratio": 0.5735427652038562,
+        "throughput_ci95": [
+          0.5377434872139067,
+          0.6089734661773475
+        ],
+        "request_time_ratio": 0.5735427652038563,
+        "request_time_ci95": [
+          0.5377434872139067,
+          0.6089734661773475
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 8,
+        "progress_per_cycle": 2.5555555555555554,
+        "request_seconds": 20.13939706236124
+      }
+    }
+  },
+  "scope": "Exploratory eight-request GSM8K screen; layers1,9; 512 records,8192updates,seed1729. MLP and factorized maps each20966400 parameters; dense controls20971520. No information-theoretic impossibility claim from a negative fit."
+}

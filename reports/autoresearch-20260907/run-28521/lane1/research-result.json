@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "hypothesis": "Does capturing only requested target layers reduce measured peak allocation while preserving exact outputs and decoding trajectory for full or two-layer mappers?",
+  "summary": {
+    "requests": 2,
+    "clusters": 2,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 11.342014199254258,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 64.0,
+        "token_matches": 2,
+        "progress_per_cycle": 1.5,
+        "request_seconds": 11.285473439842463
+      },
+      "relay_selected": {
+        "tokens_per_second": 11.329692088807409,
+        "throughput_ratio": 0.9989135871080412,
+        "throughput_ci95": [
+          0.9978643111841524,
+          0.9999563034496259
+        ],
+        "request_time_ratio": 0.9989135871080413,
+        "request_time_ci95": [
+          0.9978643111841523,
+          0.9999563034496259
+        ],
+        "mean_output_tokens": 64.0,
+        "token_matches": 2,
+        "progress_per_cycle": 1.5,
+        "request_seconds": 11.297747458331287
+      }
+    }
+  },
+  "scope": "Synthetic document,480 or900 paragraphs; actual token counts recorded by tokenizer. Two repetitions with reversed method order. Same checkpoint and resident candidates for full-state and selective capture. Memory/trajectory diagnostic, not task quality or independent-sample inference.",
+  "duplicate_control": {
+    "status": "pass",
+    "differences": []
+  }
+}

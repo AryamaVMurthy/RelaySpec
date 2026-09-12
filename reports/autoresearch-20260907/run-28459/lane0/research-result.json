@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Does full-runtime FP32 without TF32 improve greedy AR/speculative output agreement relative to BF16 on the same sixteen questions?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 47.52009566426227,
+        "throughput_ratio": 0.2818642682433705,
+        "throughput_ci95": [
+          0.261502012984061,
+          0.31198986834468356
+        ],
+        "request_time_ratio": 0.2941940378613409,
+        "request_time_ci95": [
+          0.26516090552014276,
+          0.33591957413035745
+        ],
+        "mean_output_tokens": 245.75,
+        "token_matches": 3,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 41.371970584616065
+      },
+      "relay_base": {
+        "tokens_per_second": 168.59212400499067,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 256.5,
+        "token_matches": 8,
+        "progress_per_cycle": 4.949519230769231,
+        "request_seconds": 12.17138708056882
+      }
+    }
+  },
+  "scope": "Numerical diagnostic, all source/draft/target/mapper weights run in the stated precision. Same BF16-fitted mapper checkpoint is cast for FP32 execution. Not a matched-precision production speed comparison across lanes."
+}

@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "hypothesis": "Can parameter-matched nonlinearity recover the late-two-layer throughput deficit for the0.6B verifier, replicated at two fitting seeds?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "relay_base": {
+        "tokens_per_second": 163.5050242142229,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 201.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.588068181818182,
+        "request_seconds": 9.83456017775461
+      },
+      "relay_late_dense": {
+        "tokens_per_second": 137.79876546385518,
+        "throughput_ratio": 0.8427800070737422,
+        "throughput_ci95": [
+          0.808070105161973,
+          0.8795404293911168
+        ],
+        "request_time_ratio": 0.8427800070737422,
+        "request_time_ci95": [
+          0.808070105161973,
+          0.8795404293911169
+        ],
+        "mean_output_tokens": 201.0,
+        "token_matches": 8,
+        "progress_per_cycle": 3.762237762237762,
+        "request_seconds": 11.669190174434334
+      },
+      "relay_reduced": {
+        "tokens_per_second": 137.7008346786742,
+        "throughput_ratio": 0.8421810604318783,
+        "throughput_ci95": [
+          0.8149811266385782,
+          0.8731667392506
+        ],
+        "request_time_ratio": 0.8421810604318785,
+        "request_time_ci95": [
+          0.8149811266385782,
+          0.8731667392506
+        ],
+        "mean_output_tokens": 201.0,
+        "token_matches": 8,
+        "progress_per_cycle": 3.762237762237762,
+        "request_seconds": 11.677489128895104
+      }
+    }
+  },
+  "scope": "Eight exposed GSM8K requests,512output cap,512records8192updates. MLP and factorized width1137 have5239296 parameters, versus5242880 for paired late dense. Two fitting seeds share evaluation questions, not independent samples."
+}

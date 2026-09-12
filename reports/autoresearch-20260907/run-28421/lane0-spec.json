@@ -1,0 +1,48 @@
+{
+  "family": "dflash",
+  "transform": "fit_reduced_taps",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+  "config": "configs/submission/confirmation-gsm8k-20260906/frozen-dense-v1/dflash-full.yaml",
+  "hypothesis": "At identical mapper parameter count and fitting budget, compare early or spaced target layers with the previously measured late-two interface. Tests depth information rather than capacity alone.",
+  "ranks": [
+    256,
+    512,
+    1024
+  ],
+  "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt",
+  "trial": {
+    "name": "dflash-two-taps-1-9",
+    "study": "reduced_taps",
+    "architecture": "dense",
+    "seed": 1729,
+    "steps": 8192,
+    "distinct_examples": 512,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      1024,
+      8192
+    ],
+    "validation_records": 1024,
+    "diagnostic_train_records": 256,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": true,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 8192,
+        "presentations": 32768
+      }
+    },
+    "target_layer_ids": [
+      1,
+      9
+    ],
+    "cache_backend": "mmap",
+    "device_cache": true
+  },
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/numina-dflash8b-27723",
+  "pilot_gate": "/home/aryama.murthy/relayspec-matrix-v2-20260905/outputs/rs-capacity-pilot-27725/batch-gate.json",
+  "access_gate": "/home/aryama.murthy/relayspec-cache-access-20260906/outputs/rs-cache-access-27730/cache-access-gate.json",
+  "requests": 16
+}

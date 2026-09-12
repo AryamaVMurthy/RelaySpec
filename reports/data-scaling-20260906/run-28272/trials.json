@@ -1,0 +1,136 @@
+{
+  "trials": [
+    {
+      "name": "dense-n4096-s1729",
+      "study": "expanded_distinct_data",
+      "architecture": "dense",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 4096,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_updates": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "one_epoch": {
+          "checkpoint_step": 1024,
+          "presentations": 4096
+        }
+      },
+      "cache_backend": "mmap",
+      "device_cache": false
+    },
+    {
+      "name": "dense-n8192-s1729",
+      "study": "expanded_distinct_data",
+      "architecture": "dense",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 8192,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_updates": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "one_epoch": {
+          "checkpoint_step": 2048,
+          "presentations": 8192
+        }
+      },
+      "cache_backend": "mmap",
+      "device_cache": false
+    },
+    {
+      "name": "dense-n16384-s1729",
+      "study": "expanded_distinct_data",
+      "architecture": "dense",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 16384,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_updates": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "one_epoch": {
+          "checkpoint_step": 4096,
+          "presentations": 16384
+        }
+      },
+      "cache_backend": "mmap",
+      "device_cache": false
+    },
+    {
+      "name": "dense-n32768-s1729",
+      "study": "expanded_distinct_data",
+      "architecture": "dense",
+      "seed": 1729,
+      "steps": 8192,
+      "distinct_examples": 32768,
+      "learning_rate": 0.0006,
+      "l2_weight": 0.0,
+      "weight_decay": 0.0,
+      "checkpoint_steps": [
+        1024,
+        2048,
+        4096,
+        8192
+      ],
+      "validation_records": 1024,
+      "diagnostic_train_records": 256,
+      "feature_objective": "relative_interface_mse",
+      "normalize_input": true,
+      "budget_panels": {
+        "fixed_updates": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        },
+        "one_epoch": {
+          "checkpoint_step": 8192,
+          "presentations": 32768
+        }
+      },
+      "cache_backend": "mmap",
+      "device_cache": false
+    }
+  ]
+}

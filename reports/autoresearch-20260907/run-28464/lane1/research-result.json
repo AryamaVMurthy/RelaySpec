@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Does within-precision greedy AR agreement improve under full FP32 for the main8B verifier on the same sixteen questions used for the0.6B diagnostic?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 21.330406479840235,
+        "throughput_ratio": 0.24578219464631276,
+        "throughput_ci95": [
+          0.2114717310981626,
+          0.2807468260263889
+        ],
+        "request_time_ratio": 0.2457821946463128,
+        "request_time_ci95": [
+          0.2114717310981626,
+          0.2807468260263889
+        ],
+        "mean_output_tokens": 305.5,
+        "token_matches": 8,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 114.57821970293298
+      },
+      "relay_base": {
+        "tokens_per_second": 86.78580851039787,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 305.5,
+        "token_matches": 8,
+        "progress_per_cycle": 5.6682134570765665,
+        "request_seconds": 28.161286297254264
+      }
+    }
+  },
+  "scope": "Eight exposed GSM8K questions per shard, two shards per precision. Same frozen8B dense mapper. FP32 changes all model/mapper execution and kernel dispatch, with TF32 disabled. Numerical diagnostic, not proof of exactness for all prompts."
+}

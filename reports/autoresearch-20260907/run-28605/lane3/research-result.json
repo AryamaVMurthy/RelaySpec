@@ -1,0 +1,114 @@
+{
+  "status": "pass",
+  "hypothesis": "Does code-focused calibration improve native EAGLE code decoding, and does a third feature layer reduce sensitivity to calibration domain?",
+  "summary": {
+    "requests": 8,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_eagle3": {
+        "tokens_per_second": 91.25884610556173,
+        "throughput_ratio": 1.0002192603697382,
+        "throughput_ci95": [
+          0.9980711051272378,
+          1.0024169741276232
+        ],
+        "request_time_ratio": 1.0002192603697384,
+        "request_time_ci95": [
+          0.9980711051272377,
+          1.0024169741276232
+        ],
+        "mean_output_tokens": 400.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.0585443037974684,
+        "request_seconds": 35.065093813464046
+      },
+      "relay_base": {
+        "tokens_per_second": 91.23884104354003,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 400.0,
+        "token_matches": 8,
+        "progress_per_cycle": 5.0585443037974684,
+        "request_seconds": 35.072782198898494
+      },
+      "relay_code_2layers": {
+        "tokens_per_second": 87.29334617537309,
+        "throughput_ratio": 0.9567564118193466,
+        "throughput_ci95": [
+          0.9350436007270976,
+          0.9798789861779953
+        ],
+        "request_time_ratio": 0.9567564118193466,
+        "request_time_ci95": [
+          0.9350436007270976,
+          0.9798789861779953
+        ],
+        "mean_output_tokens": 400.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.83939393939394,
+        "request_seconds": 36.658005909994245
+      },
+      "relay_code_3layers": {
+        "tokens_per_second": 89.76490660356654,
+        "throughput_ratio": 0.9838453182535483,
+        "throughput_ci95": [
+          0.9706098535244188,
+          0.9959700292079546
+        ],
+        "request_time_ratio": 0.9838453182535483,
+        "request_time_ci95": [
+          0.9706098535244188,
+          0.9959700292079545
+        ],
+        "mean_output_tokens": 400.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.9673405909797825,
+        "request_seconds": 35.64867520146072
+      },
+      "relay_math_2layers": {
+        "tokens_per_second": 85.11931142545819,
+        "throughput_ratio": 0.9329284595454085,
+        "throughput_ci95": [
+          0.8884866927123896,
+          0.9623018011141049
+        ],
+        "request_time_ratio": 0.9329284595454086,
+        "request_time_ci95": [
+          0.8884866927123897,
+          0.9623018011141048
+        ],
+        "mean_output_tokens": 400.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.716395864106351,
+        "request_seconds": 37.59428907977417
+      },
+      "relay_math_3layers": {
+        "tokens_per_second": 89.56416207490858,
+        "throughput_ratio": 0.9816451091500353,
+        "throughput_ci95": [
+          0.9646086096516004,
+          1.0061198485579408
+        ],
+        "request_time_ratio": 0.9816451091500354,
+        "request_time_ci95": [
+          0.9646086096516004,
+          1.0061198485579406
+        ],
+        "mean_output_tokens": 400.0,
+        "token_matches": 8,
+        "progress_per_cycle": 4.962732919254658,
+        "request_seconds": 35.72857631742954
+      }
+    }
+  },
+  "scope": "All four frozen calibration-domain/capacity fits retained on32 exposed MBPP tasks, four disjoint8-task shards. Six methods paired within each worker including released native and repacked full projection.1024token cap. Pilot first8 are a subset, not an independent confirmation. Same512records128updates across fits but token exposures differ. All lanes540seconds."
+}

@@ -1,0 +1,86 @@
+{"packages_match": true, "python": "3.12.13 (main, May 10 2026, 19:30:01) [Clang 22.1.3 ]", "platform": "Linux-5.15.0-187-generic-x86_64-with-glibc2.35"}
+{"train": {"examples": 512, "full_tokens": 655639, "sampled_positions": 164288, "bf16_pair_bytes": 10935009280}}
+INFO 09-07 16:36:47 [api_utils.py:272] non-default args: {'runner': 'pooling', 'dtype': 'bfloat16', 'max_model_len': 5120, 'enable_prefix_caching': False, 'gpu_memory_utilization': 0.8, 'max_num_batched_tokens': 8192, 'max_num_seqs': 16, 'disable_log_stats': True, 'hf_overrides': {'architectures': ['CaptureQwen3ForCausalLM']}, 'enable_chunked_prefill': False, 'pooler_config': {'task': 'token_embed'}, 'attention_config': AttentionConfig(backend=<AttentionBackendEnum.FLASH_ATTN: 'vllm.v1.attention.backends.flash_attn.FlashAttentionBackend'>, minimax_m3_msa_decode_backend='triton', backend_per_kind={}, flash_attn_version=None, use_prefill_decode_attention=False, flash_attn_max_num_splits_for_cuda_graph=32, tq_max_kv_splits_for_cuda_graph=32, use_trtllm_attention=None, disable_flashinfer_q_quantization=False, mla_prefill_backend=None, use_prefill_query_quantization=False, use_fp4_indexer_cache=None, indexer_kv_dtype='auto', use_non_causal=False, sparse_mla_force_mqa=False, flex_attn_block_m=None, flex_attn_block_n=None, flex_attn_q_block_size=None, flex_attn_kv_block_size=None), 'model': '/scratch/aryama.murthy/transfer-reproduction-20260907/quick512-work/models/8b/target'}
+INFO 09-07 16:36:47 [api_utils.py:272] non-default args: {'runner': 'pooling', 'dtype': 'bfloat16', 'max_model_len': 5120, 'enable_prefix_caching': False, 'gpu_memory_utilization': 0.8, 'max_num_batched_tokens': 8192, 'max_num_seqs': 16, 'disable_log_stats': True, 'hf_overrides': {'architectures': ['CaptureQwen3ForCausalLM']}, 'enable_chunked_prefill': False, 'pooler_config': {'task': 'token_embed'}, 'attention_config': AttentionConfig(backend=<AttentionBackendEnum.FLASH_ATTN: 'vllm.v1.attention.backends.flash_attn.FlashAttentionBackend'>, minimax_m3_msa_decode_backend='triton', backend_per_kind={}, flash_attn_version=None, use_prefill_decode_attention=False, flash_attn_max_num_splits_for_cuda_graph=32, tq_max_kv_splits_for_cuda_graph=32, use_trtllm_attention=None, disable_flashinfer_q_quantization=False, mla_prefill_backend=None, use_prefill_query_quantization=False, use_fp4_indexer_cache=None, indexer_kv_dtype='auto', use_non_causal=False, sparse_mla_force_mqa=False, flex_attn_block_m=None, flex_attn_block_n=None, flex_attn_q_block_size=None, flex_attn_kv_block_size=None), 'model': '/scratch/aryama.murthy/transfer-reproduction-20260907/quick512-work/models/4b/target'}
+INFO 09-07 16:36:54 [model.py:672] Resolved architecture: CaptureQwen3ForCausalLM
+INFO 09-07 16:36:54 [model.py:1965] Using max model len 5120
+INFO 09-07 16:36:54 [kernel.py:308] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'])
+WARNING 09-07 16:36:54 [vllm.py:1485] Pooling models do not support full cudagraphs. Overriding cudagraph_mode to PIECEWISE.
+INFO 09-07 16:36:54 [model.py:672] Resolved architecture: CaptureQwen3ForCausalLM
+INFO 09-07 16:36:54 [model.py:1965] Using max model len 5120
+INFO 09-07 16:36:54 [kernel.py:308] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'])
+WARNING 09-07 16:36:54 [vllm.py:1485] Pooling models do not support full cudagraphs. Overriding cudagraph_mode to PIECEWISE.
+Traceback (most recent call last):
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/quick512-package/src/capture.py", line 80, in <module>
+    else:capture(a)
+         ^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/quick512-package/src/capture.py", line 44, in capture
+    llm=LLM(model=str(model(a.size)),runner='pooling',hf_overrides={'architectures':['CaptureQwen3ForCausalLM']},pooler_config={'task':'token_embed'},dtype='bfloat16',max_model_len=5120,max_num_seqs=16,max_num_batched_tokens=8192,gpu_memory_utilization=.8,enable_chunked_prefill=False,enable_prefix_caching=False,attention_config={'backend':'FLASH_ATTN'})
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/entrypoints/llm.py", line 343, in __init__
+    self.llm_engine = LLMEngine.from_engine_args(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py", line 179, in from_engine_args
+    return cls(
+           ^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py", line 105, in __init__
+    self.engine_core = EngineCoreClient.make_client(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 110, in make_client
+    return SyncMPClient(vllm_config, executor_class, log_stats)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 812, in __init__
+    super().__init__(
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 589, in __init__
+    self.input_socket = self.resources.input_socket = make_zmq_socket(
+                                                      ^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/utils/network_utils.py", line 364, in make_zmq_socket
+    socket.bind(path)
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/zmq/sugar/socket.py", line 322, in bind
+    super().bind(addr)
+  File "zmq/backend/cython/_zmq.py", line 1002, in zmq.backend.cython._zmq.Socket.bind
+zmq.error.ZMQError: ipc path "/scratch/aryama.murthy/transfer-reproduction-20260907/quick512-work/tmp/0dcc7d5c-439e-4694-b3ec-5811f7ed034c" is longer than 107 characters (sizeof(sockaddr_un.sun_path)). zmq.IPC_PATH_MAX_LEN constant can be used to check addr length (if it is defined). (addr='ipc:///scratch/aryama.murthy/transfer-reproduction-20260907/quick512-work/tmp/0dcc7d5c-439e-4694-b3ec-5811f7ed034c')
+Traceback (most recent call last):
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/quick512-package/src/capture.py", line 80, in <module>
+    else:capture(a)
+         ^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/quick512-package/src/capture.py", line 44, in capture
+    llm=LLM(model=str(model(a.size)),runner='pooling',hf_overrides={'architectures':['CaptureQwen3ForCausalLM']},pooler_config={'task':'token_embed'},dtype='bfloat16',max_model_len=5120,max_num_seqs=16,max_num_batched_tokens=8192,gpu_memory_utilization=.8,enable_chunked_prefill=False,enable_prefix_caching=False,attention_config={'backend':'FLASH_ATTN'})
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/entrypoints/llm.py", line 343, in __init__
+    self.llm_engine = LLMEngine.from_engine_args(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py", line 179, in from_engine_args
+    return cls(
+           ^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/v1/engine/llm_engine.py", line 105, in __init__
+    self.engine_core = EngineCoreClient.make_client(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 110, in make_client
+    return SyncMPClient(vllm_config, executor_class, log_stats)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 812, in __init__
+    super().__init__(
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/v1/engine/core_client.py", line 589, in __init__
+    self.input_socket = self.resources.input_socket = make_zmq_socket(
+                                                      ^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/vllm/utils/network_utils.py", line 364, in make_zmq_socket
+    socket.bind(path)
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/package/.venv/lib/python3.12/site-packages/zmq/sugar/socket.py", line 322, in bind
+    super().bind(addr)
+  File "zmq/backend/cython/_zmq.py", line 1002, in zmq.backend.cython._zmq.Socket.bind
+zmq.error.ZMQError: ipc path "/scratch/aryama.murthy/transfer-reproduction-20260907/quick512-work/tmp/6a97ccd2-c96a-49f6-be3d-5653c43ca818" is longer than 107 characters (sizeof(sockaddr_un.sun_path)). zmq.IPC_PATH_MAX_LEN constant can be used to check addr length (if it is defined). (addr='ipc:///scratch/aryama.murthy/transfer-reproduction-20260907/quick512-work/tmp/6a97ccd2-c96a-49f6-be3d-5653c43ca818')
+Traceback (most recent call last):
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/quick512-package/reproduce.py", line 56, in <module>
+    if len(gpus)>=2:parallel(tasks,'capture')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/scratch/aryama.murthy/transfer-reproduction-20260907/quick512-package/reproduce.py", line 31, in parallel
+    codes=[x.wait() for x in children];assert not any(codes),codes
+                                              ^^^^^^^^^^^^^^
+AssertionError: [1, 1]

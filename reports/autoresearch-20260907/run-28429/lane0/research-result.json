@@ -1,0 +1,97 @@
+{
+  "status": "pass",
+  "hypothesis": "Does distilled native late-layer compression generalize across workloads and offer a useful parameter/acceptance tradeoff against released native and rank1536 SVD?",
+  "summary": {
+    "requests": 32,
+    "clusters": 32,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_dflash": {
+        "tokens_per_second": 137.81904209083137,
+        "throughput_ratio": 0.99508594388001,
+        "throughput_ci95": [
+          0.9882468352397199,
+          1.0015933049534385
+        ],
+        "request_time_ratio": 0.99508594388001,
+        "request_time_ci95": [
+          0.9882468352397199,
+          1.0015933049534385
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.3740554156171285,
+        "request_seconds": 29.720131107140332
+      },
+      "relay_base": {
+        "tokens_per_second": 138.49963708004094,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.331632653061225,
+        "request_seconds": 29.574084714986384
+      },
+      "relay_one": {
+        "tokens_per_second": 116.78902404094778,
+        "throughput_ratio": 0.8432442604413015,
+        "throughput_ci95": [
+          0.8133846543058899,
+          0.8725031496650835
+        ],
+        "request_time_ratio": 0.8432442604413015,
+        "request_time_ci95": [
+          0.81338465430589,
+          0.8725031496650835
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 4.454739084132055,
+        "request_seconds": 35.07178892567754
+      },
+      "relay_svd1536": {
+        "tokens_per_second": 136.14884440379672,
+        "throughput_ratio": 0.9830267232044394,
+        "throughput_ci95": [
+          0.9637823983085838,
+          1.0019994991257741
+        ],
+        "request_time_ratio": 0.9830267232044394,
+        "request_time_ci95": [
+          0.9637823983085839,
+          1.0019994991257744
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.204744069912609,
+        "request_seconds": 30.084721012040973
+      },
+      "relay_two": {
+        "tokens_per_second": 134.58769573400372,
+        "throughput_ratio": 0.9717548621172454,
+        "throughput_ci95": [
+          0.9505315481761182,
+          0.9920705888016264
+        ],
+        "request_time_ratio": 0.9717548621172456,
+        "request_time_ci95": [
+          0.9505315481761181,
+          0.9920705888016264
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.136868064118373,
+        "request_seconds": 30.43368844129145
+      }
+    }
+  },
+  "scope": "Exposed development screen, with full native and repacked controls. Excludes the64 fresh confirmation questions used for previous fixed comparisons. Code/dialogue outcomes are not quality scores."
+}

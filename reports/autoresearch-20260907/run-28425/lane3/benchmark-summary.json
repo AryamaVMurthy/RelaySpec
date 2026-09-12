@@ -1,0 +1,172 @@
+{
+  "methods": {
+    "native_ar": {
+      "decode_seconds": 108.42885070992634,
+      "decode_tokens_per_second": 37.775923780265835,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "mean_acceptance_length": 1.0,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 1.0
+    },
+    "native_target_dflash": {
+      "decode_seconds": 28.606068657245487,
+      "decode_tokens_per_second": 143.18640037810806,
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "mean_acceptance_length": 5.544658579646814,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 3.790414265207426
+    },
+    "relay_base": {
+      "decode_seconds": 28.671672142110765,
+      "decode_tokens_per_second": 142.85877641520975,
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "mean_acceptance_length": 5.503701865414046,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 3.781741440558477
+    },
+    "relay_fakeq2": {
+      "decode_seconds": 128.6054015122354,
+      "decode_tokens_per_second": 31.849362093942144,
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "mean_acceptance_length": 1.1592313781227483,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 0.8431127264869237
+    },
+    "relay_fakeq4": {
+      "decode_seconds": 31.874017789494246,
+      "decode_tokens_per_second": 128.5059206232247,
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "mean_acceptance_length": 4.976754560083312,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 3.4017942584466003
+    },
+    "relay_fakeq8": {
+      "decode_seconds": 28.568456099834293,
+      "decode_tokens_per_second": 143.37491622530342,
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "mean_acceptance_length": 5.528411871959656,
+      "output_tokens": 4096,
+      "requests": 32,
+      "speedup_vs_native_ar": 3.7954046354837936
+    }
+  },
+  "paired_requests": 32,
+  "pairwise": {
+    "native_target_dflash_vs_native_ar": {
+      "candidate_method": "native_target_dflash",
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.790414265207426
+    },
+    "relay_base_vs_native_ar": {
+      "candidate_method": "relay_base",
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.781741440558477
+    },
+    "relay_base_vs_native_target_dflash": {
+      "candidate_method": "relay_base",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.9977119058651299
+    },
+    "relay_fakeq2_vs_native_ar": {
+      "candidate_method": "relay_fakeq2",
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "reference_method": "native_ar",
+      "throughput_speedup": 0.8431127264869237
+    },
+    "relay_fakeq2_vs_native_target_dflash": {
+      "candidate_method": "relay_fakeq2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.22243287078827656
+    },
+    "relay_fakeq2_vs_relay_base": {
+      "candidate_method": "relay_fakeq2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.22294298532541007
+    },
+    "relay_fakeq4_vs_native_ar": {
+      "candidate_method": "relay_fakeq4",
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.4017942584466003
+    },
+    "relay_fakeq4_vs_native_target_dflash": {
+      "candidate_method": "relay_fakeq4",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.8974729463404552
+    },
+    "relay_fakeq4_vs_relay_base": {
+      "candidate_method": "relay_fakeq4",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.8995311583079124
+    },
+    "relay_fakeq4_vs_relay_fakeq2": {
+      "candidate_method": "relay_fakeq4",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "relay_fakeq2",
+      "throughput_speedup": 4.034803593371403
+    },
+    "relay_fakeq8_vs_native_ar": {
+      "candidate_method": "relay_fakeq8",
+      "exact_sequence_match_rate": 0.625,
+      "exact_sequence_matches": 20,
+      "reference_method": "native_ar",
+      "throughput_speedup": 3.7954046354837936
+    },
+    "relay_fakeq8_vs_native_target_dflash": {
+      "candidate_method": "relay_fakeq8",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 1.0013165764814085
+    },
+    "relay_fakeq8_vs_relay_base": {
+      "candidate_method": "relay_fakeq8",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "relay_base",
+      "throughput_speedup": 1.003612937357055
+    },
+    "relay_fakeq8_vs_relay_fakeq2": {
+      "candidate_method": "relay_fakeq8",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "relay_fakeq2",
+      "throughput_speedup": 4.5016573896333645
+    },
+    "relay_fakeq8_vs_relay_fakeq4": {
+      "candidate_method": "relay_fakeq8",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 32,
+      "reference_method": "relay_fakeq4",
+      "throughput_speedup": 1.1157066968585372
+    }
+  }
+}

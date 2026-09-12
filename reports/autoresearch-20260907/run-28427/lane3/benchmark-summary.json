@@ -1,0 +1,172 @@
+{
+  "methods": {
+    "native_ar": {
+      "decode_seconds": 59.65153638087213,
+      "decode_tokens_per_second": 38.188454786060866,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "mean_acceptance_length": 1.0,
+      "output_tokens": 2278,
+      "requests": 16,
+      "speedup_vs_native_ar": 1.0
+    },
+    "native_target_eagle3": {
+      "decode_seconds": 46.48865361372009,
+      "decode_tokens_per_second": 49.345374014509574,
+      "exact_sequence_match_rate": 0.5625,
+      "exact_sequence_matches": 9,
+      "mean_acceptance_length": 3.5532102141801722,
+      "output_tokens": 2294,
+      "requests": 16,
+      "speedup_vs_native_ar": 1.292154246380272
+    },
+    "relay_base": {
+      "decode_seconds": 53.678179188165814,
+      "decode_tokens_per_second": 42.77343298012219,
+      "exact_sequence_match_rate": 0.5625,
+      "exact_sequence_matches": 9,
+      "mean_acceptance_length": 2.7437696302238415,
+      "output_tokens": 2296,
+      "requests": 16,
+      "speedup_vs_native_ar": 1.1200618935682856
+    },
+    "relay_early": {
+      "decode_seconds": 77.08900754572824,
+      "decode_tokens_per_second": 29.78375352203155,
+      "exact_sequence_match_rate": 0.5625,
+      "exact_sequence_matches": 9,
+      "mean_acceptance_length": 1.5766965271449596,
+      "output_tokens": 2296,
+      "requests": 16,
+      "speedup_vs_native_ar": 0.7799151258904272
+    },
+    "relay_last2": {
+      "decode_seconds": 58.38591887708753,
+      "decode_tokens_per_second": 39.32455023673563,
+      "exact_sequence_match_rate": 0.5625,
+      "exact_sequence_matches": 9,
+      "mean_acceptance_length": 2.5201343174330986,
+      "output_tokens": 2296,
+      "requests": 16,
+      "speedup_vs_native_ar": 1.0297497098806274
+    },
+    "relay_spaced": {
+      "decode_seconds": 57.689804882742465,
+      "decode_tokens_per_second": 39.799059897441836,
+      "exact_sequence_match_rate": 0.5625,
+      "exact_sequence_matches": 9,
+      "mean_acceptance_length": 2.543177490833899,
+      "output_tokens": 2296,
+      "requests": 16,
+      "speedup_vs_native_ar": 1.0421751841074454
+    }
+  },
+  "paired_requests": 16,
+  "pairwise": {
+    "native_target_eagle3_vs_native_ar": {
+      "candidate_method": "native_target_eagle3",
+      "exact_sequence_match_rate": 0.5625,
+      "exact_sequence_matches": 9,
+      "reference_method": "native_ar",
+      "throughput_speedup": 1.292154246380272
+    },
+    "relay_base_vs_native_ar": {
+      "candidate_method": "relay_base",
+      "exact_sequence_match_rate": 0.5625,
+      "exact_sequence_matches": 9,
+      "reference_method": "native_ar",
+      "throughput_speedup": 1.1200618935682856
+    },
+    "relay_base_vs_native_target_eagle3": {
+      "candidate_method": "relay_base",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 14,
+      "reference_method": "native_target_eagle3",
+      "throughput_speedup": 0.866817484604434
+    },
+    "relay_early_vs_native_ar": {
+      "candidate_method": "relay_early",
+      "exact_sequence_match_rate": 0.5625,
+      "exact_sequence_matches": 9,
+      "reference_method": "native_ar",
+      "throughput_speedup": 0.7799151258904272
+    },
+    "relay_early_vs_native_target_eagle3": {
+      "candidate_method": "relay_early",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "native_target_eagle3",
+      "throughput_speedup": 0.6035774197045076
+    },
+    "relay_early_vs_relay_base": {
+      "candidate_method": "relay_early",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.6963143111723755
+    },
+    "relay_last2_vs_native_ar": {
+      "candidate_method": "relay_last2",
+      "exact_sequence_match_rate": 0.5625,
+      "exact_sequence_matches": 9,
+      "reference_method": "native_ar",
+      "throughput_speedup": 1.0297497098806274
+    },
+    "relay_last2_vs_native_target_eagle3": {
+      "candidate_method": "relay_last2",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "native_target_eagle3",
+      "throughput_speedup": 0.7969247578338872
+    },
+    "relay_last2_vs_relay_base": {
+      "candidate_method": "relay_last2",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.91936857757035
+    },
+    "relay_last2_vs_relay_early": {
+      "candidate_method": "relay_last2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_early",
+      "throughput_speedup": 1.320335605371116
+    },
+    "relay_last2_vs_relay_spaced": {
+      "candidate_method": "relay_last2",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_spaced",
+      "throughput_speedup": 0.9880773650953322
+    },
+    "relay_spaced_vs_native_ar": {
+      "candidate_method": "relay_spaced",
+      "exact_sequence_match_rate": 0.5625,
+      "exact_sequence_matches": 9,
+      "reference_method": "native_ar",
+      "throughput_speedup": 1.0421751841074454
+    },
+    "relay_spaced_vs_native_target_eagle3": {
+      "candidate_method": "relay_spaced",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "native_target_eagle3",
+      "throughput_speedup": 0.8065408499232223
+    },
+    "relay_spaced_vs_relay_base": {
+      "candidate_method": "relay_spaced",
+      "exact_sequence_match_rate": 0.9375,
+      "exact_sequence_matches": 15,
+      "reference_method": "relay_base",
+      "throughput_speedup": 0.9304621379335484
+    },
+    "relay_spaced_vs_relay_early": {
+      "candidate_method": "relay_spaced",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 16,
+      "reference_method": "relay_early",
+      "throughput_speedup": 1.3362674341231637
+    }
+  }
+}

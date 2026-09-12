@@ -1,0 +1,59 @@
+{
+  "family": "dflash",
+  "transform": "fit_reduced_taps",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28400/lane3/native-fc.pt",
+  "config": "configs/autoresearch/20260907/composition-native-mtbench.yaml",
+  "hypothesis": "Second-seed check of compact-interface calibration composition on dialogue, with both original-seed maps as paired controls.",
+  "ranks": [
+    256,
+    512,
+    1024
+  ],
+  "small_checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-small-records-28337/dense-n16-s1729/step-008192.pt",
+  "trial": {
+    "name": "native-two-composition-mixed-s1730",
+    "study": "reduced_interface_composition",
+    "architecture": "dense",
+    "seed": 1730,
+    "steps": 8192,
+    "distinct_examples": 512,
+    "learning_rate": 0.0006,
+    "l2_weight": 0.0,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      1024,
+      8192
+    ],
+    "validation_records": 128,
+    "diagnostic_train_records": 256,
+    "feature_objective": "relative_interface_mse",
+    "normalize_input": false,
+    "budget_panels": {
+      "fixed_updates": {
+        "checkpoint_step": 8192,
+        "presentations": 32768
+      }
+    },
+    "target_layer_ids": [
+      25,
+      33
+    ],
+    "cache_backend": "buffer",
+    "device_cache": false,
+    "report_domain_diagnostics": true,
+    "validation_required_domains": [
+      "math",
+      "general_instruction"
+    ]
+  },
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/composition-mixed-v2-27966",
+  "pilot_gate": "/home/aryama.murthy/relayspec-resume-a78b858/outputs/rs-comp-mixed-exact-28133/batch-gate.json",
+  "native_teacher": true,
+  "requests": 8,
+  "max_new_tokens": 256,
+  "include_ar": false,
+  "controls": {
+    "relay_math_seed1729": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28430/lane2/fitting/native-two-composition-math/step-008192.pt",
+    "relay_mixed_seed1729": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28430/lane3/fitting/native-two-composition-mixed/step-008192.pt"
+  }
+}

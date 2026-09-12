@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Does promoting only the verifier output projection to FP32 improve within-runtime AR agreement while retaining BF16 transformer execution?",
+  "summary": {
+    "requests": 16,
+    "clusters": 16,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 38.32325902096665,
+        "throughput_ratio": 0.23279296166446886,
+        "throughput_ci95": [
+          0.21015260080992057,
+          0.2566193278731181
+        ],
+        "request_time_ratio": 0.23273933508956343,
+        "request_time_ci95": [
+          0.20543061623938533,
+          0.257826328558994
+        ],
+        "mean_output_tokens": 271.3125,
+        "token_matches": 12,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 113.2732473933138
+      },
+      "relay_base": {
+        "tokens_per_second": 164.62378736434076,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 271.25,
+        "token_matches": 16,
+        "progress_per_cycle": 5.934336525307797,
+        "request_seconds": 26.363140281755477
+      }
+    }
+  },
+  "scope": "Same sixteen exposed GSM8K requests and frozen mapper per target. Head-only FP32 copies tied output weights to keep input embeddings BF16. Every arm compares relay with AR under its own target runtime. No universal exactness or accuracy-improvement claim."
+}

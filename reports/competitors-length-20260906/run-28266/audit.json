@@ -1,0 +1,97 @@
+{
+  "status": "pass",
+  "records": 12,
+  "summary": {
+    "requests": 4,
+    "clusters": 4,
+    "reference": "native_ar",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 4.988261805598807,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 32.0,
+        "token_matches": 4,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 25.660240979399532
+      },
+      "native_target_eagle3": {
+        "tokens_per_second": 4.520906609297636,
+        "throughput_ratio": 0.9063090081245109,
+        "throughput_ci95": [
+          0.8527949000725757,
+          0.9790872708197442
+        ],
+        "request_time_ratio": 0.9063090081245109,
+        "request_time_ci95": [
+          0.8527949000725757,
+          0.9790872708197441
+        ],
+        "mean_output_tokens": 32.0,
+        "token_matches": 3,
+        "progress_per_cycle": 2.74,
+        "request_seconds": 28.312905145343393
+      },
+      "relay_eagle3_dense_n512": {
+        "tokens_per_second": 4.495444459176804,
+        "throughput_ratio": 0.9012045947811187,
+        "throughput_ci95": [
+          0.8561504857932226,
+          0.972234637796141
+        ],
+        "request_time_ratio": 0.9012045947811188,
+        "request_time_ci95": [
+          0.8561504857932227,
+          0.972234637796141
+        ],
+        "mean_output_tokens": 32.0,
+        "token_matches": 3,
+        "progress_per_cycle": 2.6666666666666665,
+        "request_seconds": 28.473269142210484
+      }
+    }
+  },
+  "sequence_metrics": {
+    "native_ar": {
+      "mean_prefill_seconds": 4.993680711486377,
+      "decode_tokens_per_second": 22.540060007488957,
+      "timing_scope": "Measured TTFT and decode",
+      "mean_profiled_prefill_gpu_seconds": 0.0,
+      "max_peak_allocated_gib": 23.030499935150146,
+      "max_incremental_peak_gib": 7.765869140625
+    },
+    "native_target_eagle3": {
+      "mean_prefill_seconds": null,
+      "decode_tokens_per_second": null,
+      "timing_scope": "API does not expose TTFT; zero placeholders are excluded",
+      "mean_profiled_prefill_gpu_seconds": 4.996354476451874,
+      "max_peak_allocated_gib": 35.53740835189819,
+      "max_incremental_peak_gib": 17.39188575744629
+    },
+    "relay_eagle3_dense_n512": {
+      "mean_prefill_seconds": null,
+      "decode_tokens_per_second": null,
+      "timing_scope": "API does not expose TTFT; zero placeholders are excluded",
+      "mean_profiled_prefill_gpu_seconds": 5.012588840007782,
+      "max_peak_allocated_gib": 33.5439887046814,
+      "max_incremental_peak_gib": 16.45438575744629
+    }
+  },
+  "input_sha256": {
+    "reports/competitors-length-20260906/run-28266/config.yaml": "05bc7bd1c73ba65f1577a29bc9012c96c3df9e5ddd48b055f2afd8f321b9cc8f",
+    "configs/submission/competitors-length-20260906/context-32768.json": "8a2432ad64f4b2e7a7d72c7db59f7b50fa5715b4864a4fd43464ed3623051c8c",
+    "reports/competitors-length-20260906/run-28266/benchmark-rank0.jsonl": "322e239dbd307fb293cf62fe12629f88aa5af1aeae86426bd249b8a565127749",
+    "reports/competitors-length-20260906/run-28266/benchmark-rank1.jsonl": "b78c4fd66fdcf72924f5c7f6ccb8d3c5603c43e5ef078fa68995ee2b27e86f31",
+    "reports/competitors-length-20260906/run-28266/benchmark-rank2.jsonl": "6a12003da3b4f3d85a04fa239eb26467ac698c67940e9210799d2d5f221a4e66",
+    "reports/competitors-length-20260906/run-28266/benchmark-rank3.jsonl": "e0285aaebd7489873463f30139a940ac3d984eb22d5aa73163165ce5ae4b05d8"
+  },
+  "scope": "Paired development measurements. PARD uses verifier-observed replicas. Context memory follows the config: isolate_methods uses fresh per-method processes; otherwise controls co-reside. DFlash AR retains the benchmark source drafter. Incremental peak is also recorded. No task-quality claim from throughput."
+}

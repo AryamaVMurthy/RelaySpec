@@ -1,0 +1,46 @@
+{
+  "status": "pass",
+  "hypothesis": "Check whether downward-retargeting throughput and within-precision AR agreement extend to code and two-turn dialogue in BF16 and full FP32.",
+  "summary": {
+    "requests": 16,
+    "clusters": 8,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 50.191192629818694,
+        "throughput_ratio": 0.5119927997321093,
+        "throughput_ci95": [
+          0.3603442107021931,
+          0.6362614854565467
+        ],
+        "request_time_ratio": 0.5119927997321093,
+        "request_time_ci95": [
+          0.3603442107021931,
+          0.6362614854565467
+        ],
+        "mean_output_tokens": 124.5,
+        "token_matches": 16,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 39.68823802797124
+      },
+      "relay_base": {
+        "tokens_per_second": 98.03105171807162,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 124.5,
+        "token_matches": 16,
+        "progress_per_cycle": 2.542091836734694,
+        "request_seconds": 20.320092104375362
+      }
+    }
+  },
+  "scope": "Eight exposed code requests or eight two-turn dialogue conversations. Same frozen dense mapper, no refit. FP32 changes all model/mapper computation and kernel dispatch. No code-test or dialogue-quality claim."
+}

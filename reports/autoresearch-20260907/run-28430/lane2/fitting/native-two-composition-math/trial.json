@@ -1,0 +1,38 @@
+{
+  "name": "native-two-composition-math",
+  "study": "reduced_interface_composition",
+  "architecture": "dense",
+  "seed": 1729,
+  "steps": 8192,
+  "distinct_examples": 512,
+  "learning_rate": 0.0006,
+  "l2_weight": 0.0,
+  "weight_decay": 0.0,
+  "checkpoint_steps": [
+    1024,
+    8192
+  ],
+  "validation_records": 128,
+  "diagnostic_train_records": 256,
+  "feature_objective": "relative_interface_mse",
+  "normalize_input": false,
+  "budget_panels": {
+    "fixed_updates": {
+      "checkpoint_step": 8192,
+      "presentations": 32768
+    }
+  },
+  "target_layer_ids": [
+    25,
+    33
+  ],
+  "cache_backend": "buffer",
+  "device_cache": false,
+  "report_domain_diagnostics": true,
+  "validation_required_domains": [
+    "math",
+    "general_instruction"
+  ],
+  "native_teacher": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/autoresearch/28430/lane2/native-teacher.pt",
+  "native_teacher_sha256": "8bd7e7b3813ac7c3b332cd69ea986fe28e8ff964230137a203ec2318d294f879"
+}

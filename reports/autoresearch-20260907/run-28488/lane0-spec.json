@@ -1,0 +1,16 @@
+{
+  "family": "dflash",
+  "transform": "existing",
+  "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt",
+  "checkpoint_sha256": {
+    "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt": "d669e6334a5cc018fb6a70febda5e710cb8033152ecd1152d5bc219b6ef7a643"
+  },
+  "config": "configs/autoresearch/20260907/head-precision-lane0.yaml",
+  "candidates": {},
+  "requests": 16,
+  "max_new_tokens": 512,
+  "include_ar": true,
+  "include_native": false,
+  "hypothesis": "Does promoting only the verifier output projection to FP32 improve within-runtime AR agreement while retaining BF16 transformer execution?",
+  "scope": "Same sixteen exposed GSM8K requests and frozen mapper per target. Head-only FP32 copies tied output weights to keep input embeddings BF16. Every arm compares relay with AR under its own target runtime. No universal exactness or accuracy-improvement claim."
+}

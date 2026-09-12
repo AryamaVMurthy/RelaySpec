@@ -1,0 +1,97 @@
+{
+  "status": "pass",
+  "hypothesis": "Check activation-aware EAGLE rank1024 on32 exposed MATH requests with matched weight-only compression.",
+  "summary": {
+    "requests": 32,
+    "clusters": 32,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 35.89806544441128,
+        "throughput_ratio": 0.41380186079219256,
+        "throughput_ci95": [
+          0.3845256762058666,
+          0.44659289699332383
+        ],
+        "request_time_ratio": 0.4138018607921926,
+        "request_time_ci95": [
+          0.38452567620586664,
+          0.4465928969933238
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 19,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 114.10085611278191
+      },
+      "native_target_eagle3": {
+        "tokens_per_second": 89.36944080339993,
+        "throughput_ratio": 1.0301736443060037,
+        "throughput_ci95": [
+          0.9883015321037772,
+          1.0723035860505716
+        ],
+        "request_time_ratio": 1.0301736443060039,
+        "request_time_ci95": [
+          0.9883015321037772,
+          1.0723035860505716
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.300761421319797,
+        "request_seconds": 45.83222143026069
+      },
+      "relay_activation1024": {
+        "tokens_per_second": 84.31541291566472,
+        "throughput_ratio": 0.9719151805545524,
+        "throughput_ci95": [
+          0.9496248296696508,
+          0.9950304202069995
+        ],
+        "request_time_ratio": 0.9719151805545524,
+        "request_time_ci95": [
+          0.9496248296696507,
+          0.9950304202069994
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 4.452709883103082,
+        "request_seconds": 48.57949286326766
+      },
+      "relay_base": {
+        "tokens_per_second": 86.75182217810024,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 4.597587719298246,
+        "request_seconds": 47.21514657745138
+      },
+      "relay_weight1024": {
+        "tokens_per_second": 51.45552060278693,
+        "throughput_ratio": 0.5931347528026499,
+        "throughput_ci95": [
+          0.5622617239119417,
+          0.6243068247462504
+        ],
+        "request_time_ratio": 0.59313475280265,
+        "request_time_ci95": [
+          0.5622617239119417,
+          0.6243068247462505
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 2.6901226597805037,
+        "request_seconds": 79.60273168003187
+      }
+    }
+  },
+  "scope": "Exposed development questions at the recorded output cap; exploratory screen, no full-answer quality or confirmatory significance claim."
+}

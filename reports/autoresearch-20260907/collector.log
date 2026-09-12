@@ -1,0 +1,11 @@
+rsync: [sender] change_dir "/home/aryama.murthy/relayspec-autoresearch-w44/outputs/rs-research-w44-28534" failed: No such file or directory (2)
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1887) [Receiver=3.2.7]
+rsync: [Receiver] write error: Broken pipe (32)
+Traceback (most recent call last):
+  File "/home/aryamavmurthy/work/RelaySpec-scaling/scripts/watch_research_waves.py", line 89, in <module>
+    main()
+  File "/home/aryamavmurthy/work/RelaySpec-scaling/scripts/watch_research_waves.py", line 47, in main
+    subprocess.run(
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['rsync', '-az', '--exclude=*.pt', '--exclude=source-snapshot.tar.gz', 'turing:/home/aryama.murthy/relayspec-autoresearch-w44/outputs/rs-research-w44-28534/', '/home/aryamavmurthy/work/RelaySpec-scaling/reports/autoresearch-20260907/run-28534/']' returned non-zero exit status 23.

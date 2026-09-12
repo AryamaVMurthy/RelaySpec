@@ -1,0 +1,80 @@
+{
+  "status": "pass",
+  "hypothesis": "Paired within-worker test of calibration composition on code/GSM8K with the same fixed512-record compact checkpoints. Avoid attributing cross-GPU timing variation to data composition.",
+  "summary": {
+    "requests": 32,
+    "clusters": 32,
+    "reference": "relay_base",
+    "methods": {
+      "native_target_dflash": {
+        "tokens_per_second": 141.99808963253474,
+        "throughput_ratio": 1.0029979699900453,
+        "throughput_ci95": [
+          0.9979640252836791,
+          1.006921378394969
+        ],
+        "request_time_ratio": 1.0029979699900453,
+        "request_time_ci95": [
+          0.9979640252836792,
+          1.006921378394969
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.559633027522936,
+        "request_seconds": 28.84545848891139
+      },
+      "relay_base": {
+        "tokens_per_second": 141.573656060285,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.546772068511199,
+        "request_seconds": 28.931936307810247
+      },
+      "relay_math": {
+        "tokens_per_second": 137.37086403635396,
+        "throughput_ratio": 0.9703137423946909,
+        "throughput_ci95": [
+          0.9517642047562165,
+          0.988143118373636
+        ],
+        "request_time_ratio": 0.9703137423946909,
+        "request_time_ci95": [
+          0.9517642047562165,
+          0.9881431183736361
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.353689567430026,
+        "request_seconds": 29.817094248719513
+      },
+      "relay_mixed": {
+        "tokens_per_second": 138.21808823716776,
+        "throughput_ratio": 0.976298077506112,
+        "throughput_ci95": [
+          0.9533893583857401,
+          0.9998963411336381
+        ],
+        "request_time_ratio": 0.9762980775061119,
+        "request_time_ci95": [
+          0.9533893583857401,
+          0.9998963411336381
+        ],
+        "mean_output_tokens": 128.0,
+        "token_matches": 32,
+        "progress_per_cycle": 5.340588988476313,
+        "request_seconds": 29.63432682538405
+      }
+    }
+  },
+  "scope": "Exposed development workload; fixed512-record math versus256math+256instruction fitting, same compact shape and update count. Domain tradeoff screen, not quality confirmation."
+}

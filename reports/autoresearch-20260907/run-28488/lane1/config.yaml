@@ -1,0 +1,51 @@
+protocol_version: 1
+run_name: downscale-dflash-06b-trained-screen
+seed: 1729
+resources:
+  gpu_count: 1
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-0.6B
+  revision: c1899de289a04d12100db370d81485cdf75e47ca
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 512
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/autoresearch/20260907/head-precision-gsm16.json
+  benchmarks:
+  - gsm8k
+  methods:
+  - native_ar
+  - relay_base
+  max_prompts: 16
+  warmups: 1
+  block_size: 16
+  profile_regions: true
+  precision: bfloat16
+  target_head_precision: float32
+  research_single_gpu: true
+  unload_source_trunk: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants:
+    relay_base: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-research-w23-28457/downscale-dense-0-s1729/step-008192.pt

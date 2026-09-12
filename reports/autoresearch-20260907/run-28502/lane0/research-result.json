@@ -1,0 +1,63 @@
+{
+  "status": "pass",
+  "hypothesis": "Does output-head FP32 improve AR agreement for both retargeted and released-native DFlash on additional GSM8K and MATH questions?",
+  "summary": {
+    "requests": 32,
+    "clusters": 32,
+    "reference": "relay_base",
+    "methods": {
+      "native_ar": {
+        "tokens_per_second": 37.00076890973913,
+        "throughput_ratio": 0.23823347780144324,
+        "throughput_ci95": [
+          0.22383268651709534,
+          0.25416633274767764
+        ],
+        "request_time_ratio": 0.23298877592597492,
+        "request_time_ci95": [
+          0.2177840541827645,
+          0.24974741302716882
+        ],
+        "mean_output_tokens": 288.15625,
+        "token_matches": 15,
+        "progress_per_cycle": 1.0,
+        "request_seconds": 249.21103727584705
+      },
+      "native_target_dflash": {
+        "tokens_per_second": 168.66954585987315,
+        "throughput_ratio": 1.0859972290686892,
+        "throughput_ci95": [
+          1.0604644388191458,
+          1.1135247381848556
+        ],
+        "request_time_ratio": 1.0859972290686892,
+        "request_time_ci95": [
+          1.0604644388191458,
+          1.1135247381848556
+        ],
+        "mean_output_tokens": 281.8125,
+        "token_matches": 32,
+        "progress_per_cycle": 6.279861111111111,
+        "request_seconds": 53.46549048926681
+      },
+      "relay_base": {
+        "tokens_per_second": 155.31305361112004,
+        "throughput_ratio": 1.0,
+        "throughput_ci95": [
+          1.0,
+          1.0
+        ],
+        "request_time_ratio": 1.0,
+        "request_time_ci95": [
+          1.0,
+          1.0
+        ],
+        "mean_output_tokens": 281.8125,
+        "token_matches": 32,
+        "progress_per_cycle": 5.707594936708861,
+        "request_seconds": 58.06337452214211
+      }
+    }
+  },
+  "scope": "Exposed development extension, disjoint from the initial sixteen GSM8K questions.32GSM8K or16MATH questions,512-token cap, normal BF16 versus FP32 target head. Native DFlash also uses the target head for draft logits. No full-FP32 equivalence or general exactness claim."
+}
