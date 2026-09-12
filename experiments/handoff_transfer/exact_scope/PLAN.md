@@ -265,3 +265,14 @@ Physical-GPU reference job32325 is running next. Only six primary comparisons
 have complete matched-card triplets at this audit checkpoint; the other ratios
 remain provisional. Transformers confirmations32304–32306 and final archive32307
 remain pending. The new-paper plan has not been issued or launched.
+
+## Calibration versus refinement accounting
+
+The audit now records initializer metadata separately from token fitting. The
+Qwen and Llama ZIP warm starts each use4096 records and three calibration epochs;
+the cross-family ZIP warm start uses4096 records and one calibration epoch.
+The current CE/AUF token stage remains one epoch in every retained cell. No
+additional initializer training was launched by this reporting change. The
+original-interface CE arm retains its separate original-MSE initializer.
+The current paper source inventory records existing studies and source locations;
+it is not the post-comparison experiment plan.

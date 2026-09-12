@@ -44,6 +44,14 @@ def summarize(audit):
 def write_report(audit,path):
     path=Path(path)
     rows=summarize(audit)
+    initialization_note=('\nThe retained CE/AUF fits use one token-loss refinement epoch. '
+        'Warm-start calibration is separate: '+ '; '.join(
+            f"{r['family']} ZIP initialization: {r['records']} records, {r['zip_calibration_epochs']} calibration epochs"
+            for r in audit.get('initializers',[])) +
+        '. Original-interface CE uses its separate original-MSE initializer. '
+        'Refinement timings alone are not total calibration costs. '
+        'The six completed feature-loss cells are historical artifacts, outside the primary matrix.'
+        if audit.get('initializers') else '')
     fields=['family','method','repetitions','request_batch_size','tps_mean','tps_min','tps_max',
             'speedup_ar','speedup_original','speedup_zip','accepted_tokens_per_draft']
     with path.with_suffix('.benchmarks.csv').open('w',newline='') as handle:
@@ -61,6 +69,7 @@ def write_report(audit,path):
            'on the same node and GPU model; comparisons can involve different physical GPUs. '
            'The audit retains benchmark job IDs and GPU UUIDs. Accepted/draft is the measured accepted '
            'draft-token count divided by the draft-block count; it excludes the verifier bonus token.',
+           initialization_note,
            '\n| Family | Method | Batch | Mean TPS | TPS range | / AR | / Original | / ZIP | Accepted/draft |',
            '|---|---|---:|---:|---:|---:|---:|---:|---:|']
     for r in rows:
@@ -89,6 +98,7 @@ def write_report(audit,path):
            '\nEach method is compared with references on the same physical GPU, using the same '
            '128 requests, 2048-token cap, serving batch and repetition index. Three timing repetitions '
            'and one fitting seed. These remain development measurements, not untouched confirmation results.',
+           initialization_note,
            '\n| Family | Method | Mean TPS | / AR | / Original | / ZIP |',
            '|---|---|---:|---:|---:|---:|']
     for r in corrected:

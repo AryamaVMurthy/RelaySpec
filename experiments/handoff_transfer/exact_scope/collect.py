@@ -26,7 +26,7 @@ def check_groups(training,evaluation,warmup):
 
 
 def audit(root,config_root):
-    cells=[];issues=[];comparison_rows=[];reference_hashes={};splits=[]
+    cells=[];issues=[];comparison_rows=[];reference_hashes={};splits=[];initializers=[]
     for family in ['q8','llama','cross']:
         tasks=read(config_root/f'{family}-tasks.json')
         if family != 'cross': tasks += [dict(kind='feature',objective=o,lr=.001) for o in ['feature_ce','forward_kl','reverse_kl']]
@@ -88,6 +88,11 @@ def audit(root,config_root):
                     transfer=read(initial_root/'transfer.json')
                     reference_hashes[family]={'original':sha(initial_root/'normal/export/model.safetensors'),
                                               'zip':transfer['base_sha256']}
+                    initializers.append(dict(family=family,records=transfer['records'],
+                        zip_calibration_epochs=transfer['base_training_epochs'],
+                        zip_export=transfer['base_export'],zip_export_sha256=transfer['base_sha256'],
+                        source=str(initial_root/'transfer.json'),
+                        scope='Calibration precedes the one-epoch token-loss refinement; original-interface CE uses its separate original-MSE initializer'))
                 expected_exports={**reference_hashes[family],label:export_hash}
                 for repeat in range(3):
                     ar=result_root/f'ar/ar-r{repeat}-w0{suffix}.jsonl'
@@ -127,7 +132,7 @@ def audit(root,config_root):
             issues.append(dict(cell=f'transformers/{mode}',phase='evaluation',error=str(error)))
     return dict(status='complete' if not issues else 'incomplete',expected_fits=len(cells),expected_primary_fits=21,archived_feature_fits=6,
                 verified_fits=sum(c['training'] for c in cells),verified_evaluated_cells=sum(c['evaluation'] for c in cells),
-                transformers_verified=len(tf),cells=cells,comparisons=rows,transformers=tf,split_audits=splits,
+                transformers_verified=len(tf),cells=cells,comparisons=rows,transformers=tf,split_audits=splits,initializers=initializers,
                 gpu_matched_verified_cells=matched['verified_cells'],gpu_matched_comparisons=matched['comparisons'],issues=issues)
 
 if __name__=='__main__':
@@ -140,5 +145,5 @@ if __name__=='__main__':
         from experiments.handoff_transfer.exact_scope.archive import archive
         result['artifact_archive']=archive(result,args.root,args.out.parent/'artifacts',Path(__file__).parent)
         args.out.write_text(json.dumps(result,indent=2)+'\n')
-    print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','gpu_matched_comparisons','transformers','split_audits','issues']}))
+    print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','gpu_matched_comparisons','transformers','split_audits','initializers','issues']}))
     if args.require_complete and result['status']!='complete':sys.exit(1)

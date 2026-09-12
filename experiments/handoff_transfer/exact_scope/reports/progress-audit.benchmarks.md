@@ -6,6 +6,8 @@ Verified fits: 27/27. Fully evaluated trained cells: 27/27. Transformers confirm
 
 Only complete, audited three-repetition comparisons appear below. These are fixed development requests, one fitting seed, 128 requests per pass, and a 2048-token cap with natural EOS. Throughput is aggregate batched output tokens/s, not single-request latency. Ranges describe timing repetitions, not fitting-seed uncertainty. Each speedup is the mean of ratios paired by timing repetition and model family. Reference passes are reused across jobs on the same node and GPU model; comparisons can involve different physical GPUs. The audit retains benchmark job IDs and GPU UUIDs. Accepted/draft is the measured accepted draft-token count divided by the draft-block count; it excludes the verifier bonus token.
 
+The retained CE/AUF fits use one token-loss refinement epoch. Warm-start calibration is separate: q8 ZIP initialization: 4096 records, 3 calibration epochs; llama ZIP initialization: 4096 records, 3 calibration epochs; cross ZIP initialization: 4096 records, 1 calibration epochs. Original-interface CE uses its separate original-MSE initializer. Refinement timings alone are not total calibration costs. The six completed feature-loss cells are historical artifacts, outside the primary matrix.
+
 | Family | Method | Batch | Mean TPS | TPS range | / AR | / Original | / ZIP | Accepted/draft |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
 | cross | cross/dense_fusion/auf | 128 | 1296.8 | 1280.2–1321.5 | 1.173 | 1.157 | 1.225 | 4.243 |
