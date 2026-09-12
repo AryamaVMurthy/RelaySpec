@@ -6,7 +6,7 @@ from pathlib import Path
 from experiments.handoff_transfer.matrix.prepare import digest
 
 
-def anchor_coverage(counts, limit=512):
+def anchor_coverage(counts, limit=32):
     assert counts and all(type(n) is int and n>0 for n in counts)
     return {'records':len(counts),'anchor_limit':limit,
             'minimum_eligible':min(counts),'median_eligible':statistics.median(counts),
