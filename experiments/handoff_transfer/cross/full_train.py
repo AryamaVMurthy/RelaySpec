@@ -5,7 +5,7 @@ import torch
 import torch.distributed as dist
 from torch.nn.parallel import DistributedDataParallel as DDP
 from safetensors.torch import load_file
-from model import build,export,TRANSFER,R,OBJECTIVE
+from model import build,export,TRANSFER,R,OBJECTIVE,NUM_ANCHORS
 from experiments.handoff_transfer.cross.online import cross_online_class
 from experiments.handoff_transfer.cross.batch import collate
 from experiments.handoff_transfer.cross.dataset import CrossRecords
@@ -49,7 +49,7 @@ def main(a):
             indices=[order[(offset+micro*4+rank*2+j)%len(cache)] for j in range(2)]
             batch=tuple(x.cuda() for x in collate([cache[i] for i in indices],raw.block_size))
             if rank==0:
-                anchor_count+=int(batch[2].sum(dim=1).clamp(max=512).sum());record_count+=len(indices)
+                anchor_count+=int(batch[2].sum(dim=1).clamp(max=NUM_ANCHORS).sum());record_count+=len(indices)
             torch.manual_seed(42000+step*100+rank*10+micro)
             with model.no_sync() if micro==0 else contextlib.nullcontext():
                 with torch.autocast('cuda',dtype=torch.bfloat16):loss,_,metrics=model(*batch)
@@ -88,7 +88,7 @@ def main(a):
             'inference_exactness':'not yet evaluated'})
         torch.save({k:p.detach().cpu() for k,p in raw.draft_model.named_parameters() if p.requires_grad},out/'parameters.pt')
         write(out/'summary.json',{'scope':'full-data cross-family fit; decoding measurement separate','records':len(cache),
-            'steps':a.steps,'optimizer_steps':a.steps,'presentations':8*a.steps,'processed_examples':8*a.steps,'anchors_limit':512,'anchors_per_example':512,'world_size':world,'seed':42,'variant':a.kind,'checkpoint':'final','objective':OBJECTIVE,
+            'steps':a.steps,'optimizer_steps':a.steps,'presentations':8*a.steps,'processed_examples':8*a.steps,'anchors_limit':NUM_ANCHORS,'anchors_per_example':NUM_ANCHORS,'world_size':world,'seed':42,'variant':a.kind,'checkpoint':'final','objective':OBJECTIVE,
             'label_units':'source tokens','context_units':'target tokens','lr':a.lr,
             'training_seconds':training_seconds,'training_gpu_hours':training_seconds*world/3600,'actual_anchors_rank0':anchor_count,'records_rank0':record_count,'peak_cuda_bytes_rank0':torch.cuda.max_memory_allocated(),
             'history':history,'initializer_records':TRANSFER['initializer_records'],

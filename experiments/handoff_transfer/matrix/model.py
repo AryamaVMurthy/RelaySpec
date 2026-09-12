@@ -11,6 +11,8 @@ INPUT_WIDTH=TRANSFER['input_width']
 from five_maps import FiveMapProjection
 from projections import FiveLowRankMaps, DenseFusion
 VARIANTS=['fusion_r56','five_maps','five_ba56','dense_fusion','dense_fresh','normal_ce']
+NUM_ANCHORS=int(os.environ.get('MATRIX_NUM_ANCHORS','512'))
+assert NUM_ANCHORS in (32,512)
 OBJECTIVE=os.environ.get('MATRIX_OBJECTIVE','auf')
 assert OBJECTIVE in ('auf','ce','decay')
 
@@ -81,7 +83,7 @@ def build(kind):
     block,mask=draft.block_size,draft.mask_token_id
     assert isinstance(mask,int) and 0<=mask<embedding.shape[0]
     wrapper=Online(draft,head,embed,mask_token_id=mask,block_size=block,attention_backend='sdpa',
-                   num_anchors=512,loss_decay_gamma=None,objective_chunk_blocks=16,loss_type='dflash')
+                   num_anchors=NUM_ANCHORS,loss_decay_gamma=None,objective_chunk_blocks=16,loss_type='dflash')
     from objectives import configure
     configure(wrapper,OBJECTIVE)
     n=sum(p.numel() for p in wrapper.parameters() if p.requires_grad)
@@ -89,7 +91,7 @@ def build(kind):
     assert n==expected
     if int(os.environ.get('LOCAL_RANK','0'))==0:put(R/f'model-contract-{kind}.json',{'family':TRANSFER['family'],'base_sha256':TRANSFER['base_sha256'],
         'input_width':INPUT_WIDTH,'source_width':width,'trainable_parameters':n,'variant':kind,'rank':56 if kind in ('fusion_r56','five_ba56') else None,'alpha':56 if kind in ('fusion_r56','five_ba56') else None,
-        'block_size':block,'mask_token_id':mask,'num_anchors':512,'objective_chunk_blocks':16,
+        'block_size':block,'mask_token_id':mask,'num_anchors':NUM_ANCHORS,'objective_chunk_blocks':16,
         'objective':OBJECTIVE,'normalize_input':kind=='normal_ce','target_adapters':None,'initialization':initialization,'base_training_epochs':TRANSFER['base_training_epochs'],
         'loss_source_sha256':sha(Path(__file__).parent/'objectives.py'),'source_head_untied':TRANSFER['family']=='llama'})
     return wrapper.cuda(),cfg

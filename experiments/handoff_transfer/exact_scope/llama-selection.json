@@ -1,0 +1,621 @@
+{
+  "stage": 100,
+  "next_steps": 500,
+  "selection_set": "separate 32-request validation, cap512",
+  "schedule": "fresh fit from registered initializer at the promoted total schedule",
+  "results": [
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "dense_fresh",
+        "auf"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fresh-auf-lr0.0006",
+          "lr": 0.0006,
+          "tps": 79.40519334811205,
+          "ar_ratio": 1.7198702249533266,
+          "checkpoint_sha256": "b59d336a9a7f3380b4ffd4f33813ce053d05496784444cb1ee8698a68b12b694",
+          "rows_sha256": "6f58602660f2000897fcee38409eec2d61419d1beefdecbd2796c10a10b33191",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.4539835350588
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fresh-auf-lr0.0003",
+          "lr": 0.0003,
+          "tps": 78.4877510511882,
+          "ar_ratio": 1.6999989593211822,
+          "checkpoint_sha256": "7c5bd895c5a9ba45448f7416da22ed496685b7ecf59e061a3f54892260ad32e9",
+          "rows_sha256": "6a05e2ad394eeed6de00df8e43f7d856799b8f9f8e45ca302c6bfcffe95d7477",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.61321371933445
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fresh-auf-lr0.0001",
+          "lr": 0.0001,
+          "tps": 69.76906774740303,
+          "ar_ratio": 1.5111573586309128,
+          "checkpoint_sha256": "3fe32ef93d4ec2ab63240ac7ba408084006ad82181ed77039daa1b916d0d7db1",
+          "rows_sha256": "a35797d94499681f20b8bf9f3be3c0536067e53b33d418a723331cabecb41205",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 244.29532770300284
+        }
+      ],
+      "selected_lr": 0.0006,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "dense_fresh",
+        "ce"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fresh-ce-lr0.0003",
+          "lr": 0.0003,
+          "tps": 66.91915779006573,
+          "ar_ratio": 1.4494299693664048,
+          "checkpoint_sha256": "c69c7615d37b2d6f0bc5dee3d3cae0783dcb71d822c4cce832175166b2ddc115",
+          "rows_sha256": "9e5890561a0939a4ab8b105cc4a6b9cd1f209721319de57fe73c2de3bc4a92b5",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.7003324800171
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fresh-ce-lr0.0006",
+          "lr": 0.0006,
+          "tps": 66.39734170259862,
+          "ar_ratio": 1.4381277369317846,
+          "checkpoint_sha256": "1c6d943fbcc2ef451acf9e874ed98b2b0570fb09afec68218d3a325b430f3dac",
+          "rows_sha256": "99616c2e47f883de65692db0a21429286a1430a4cdf733dd0d966c6ec2454666",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 247.24496001796797
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fresh-ce-lr0.0001",
+          "lr": 0.0001,
+          "tps": 58.98928231900827,
+          "ar_ratio": 1.277673486758662,
+          "checkpoint_sha256": "8cf2bd461f5cdcf1c439b13249dc0d4d94a273ebe6dfb4c388ecb7e80cc8b9f2",
+          "rows_sha256": "14d365aa13588bbb2d1af5b2a8ef1e99624c3d9759de6a18db23b39849adc6b5",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 244.29606060311198
+        }
+      ],
+      "selected_lr": 0.0003,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "dense_fusion",
+        "auf"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fusion-auf-lr0.0006",
+          "lr": 0.0006,
+          "tps": 156.65165912981965,
+          "ar_ratio": 3.392983668533823,
+          "checkpoint_sha256": "acbf4cbde4f8a5970f273eb5c272148dc1e95a1e71aa6387a239fccfba1b75b9",
+          "rows_sha256": "1894055f54c25bcea7d5a53e39d9548dfb74bda1059aab320ee8f47cf9c5d53d",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.6102679623291
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fusion-auf-lr0.0003",
+          "lr": 0.0003,
+          "tps": 154.7349171117291,
+          "ar_ratio": 3.351468153152117,
+          "checkpoint_sha256": "356789eaed5b06db3b2d63848242d26a576f43566faa272b4f32fec2544df74a",
+          "rows_sha256": "e2be3d87da083700bcf5dc44e8373126aaace2645199d8fd2ec79d716511abc8",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 247.3880230761133
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fusion-auf-lr0.0001",
+          "lr": 0.0001,
+          "tps": 152.4080925498746,
+          "ar_ratio": 3.3010704887943265,
+          "checkpoint_sha256": "22c0d2f609a1948d77916db3ae08fd27831ec84b49bd58bcb6ca0623b39a20c1",
+          "rows_sha256": "9c4ed8fbb172c6504f9c1517eee98e9d03c2860d7d29d8ec6ec7b1f8f5221a43",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.07569456100464
+        }
+      ],
+      "selected_lr": 0.0006,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "dense_fusion",
+        "ce"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fusion-ce-lr0.0006",
+          "lr": 0.0006,
+          "tps": 152.96022102239237,
+          "ar_ratio": 3.3130292698285757,
+          "checkpoint_sha256": "1f73196d138637c7af0a249d4ff24bce8938170a2952e87614184ab6b5defb37",
+          "rows_sha256": "a0972a4f4feb19924fc1080b7384c65b0a440e93a347bfea5081dff04598d757",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.98906979896128
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fusion-ce-lr0.0003",
+          "lr": 0.0003,
+          "tps": 152.2512622167789,
+          "ar_ratio": 3.297673635151791,
+          "checkpoint_sha256": "5b11ff547319f4802db53a60517a82b22658dcd89cac9bbfffc992804f329dc4",
+          "rows_sha256": "64d2db8220cb296d64a8de0dc093c05c8161b7ad76317b862cef58027a1e8e4e",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.40670969942585
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/dense_fusion-ce-lr0.0001",
+          "lr": 0.0001,
+          "tps": 150.22117173505114,
+          "ar_ratio": 3.25370305808666,
+          "checkpoint_sha256": "c2ec097f4675c37b77f169017fec08b0686aa595f0690ac18277f3416b4733e3",
+          "rows_sha256": "efc4bba72be0fc3feb4d03372eb17a0a01f5e820bb5d60eee929e9bebb7b8193",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.0489750499837
+        }
+      ],
+      "selected_lr": 0.0006,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "five_ba56",
+        "auf"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_ba56-auf-lr0.0006",
+          "lr": 0.0006,
+          "tps": 153.07675579846696,
+          "ar_ratio": 3.3155533451829875,
+          "checkpoint_sha256": "99109a59723ff720d5e11b2d0891e41c7217d4fd80776cbe7e3211ae4ff49fea",
+          "rows_sha256": "7e88657fea86631e194d61464cc7868dff73bae938d16b37cc0f590532ff6884",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 242.86431077774614
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_ba56-auf-lr0.0003",
+          "lr": 0.0003,
+          "tps": 151.5001286849985,
+          "ar_ratio": 3.2814045204780222,
+          "checkpoint_sha256": "ea2606c3ab10c2e25362db30d48ef5bf4f11d86979e38591afd158d35f52b0e9",
+          "rows_sha256": "3845edc098e86b1e6fa70ac1f0aa3e40dd437ebd77da039e7c110eb66a1950fb",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 243.2178850369528
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_ba56-auf-lr0.0001",
+          "lr": 0.0001,
+          "tps": 149.4096551338598,
+          "ar_ratio": 3.2361260813097688,
+          "checkpoint_sha256": "7c951bc6003e4fc87095e4834e87feaaaf286d73bd28dc2c1729bd2114b70640",
+          "rows_sha256": "4a144fddf36664c3a353cbb2125b17c8ee25108d274f5d8bc0d626c0d376f8f0",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 241.39600011566654
+        }
+      ],
+      "selected_lr": 0.0006,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "five_ba56",
+        "ce"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_ba56-ce-lr0.0006",
+          "lr": 0.0006,
+          "tps": 149.9176356091247,
+          "ar_ratio": 3.2471286424449786,
+          "checkpoint_sha256": "e7b22fce265b6eacb5c09d91c3a91f1969e8e169bbe2793e6e43172615627687",
+          "rows_sha256": "7bc34bd97cfa47f67a551d5f5679fa4f9c977e8fd5182e1d591849138bc1a1a9",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 242.97228804882616
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_ba56-ce-lr0.0003",
+          "lr": 0.0003,
+          "tps": 148.59597444909184,
+          "ar_ratio": 3.2185022317434444,
+          "checkpoint_sha256": "b5193b3d10396d64cf7d690544550a0c229abbae9c2c9d958fad9699400a47d5",
+          "rows_sha256": "ee476d1db8a858703b21540e4b48f34023b08cd71dec43b38f5231f38c28699b",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 243.9307625819929
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_ba56-ce-lr0.0001",
+          "lr": 0.0001,
+          "tps": 147.3438352536348,
+          "ar_ratio": 3.191381626289812,
+          "checkpoint_sha256": "ebe8f76a389bdca31a2363878f90db542537b1f85c4a3ee7dac35b1581533866",
+          "rows_sha256": "d88b70499b1235d96ac9af3213bb2368caca73a291a13400e73c5dc0341efdb5",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 243.00567300105467
+        }
+      ],
+      "selected_lr": 0.0006,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "five_maps",
+        "auf"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_maps-auf-lr0.0001",
+          "lr": 0.0001,
+          "tps": 154.1276529073645,
+          "ar_ratio": 3.3383151642891855,
+          "checkpoint_sha256": "b1753b17eadbedaad95e9dcb6aa960128cff9e821263bca9eb8871d84fad1f00",
+          "rows_sha256": "c101251d1cdcc93579683c70b8968c44e08cd61b883201eb988d15f90c6f986a",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.4429569891654
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_maps-auf-lr0.0003",
+          "lr": 0.0003,
+          "tps": 150.61850165342153,
+          "ar_ratio": 3.262308992626641,
+          "checkpoint_sha256": "725308c06e48bea665ecd88a96b5f208c80a9170c1516273d436cdb923a52d89",
+          "rows_sha256": "919ff3251531ed95086dc858d924c8cdf17399bd8547cc60f307f50d6b00576f",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 247.65494838682935
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_maps-auf-lr0.0006",
+          "lr": 0.0006,
+          "tps": 144.24317059293193,
+          "ar_ratio": 3.124223036244836,
+          "checkpoint_sha256": "4469d7ec2b25eacb2fd8faf977cc8b7dd69367839332a9b0eb13f67e6463b86b",
+          "rows_sha256": "1f48ccb38a324b0abb22b2b463d5215b41b0f9054ef80386a8ae6d9720012e64",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.9862737180665
+        }
+      ],
+      "selected_lr": 0.0001,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "five_maps",
+        "ce"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_maps-ce-lr0.0001",
+          "lr": 0.0001,
+          "tps": 151.91164671561552,
+          "ar_ratio": 3.290317761263003,
+          "checkpoint_sha256": "16f1019271f2d84fdfdb2fc77965cf891ed545ff7055fe4deb2514d96f171460",
+          "rows_sha256": "09d2ee65d66fedf692bb86add8e12bcded10f20c48af20812958ab5340f93cc5",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.11977348290384
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_maps-ce-lr0.0003",
+          "lr": 0.0003,
+          "tps": 144.96386084044465,
+          "ar_ratio": 3.139832767118199,
+          "checkpoint_sha256": "85d4af6d359699e4f0e65130f24c83e9348326a3f69220f4b86bf805f7ba9f33",
+          "rows_sha256": "d9c634d3262af29ca8ca2da3e438017ef0ba2eed2021888e0e0906e20d60427c",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 247.19233383238316
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/five_maps-ce-lr0.0006",
+          "lr": 0.0006,
+          "tps": 138.29290134143884,
+          "ar_ratio": 2.99534367099685,
+          "checkpoint_sha256": "60f139525090e7bfec0a811277891c87e7d9136f8a46de8031dcc5b25aed033e",
+          "rows_sha256": "717887f23dc2d83469a8fc9d050671c62b3abf96c1ac9750d5e1f18381edbd4e",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 247.09438019338995
+        }
+      ],
+      "selected_lr": 0.0001,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "fusion_r56",
+        "auf"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/fusion_r56-auf-lr0.0006",
+          "lr": 0.0006,
+          "tps": 150.8346362575937,
+          "ar_ratio": 3.2669903422289037,
+          "checkpoint_sha256": "1f66ca4cdbc08092383450e7607bb082f55a4687e7e18575edd2b798a56c2433",
+          "rows_sha256": "b637153d25423768d87f4b7e4750e1bdda36c3f03d0200691f2237eb8411b8e0",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 241.21483974298462
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/fusion_r56-auf-lr0.0003",
+          "lr": 0.0003,
+          "tps": 149.6181346367305,
+          "ar_ratio": 3.2406416258778488,
+          "checkpoint_sha256": "624982c7c40bc801770b97a3ac2cc403bb1f39cbfbecbc8542d2cdf2a7d385b3",
+          "rows_sha256": "064e121ca571aaf250f6e252c4e26ce347aab6c86468d363025ce55dc3bddbff",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 241.6037384569645
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/fusion_r56-auf-lr0.0001",
+          "lr": 0.0001,
+          "tps": 148.6483745104364,
+          "ar_ratio": 3.2196371865429017,
+          "checkpoint_sha256": "2a095e5103b7dc07870960f23736e32b05c8e4aa98fd62c4b6e5011a5ad78cfb",
+          "rows_sha256": "665e04a94e7bc61bcfb1141a3042869c087a1909ffa91e16f6fe75bfbecbc51d",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 241.16408373741433
+        }
+      ],
+      "selected_lr": 0.0006,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "fusion_r56",
+        "ce"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/fusion_r56-ce-lr0.0006",
+          "lr": 0.0006,
+          "tps": 147.79147036581463,
+          "ar_ratio": 3.201077142018948,
+          "checkpoint_sha256": "1f889dd591465661cf3e8624a3b7d2a4993c0147f636184d1c7f68e518b76f77",
+          "rows_sha256": "637d8ceaa40a29ebdc57773be82d4d8152d6cfb01f3639e50d0e5241230e7fe5",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 241.55467761028558
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/fusion_r56-ce-lr0.0003",
+          "lr": 0.0003,
+          "tps": 147.47834286880803,
+          "ar_ratio": 3.1942949828677842,
+          "checkpoint_sha256": "cc02443806bdcab232f3c5be47ea221da7efed7b2e77bf54d34d498fbf27af9f",
+          "rows_sha256": "2dc44fd8387c0b7589ff2729da30919eedd350e8dc9d9e8cec7677822a3e9f20",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 241.64275851100683
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/fusion_r56-ce-lr0.0001",
+          "lr": 0.0001,
+          "tps": 145.76148149637757,
+          "ar_ratio": 3.157108765816833,
+          "checkpoint_sha256": "77ad0b63ef38bc21263b35ee89c1519c4d636b44c6e415b04563f04332dce95f",
+          "rows_sha256": "d252a0ef2820b5fbdffa495bd9038db3b855eb149b3c849dd775be61e57b3ff6",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 240.91797417169437
+        }
+      ],
+      "selected_lr": 0.0006,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "normal_ce",
+        "auf"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/normal_ce-auf-lr0.0001",
+          "lr": 0.0001,
+          "tps": 156.09272526214758,
+          "ar_ratio": 3.380877486605484,
+          "checkpoint_sha256": "fc90491bd55fe811707c3f8b434febf9ad47f4ee57df90a6c60907e93ae14d0b",
+          "rows_sha256": "f7d6ad9ae28cc5ce171a4828948fa5d0a55b417c657d5ff5bf21bac839262fd1",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 245.6490295259282
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/normal_ce-auf-lr0.0003",
+          "lr": 0.0003,
+          "tps": 155.1428887478518,
+          "ar_ratio": 3.360304581098547,
+          "checkpoint_sha256": "f79bf850431701d9dc817469d952140d8e26ae0466f9531684aab2524eead817",
+          "rows_sha256": "d3c2de9b459bdbaf0551480ccdf07dd5b37b54a3144d7e90ebf816ba13a7a547",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 245.32765607908368
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/normal_ce-auf-lr0.0006",
+          "lr": 0.0006,
+          "tps": 150.93220497303116,
+          "ar_ratio": 3.269103623759901,
+          "checkpoint_sha256": "4b7b924fd7af22156847c5f76679a289a1453d190fbd4c10f1af923ea39dfeaf",
+          "rows_sha256": "34c0a78af17e69e42b2d772e854be08f817ef0d5001c018beb9a49b4fab04f84",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 245.8558846390806
+        }
+      ],
+      "selected_lr": 0.0001,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    },
+    {
+      "scope": "tuning only; not final evaluation",
+      "identity": [
+        "llama",
+        "normal_ce",
+        "ce"
+      ],
+      "steps": 100,
+      "manifest_sha256": "42a2c4c1acc54ac9e7170a802f472d7ae03f80bb39f20686061d520009ea5b76",
+      "gpu_hardware": [
+        "NVIDIA L40S"
+      ],
+      "ranking_rule": "descending paired aggregate TPS/AR, lower LR for exact ties",
+      "ranked": [
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/normal_ce-ce-lr0.0001",
+          "lr": 0.0001,
+          "tps": 152.70116057418016,
+          "ar_ratio": 3.3074181714538136,
+          "checkpoint_sha256": "c73479d0bcb218b4233ad501925de6976d9d3b8e68d3c4ccd6e5c67459ab00a6",
+          "rows_sha256": "7341503244a30ec71d0ac155344c607fab9914095a4821e2a271df68e6cb168b",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 245.07812137994915
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/normal_ce-ce-lr0.0003",
+          "lr": 0.0003,
+          "tps": 151.90092968914848,
+          "ar_ratio": 3.2900856367136693,
+          "checkpoint_sha256": "6d68d409b87aabd0eea96b7b7de08e0764eefcd5c210b02f0aff1d9dbeb48c2b",
+          "rows_sha256": "f673d4bca02297aa3ee301f15f284509c40a774bc0f5babd0224da085ebd9fe2",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 246.1627322458662
+        },
+        {
+          "run": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/normal_ce-ce-lr0.0006",
+          "lr": 0.0006,
+          "tps": 147.92936379961915,
+          "ar_ratio": 3.2040638334558325,
+          "checkpoint_sha256": "8ca7dedaba8197e16e88d893ed6ed7192dda6e6cf14d17c8b3d67f990f90736b",
+          "rows_sha256": "9301b6d6227116eb1a2b9542db90f23ce9c08bda60137d1f169900240c4d96a6",
+          "ar_reference_path": "/scratch/aryama.murthy/handoff-transfer-20260911/matrix/llama/validation-reference/ar-r0-w0.jsonl",
+          "ar_rows_sha256": "21f762da47c48e137137cf0877b0be2ec7bd2c6391280dfad2dbd6aef06a3cf3",
+          "training_seconds": 245.2759157079272
+        }
+      ],
+      "selected_lr": 0.0001,
+      "limitations": "best observed candidate at this budget; single method timing and one shared measured AR reference per family"
+    }
+  ],
+  "input_tasks_sha256": "b48293739102988bb14b89c66799c7fd9f1a6c7a18f12f1f8a77183517a1f001"
+}

@@ -1,5 +1,5 @@
 """Create an isolated cell; never overwrite baseline artifacts or share resumes."""
-import argparse,hashlib,json
+import argparse,hashlib,json,os
 from pathlib import Path
 
 def digest(path):
@@ -15,7 +15,7 @@ def prepare(base,out,kind,objective,lr):
         normal=base/'normal/export'
         transfer.update(normal_export=str(normal),normal_sha256=digest(normal/'model.safetensors'))
     contract={'family':transfer['family'],'kind':kind,'objective':objective,'lr':lr,
-        'num_anchors':512,'objective_chunk_blocks':16,'records':4096,'global_batch':8,
+        'num_anchors':int(os.environ.get('MATRIX_NUM_ANCHORS','512')),'objective_chunk_blocks':16,'records':4096,'global_batch':8,
         'transfer_source_sha256':digest(base/'transfer.json')}
     out.mkdir(parents=True,exist_ok=True)
     for name,data in [('transfer.json',transfer),('cell.json',contract)]:

@@ -61,12 +61,12 @@ def main(a):
     model=NormalInterface(weights['fc.weight'],weights['hidden_norm.weight'],transfer['input_width']//5,
                           target_config['rms_norm_eps'],native_config['rms_norm_eps']).cuda()
     opt=torch.optim.AdamW(model.parameters(),lr=a.lr,weight_decay=0,fused=True)
-    out=a.root/'normal';out.mkdir(parents=True,exist_ok=True)
+    out=a.out if a.out is not None else a.root/'normal';out.mkdir(parents=True,exist_ok=True)
     steps_epoch=math.ceil(total/2048);steps=steps_epoch*a.epochs;warm=max(1,int(.05*steps))
     contract={'family':a.family,'records':4096,'epochs':a.epochs,'seed':a.seed,'lr':a.lr,
       'positions':total,'position_batch':2048,'input_eps':target_config['rms_norm_eps'],
       'output_eps':native_config['rms_norm_eps'],'trainable_parameters':sum(p.numel() for p in model.parameters()),
-      'objective':'normal RelaySpec normalized context relative_interface_mse; equal-record weighting',
+      'objective':a.objective,'feature_distribution':('softmax over normalized fused feature coordinates, temperature1, no positional weighting' if a.objective!='relative_mse' else None),
       'initialization':'original random nn.Linear; not ZIP warm-start','base_export_sha256':transfer['base_sha256'],
       'feature_manifests':transfer['feature_manifests'],'sampler':'same deterministic stratified25% positions and equal-record masses as ZIP; cross uses only verified shared boundaries' if a.family=='cross' else 'same deterministic stratified25% positions and equal-record masses as ZIP',
       'optimizer':'AdamW betas.9/.999 eps1e-8 weight_decay0 clip1, ZIP warmup/cosine'}
@@ -84,7 +84,7 @@ def main(a):
             rate=(step+1)/warm if step<warm else .5*(1+math.cos(math.pi*(step-warm)/max(1,steps-warm)))
             opt.param_groups[0]['lr']=a.lr*rate;opt.zero_grad(set_to_none=True)
             with torch.autocast('cuda',dtype=torch.bfloat16):
-                weighted=(model.feature_loss(x,y)*w).sum()
+                weighted=(model.feature_loss(x,y,a.objective)*w).sum()
                 loss=weighted*(total/4096)/2048
             assert torch.isfinite(loss)
             loss.backward();torch.nn.utils.clip_grad_norm_(model.parameters(),1,error_if_nonfinite=True);opt.step()
@@ -113,11 +113,12 @@ def main(a):
     write(out/'summary.json',{'status':'complete','contract':contract,'history':history,'training_seconds':sum(r['seconds'] for r in history),
       'peak_cuda_bytes':torch.cuda.max_memory_allocated(),'export_relative_mse':error,'export_sha256':sha(dest/'model.safetensors'),
       'job_id':os.environ.get('SLURM_JOB_ID')})
-    if a.family=='cross':
+    if a.family=='cross' and a.out is None:
         transfer.update(normal_export=str(dest),normal_sha256=sha(dest/'model.safetensors'))
         write(a.root/'transfer.json',transfer)
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--family',choices=['q8','q14','llama','cross'],required=True)
     p.add_argument('--root',type=Path,required=True);p.add_argument('--study',type=Path,required=True);p.add_argument('--target',type=Path,required=True)
+    p.add_argument('--out',type=Path);p.add_argument('--objective',choices=['relative_mse','feature_ce','forward_kl','reverse_kl'],default='relative_mse')
     p.add_argument('--epochs',type=int,default=3);p.add_argument('--seed',type=int,default=42);p.add_argument('--lr',type=float,default=1e-3);main(p.parse_args())

@@ -48,7 +48,7 @@ def main(a):
     num+=1
     loss_sum=resume['loss_sums'][rank]
     continue
-   anchor_count+=int(((mask[:,:-1]>.5)&(mask[:,1:]>.5)).sum(dim=1).clamp(max=512).sum());records_count+=ids.shape[0]
+   anchor_count+=int(((mask[:,:-1]>.5)&(mask[:,1:]>.5)).sum(dim=1).clamp(max=NUM_ANCHORS).sum());records_count+=ids.shape[0]
    torch.manual_seed(a.seed*1000+epoch*10000+rank*3000+num)
    with model.no_sync() if accum==0 else contextlib.nullcontext():
     with torch.autocast('cuda',dtype=torch.bfloat16):loss,acc,metrics=model(ids,h,mask,collect_detailed_metrics=False)
@@ -68,7 +68,7 @@ def main(a):
       (out/'checkpoint.tmp').replace(out/'checkpoint.pt')
       torch.save(parameters_snapshot,out/'final.pt')
       export(raw,cfg,a.kind,R/'exports'/(a.output_tag or a.tag)/f'seen_{processed}')
-      put(out/'summary.json',{'processed_examples':processed,'optimizer_steps':step,'unique_cached_examples':4096,'training_seconds':time.perf_counter()-t0,'training_gpu_hours':(time.perf_counter()-t0)*world/3600,'checkpoint':'fixed cumulative-example milestone','objective':OBJECTIVE,'anchors_per_example':512,'seed':a.seed,'lr':a.lr,'total_schedule_steps':total_steps})
+      put(out/'summary.json',{'processed_examples':processed,'optimizer_steps':step,'unique_cached_examples':4096,'training_seconds':time.perf_counter()-t0,'training_gpu_hours':(time.perf_counter()-t0)*world/3600,'checkpoint':'fixed cumulative-example milestone','objective':OBJECTIVE,'anchors_per_example':NUM_ANCHORS,'seed':a.seed,'lr':a.lr,'total_schedule_steps':total_steps})
      dist.barrier()
 
     if step%100==0:
@@ -93,7 +93,7 @@ def main(a):
   out=R/'modules'/(a.output_tag or a.tag)/a.kind;out.mkdir(parents=True,exist_ok=True)
   torch.save({k:p.detach().cpu() for k,p in raw.draft_model.named_parameters() if p.requires_grad},out/'final.pt')
   export(raw,cfg,a.kind,R/'exports'/(a.output_tag or a.tag)/a.kind)
-  put(out/'summary.json',{'trainable_parameters':n,'optimizer_steps':step,'training_seconds':seconds,'training_gpu_hours':seconds*world/3600,'world_size':world,'seed':a.seed,'variant':a.kind,'history':history,'peak_cuda_bytes_rank0':torch.cuda.max_memory_allocated(),'lr':a.lr,'bias_lr':.01,'initialization':json.loads((R/f'model-contract-{a.kind}.json').read_text())['initialization'],'processed_examples':step*8,'total_schedule_steps':total_steps,'objective':OBJECTIVE,'anchors_per_example':512,'batch_per_gpu':2,'gradient_accumulation':2,'checkpoint':'final','actual_anchors_rank0':anchor_count if counts_complete else None,'records_rank0':records_count if counts_complete else None,'anchor_count_scope':'complete run' if counts_complete else 'legacy resume omitted historical counts; totals unavailable','anchor_limit_semantics':'distinct valid anchors; short records supply fewer','source_sha256':source_hashes})
+  put(out/'summary.json',{'trainable_parameters':n,'optimizer_steps':step,'training_seconds':seconds,'training_gpu_hours':seconds*world/3600,'world_size':world,'seed':a.seed,'variant':a.kind,'history':history,'peak_cuda_bytes_rank0':torch.cuda.max_memory_allocated(),'lr':a.lr,'bias_lr':.01,'initialization':json.loads((R/f'model-contract-{a.kind}.json').read_text())['initialization'],'processed_examples':step*8,'total_schedule_steps':total_steps,'objective':OBJECTIVE,'anchors_per_example':NUM_ANCHORS,'batch_per_gpu':2,'gradient_accumulation':2,'checkpoint':'final','actual_anchors_rank0':anchor_count if counts_complete else None,'records_rank0':records_count if counts_complete else None,'anchor_count_scope':'complete run' if counts_complete else 'legacy resume omitted historical counts; totals unavailable','anchor_limit_semantics':'distinct valid anchors; short records supply fewer','source_sha256':source_hashes})
   print('TRAIN_DONE',a.kind,seconds,flush=True)
  dist.barrier();dist.destroy_process_group()
 if __name__=='__main__':
