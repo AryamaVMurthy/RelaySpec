@@ -63,8 +63,8 @@ Its site-packages refer to the existing, now-shared vLLM environment. CPU import
 of torch and vLLM was checked on node07. Use your own Turing login and Slurm
 allocation/account to run GPU work. File access does not grant another user's
 Slurm account privileges. Existing Slurm scripts still contain Aryama's home
-paths/account: copy them and update their control, log and account paths before
-submitting. Do not run inference on the login node.
+paths/account: copy them and update their control and log paths, Slurm account, and Python executable (use the
+shared entry point above) before submitting. Do not run inference on the login node.
 
 Example environment inside an allocated node07 GPU job:
 
