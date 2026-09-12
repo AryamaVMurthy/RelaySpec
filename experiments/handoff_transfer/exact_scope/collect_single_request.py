@@ -23,6 +23,8 @@ def summarize_requests(records):
     accepted=sum(r['accepted_draft_tokens'] for r in records)
     latency=[r['wall_seconds'] for r in records]
     result=dict(requests=len(records),output_tokens=tokens,total_request_seconds=seconds,
+        outputs_at_cap=sum(r['output_tokens']==2048 for r in records),
+        length_finishes=sum(r.get('finish_reason')=='length' for r in records),
         output_tps=tokens/seconds,mean_request_seconds=statistics.mean(latency),
         median_request_seconds=statistics.median(latency),
         p95_request_seconds=statistics.quantiles(latency,n=100,method='inclusive')[94],
