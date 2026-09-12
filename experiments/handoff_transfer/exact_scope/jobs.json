@@ -1482,5 +1482,86 @@
     "gpus": 0,
     "status": "completed",
     "exit_code": "0:0"
+  },
+  {
+    "job": 32593,
+    "name": "optimized-all-pilot",
+    "node": "node07",
+    "script": "optimized_methods.sbatch",
+    "array": "0-3%4",
+    "pilot": true,
+    "status": "completed",
+    "exit_code": "0:0",
+    "max_gpus": 4
+  },
+  {
+    "job": 32600,
+    "name": "optimized-all128",
+    "node": "node07",
+    "script": "optimized_methods.sbatch",
+    "array": "0-3%4",
+    "pilot": false,
+    "max_gpus": 4,
+    "requests_per_target": 128,
+    "cap": 2048,
+    "batch": 1,
+    "methods": 7,
+    "targets": [
+      "q8",
+      "cross"
+    ],
+    "fresh_ar": true,
+    "status": "cancelled",
+    "reason": "User redirected to near-peak exact AR agreement before full rerun"
+  },
+  {
+    "job": 32604,
+    "name": "optimized-all-final",
+    "node": "node07",
+    "script": "collect_optimized_methods.sbatch",
+    "dependency": "afterok:32600",
+    "gpus": 0,
+    "status": "cancelled",
+    "reason": "User redirected to near-peak exact AR agreement before full rerun"
+  },
+  {
+    "job": 32605,
+    "name": "exactness-search",
+    "node": "node07",
+    "script": "exactness_search.sbatch",
+    "array": "0-3%4",
+    "profiles": [
+      "stock",
+      "invariant-o3",
+      "strict-blas",
+      "invariant-smalltile"
+    ],
+    "requests": 8,
+    "cap": 512,
+    "max_gpus": 4,
+    "status": "completed",
+    "exact_matches_by_profile": {
+      "stock": 2,
+      "invariant-o3": 3,
+      "strict-blas": 1,
+      "invariant-smalltile": 2
+    }
+  },
+  {
+    "job": 32629,
+    "name": "exactnorm",
+    "node": "node07",
+    "script": "exactness_search.sbatch",
+    "array": "0-3%4",
+    "profiles": [
+      "invariant-o3-rms",
+      "invariant-o3-all",
+      "invariant-smalltile-rms",
+      "invariant-smalltile-all"
+    ],
+    "requests": 8,
+    "cap": 512,
+    "max_gpus": 4,
+    "status": "submitted"
   }
 ]

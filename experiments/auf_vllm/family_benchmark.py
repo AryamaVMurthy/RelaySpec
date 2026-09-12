@@ -19,9 +19,11 @@ def main(args):
     from vllm import LLM,SamplingParams
     from transformers import AutoTokenizer
     runtime_profile=getattr(args,'runtime_profile','invariant')
-    if runtime_profile=='optimized-ar':
-        assert args.mode=='ar' and not args.export and not args.native_draft
-        assert os.environ.get('VLLM_BATCH_INVARIANT')=='0'
+    if runtime_profile in ('optimized-ar','optimized','numerics'):
+        if runtime_profile=='optimized-ar':
+            assert args.mode=='ar' and not args.export and not args.native_draft
+        expected='1' if runtime_profile=='numerics' and os.environ['RELAYSPEC_NUMERICS'].startswith('invariant-') else '0'
+        assert os.environ.get('VLLM_BATCH_INVARIANT')==expected
     else:
         assert os.environ.get('VLLM_BATCH_INVARIANT')=='1'
     assert 0<=args.worker_index<args.workers
@@ -50,9 +52,15 @@ def main(args):
                 enable_prefix_caching=False,generation_config='vllm',async_scheduling=False,
                 seed=0,disable_log_stats=False,worker_extension_cls='experiments.auf_vllm.family_metrics.FamilyMetricsWorker',
                 compilation_config={'mode':0,'cudagraph_mode':'FULL_DECODE_ONLY'})
-    if runtime_profile=='optimized-ar':
+    if runtime_profile in ('optimized-ar','optimized','numerics'):
         config.pop('compilation_config')
         config.update(optimization_level=3,async_scheduling=True)
+    if runtime_profile=='numerics':
+        profile=os.environ['RELAYSPEC_NUMERICS']
+        if profile.endswith('-rms'):
+            config['compilation_config']={'custom_ops':['none','+rms_norm']}
+        elif profile.endswith('-all'):
+            config['compilation_config']={'custom_ops':['all']}
     if args.export:
         export_config=json.loads((args.export/'config.json').read_text())
         block=export_config['block_size']
@@ -84,7 +92,8 @@ def main(args):
               'repeat':args.repeat,'export_sha256':sha(args.export/'model.safetensors') if args.export else None,
               'runtime_config':config}
     if runtime_profile!='invariant':
-        contract.update(runtime_profile=runtime_profile,batch_invariant=False,request_batch_size=batch_size)
+        contract.update(runtime_profile=runtime_profile,batch_invariant=os.environ.get('VLLM_BATCH_INVARIANT')=='1',request_batch_size=batch_size)
+    if runtime_profile=='numerics':contract['numerics_profile']=os.environ['RELAYSPEC_NUMERICS']
     if batch_size>1:contract.update(request_batch_size=batch_size,workload='fixed synchronous request batches')
     if args.native_draft:
         contract.update(native_draft_sha256=sha(args.native_draft/'model.safetensors'),
@@ -95,6 +104,35 @@ def main(args):
     if path.exists():
         path.rename(path.with_name(path.name+f'.incomplete-{time.time_ns()}'))
     start=time.perf_counter();llm=LLM(**config);setup=time.perf_counter()-start
+    vc=llm.llm_engine.vllm_config
+    effective_runtime={
+        'compilation_mode':int(vc.compilation_config.mode),
+        'cudagraph_mode':str(vc.compilation_config.cudagraph_mode),
+        'async_scheduling':vc.scheduler_config.async_scheduling,
+        'optimization_level':int(vc.optimization_level),
+        'use_v2_model_runner':vc.use_v2_model_runner,
+        'dtype':str(vc.model_config.dtype),
+        'quantization':vc.model_config.quantization,
+        'tensor_parallel_size':vc.parallel_config.tensor_parallel_size,
+        'batch_invariant':os.environ.get('VLLM_BATCH_INVARIANT'),
+    }
+    if runtime_profile=='numerics':
+        import torch
+        effective_runtime.update(numerics_profile=os.environ['RELAYSPEC_NUMERICS'],
+            custom_ops=list(vc.compilation_config.custom_ops),
+            precision_telemetry_scope='parent; GPU worker flags recorded separately in gpu_before/gpu_after',
+            allow_tf32=torch.backends.cuda.matmul.allow_tf32,
+            bf16_reduced_precision=str(torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction),
+            cublas_workspace=os.environ.get('CUBLAS_WORKSPACE_CONFIG'),
+            cublaslt_workspace=os.environ.get('CUBLASLT_WORKSPACE_SIZE'))
+    if runtime_profile in ('optimized','numerics'):
+        assert effective_runtime['compilation_mode']>0,effective_runtime
+        assert effective_runtime['async_scheduling'] is True,effective_runtime
+        assert effective_runtime['optimization_level']==3,effective_runtime
+        assert effective_runtime['use_v2_model_runner'] is True,effective_runtime
+        assert 'NONE' not in effective_runtime['cudagraph_mode'],effective_runtime
+    write(args.out/'startup.json',{'contract':contract,'effective_runtime':effective_runtime,
+          'resolved_runtime_config':str(vc),'setup_seconds':setup})
     llm.collective_rpc('sd_install_monitor')
     assets=llm.collective_rpc('sd_verify_family_assets',args=(str(target),str(args.export) if args.export else None,
                                 str(args.native_draft) if args.native_draft else None))
@@ -143,7 +181,7 @@ def main(args):
                 if (index//args.workers+1)%16==0:
                     print(json.dumps({'mode':args.mode,'completed':index//args.workers+1,'last_seconds':seconds}),flush=True)
     if args.profile_dir:llm.stop_profile()
-    write(summary_path,{'contract':contract,'resolved_runtime_config':str(llm.llm_engine.vllm_config),'setup_seconds':setup,'warmup_seconds':warm_seconds,'warmup_request_batch_size':batch_size,
+    write(summary_path,{'contract':contract,'effective_runtime':effective_runtime,'resolved_runtime_config':str(llm.llm_engine.vllm_config),'setup_seconds':setup,'warmup_seconds':warm_seconds,'warmup_request_batch_size':batch_size,
                         'asset_checks':assets,'gpu_before':before,'gpu_after':llm.collective_rpc('sd_stats'),
                         'job_id':os.environ.get('SLURM_JOB_ID'),'timing_valid':not bool(args.profile_dir),
                         'batch_measurements':batch_measurements,'timing_contract':('fixed-batch generate wall; per-row wall is amortized, not individual latency' if batch_size>1 else 'per-request generate wall; compilation-affected request retried once, cold time retained; prefix cache off')})
@@ -164,7 +202,7 @@ if __name__=='__main__':
     parser.add_argument('--workers',type=int,default=1)
     parser.add_argument('--worker-index',type=int,default=0)
     parser.add_argument('--repeat',type=int,default=0)
-    parser.add_argument('--runtime-profile',choices=['invariant','optimized-ar'],default='invariant')
+    parser.add_argument('--runtime-profile',choices=['invariant','optimized-ar','optimized','numerics'],default='invariant')
     parser.add_argument('--profile-dir',type=Path)
     parser.add_argument('--request-batch-size',type=int,choices=[1,4,8,16,32,64,128],default=1)
     main(parser.parse_args())

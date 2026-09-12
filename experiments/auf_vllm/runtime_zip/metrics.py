@@ -42,7 +42,21 @@ class MetricsWorker:
         from vllm.utils import jit_monitor
         d=getattr(self.model_runner,"speculator",None) or getattr(self.model_runner,"drafter",None)
         t=getattr(d,"transfer_teacher",None)
-        return dict(jit_events=getattr(jit_monitor,"sd_events",0),device_name=torch.cuda.get_device_name(),device_uuid=str(torch.cuda.get_device_properties(0).uuid),allocated=torch.cuda.max_memory_allocated(), reserved=torch.cuda.max_memory_reserved(), teacher_graph_captures=getattr(t,"graph_captures",0), teacher_eager_prefills=getattr(t,"eager_prefills",0))
+        import os
+        numerics=None
+        if os.environ.get('RELAYSPEC_NUMERICS'):
+            if not hasattr(self,'_numerics_paths'):
+                from vllm.model_executor.layers.layernorm import RMSNorm
+                self._numerics_paths=sorted({getattr(m._forward_method,'__name__',str(m._forward_method))
+                    for m in self.model_runner.model.modules() if isinstance(m,RMSNorm)})
+            from experiments.auf_vllm import numerics_runtime
+            numerics=dict(profile=os.environ['RELAYSPEC_NUMERICS'],installed=numerics_runtime._installed,
+                rmsnorm_forward_paths=self._numerics_paths,
+                allow_tf32=torch.backends.cuda.matmul.allow_tf32,
+                bf16_reduced_precision=str(torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction),
+                cublas_workspace=os.environ.get('CUBLAS_WORKSPACE_CONFIG'),
+                cublaslt_workspace=os.environ.get('CUBLASLT_WORKSPACE_SIZE'))
+        return dict(numerics=numerics,jit_events=getattr(jit_monitor,"sd_events",0),device_name=torch.cuda.get_device_name(),device_uuid=str(torch.cuda.get_device_properties(0).uuid),allocated=torch.cuda.max_memory_allocated(), reserved=torch.cuda.max_memory_reserved(), teacher_graph_captures=getattr(t,"graph_captures",0), teacher_eager_prefills=getattr(t,"eager_prefills",0))
 
     def sd_verify_attachments(self,export_path,target_size):
         from pathlib import Path
