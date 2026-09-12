@@ -43,7 +43,10 @@ def audit(root,config_root):
                 batch=serving['request_batch_size'];assert completion['batches']==[batch]
                 suffix=f'-b{batch}' if batch>1 else ''
                 weights=(fit/'export/model.safetensors') if kind=='feature' else fit/f'exports/steps-512/{kind}/model.safetensors'
-                with weights.open('rb') as handle:export_hash=hashlib.file_digest(handle,'sha256').hexdigest()
+                digest=hashlib.sha256()
+                with weights.open('rb') as handle:
+                    for chunk in iter(lambda:handle.read(8*1024*1024),b''):digest.update(chunk)
+                export_hash=digest.hexdigest()
                 for repeat in range(3):
                     ar=result_root/f'ar/ar-r{repeat}-w0{suffix}.jsonl'
                     eval_summary=read(case/f'matrix-r{repeat}-w0{suffix}.summary.json')
