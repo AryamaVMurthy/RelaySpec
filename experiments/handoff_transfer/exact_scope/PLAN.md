@@ -199,3 +199,15 @@ complete-prefix label equivalence and paired-cache equivalence. Every affected
 alignment summary records its excluded trailing token count. Other records retain
 the original algorithm. Repair32446_47 reruns the failed chunk from its existing
 rollout; assembly32263 depends on this repair and original chunks48–63.
+
+## Overlap initializer and token fitting
+
+After full4096 assembly passed, ZIP fitting completed one epoch (762 updates,
+1559660 paired positions,201.52 fitting seconds). `cross-zip-readiness.json`
+verifies the export, checkpoint and index hashes. Jobs32265,32266,32268–32271
+were released from the combined initializer dependency at that point, so three
+ZIP-dependent token fits can overlap the remaining original-interface fit on
+node07's four GPUs. Original-interface tokenCE32267 still waits for32264.
+First cross evaluation32294 now explicitly requires both32265 and32264; all
+subsequent evaluations continue to require its completed shared baselines.
+This changes scheduling only, with no new fitting variants or training settings.
