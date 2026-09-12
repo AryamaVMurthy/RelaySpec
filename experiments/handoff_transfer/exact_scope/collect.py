@@ -105,5 +105,9 @@ if __name__=='__main__':
     args.out.parent.mkdir(parents=True,exist_ok=True);args.out.write_text(json.dumps(result,indent=2)+'\n')
     from experiments.handoff_transfer.exact_scope.report import write_report
     write_report(result,args.out)
+    if args.require_complete and result['status']=='complete':
+        from experiments.handoff_transfer.exact_scope.archive import archive
+        result['artifact_archive']=archive(result,args.root,args.out.parent/'artifacts',Path(__file__).parent)
+        args.out.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','transformers','issues']}))
     if args.require_complete and result['status']!='complete':sys.exit(1)

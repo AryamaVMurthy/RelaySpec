@@ -103,3 +103,11 @@ Transformers jobs32304–32306 run one128-request/2048-cap pass each for AR and 
 five-map CE/AUF after the entire vLLM matrix. The standalone decoder currently
 supports one request at a time; these are backend confirmation checks with separately
 reported timing, not substitutes for the batch128 primary results.
+
+After the final audit passes, its CPU job archives compact deployment interfaces,
+unmerged token-fit parameters, model/config provenance, calibration manifests,
+evaluation token outputs and available GPU telemetry under the control directory's
+`outputs/exact32e1b8/artifacts`. The archive has a SHA256 manifest; large frozen
+model weights and feature caches remain referenced rather than duplicated.
+The collector also produces CSV/Markdown tables from complete audited timing
+triplets, preserving benchmark job IDs and physical GPU UUIDs in the audit.
