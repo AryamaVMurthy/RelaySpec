@@ -64,3 +64,29 @@ Then validate longer outputs and both target families before selecting it for
 the full matched table. Record failed profiles and retained throughput; never
 use diagnostic TPS as the final 128-request benchmark or mix runtime settings
 between numerator and denominator.
+
+## Second-wave results
+
+| Profile | AR TPS | Native DFlash TPS | Exact sequences / 8 |
+|---|---:|---:|---:|
+| Batch-invariant O3 + RMSNorm | 27.14 | 141.72 | 8 |
+| Batch-invariant O3 + all custom ops | 27.05 | 138.47 | 8 |
+| Smaller invariant tiles + RMSNorm | 41.10 | 196.48 | 8 |
+| Smaller invariant tiles + all custom ops | 40.93 | 191.17 | 8 |
+
+All four restored exact agreement on this diagnostic. Worker telemetry confirms
+`RMSNorm.forward_cuda`, TF32 disabled, and reduced-precision BF16 reduction
+disabled. The controlled RMSNorm ablation supports the compiler dispatch bypass
+as a cause of the observed mismatch in this cohort. It does not establish
+universal exactness across shapes, models or other versions.
+
+Selected for longer validation: `invariant-smalltile-rms`. It retained 88.9%
+of stock AR TPS and 93.5% of stock native TPS on the diagnostic. Between-profile
+outputs differ; retained-TPS percentages are workload observations, not
+identical-output latency comparisons. Within this profile AR and native have
+identical 3,768 output tokens and a matched throughput ratio of 4.780x.
+
+Job 32633: four paired AR/speculative pilots, eight requests each, cap 2,048:
+Qwen native, Qwen single-matrix AUF, Llama native, and Qwen-to-Llama five-matrix
+AUF. A non-exact comparison fails the pilot explicitly. This is still separate
+from the final 128-request table.

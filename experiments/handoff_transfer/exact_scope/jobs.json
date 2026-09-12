@@ -1563,5 +1563,26 @@
     "cap": 512,
     "max_gpus": 4,
     "status": "submitted"
+  },
+  {
+    "job": 32633,
+    "name": "exactlongpilot",
+    "node": "node07",
+    "script": "optimized_methods.sbatch",
+    "array": "0-3%4",
+    "profile": "invariant-smalltile-rms",
+    "campaign": "exact-nearpeak128-20260912",
+    "requests_per_cell": 8,
+    "cap": 2048,
+    "max_gpus": 4,
+    "cells": [
+      "q8/native",
+      "q8/dense_fusion-auf",
+      "cross/native",
+      "cross/five_maps-auf"
+    ],
+    "paired_ar": true,
+    "require_exact": true,
+    "status": "submitted"
   }
 ]

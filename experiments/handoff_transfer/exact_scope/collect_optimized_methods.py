@@ -1,6 +1,7 @@
 """Independently audit the complete matched optimized-runtime comparison."""
 import argparse
 import json
+import os
 from pathlib import Path
 
 from experiments.auf_vllm.compare_outputs import compare
@@ -11,18 +12,32 @@ from .optimized_methods import NEW_CAMPAIGN
 
 def validate_runtime(summary,reference):
     c,a=summary['contract'],reference['contract']
+    numerical=a['runtime_profile']=='numerics'
     for value in (c,a):
-        assert value['runtime_profile']=='optimized' and value['batch_invariant'] is False
+        assert value['runtime_profile']==('numerics' if numerical else 'optimized')
+        assert value['batch_invariant'] is numerical
+        if numerical:
+            assert value['numerics_profile']==a['numerics_profile']
+            assert value['numerics_profile'] in ('invariant-smalltile-rms','invariant-smalltile-all','invariant-o3-rms','invariant-o3-all')
         assert value['request_batch_size']==1
     def common(config):return {k:v for k,v in config.items() if k!='speculative_config'}
     assert common(c['runtime_config'])==common(a['runtime_config']),'Unmatched engine arguments'
     e=summary['effective_runtime']
     assert e==reference['effective_runtime'],'Unmatched effective runtime'
     assert e['compilation_mode']>0 and e['optimization_level']==3
-    assert e['async_scheduling'] is True and e['batch_invariant']=='0'
+    assert e['async_scheduling'] is True and e['batch_invariant']==('1' if numerical else '0')
     assert e['use_v2_model_runner'] is True and e['quantization'] is None
     assert e['dtype']=='torch.bfloat16' and e['tensor_parallel_size']==1
     assert 'NONE' not in e['cudagraph_mode']
+    if numerical:
+        expected=['all'] if a['numerics_profile'].endswith('-all') else ['none','+rms_norm']
+        assert e['custom_ops']==expected
+        for value in (summary,reference):
+            for key in ('gpu_before','gpu_after'):
+                n=value[key][0]['numerics']
+                assert n['installed'] and n['profile']==a['numerics_profile']
+                assert n['rmsnorm_forward_paths']==['forward_cuda']
+                assert n['allow_tf32'] is False and n['bf16_reduced_precision']=='False'
 
 
 def collect(root):
@@ -67,6 +82,8 @@ def collect(root):
                 assert len(set(devices))==4
                 assert all(e==effects[0] for e in effects)
                 comparison=compare(references,paths)
+                if os.environ.get('RELAYSPEC_REQUIRE_EXACT')=='1':
+                    assert comparison['exact_matches']==comparison['finish_matches']==128,comparison
                 stats=summarize_requests(records)
                 if label!='ar':assert stats['draft_blocks']>0,'No measured speculative iterations'
                 collected[label]=dict(family=family,label=label,physical_gpus=devices,effective_runtime=effects[0],
@@ -85,7 +102,7 @@ def collect(root):
             results.append(r)
     return dict(status='complete' if len(results)==14 and not issues else 'incomplete',
         verified_cells=len(results),expected_cells=14,rows=results,issues=issues,progress=progress,
-        scope='Fresh AR and all six speculative methods, same O3/async/non-invariant runtime, BF16, batch1, 128 identical prompts per target, cap2048, same physical GPUs per shard. Native Llama block10, other speculative arms block16. One timing pass.',
+        scope='Fresh AR and all six speculative methods, same audited O3/async runtime (batch invariance and custom-op settings recorded per row), BF16, batch1, 128 identical prompts per target, cap2048, same physical GPUs per shard. Native Llama block10, other speculative arms block16. One timing pass.',
         interpretation='TPS ratios compare pooled output tokens/summed request wall time. If sequences differ, request-time ratios include output-length effects and are not identical-output latency speedups. Exact agreement is measured, not assumed. Engine stages are not isolated GPU kernel durations.')
 
 

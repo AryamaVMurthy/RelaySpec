@@ -22,3 +22,17 @@ def test_speculative_config_may_differ_but_runtime_must_match():
 def test_disabled_async_cannot_pass_even_if_both_arms_fall_back():
     ar=record();ar['effective_runtime']['async_scheduling']=False
     with pytest.raises(AssertionError):validate_runtime(ar,copy.deepcopy(ar))
+
+
+def test_numerical_profile_checks_worker_dispatch_not_just_parent_arguments():
+    ar=record()
+    ar['contract'].update(runtime_profile='numerics',batch_invariant=True,
+                          numerics_profile='invariant-smalltile-rms')
+    ar['effective_runtime'].update(batch_invariant='1',custom_ops=['none','+rms_norm'])
+    worker={'numerics':{'installed':True,'profile':'invariant-smalltile-rms',
+        'rmsnorm_forward_paths':['forward_cuda'],'allow_tf32':False,'bf16_reduced_precision':'False'}}
+    ar.update(gpu_before=[copy.deepcopy(worker)],gpu_after=[copy.deepcopy(worker)])
+    sd=copy.deepcopy(ar)
+    validate_runtime(sd,ar)
+    sd['gpu_after'][0]['numerics']['rmsnorm_forward_paths']=['forward_native']
+    with pytest.raises(AssertionError):validate_runtime(sd,ar)
