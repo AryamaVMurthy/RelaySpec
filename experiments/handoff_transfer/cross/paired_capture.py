@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import torch
 from transformers import AutoTokenizer
-from experiments.handoff_transfer.cross.alignment import aligned_blocks
+from experiments.handoff_transfer.cross.alignment import paired_from_cache
 from experiments.handoff_transfer.matrix.prepare import digest
 from experiments.auf_vllm.runtime_zip.sampling import positions
 from experiments.auf_vllm.pilot_data import write
@@ -18,16 +18,25 @@ def main(args):
     target = AutoTokenizer.from_pretrained(args.models/'llama8-source', local_files_only=True)
     rows = json.loads((args.out/'train.json').read_text())
     manifest_hash = digest(args.out/'train.json')
+    labels_path=args.out/'source-label-alignment.json'
+    label_contract=json.loads((args.out/'alignment-summary.json').read_text())
+    assert label_contract['rollout_sha256']==manifest_hash
+    assert label_contract['labels_sha256']==digest(labels_path)
+    assert label_contract.get('source_normalizer')==str(source.backend_tokenizer.normalizer), 'Rebuild alignment with native-normalizer provenance before cache reuse'
+    generated=json.loads(labels_path.read_text())
+    assert len(generated)==len(rows)
     aligned = []
-    for row in rows:
+    for row,cached in zip(rows,generated):
+        assert cached['group_id']==row['group_id']
         # Include prompt boundaries for initializer fitting. AUF retains the
         # separate generated-token-only alignment from cross.prepare.
         selected = set(positions(len(row['full_ids']), len(row['prompt_token_ids']), row['group_id']))
-        item = aligned_blocks(row['full_ids'], 1, source, target,
-                              candidate_positions=selected)
+        item = paired_from_cache(row['full_ids'],len(row['prompt_token_ids']),
+                                 source,target,selected,cached)
         item['selected'] = item['blocks']
         assert item['selected'], 'No shared boundaries in stratified sample'
         aligned.append(item)
+    del generated
     maximum = max(len(a['source_ids']) for a in aligned)
     config = json.loads((args.models/'qwen4-source/config.json').read_text())
     assert maximum <= config['max_position_embeddings'], 'No source truncation permitted'
@@ -66,6 +75,8 @@ def main(args):
             write(dest.with_suffix('.json'),dict(sha256=digest(dest),manifest_sha256=manifest_hash,
                 group_id=row['group_id'],positions=len(selected),target_feature_sha256=provenance['sha256'],
                 sampling='original25% target strata intersected with exact source-token prefixes under native source normalization',
+                generated_alignment_sha256=label_contract['labels_sha256'],
+                alignment_execution='reused audited generated anchors; sampled prompt anchors checked separately',
                 weighting='equal total example mass; per-position weight1/retained_count',
                 target_taps=[1,8,15,22,29],source_taps=taps,job_id=os.environ.get('SLURM_JOB_ID')))
         print(json.dumps(dict(paired_records=start+len(outputs))),flush=True)

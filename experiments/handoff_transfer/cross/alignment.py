@@ -66,3 +66,22 @@ def aligned_blocks(target_ids, prompt_length, source_tokenizer, target_tokenizer
             'context_position_units': 'target tokens',
             'label_position_units': 'source tokens',
             'scope': 'AUF source-token prefix extension; not target-token AUF'}
+
+
+def paired_from_cache(target_ids, prompt_length, source_tokenizer, target_tokenizer,
+                      selected, generated):
+    """Extend verified generated-prefix labels with sampled prompt positions.
+
+    Caller must verify the cached manifest/hash and row identity. Re-encoding the
+    full source sequence below detects a mismatched tokenizer or sequence. Every
+    generated anchor already passed the identical prefix checks in aligned_blocks.
+    """
+    selected=set(selected)
+    prompt=aligned_blocks(target_ids,1,source_tokenizer,target_tokenizer,
+                          candidate_positions=[k for k in selected if k<prompt_length])
+    if prompt['source_ids']!=generated['source_ids']:
+        raise ValueError('Cached alignment has a different source sequence')
+    if any(b['target_anchor']<prompt_length for b in generated['blocks']):
+        raise ValueError('Generated alignment cache contains prompt anchors')
+    blocks=prompt['blocks']+[b for b in generated['blocks'] if b['target_anchor'] in selected]
+    return {'source_ids':prompt['source_ids'],'blocks':blocks}

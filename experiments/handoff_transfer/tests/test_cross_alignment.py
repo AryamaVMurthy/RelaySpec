@@ -1,4 +1,5 @@
 from experiments.handoff_transfer.cross.alignment import aligned_blocks
+from experiments.handoff_transfer.cross import alignment
 import pytest
 import unicodedata
 from types import SimpleNamespace
@@ -76,3 +77,25 @@ def test_decoder_text_changes_without_declared_normalization_stay_rejected():
     target=Tokenizer(list('abcde'));source=LossyTokenizer(list('abcde'))
     result=aligned_blocks(target.encode('abcde'),2,source,target)
     assert result['blocks']==[]
+
+
+@pytest.mark.parametrize('selected', [[], range(10), [0,1,3,4,7,7,9,100,-1]])
+def test_cached_generated_alignment_preserves_paired_sampling(selected):
+    target=Tokenizer(list('abcdefghij'))
+    source=Tokenizer(['ab','cd','ef','gh','ij']+list('abcdefghij'))
+    ids=target.encode('abcdefghij');prompt_length=4
+    cached=aligned_blocks(ids,prompt_length,source,target)
+    expected=aligned_blocks(ids,1,source,target,candidate_positions=selected)
+    assert hasattr(alignment,'paired_from_cache'), 'Missing reuse of audited generated-prefix alignment'
+    actual=alignment.paired_from_cache(ids,prompt_length,source,target,selected,cached)
+    assert actual['source_ids']==expected['source_ids']
+    assert actual['blocks']==expected['blocks']
+
+
+def test_paired_cache_rejects_different_source_sequence():
+    target=Tokenizer(list('abcdefghij'));source=Tokenizer(list('abcdefghij'))
+    ids=target.encode('abcdefghij');cached=aligned_blocks(ids,4,source,target)
+    cached['source_ids'][0]=9
+    assert hasattr(alignment,'paired_from_cache'), 'Missing validated cache reuse'
+    with pytest.raises(ValueError,match='source sequence'):
+        alignment.paired_from_cache(ids,4,source,target,range(10),cached)

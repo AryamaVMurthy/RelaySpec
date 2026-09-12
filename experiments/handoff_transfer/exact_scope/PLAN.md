@@ -165,3 +165,12 @@ and parallel outputs were byte-identical on actual short, full4096-token and Uni
 regression rollouts; evidence is in `alignment-parallel-audit.json`. This changes
 preprocessing scheduling only, with the existing four-GPU ceiling, training batch8,
 and evaluation batch128 intact. Each chunk records its actual `alignment_workers`.
+
+The paired-feature capture stage now reuses generated-token anchors from the
+hash-verified `source-label-alignment.json`. It checks selected prompt anchors
+separately, verifies source-sequence identity, and retains the identical source
+IDs, target/source gather positions, labels and equal-record weights. Reuse requires
+record identity, rollout/label hashes and native-normalizer provenance. Actual-tokenizer
+comparisons covering short, full-length and Unicode regression records passed;
+`paired-alignment-cache-audit.json` records the equivalence check. This avoids a
+second scan of already-verified generated prefixes without changing the sample.
