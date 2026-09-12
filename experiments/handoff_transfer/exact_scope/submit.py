@@ -66,3 +66,4 @@ evaluate(l);evaluate(x)
 all_evals=[j['job'] for j in jobs if j['script']=='eval.sbatch']
 for mode in ['ar','ce','auf']:
     submit('transformers.sbatch',f'b8-transformers-q8-{mode}',{'MODE':mode},all_evals)
+submit('collect.sbatch','b8-final-audit',{},[j['job'] for j in jobs if j['script']=='transformers.sbatch'],gpus=0)
