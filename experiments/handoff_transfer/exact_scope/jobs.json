@@ -1562,7 +1562,8 @@
     "requests": 8,
     "cap": 512,
     "max_gpus": 4,
-    "status": "submitted"
+    "status": "completed",
+    "exact_matches_per_profile": 8
   },
   {
     "job": 32633,
@@ -1584,5 +1585,37 @@
     "paired_ar": true,
     "require_exact": true,
     "status": "submitted"
+  },
+  {
+    "job": 32637,
+    "name": "exactmatched128",
+    "node": "node07",
+    "script": "optimized_methods.sbatch",
+    "array": "0-3%4",
+    "profile": "invariant-smalltile-rms",
+    "campaign": "exact-nearpeak128-20260912",
+    "requests_per_target": 128,
+    "cap": 2048,
+    "max_gpus": 4,
+    "methods": 7,
+    "targets": [
+      "q8",
+      "cross"
+    ],
+    "fresh_ar": true,
+    "require_exact": true,
+    "dependency": "afterok:32633",
+    "status": "pending"
+  },
+  {
+    "job": 32638,
+    "name": "exactmatchedfinal",
+    "node": "node07",
+    "script": "collect_optimized_methods.sbatch",
+    "gpus": 0,
+    "dependency": "afterok:32637",
+    "campaign": "exact-nearpeak128-20260912",
+    "require_exact": true,
+    "status": "pending"
   }
 ]

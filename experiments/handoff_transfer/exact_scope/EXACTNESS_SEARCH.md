@@ -90,3 +90,11 @@ Job 32633: four paired AR/speculative pilots, eight requests each, cap 2,048:
 Qwen native, Qwen single-matrix AUF, Llama native, and Qwen-to-Llama five-matrix
 AUF. A non-exact comparison fails the pilot explicitly. This is still separate
 from the final 128-request table.
+
+Full confirmation is submitted as array 32637, dependent on all four 32633
+pilots succeeding. Collector 32638 depends on that full array. Campaign:
+`exact-nearpeak128-20260912`. The full run uses 128 prompts per target,
+cap 2,048, four GPU-paired modulo shards and seven methods (fresh AR plus the
+six existing speculative arms). Strict sequence/finish equality is an explicit
+failure condition; collector also checks actual worker normalization dispatch.
+Pending submission is not a completed measurement.
