@@ -77,9 +77,12 @@ def audit(root,config_root):
                         assert measured['contract']['runtime_config']['max_num_seqs']==batch and measured['timing_valid']
                         result=compare([ar],[folder/f'matrix-r{repeat}-w0{suffix}.jsonl'])
                         assert result['count']==result['exact_matches']==result['finish_matches']==128
+                        batches=measured['batch_measurements']
                         comparison_rows.append(dict(family=family,method=name,repeat=repeat,
                                                     benchmark_job_id=measured['job_id'],
-                                                    device_uuid=measured['gpu_after'][0]['device_uuid'],**result))
+                                                    device_uuid=measured['gpu_after'][0]['device_uuid'],
+                                                    draft_blocks=sum(b['verification_iterations'] for b in batches),
+                                                    accepted_draft_tokens=sum(b['accepted_draft_tokens'] for b in batches),**result))
                 cell['evaluation']=True
             except (OSError,KeyError,AssertionError,ValueError) as error:
                 issues.append(dict(cell=label,phase='evaluation',error=str(error)))

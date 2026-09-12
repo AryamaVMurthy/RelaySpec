@@ -26,6 +26,8 @@ def summarize(audit):
         result=dict(family=family,method=method,repetitions=3,request_batch_size=batches.pop(),
                     tps_mean=statistics.mean(tps),tps_min=min(tps),tps_max=max(tps),
                     speedup_ar=statistics.mean(row['throughput_ratio'] for row in rows))
+        result['accepted_tokens_per_draft']=(statistics.mean(row['accepted_draft_tokens']/row['draft_blocks'] for row in rows)
+                                             if all(row.get('draft_blocks',0)>0 for row in rows) else None)
         for baseline in ('original','zip'):
             reference=groups.get((family,baseline))
             if reference is None:raise ValueError('Complete matched baseline required')
@@ -43,7 +45,7 @@ def write_report(audit,path):
     path=Path(path)
     rows=summarize(audit)
     fields=['family','method','repetitions','request_batch_size','tps_mean','tps_min','tps_max',
-            'speedup_ar','speedup_original','speedup_zip']
+            'speedup_ar','speedup_original','speedup_zip','accepted_tokens_per_draft']
     with path.with_suffix('.benchmarks.csv').open('w',newline='') as handle:
         writer=csv.DictWriter(handle,fieldnames=fields);writer.writeheader();writer.writerows(rows)
     lines=[f"Experiment audit: **{audit['status']}**.",
@@ -55,11 +57,13 @@ def write_report(audit,path):
            'Ranges describe timing repetitions, not fitting-seed uncertainty. Each speedup is the mean of '
            'ratios paired by timing repetition and model family. Reference passes are reused across jobs '
            'on the same node and GPU model; comparisons can involve different physical GPUs. '
-           'The audit retains benchmark job IDs and GPU UUIDs.',
-           '\n| Family | Method | Batch | Mean TPS | TPS range | / AR | / Original | / ZIP |',
-           '|---|---|---:|---:|---:|---:|---:|---:|']
+           'The audit retains benchmark job IDs and GPU UUIDs. Accepted/draft is the measured accepted '
+           'draft-token count divided by the draft-block count; it excludes the verifier bonus token.',
+           '\n| Family | Method | Batch | Mean TPS | TPS range | / AR | / Original | / ZIP | Accepted/draft |',
+           '|---|---|---:|---:|---:|---:|---:|---:|---:|']
     for r in rows:
+        accepted='unavailable' if r['accepted_tokens_per_draft'] is None else f"{r['accepted_tokens_per_draft']:.3f}"
         lines.append(f"| {r['family']} | {r['method']} | {r['request_batch_size']} | {r['tps_mean']:.1f} | "
                      f"{r['tps_min']:.1f}–{r['tps_max']:.1f} | {r['speedup_ar']:.3f} | "
-                     f"{r['speedup_original']:.3f} | {r['speedup_zip']:.3f} |")
+                     f"{r['speedup_original']:.3f} | {r['speedup_zip']:.3f} | {accepted} |")
     path.with_suffix('.benchmarks.md').write_text('\n'.join(lines)+'\n')
