@@ -649,3 +649,12 @@ Llama31781_23/node06 (two each). Six more additional-LR fits completed
 since07:11: Qwen21/24 and Llama23/24 complete, no failures. Screens
 31782/31783 remain pending. No new final128x2048 benchmark evidence.
 Next routine check08:01:45IST.
+
+## 2026-09-12 08:01:45 IST
+
+Both additional-LR arrays completed successfully: Qwen24/24 and Llama24/24.
+Qwen validation31782 tasks0/1 running on node07, one GPU each. Llama
+validation31783 is eligible with no dependencies remaining but pending
+Resources on node06; scheduler estimate08:21:48 is not guaranteed.
+Two GPUs currently allocated. No new final128x2048 benchmark evidence.
+Next routine check08:26:45IST.
