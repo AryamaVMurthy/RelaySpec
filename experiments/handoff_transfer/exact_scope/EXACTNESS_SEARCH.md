@@ -1,3 +1,5 @@
+> STOPPED by user on 2026-09-12: jobs 32633, 32637 and 32638 were cancelled. The long pilots did not finish, and the full 128-request rerun did not start. Only the completed eight-request, 512-token diagnostics below establish observed exact agreement.
+
 # Near-peak exact AR/speculative agreement
 
 User requested on 2026-09-12: retain execution close to peak throughput while
