@@ -77,7 +77,9 @@ def audit(root,config_root):
                         assert measured['contract']['runtime_config']['max_num_seqs']==batch and measured['timing_valid']
                         result=compare([ar],[folder/f'matrix-r{repeat}-w0{suffix}.jsonl'])
                         assert result['count']==result['exact_matches']==result['finish_matches']==128
-                        comparison_rows.append(dict(family=family,method=name,repeat=repeat,**result))
+                        comparison_rows.append(dict(family=family,method=name,repeat=repeat,
+                                                    benchmark_job_id=measured['job_id'],
+                                                    device_uuid=measured['gpu_after'][0]['device_uuid'],**result))
                 cell['evaluation']=True
             except (OSError,KeyError,AssertionError,ValueError) as error:
                 issues.append(dict(cell=label,phase='evaluation',error=str(error)))
@@ -101,5 +103,7 @@ if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--require-complete',action='store_true');args=p.parse_args()
     result=audit(args.root,Path(__file__).parent)
     args.out.parent.mkdir(parents=True,exist_ok=True);args.out.write_text(json.dumps(result,indent=2)+'\n')
+    from experiments.handoff_transfer.exact_scope.report import write_report
+    write_report(result,args.out)
     print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','transformers','issues']}))
     if args.require_complete and result['status']!='complete':sys.exit(1)
