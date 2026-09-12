@@ -1,7 +1,7 @@
 {
   "status": "incomplete",
   "expected_fits": 30,
-  "verified_fits": 17,
+  "verified_fits": 18,
   "verified_evaluated_cells": 0,
   "transformers_verified": 0,
   "cells": [
@@ -1078,8 +1078,55 @@
     },
     {
       "cell": "llama/feature/feature_ce",
-      "training": false,
-      "evaluation": false
+      "training": true,
+      "evaluation": false,
+      "training_summary": {
+        "status": "complete",
+        "contract": {
+          "family": "llama",
+          "records": 4096,
+          "epochs": 1,
+          "seed": 42,
+          "lr": 0.001,
+          "positions": 1118519,
+          "position_batch": 2048,
+          "input_eps": 1e-05,
+          "output_eps": 1e-06,
+          "trainable_parameters": 62914560,
+          "objective": "feature_ce",
+          "feature_distribution": "softmax over normalized fused feature coordinates, temperature1, no positional weighting",
+          "initialization": "original random nn.Linear; not ZIP warm-start",
+          "base_export_sha256": "b4579cc92695ff92105ef8ac8bddbc3380b3258ff6196f4f9e11bbfe656ef46b",
+          "feature_manifests": {
+            "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-0/train.json": "9f49a600938036cfe65e4a3ddae96b6f0ed334ef4945484d89ee948324c167b5",
+            "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-1/train.json": "55ec73c99a13e06ca3a397c00557896d0578fe10dda0870ad681af9762dbb0f1",
+            "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-2/train.json": "91cccd16d011960f302efffe72269dc9f82546cd0913571be63c29ecc68dbbce",
+            "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-3/train.json": "2c126865a3f1e95bc8e2a7957a9b581635352ffa54edbdb96ee21a8f48218dae",
+            "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-4/train.json": "2a46cd14f1f9ca8eb07a3ba9003cc51e800deb2cdf1932c4ca7200ef07de188c",
+            "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-5/train.json": "a764b708c0c650a907d320209212800f1563993f3230a4993801a2397b149c87",
+            "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-6/train.json": "d55b95d77625cfdc5d0484f862aaded8c5a8c57af46fce1d3107485cf0d3fb9d",
+            "/scratch/aryama.murthy/relayspec-auf-20260911/main-l3-n4096/part-7/train.json": "9c82ad5a4645570f9be61065f02d3f9f039911e6589e4fb77b4bc1b4afe87d82"
+          },
+          "sampler": "same deterministic stratified25% positions and equal-record masses as ZIP",
+          "optimizer": "AdamW betas.9/.999 eps1e-8 weight_decay0 clip1, ZIP warmup/cosine"
+        },
+        "history": [
+          {
+            "epoch": 1,
+            "step": 547,
+            "seconds": 291.17215664871037,
+            "loss": 0.5622882721072529,
+            "feature_batch_wait_seconds": 276.3038450423628,
+            "remaining_fit_seconds": 14.86831160634756,
+            "timing_scope": "CPU feature-batch wait versus remaining transfer/forward/backward/optimizer/Python time; not isolated GPU kernel time."
+          }
+        ],
+        "training_seconds": 291.17215664871037,
+        "peak_cuda_bytes": 1510245888,
+        "export_relative_mse": 0.0,
+        "export_sha256": "6477b029e2e2b045c52a0ee63272317002cf96716c85b8bb13424b1d309328a3",
+        "job_id": "32259"
+      }
     },
     {
       "cell": "llama/feature/forward_kl",
@@ -1229,11 +1276,6 @@
       "cell": "llama/five_ba56/auf",
       "phase": "evaluation",
       "error": "[Errno 2] No such file or directory: '/scratch/node07/aryama.murthy/handoff-transfer-20260911/exact32e1b8-results/llama/five_ba56-auf-lr0.0006/complete.json'"
-    },
-    {
-      "cell": "llama/feature/feature_ce",
-      "phase": "training",
-      "error": "[Errno 2] No such file or directory: '/scratch/node07/aryama.murthy/handoff-transfer-20260911/feature-objectives-e1/llama/feature_ce/summary.json'"
     },
     {
       "cell": "llama/feature/feature_ce",
