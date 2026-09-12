@@ -326,3 +326,26 @@ comparisons prove both native_autoregressive_generate and greedy_sample match
 the intended implementation. Its actually imported source and equivalence
 proof are retained in the archive inputs. Final audit32307 now depends on
 32304/32467/32468. No measurement outputs existed for the failed CE/AUF jobs.
+
+## User-added native baselines, September12
+
+Job32472 adds native Qwen3-8B DFlash and native Llama3.1-8B DFlash versus
+the existing five-map AUF exports. These correspond to Qwen4→8 and Qwen4→Llama8.
+No native Llama3.2-3B checkpoint was verified and none is trained as a substitute.
+The new pairs use one GPU,128 requests,cap2048,batch128 and three timing passes
+with alternating order. Both arms run on the same physical card; AUF timing is
+repeated here to obtain that paired control. No fitting is repeated. Output
+identity is checked against the existing AR cohort without borrowing another
+card's AR timing. The released Llama native block is10; reused Qwen block is16.
+This is a comparison of those deployed configurations, not an isolated block
+size or loss intervention. Final audit32307 additionally depends on32472.
+
+The user also requested discussion of single-request versus batched measurement.
+Existing batch128 results are fixed-batch aggregate throughput, not per-request
+latency. EAGLE-3 separates batch-one latency from batched serving studies; DFlash
+also reports concurrency1/8/16/32 serving results. Recommended later-paper
+protocol: main latency results at one active request per GPU, with separately
+labeled batched throughput. No new concurrency sweep or batch-one campaign is
+launched by this discussion; the current native job matches the existing setup.
+Primary sources: https://arxiv.org/html/2503.01840 and
+https://arxiv.org/html/2602.06036 .

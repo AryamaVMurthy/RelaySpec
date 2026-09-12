@@ -50,7 +50,7 @@ def main(args):
         block=export_config['block_size']
         config['speculative_config']={'method':'dflash','model':str(args.export),'num_speculative_tokens':block-1}
     elif args.native_draft:
-        assert args.family=='q8' and args.mode=='native'
+        assert args.family in ('q8','cross') and args.mode=='native'
         block=json.loads((args.native_draft/'config.json').read_text())['block_size']
         config['speculative_config']={'method':'dflash','model':str(args.native_draft),'num_speculative_tokens':block-1}
     else:
@@ -76,6 +76,9 @@ def main(args):
               'repeat':args.repeat,'export_sha256':sha(args.export/'model.safetensors') if args.export else None,
               'runtime_config':config}
     if batch_size>1:contract.update(request_batch_size=batch_size,workload='fixed synchronous request batches')
+    if args.native_draft:
+        contract.update(native_draft_sha256=sha(args.native_draft/'model.safetensors'),
+                        native_config_sha256=sha(args.native_draft/'config.json'))
     if summary_path.exists():
         assert json.loads(summary_path.read_text())['contract']==contract
         return
