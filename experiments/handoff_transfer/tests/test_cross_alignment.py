@@ -30,3 +30,18 @@ def test_lossy_unicode_is_rejected():
     tok=Tokenizer(list('ab\ufffdc'))
     with pytest.raises(ValueError,match='Lossy Unicode'):
         aligned_blocks(tok.encode('ab\ufffdc'),1,tok,tok)
+
+@pytest.mark.parametrize('selected', [[], [7, 1, 7, 2, -1, 100], range(0, 10, 2), range(10)])
+def test_selected_alignment_preserves_full_then_filter(selected):
+    target=Tokenizer(list('abcdefghij'))
+    source=Tokenizer(['ab','cd','ef','gh','ij']+list('abcdefghij'))
+    ids=target.encode('abcdefghij')
+    full=aligned_blocks(ids,1,source,target,block_size=3)
+    subset=aligned_blocks(ids,1,source,target,block_size=3,candidate_positions=selected)
+    assert subset['source_ids']==full['source_ids']
+    assert subset['blocks']==[b for b in full['blocks'] if b['target_anchor'] in selected]
+
+def test_selected_alignment_retains_unicode_rejection():
+    tok=Tokenizer(list('ab\ufffdc'))
+    with pytest.raises(ValueError,match='Lossy Unicode'):
+        aligned_blocks(tok.encode('ab\ufffdc'),1,tok,tok,candidate_positions=[])

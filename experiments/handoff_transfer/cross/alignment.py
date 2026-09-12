@@ -8,7 +8,7 @@ this target anchor: the clean source anchor is supplied as a token embedding.
 
 
 def aligned_blocks(target_ids, prompt_length, source_tokenizer, target_tokenizer,
-                   block_size=16):
+                   block_size=16, candidate_positions=None):
     if not 0 < prompt_length < len(target_ids):
         raise ValueError('Need a nonempty prompt and generated continuation')
     text = target_tokenizer.decode(target_ids, skip_special_tokens=False,
@@ -27,7 +27,14 @@ def aligned_blocks(target_ids, prompt_length, source_tokenizer, target_tokenizer
     blocks = []
     reasons = {'not_text_prefix': 0, 'no_shared_boundary': 0,
                'unstable_source_prefix': 0, 'no_labels': 0}
-    for k in range(prompt_length, len(target_ids) - 1):
+    # Paired-feature sampling is fixed before alignment. Checking only that
+    # subset is equivalent to checking everything and then filtering blocks;
+    # retain target order and ignore out-of-range candidates as filtering does.
+    candidates = (range(prompt_length, len(target_ids) - 1)
+                  if candidate_positions is None else
+                  sorted(k for k in set(candidate_positions)
+                         if prompt_length <= k < len(target_ids) - 1))
+    for k in candidates:
         prefix = target_tokenizer.decode(target_ids[:k+1],
                     skip_special_tokens=False, clean_up_tokenization_spaces=False)
         if '\ufffd' in prefix or not text.startswith(prefix):

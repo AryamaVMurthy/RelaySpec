@@ -22,9 +22,10 @@ def main(args):
     for row in rows:
         # Include prompt boundaries for initializer fitting. AUF retains the
         # separate generated-token-only alignment from cross.prepare.
-        item = aligned_blocks(row['full_ids'], 1, source, target)
         selected = set(positions(len(row['full_ids']), len(row['prompt_token_ids']), row['group_id']))
-        item['selected'] = [b for b in item['blocks'] if b['target_anchor'] in selected]
+        item = aligned_blocks(row['full_ids'], 1, source, target,
+                              candidate_positions=selected)
+        item['selected'] = item['blocks']
         assert item['selected'], 'No shared boundaries in stratified sample'
         aligned.append(item)
     maximum = max(len(a['source_ids']) for a in aligned)
