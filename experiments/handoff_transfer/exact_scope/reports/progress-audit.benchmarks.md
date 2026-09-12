@@ -2,12 +2,21 @@ Experiment audit: **incomplete**.
 
 **Provisional references: this table can compare different physical GPUs. Do not interpret small differences as isolated method gains. Use the GPU-matched report for final comparisons.**
 
-Verified fits: 27/27. Fully evaluated trained cells: 20/27. Transformers confirmations: 0/2.
+Verified fits: 27/27. Fully evaluated trained cells: 27/27. Transformers confirmations: 0/2.
 
 Only complete, audited three-repetition comparisons appear below. These are fixed development requests, one fitting seed, 128 requests per pass, and a 2048-token cap with natural EOS. Throughput is aggregate batched output tokens/s, not single-request latency. Ranges describe timing repetitions, not fitting-seed uncertainty. Each speedup is the mean of ratios paired by timing repetition and model family. Reference passes are reused across jobs on the same node and GPU model; comparisons can involve different physical GPUs. The audit retains benchmark job IDs and GPU UUIDs. Accepted/draft is the measured accepted draft-token count divided by the draft-block count; it excludes the verifier bonus token.
 
 | Family | Method | Batch | Mean TPS | TPS range | / AR | / Original | / ZIP | Accepted/draft |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
+| cross | cross/dense_fusion/auf | 128 | 1296.8 | 1280.2–1321.5 | 1.173 | 1.157 | 1.225 | 4.243 |
+| cross | cross/dense_fusion/ce | 128 | 1209.6 | 1202.0–1215.5 | 1.094 | 1.080 | 1.143 | 3.985 |
+| cross | cross/five_ba56/auf | 128 | 1307.0 | 1287.6–1333.1 | 1.182 | 1.166 | 1.235 | 4.253 |
+| cross | cross/five_ba56/ce | 128 | 1248.7 | 1233.1–1259.4 | 1.129 | 1.115 | 1.180 | 3.991 |
+| cross | cross/five_maps/auf | 128 | 1531.0 | 1514.3–1544.7 | 1.384 | 1.367 | 1.447 | 5.075 |
+| cross | cross/five_maps/ce | 128 | 1443.6 | 1416.1–1488.9 | 1.305 | 1.288 | 1.364 | 4.794 |
+| cross | cross/normal_ce/ce | 128 | 1639.2 | 1625.9–1649.4 | 1.482 | 1.463 | 1.549 | 5.182 |
+| cross | original | 128 | 1121.0 | 1086.4–1139.0 | 1.014 | 1.000 | 1.059 | 3.579 |
+| cross | zip | 128 | 1058.3 | 1038.9–1073.0 | 0.957 | 0.944 | 1.000 | 3.369 |
 | llama | llama/dense_fusion/auf | 128 | 4651.7 | 4650.1–4654.3 | 2.937 | 1.134 | 1.117 | 4.441 |
 | llama | llama/dense_fusion/ce | 128 | 4585.2 | 4575.6–4596.7 | 2.895 | 1.118 | 1.101 | 4.346 |
 | llama | llama/feature/feature_ce | 128 | 1104.9 | 1099.0–1116.3 | 0.698 | 0.269 | 0.265 | 0.196 |

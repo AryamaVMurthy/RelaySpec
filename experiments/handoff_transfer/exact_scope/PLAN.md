@@ -251,3 +251,17 @@ evaluation and Transformers confirmation, plus the overlay/vendor support code.
 It excludes model weights, data, caches and environments from source bundles.
 This retains the cross-family runtime correction with the resulting artifacts;
 archive tests verify code contents and reject missing snapshots.
+
+## Completed primary matrix — September 12
+
+All21 retained token fits and all21 primary evaluations now pass the independent
+audit. The six historical feature-loss cases remain complete but withdrawn from
+further work, giving27 archived fit/evaluation cells. Cross-family outputs and
+finish reasons match AR on all128 requests for each of three timing repetitions
+in every primary cell. Parallel measurement array32458 and final validation
+jobs32295–32300 completed without adding or repeating experimental cells.
+
+Physical-GPU reference job32325 is running next. Only six primary comparisons
+have complete matched-card triplets at this audit checkpoint; the other ratios
+remain provisional. Transformers confirmations32304–32306 and final archive32307
+remain pending. The new-paper plan has not been issued or launched.
