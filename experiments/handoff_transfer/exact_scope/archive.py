@@ -88,11 +88,14 @@ def archive(audit,root,destination,config_root):
         for name in ('train.json','alignment-summary.json','paired/causality.json'):
             copy(source/name,Path('calibration/cross/chunks')/f'{chunk:05d}'/name)
     json_tree(root/'transformers-e1b8/q8',Path('transformers/q8'))
+    json_tree(root/'gpu-matched-references',Path('gpu-matched-references'))
     for path in sorted((root/'transformers-e1b8/q8').rglob('gpu-*.csv')):
         copy(path,Path('transformers/q8')/path.relative_to(root/'transformers-e1b8/q8'))
     # Device identity stays in each benchmark summary. These CSVs describe
     # whole jobs, including setup and warmup, rather than isolated timed passes.
     jobs={row['benchmark_job_id'] for row in audit['comparisons']}
+    for row in audit['gpu_matched_comparisons']:
+        jobs.update(row['reference_job_ids'].values())
     for cell in audit['cells']:
         summary=cell['training_summary']
         if 'job_id' in summary:jobs.add(summary['job_id'])

@@ -1,0 +1,85 @@
+{
+  "contract": {
+    "family": "llama",
+    "mode": "ar",
+    "manifest_sha256": "e7458db9ca03c521423b51d7bb1896c9d426ff589347eea41131aeba6f959537",
+    "count": 128,
+    "cap": 2048,
+    "worker_index": 0,
+    "workers": 1,
+    "repeat": 1,
+    "export_sha256": null,
+    "runtime_config": {
+      "model": "/scratch/aryama.murthy/relayspec-auf-20260911/models/llama3-target",
+      "dtype": "bfloat16",
+      "max_model_len": 5120,
+      "max_num_seqs": 128,
+      "max_num_batched_tokens": 8192,
+      "gpu_memory_utilization": 0.8,
+      "enable_prefix_caching": false,
+      "generation_config": "vllm",
+      "async_scheduling": false,
+      "seed": 0,
+      "disable_log_stats": false,
+      "worker_extension_cls": "experiments.auf_vllm.family_metrics.FamilyMetricsWorker",
+      "compilation_config": {
+        "mode": 0,
+        "cudagraph_mode": "FULL_DECODE_ONLY"
+      }
+    },
+    "request_batch_size": 128,
+    "workload": "fixed synchronous request batches"
+  },
+  "setup_seconds": 12.853875395841897,
+  "warmup_seconds": 12.492869758978486,
+  "warmup_request_batch_size": 128,
+  "asset_checks": [
+    {
+      "passed": true,
+      "checks": [
+        "target_embedding",
+        "target_head"
+      ],
+      "verification": "matrix shape and deterministic samples; full norm vector",
+      "draft_projections": null,
+      "normal_projection": null,
+      "target_adapters": null
+    }
+  ],
+  "gpu_before": [
+    {
+      "jit_events": 0,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b414a4b9-2dd2-9d2f-4da2-443d11dc17ba",
+      "allocated": 37866307584,
+      "reserved": 37943771136,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "gpu_after": [
+    {
+      "jit_events": 0,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b414a4b9-2dd2-9d2f-4da2-443d11dc17ba",
+      "allocated": 38055702528,
+      "reserved": 38430310400,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "job_id": "32284",
+  "timing_valid": true,
+  "batch_measurements": [
+    {
+      "batch_id": 0,
+      "requests": 128,
+      "output_tokens": 87836,
+      "wall_seconds": 55.29222853993997,
+      "cold_wall_seconds": null,
+      "verification_iterations": 0,
+      "accepted_draft_tokens": 0
+    }
+  ],
+  "timing_contract": "fixed-batch generate wall; per-row wall is amortized, not individual latency"
+}

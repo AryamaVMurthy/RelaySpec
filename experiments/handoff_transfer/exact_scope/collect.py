@@ -113,6 +113,9 @@ def audit(root,config_root):
             cells.append(cell)
     # Deduplicate shared baseline entries from the per-cell audit above.
     rows=list({(row['family'],row['method'],row['repeat']):row for row in comparison_rows}.values())
+    from experiments.handoff_transfer.exact_scope.matched import audit_matched
+    matched=audit_matched(root,cells)
+    issues.extend(matched['issues'])
     tf=[]
     for mode in ['ce','auf']:
         try:
@@ -124,7 +127,8 @@ def audit(root,config_root):
             issues.append(dict(cell=f'transformers/{mode}',phase='evaluation',error=str(error)))
     return dict(status='complete' if not issues else 'incomplete',expected_fits=30,
                 verified_fits=sum(c['training'] for c in cells),verified_evaluated_cells=sum(c['evaluation'] for c in cells),
-                transformers_verified=len(tf),cells=cells,comparisons=rows,transformers=tf,split_audits=splits,issues=issues)
+                transformers_verified=len(tf),cells=cells,comparisons=rows,transformers=tf,split_audits=splits,
+                gpu_matched_verified_cells=matched['verified_cells'],gpu_matched_comparisons=matched['comparisons'],issues=issues)
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--require-complete',action='store_true');args=p.parse_args()
@@ -136,5 +140,5 @@ if __name__=='__main__':
         from experiments.handoff_transfer.exact_scope.archive import archive
         result['artifact_archive']=archive(result,args.root,args.out.parent/'artifacts',Path(__file__).parent)
         args.out.write_text(json.dumps(result,indent=2)+'\n')
-    print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','transformers','split_audits','issues']}))
+    print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','gpu_matched_comparisons','transformers','split_audits','issues']}))
     if args.require_complete and result['status']!='complete':sys.exit(1)

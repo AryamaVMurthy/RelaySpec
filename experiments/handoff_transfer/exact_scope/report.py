@@ -49,6 +49,8 @@ def write_report(audit,path):
     with path.with_suffix('.benchmarks.csv').open('w',newline='') as handle:
         writer=csv.DictWriter(handle,fieldnames=fields);writer.writeheader();writer.writerows(rows)
     lines=[f"Experiment audit: **{audit['status']}**.",
+           '\n**Provisional references: this table can compare different physical GPUs. '
+           'Do not interpret small differences as isolated method gains. Use the GPU-matched report for final comparisons.**',
            f"\nVerified fits: {audit['verified_fits']}/30. Fully evaluated trained cells: "
            f"{audit['verified_evaluated_cells']}/30. Transformers confirmations: {audit['transformers_verified']}/2.",
            '\nOnly complete, audited three-repetition comparisons appear below. These are fixed development '
@@ -67,3 +69,29 @@ def write_report(audit,path):
                      f"{r['tps_min']:.1f}–{r['tps_max']:.1f} | {r['speedup_ar']:.3f} | "
                      f"{r['speedup_original']:.3f} | {r['speedup_zip']:.3f} | {accepted} |")
     path.with_suffix('.benchmarks.md').write_text('\n'.join(lines)+'\n')
+    matched={}
+    for row in audit.get('gpu_matched_comparisons',[]):
+        matched.setdefault((row['family'],row['method']),[]).append(row)
+    corrected=[]
+    for (family,method),group in sorted(matched.items()):
+        assert len(group)==3 and {r['repeat'] for r in group}=={0,1,2}
+        corrected.append(dict(family=family,method=method,tps_mean=statistics.mean(r['method_tps'] for r in group),
+            ar_tps_mean=statistics.mean(r['ar_tps'] for r in group),
+            original_tps_mean=statistics.mean(r['original_tps'] for r in group),
+            zip_tps_mean=statistics.mean(r['zip_tps'] for r in group),
+            speedup_ar=statistics.mean(r['throughput_ratio'] for r in group),
+            speedup_original=statistics.mean(r['speedup_original'] for r in group),
+            speedup_zip=statistics.mean(r['speedup_zip'] for r in group)))
+    fields=['family','method','tps_mean','ar_tps_mean','original_tps_mean','zip_tps_mean','speedup_ar','speedup_original','speedup_zip']
+    with path.with_suffix('.gpu-matched.csv').open('w',newline='') as handle:
+        writer=csv.DictWriter(handle,fieldnames=fields,lineterminator='\n');writer.writeheader();writer.writerows(corrected)
+    lines=[f"GPU-matched comparisons verified: **{audit.get('gpu_matched_verified_cells',0)}/30**.",
+           '\nEach method is compared with references on the same physical GPU, using the same '
+           '128 requests, 2048-token cap, serving batch and repetition index. Three timing repetitions '
+           'and one fitting seed. These remain development measurements, not untouched confirmation results.',
+           '\n| Family | Method | Mean TPS | / AR | / Original | / ZIP |',
+           '|---|---|---:|---:|---:|---:|']
+    for r in corrected:
+        lines.append(f"| {r['family']} | {r['method']} | {r['tps_mean']:.1f} | {r['speedup_ar']:.3f} | "
+                     f"{r['speedup_original']:.3f} | {r['speedup_zip']:.3f} |")
+    path.with_suffix('.gpu-matched.md').write_text('\n'.join(lines)+'\n')

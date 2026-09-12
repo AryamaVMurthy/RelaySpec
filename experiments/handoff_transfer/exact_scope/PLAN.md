@@ -114,3 +114,28 @@ triplets, preserving benchmark job IDs and physical GPU UUIDs in the audit.
 It checks exact group-ID disjointness between each family's fitting records,
 evaluation requests and warmup requests, using the assembled index for cross-family
 data. This is an exact-ID check, not a semantic near-duplicate assessment.
+
+## Physical-GPU timing correction (September 12)
+
+Qwen feature CE and forward KL exported byte-identical weights and produced identical
+acceptance counters, but their aggregate throughput differed across physical L40S
+cards. Raw cross-card relative speedups are provisional. The final collector requires
+AR, original RelaySpec, ZIP and each method to share a physical GPU UUID, evaluation
+manifest, serving batch and repetition index. Matching a GPU does not eliminate
+variation over time; three timing repetitions and the one-fitting-seed caveat remain.
+
+Job32325 supplies missing references with four independent one-GPU workers after the
+main vLLM matrix; existing references are reused only on their recorded physical GPU.
+Workers skip family/card combinations absent from all ten completed method evaluations.
+The reference plan refuses to run from an incomplete family. This adds at most81
+reference passes to the original117 vLLM passes (up to198 total),
+without adding training variants or changing the30 comparison fits. Transformers
+jobs32304–32306 depend on32325; final audit32307 follows those checks. The collector
+writes separate provisional and GPU-matched tables and rejects incomplete matched
+comparisons at finalization.
+
+Cross capture array32262 now permits four independent chunks (Nice100, lower priority
+than ready evaluations). It continues to share node07 with evaluation jobs and fills
+all four GPUs once those finish; every study job is pinned to node07, which has four
+physical GPUs. This avoids leaving two GPUs idle under the original array throttle2.
+Record counts, chunk contents and fitting/evaluation configurations are unchanged.
