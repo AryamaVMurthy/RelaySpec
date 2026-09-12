@@ -7,6 +7,8 @@ whole-job telemetry, not isolated inference energy or kernel traces.
 - `eval-32277.csv`: Qwen single fusion-matrix CE evaluation job.
 - `eval-32278.csv`: Qwen single fusion-matrix AUF evaluation job.
 - `eval-32279.csv`: Qwen five rank-56 BA adapters with CE evaluation job.
+- `eval-32280.csv`: Qwen five rank-56 BA adapters with AUF evaluation job.
+- `eval-32281.csv`: Qwen feature-CE evaluation job.
 
 Use `gpu_after.device_uuid` in each benchmark summary to identify its physical GPU.
 The cards are L40S GPUs on node07; independent jobs can use different cards.

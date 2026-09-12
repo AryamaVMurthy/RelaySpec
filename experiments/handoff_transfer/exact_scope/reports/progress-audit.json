@@ -2,7 +2,7 @@
   "status": "incomplete",
   "expected_fits": 30,
   "verified_fits": 20,
-  "verified_evaluated_cells": 6,
+  "verified_evaluated_cells": 8,
   "transformers_verified": 0,
   "cells": [
     {
@@ -408,7 +408,7 @@
     {
       "cell": "q8/five_ba56/auf",
       "training": true,
-      "evaluation": false,
+      "evaluation": true,
       "training_summary": {
         "trainable_parameters": 1863680,
         "optimizer_steps": 512,
@@ -476,7 +476,7 @@
     {
       "cell": "q8/feature/feature_ce",
       "training": true,
-      "evaluation": false,
+      "evaluation": true,
       "training_summary": {
         "status": "complete",
         "contract": {
@@ -1763,20 +1763,145 @@
       "mismatches": [],
       "request_batch_size": 128,
       "ratio_note": "aggregate output tokens divided by summed batch wall times; not individual latency"
+    },
+    {
+      "family": "q8",
+      "method": "q8/five_ba56/auf",
+      "repeat": 0,
+      "benchmark_job_id": "32280",
+      "device_uuid": "b414a4b9-2dd2-9d2f-4da2-443d11dc17ba",
+      "draft_blocks": 16531,
+      "accepted_draft_tokens": 106342,
+      "count": 128,
+      "exact_matches": 128,
+      "finish_matches": 128,
+      "ar_tps": 1229.4724870587802,
+      "method_tps": 2821.102831465347,
+      "throughput_ratio": 2.294563612573522,
+      "ar_output_tokens": 122768,
+      "method_output_tokens": 122768,
+      "mismatches": [],
+      "request_batch_size": 128,
+      "ratio_note": "aggregate output tokens divided by summed batch wall times; not individual latency"
+    },
+    {
+      "family": "q8",
+      "method": "q8/five_ba56/auf",
+      "repeat": 1,
+      "benchmark_job_id": "32280",
+      "device_uuid": "b414a4b9-2dd2-9d2f-4da2-443d11dc17ba",
+      "draft_blocks": 16531,
+      "accepted_draft_tokens": 106342,
+      "count": 128,
+      "exact_matches": 128,
+      "finish_matches": 128,
+      "ar_tps": 1231.9969232643584,
+      "method_tps": 2837.322828472546,
+      "throughput_ratio": 2.303027527824208,
+      "ar_output_tokens": 122768,
+      "method_output_tokens": 122768,
+      "mismatches": [],
+      "request_batch_size": 128,
+      "ratio_note": "aggregate output tokens divided by summed batch wall times; not individual latency"
+    },
+    {
+      "family": "q8",
+      "method": "q8/five_ba56/auf",
+      "repeat": 2,
+      "benchmark_job_id": "32280",
+      "device_uuid": "b414a4b9-2dd2-9d2f-4da2-443d11dc17ba",
+      "draft_blocks": 16531,
+      "accepted_draft_tokens": 106342,
+      "count": 128,
+      "exact_matches": 128,
+      "finish_matches": 128,
+      "ar_tps": 1226.3140725950243,
+      "method_tps": 2807.9518930986374,
+      "throughput_ratio": 2.289749384639028,
+      "ar_output_tokens": 122768,
+      "method_output_tokens": 122768,
+      "mismatches": [],
+      "request_batch_size": 128,
+      "ratio_note": "aggregate output tokens divided by summed batch wall times; not individual latency"
+    },
+    {
+      "family": "q8",
+      "method": "q8/feature/feature_ce",
+      "repeat": 0,
+      "benchmark_job_id": "32281",
+      "device_uuid": "22084c79-06ae-e41c-3584-e137264393b6",
+      "draft_blocks": 20473,
+      "accepted_draft_tokens": 102412,
+      "count": 128,
+      "exact_matches": 128,
+      "finish_matches": 128,
+      "ar_tps": 1229.4724870587802,
+      "method_tps": 2243.8265764681714,
+      "throughput_ratio": 1.8250319548312883,
+      "ar_output_tokens": 122768,
+      "method_output_tokens": 122768,
+      "mismatches": [],
+      "request_batch_size": 128,
+      "ratio_note": "aggregate output tokens divided by summed batch wall times; not individual latency"
+    },
+    {
+      "family": "q8",
+      "method": "q8/feature/feature_ce",
+      "repeat": 1,
+      "benchmark_job_id": "32281",
+      "device_uuid": "22084c79-06ae-e41c-3584-e137264393b6",
+      "draft_blocks": 20473,
+      "accepted_draft_tokens": 102412,
+      "count": 128,
+      "exact_matches": 128,
+      "finish_matches": 128,
+      "ar_tps": 1231.9969232643584,
+      "method_tps": 2266.5118927712097,
+      "throughput_ratio": 1.839705806054897,
+      "ar_output_tokens": 122768,
+      "method_output_tokens": 122768,
+      "mismatches": [],
+      "request_batch_size": 128,
+      "ratio_note": "aggregate output tokens divided by summed batch wall times; not individual latency"
+    },
+    {
+      "family": "q8",
+      "method": "q8/feature/feature_ce",
+      "repeat": 2,
+      "benchmark_job_id": "32281",
+      "device_uuid": "22084c79-06ae-e41c-3584-e137264393b6",
+      "draft_blocks": 20473,
+      "accepted_draft_tokens": 102412,
+      "count": 128,
+      "exact_matches": 128,
+      "finish_matches": 128,
+      "ar_tps": 1226.3140725950243,
+      "method_tps": 2264.779834830012,
+      "throughput_ratio": 1.8468187599262174,
+      "ar_output_tokens": 122768,
+      "method_output_tokens": 122768,
+      "mismatches": [],
+      "request_batch_size": 128,
+      "ratio_note": "aggregate output tokens divided by summed batch wall times; not individual latency"
     }
   ],
   "transformers": [],
+  "split_audits": [
+    {
+      "family": "q8",
+      "training_records": 4096,
+      "evaluation_requests": 128,
+      "warmup_requests": 4,
+      "exact_group_overlap": 0,
+      "scope": "Exact group IDs; not a semantic near-duplicate audit",
+      "manifests": {
+        "/scratch/node07/aryama.murthy/relayspec-auf-20260911/main-q8-n4096/train.json": "f6be75508741b53ca50a098d4809fa683a8fce6ce87b0c9ade7044a74bbc5ec9",
+        "/scratch/node07/aryama.murthy/handoff-transfer-20260911/exact32e1b8-results/q8/evaluation/eval.json": "bd466d1136d5d9371f293f3d995db3be5eec4938dfa81f4c3fb77b20050bc6e8",
+        "/scratch/node07/aryama.murthy/handoff-transfer-20260911/exact32e1b8-results/q8/evaluation/warmup.json": "2e8c5fd7f6c7ecec659efe5a081bf9e2ff86ab6cec2f4ac4512dc32c0911d745"
+      }
+    }
+  ],
   "issues": [
-    {
-      "cell": "q8/five_ba56/auf",
-      "phase": "evaluation",
-      "error": "[Errno 2] No such file or directory: '/scratch/node07/aryama.murthy/handoff-transfer-20260911/exact32e1b8-results/q8/five_ba56-auf-lr0.0003/complete.json'"
-    },
-    {
-      "cell": "q8/feature/feature_ce",
-      "phase": "evaluation",
-      "error": "[Errno 2] No such file or directory: '/scratch/node07/aryama.murthy/handoff-transfer-20260911/exact32e1b8-results/q8/feature-feature_ce-lr0.001/complete.json'"
-    },
     {
       "cell": "q8/feature/forward_kl",
       "phase": "evaluation",
@@ -1786,6 +1911,11 @@
       "cell": "q8/feature/reverse_kl",
       "phase": "evaluation",
       "error": "[Errno 2] No such file or directory: '/scratch/node07/aryama.murthy/handoff-transfer-20260911/exact32e1b8-results/q8/feature-reverse_kl-lr0.001/complete.json'"
+    },
+    {
+      "cell": "llama",
+      "phase": "split_audit",
+      "error": "[Errno 2] No such file or directory: '/scratch/node07/aryama.murthy/handoff-transfer-20260911/exact32e1b8-results/llama/evaluation/eval.json'"
     },
     {
       "cell": "llama/five_maps/ce",
@@ -1836,6 +1966,11 @@
       "cell": "llama/feature/reverse_kl",
       "phase": "evaluation",
       "error": "[Errno 2] No such file or directory: '/scratch/node07/aryama.murthy/handoff-transfer-20260911/exact32e1b8-results/llama/feature-reverse_kl-lr0.001/complete.json'"
+    },
+    {
+      "cell": "cross",
+      "phase": "split_audit",
+      "error": "[Errno 2] No such file or directory: '/scratch/node07/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json'"
     },
     {
       "cell": "cross/five_maps/ce",

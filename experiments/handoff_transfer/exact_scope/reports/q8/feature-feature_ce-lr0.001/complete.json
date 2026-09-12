@@ -1,0 +1,53 @@
+{
+  "status": "complete",
+  "family": "q8",
+  "kind": "feature",
+  "objective": "feature_ce",
+  "training_summary": {
+    "status": "complete",
+    "contract": {
+      "family": "q8",
+      "records": 4096,
+      "epochs": 1,
+      "seed": 42,
+      "lr": 0.001,
+      "positions": 1353733,
+      "position_batch": 2048,
+      "input_eps": 1e-06,
+      "output_eps": 1e-06,
+      "trainable_parameters": 52428800,
+      "objective": "feature_ce",
+      "feature_distribution": "softmax over normalized fused feature coordinates, temperature1, no positional weighting",
+      "initialization": "original random nn.Linear; not ZIP warm-start",
+      "base_export_sha256": "f5e153e5bf22257801a203b9c9eaef1a2627b501fae55350f307b3e916a14998",
+      "feature_manifests": {
+        "/scratch/aryama.murthy/relayspec-auf-20260911/main-q8-n4096/train.json": "f6be75508741b53ca50a098d4809fa683a8fce6ce87b0c9ade7044a74bbc5ec9"
+      },
+      "sampler": "same deterministic stratified25% positions and equal-record masses as ZIP",
+      "optimizer": "AdamW betas.9/.999 eps1e-8 weight_decay0 clip1, ZIP warmup/cosine"
+    },
+    "history": [
+      {
+        "epoch": 1,
+        "step": 662,
+        "seconds": 101.65740111703053,
+        "loss": 4.794782816716179,
+        "feature_batch_wait_seconds": 85.01476006675512,
+        "remaining_fit_seconds": 16.642641050275415,
+        "timing_scope": "CPU feature-batch wait versus remaining transfer/forward/backward/optimizer/Python time; not isolated GPU kernel time."
+      }
+    ],
+    "training_seconds": 101.65740111703053,
+    "peak_cuda_bytes": 1225538048,
+    "export_relative_mse": 0.0,
+    "export_sha256": "08309184d23773a91503ef451bec7401096cacf6c24daefcf2479ce5a882f0ca",
+    "job_id": "32248"
+  },
+  "requests": 128,
+  "cap": 2048,
+  "batches": [
+    128
+  ],
+  "timing_repetitions": 3,
+  "export": "/scratch/aryama.murthy/handoff-transfer-20260911/feature-objectives-e1/q8/feature_ce/export"
+}

@@ -15,13 +15,37 @@ def sha(path):
     return digest.hexdigest()
 
 
+def check_groups(training,evaluation,warmup):
+    train={r['group_id'] for r in training};evaluated={r['group_id'] for r in evaluation};warm={r['group_id'] for r in warmup}
+    if len(training)!=len(train) or len(evaluation)!=len(evaluated) or len(warmup)!=len(warm):
+        raise ValueError('Duplicate group IDs within a split')
+    if train&evaluated or train&warm or evaluated&warm:
+        raise ValueError('Training, evaluation and warmup groups overlap')
+    return dict(training_records=len(train),evaluation_requests=len(evaluated),warmup_requests=len(warm),
+                exact_group_overlap=0,scope='Exact group IDs; not a semantic near-duplicate audit')
+
+
 def audit(root,config_root):
-    cells=[];issues=[];comparison_rows=[];reference_hashes={}
+    cells=[];issues=[];comparison_rows=[];reference_hashes={};splits=[]
     for family in ['q8','llama','cross']:
         tasks=read(config_root/f'{family}-tasks.json')
         tasks += [dict(kind='feature',objective=o,lr=.001) for o in ['feature_ce','forward_kl','reverse_kl']]
         result_root=root/'exact32e1b8-results'/family
         serving=read(result_root/'evaluation-batch.json') if (result_root/'evaluation-batch.json').exists() else None
+        try:
+            study=root.parent/'relayspec-auf-20260911'
+            sources=([study/'main-q8-n4096/train.json'] if family=='q8' else
+                     sorted((study/'main-l3-n4096').glob('part-*/train.json')) if family=='llama' else
+                     [root/'cross-full4096/index.json'])
+            training=[]
+            for source in sources:
+                data=read(source);training.extend(data['index'] if family=='cross' else data)
+            evaluation=result_root/'evaluation/eval.json';warmup=result_root/'evaluation/warmup.json'
+            checked=check_groups(training,read(evaluation),read(warmup))
+            assert (checked['training_records'],checked['evaluation_requests'],checked['warmup_requests'])==(4096,128,4)
+            splits.append(dict(family=family,**checked,manifests={str(p):sha(p) for p in sources+[evaluation,warmup]}))
+        except (OSError,KeyError,AssertionError,ValueError) as error:
+            issues.append(dict(cell=family,phase='split_audit',error=str(error)))
         for task in tasks:
             kind,obj,lr=task['kind'],task['objective'],task['lr']
             label=f'{family}/{kind}/{obj}'
@@ -100,7 +124,7 @@ def audit(root,config_root):
             issues.append(dict(cell=f'transformers/{mode}',phase='evaluation',error=str(error)))
     return dict(status='complete' if not issues else 'incomplete',expected_fits=30,
                 verified_fits=sum(c['training'] for c in cells),verified_evaluated_cells=sum(c['evaluation'] for c in cells),
-                transformers_verified=len(tf),cells=cells,comparisons=rows,transformers=tf,issues=issues)
+                transformers_verified=len(tf),cells=cells,comparisons=rows,transformers=tf,split_audits=splits,issues=issues)
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--require-complete',action='store_true');args=p.parse_args()
@@ -112,5 +136,5 @@ if __name__=='__main__':
         from experiments.handoff_transfer.exact_scope.archive import archive
         result['artifact_archive']=archive(result,args.root,args.out.parent/'artifacts',Path(__file__).parent)
         args.out.write_text(json.dumps(result,indent=2)+'\n')
-    print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','transformers','issues']}))
+    print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','transformers','split_audits','issues']}))
     if args.require_complete and result['status']!='complete':sys.exit(1)

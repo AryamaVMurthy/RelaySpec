@@ -111,3 +111,6 @@ evaluation token outputs and available GPU telemetry under the control directory
 model weights and feature caches remain referenced rather than duplicated.
 The collector also produces CSV/Markdown tables from complete audited timing
 triplets, preserving benchmark job IDs and physical GPU UUIDs in the audit.
+It checks exact group-ID disjointness between each family's fitting records,
+evaluation requests and warmup requests, using the assembled index for cross-family
+data. This is an exact-ID check, not a semantic near-duplicate assessment.
