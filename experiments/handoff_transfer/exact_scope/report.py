@@ -1,7 +1,47 @@
 """Summaries of audited complete timing triplets; no fitting-seed inference."""
 import csv
+import json
 import statistics
 from pathlib import Path
+
+
+def objective_contrasts(audit):
+    """Compare all matched CE/AUF pairs using acceptance counters, not GPU speed."""
+    cells={c['cell']:c for c in audit['cells'] if 'model_contract' in c
+           and c['training'] and c['evaluation']}
+    results=[]
+    for family in ('q8','llama','cross'):
+        for architecture in ('five_maps','dense_fusion','five_ba56'):
+            names={o:f'{family}/{architecture}/{o}' for o in ('ce','auf')}
+            if any(name not in cells for name in names.values()):continue
+            ce,auf=(cells[names[o]] for o in ('ce','auf'))
+            contracts=[{k:v for k,v in c['model_contract'].items() if k!='objective'} for c in (ce,auf)]
+            keys=('seed','lr','optimizer_steps','processed_examples','actual_anchors_rank0',
+                  'batch_per_gpu','gradient_accumulation','anchors_per_example','objective_chunk_blocks')
+            if (contracts[0]!=contracts[1] or ce['objective_control_transfer_sha256']!=auf['objective_control_transfer_sha256']
+                    or any(ce['training_summary'][k]!=auf['training_summary'][k] for k in keys)):
+                raise ValueError(f'CE/AUF controls are not matched: {family}/{architecture}')
+            grouped={o:sorted((r for r in audit['comparisons'] if r['method']==name),key=lambda r:r['repeat'])
+                     for o,name in names.items()}
+            for rows in grouped.values():
+                if [r['repeat'] for r in rows]!=[0,1,2]:raise ValueError('Incomplete objective comparison')
+                for row in rows:
+                    if row['count']!=128 or row['exact_matches']!=128 or row['finish_matches']!=128:
+                        raise ValueError('Objective contrast lacks exact output verification')
+                    if row['draft_blocks']<=0:raise ValueError('Missing draft counters')
+            for a,b in zip(grouped['ce'],grouped['auf']):
+                for key in ('count','request_batch_size','ar_output_tokens','method_output_tokens'):
+                    if a[key]!=b[key]:raise ValueError('Objective workloads are not matched')
+            result=dict(family=family,architecture=architecture,fit_seed=ce['training_summary']['seed'],
+                fitting_seeds=1,timing_passes=3,requests=128,request_batch_size=grouped['ce'][0]['request_batch_size'])
+            for objective,rows in grouped.items():
+                result[objective+'_draft_blocks']=[r['draft_blocks'] for r in rows]
+                result[objective+'_accepted_tokens']=[r['accepted_draft_tokens'] for r in rows]
+                result[objective+'_accepted_per_block']=statistics.mean(r['accepted_draft_tokens']/r['draft_blocks'] for r in rows)
+            result['accepted_per_block_gain']=result['auf_accepted_per_block']/result['ce_accepted_per_block']-1
+            result['draft_block_reduction']=1-statistics.mean(result['auf_draft_blocks'])/statistics.mean(result['ce_draft_blocks'])
+            results.append(result)
+    return results
 
 
 def summarize(audit):
@@ -105,3 +145,15 @@ def write_report(audit,path):
         lines.append(f"| {r['family']} | {r['method']} | {r['tps_mean']:.1f} | {r['speedup_ar']:.3f} | "
                      f"{r['speedup_original']:.3f} | {r['speedup_zip']:.3f} |")
     path.with_suffix('.gpu-matched.md').write_text('\n'.join(lines)+'\n')
+    contrasts=objective_contrasts(audit)
+    scope=('Matched data/initializer/architecture/optimizer settings, one fitting seed per pair. '
+           'Three timing passes are not three fitting replications. Accepted proposal tokens per '
+           'draft block exclude the verifier bonus; this is not a throughput or universal accuracy guarantee.')
+    path.with_suffix('.objective-contrast.json').write_text(json.dumps(dict(scope=scope,rows=contrasts),indent=2)+'\n')
+    lines=[scope,'','| Family | Interface | CE accepted/block | AUF accepted/block | Accepted/block gain | Fewer draft blocks |',
+           '|---|---|---:|---:|---:|---:|']
+    for r in contrasts:
+        lines.append(f"| {r['family']} | {r['architecture']} | {r['ce_accepted_per_block']:.4f} | "
+                     f"{r['auf_accepted_per_block']:.4f} | {100*r['accepted_per_block_gain']:.2f}% | "
+                     f"{100*r['draft_block_reduction']:.2f}% |")
+    path.with_suffix('.objective-contrast.md').write_text('\n'.join(lines)+'\n')

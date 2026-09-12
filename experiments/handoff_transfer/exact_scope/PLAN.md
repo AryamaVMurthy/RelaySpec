@@ -276,3 +276,23 @@ additional initializer training was launched by this reporting change. The
 original-interface CE arm retains its separate original-MSE initializer.
 The current paper source inventory records existing studies and source locations;
 it is not the post-comparison experiment plan.
+
+## Controlled CE versus AUF acceptance analysis
+
+The report now checks matched architecture, initializer/data metadata, optimizer
+settings, fitting seed, exposure and evaluation workload before comparing each
+CE/AUF pair. All nine existing pairs pass these controls. The only excluded
+metadata fields are references to the separate original-MSE export, which these
+three ZIP-initialized architectures do not use; full metadata hashes remain
+recorded for provenance. No additional fits or evaluations were introduced.
+
+Five-matrix AUF increases accepted proposal tokens per draft block over CE by
+2.07% on Qwen, 2.09% on Llama and 5.86% cross-family. This reduces draft blocks
+by1.72%,1.69% and4.64%, respectively. These are one-fitting-seed findings; the
+three timing repetitions are not independent fitting replications. Acceptance
+counters exclude verifier bonus tokens and are not throughput measurements.
+
+The16:37 audit verifies17/21 physical-GPU-matched comparisons. Reference job32325
+is still running; standalone Transformers checks and final archive remain
+pending. Reporting tests pass13/13. See the objective-contrast and GPU-matched
+reports for all nine objective pairs and the available baseline ratios.

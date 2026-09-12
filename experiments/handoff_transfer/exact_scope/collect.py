@@ -15,6 +15,13 @@ def sha(path):
     return digest.hexdigest()
 
 
+def objective_control_transfer_hash(transfer):
+    # Five-map, dense-ZIP and BA fits do not read the separate original-map
+    # reference. Its metadata was appended while already-ready ZIP fits ran.
+    relevant={k:v for k,v in transfer.items() if k not in ('normal_export','normal_sha256')}
+    return hashlib.sha256(json.dumps(relevant,sort_keys=True).encode()).hexdigest()
+
+
 def check_groups(training,evaluation,warmup):
     train={r['group_id'] for r in training};evaluated={r['group_id'] for r in evaluation};warm={r['group_id'] for r in warmup}
     if len(training)!=len(train) or len(evaluation)!=len(evaluated) or len(warmup)!=len(warm):
@@ -63,6 +70,10 @@ def audit(root,config_root):
                 else:
                     summary=read(fit/f'modules/steps-512/{kind}/summary.json')
                     verification=read(fit/f'modules/steps-512/{kind}/verification.json')
+                    cell['model_contract']=read(fit/f'model-contract-{kind}.json')
+                    cell['fit_transfer_sha256']=sha(fit/'transfer.json')
+                    cell['objective_control_transfer_sha256']=objective_control_transfer_hash(read(fit/'transfer.json'))
+                    assert cell['model_contract']['variant']==kind and cell['model_contract']['objective']==obj
                     assert verification['status']=='passed'
                     assert summary['processed_examples']==4096 and summary['optimizer_steps']==512
                     assert summary['world_size']==1 and summary['batch_per_gpu']==8 and summary['gradient_accumulation']==1
