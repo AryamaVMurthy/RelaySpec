@@ -155,3 +155,13 @@ array32332 rebuilds these two alignment/paired-feature chunks, preserving prior
 artifacts in their repair-history directories. Assembly32263 explicitly depends on
 the remaining original chunks and this repair array. Chunks14 and15 began from old snapshots; both were audited and contain no
 normalization-affected text. Later chunks use the corrected source snapshot.
+
+## CPU alignment batching
+
+Subsequent cross-data chunks align up to four records concurrently on allocated CPU
+cores (`min(4, SLURM_CPUS_PER_TASK)` workers). Spawned workers load tokenizers only;
+ordered collection retains the exact row order and per-record algorithm. The serial
+and parallel outputs were byte-identical on actual short, full4096-token and Unicode
+regression rollouts; evidence is in `alignment-parallel-audit.json`. This changes
+preprocessing scheduling only, with the existing four-GPU ceiling, training batch8,
+and evaluation batch128 intact. Each chunk records its actual `alignment_workers`.
