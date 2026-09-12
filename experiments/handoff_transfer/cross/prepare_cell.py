@@ -14,7 +14,7 @@ def prepare(initializers,index,out,kind,objective,lr):
     assert transfer['target_adapters'] is None and transfer['full_data_index_sha256']==digest(index)
     if kind=='normal_ce':assert 'normal_export' in transfer and 'normal_sha256' in transfer
     contract=dict(family='cross',kind=kind,objective=objective,lr=lr,records=4096,
-        global_batch=8,num_anchors=int(os.environ.get("MATRIX_NUM_ANCHORS","512")),initializer_transfer_sha256=digest(source),
+        global_batch=8,world_size=1,batch_per_gpu=8,gradient_accumulation=1,num_anchors=int(os.environ.get("MATRIX_NUM_ANCHORS","512")),initializer_transfer_sha256=digest(source),
         full_data_index_sha256=digest(index),label_units='source tokens',context_units='target tokens')
     out.mkdir(parents=True,exist_ok=True)
     for name,data in [('transfer.json',transfer),('cell.json',contract)]:

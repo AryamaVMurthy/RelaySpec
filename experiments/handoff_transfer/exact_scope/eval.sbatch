@@ -17,7 +17,7 @@ snapshot=/scratch/aryama.murthy/exact32-source-$SLURM_JOB_ID
 mkdir -p "$snapshot/experiments" "$snapshot/src"
 rsync -a --exclude reports --exclude __pycache__ --exclude overlay --exclude specforge --exclude vendor --exclude data "$control/experiments/auf_vllm" "$control/experiments/handoff_transfer" "$snapshot/experiments/"
 rsync -a --exclude __pycache__ "$control/src/relayspec" "$snapshot/src/"
-export PYTHONPATH="$snapshot/src:$snapshot" OMP_NUM_THREADS=4 TOKENIZERS_PARALLELISM=false HF_HUB_OFFLINE=1 VLLM_BATCH_INVARIANT=1
+export PYTHONPATH="$snapshot/src:$snapshot" OMP_NUM_THREADS=1 TOKENIZERS_PARALLELISM=false HF_HUB_OFFLINE=1 VLLM_BATCH_INVARIANT=1
 nvidia-smi --query-gpu=timestamp,index,uuid,name,utilization.gpu,memory.used,power.draw,temperature.gpu --format=csv -l 5 > "$snapshot/gpu.csv" &
 monitor=$!
 trap 'kill "$monitor"' EXIT

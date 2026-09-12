@@ -1,0 +1,80 @@
+"""Audit all30 fits and paired128-request evaluations from actual artifacts."""
+import argparse,json,sys,hashlib
+from pathlib import Path
+from experiments.auf_vllm.compare_outputs import compare
+
+
+def read(path):
+    return json.loads(path.read_text())
+
+
+def audit(root,config_root):
+    cells=[];issues=[];comparison_rows=[]
+    for family in ['q8','llama','cross']:
+        tasks=read(config_root/f'{family}-tasks.json')
+        tasks += [dict(kind='feature',objective=o,lr=.001) for o in ['feature_ce','forward_kl','reverse_kl']]
+        result_root=root/'exact32e1b8-results'/family
+        serving=read(result_root/'evaluation-batch.json') if (result_root/'evaluation-batch.json').exists() else None
+        for task in tasks:
+            kind,obj,lr=task['kind'],task['objective'],task['lr']
+            label=f'{family}/{kind}/{obj}'
+            fit=root/'feature-objectives-e1'/family/obj if kind=='feature' else root/'matrix32e1b8'/family/f'{kind}-{obj}-lr{lr}'
+            case=result_root/f'{kind}-{obj}-lr{lr}'
+            cell=dict(cell=label,training=False,evaluation=False)
+            try:
+                if kind=='feature':
+                    summary=read(fit/'summary.json');contract=read(fit/'contract.json')
+                    assert summary['status']=='complete' and contract['epochs']==1 and contract['records']==4096
+                    assert contract['objective']==obj and contract['seed']==42
+                else:
+                    summary=read(fit/f'modules/steps-512/{kind}/summary.json')
+                    verification=read(fit/f'modules/steps-512/{kind}/verification.json')
+                    assert verification['status']=='passed'
+                    assert summary['processed_examples']==4096 and summary['optimizer_steps']==512
+                    assert summary['world_size']==1 and summary['batch_per_gpu']==8 and summary['gradient_accumulation']==1
+                    assert summary['anchors_per_example']==32 and summary['objective']==obj and summary['seed']==42
+                cell['training']=True;cell['training_summary']=summary
+            except (OSError,KeyError,AssertionError,ValueError) as error:
+                issues.append(dict(cell=label,phase='training',error=str(error)))
+            try:
+                completion=read(case/'complete.json')
+                assert completion['status']=='complete' and completion['requests']==128 and completion['cap']==2048
+                assert completion['timing_repetitions']==3 and serving is not None
+                batch=serving['request_batch_size'];assert completion['batches']==[batch]
+                suffix=f'-b{batch}' if batch>1 else ''
+                weights=(fit/'export/model.safetensors') if kind=='feature' else fit/f'exports/steps-512/{kind}/model.safetensors'
+                with weights.open('rb') as handle:export_hash=hashlib.file_digest(handle,'sha256').hexdigest()
+                for repeat in range(3):
+                    ar=result_root/f'ar/ar-r{repeat}-w0{suffix}.jsonl'
+                    eval_summary=read(case/f'matrix-r{repeat}-w0{suffix}.summary.json')
+                    assert eval_summary['contract']['export_sha256']==export_hash
+                    assert eval_summary['contract']['count']==128 and eval_summary['contract']['cap']==2048
+                    for name,folder in [('original',result_root/'original'),('zip',result_root/'zip'),(label,case)]:
+                        result=compare([ar],[folder/f'matrix-r{repeat}-w0{suffix}.jsonl'])
+                        assert result['count']==result['exact_matches']==result['finish_matches']==128
+                        comparison_rows.append(dict(family=family,method=name,repeat=repeat,**result))
+                cell['evaluation']=True
+            except (OSError,KeyError,AssertionError,ValueError) as error:
+                issues.append(dict(cell=label,phase='evaluation',error=str(error)))
+            cells.append(cell)
+    # Deduplicate shared baseline entries from the per-cell audit above.
+    rows=list({(row['family'],row['method'],row['repeat']):row for row in comparison_rows}.values())
+    tf=[]
+    for mode in ['ce','auf']:
+        try:
+            folder=root/'transformers-e1b8/q8'
+            result=compare([folder/'ar/ar-r0-w0.jsonl'],[folder/f'{mode}/{mode}-r0-w0.jsonl'])
+            assert result['count']==result['exact_matches']==result['finish_matches']==128
+            tf.append(dict(mode=mode,**result))
+        except (OSError,KeyError,AssertionError,ValueError) as error:
+            issues.append(dict(cell=f'transformers/{mode}',phase='evaluation',error=str(error)))
+    return dict(status='complete' if not issues else 'incomplete',expected_fits=30,
+                verified_fits=sum(c['training'] for c in cells),verified_evaluated_cells=sum(c['evaluation'] for c in cells),
+                transformers_verified=len(tf),cells=cells,comparisons=rows,transformers=tf,issues=issues)
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--require-complete',action='store_true');args=p.parse_args()
+    result=audit(args.root,Path(__file__).parent)
+    args.out.parent.mkdir(parents=True,exist_ok=True);args.out.write_text(json.dumps(result,indent=2)+'\n')
+    print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','transformers','issues']}))
+    if args.require_complete and result['status']!='complete':sys.exit(1)

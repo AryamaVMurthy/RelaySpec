@@ -46,7 +46,7 @@ def build(kind):
             assert sha(checkpoint)==TRANSFER['map_checkpoint_sha256']
             maps=saved['model']
         else:
-            assert saved['epoch']==2, 'ZIP maps must be from the epoch-3 export'
+            assert saved['epoch']==TRANSFER['base_training_epochs']-1, 'ZIP map epoch must match initializer metadata'
             maps=saved['mapper']
         assert torch.equal(maps['fusion'],native_state['fc.weight'])
         assert torch.equal(maps['norm'],native_state['hidden_norm.weight'])
@@ -83,7 +83,7 @@ def build(kind):
     block,mask=draft.block_size,draft.mask_token_id
     assert isinstance(mask,int) and 0<=mask<embedding.shape[0]
     wrapper=Online(draft,head,embed,mask_token_id=mask,block_size=block,attention_backend='sdpa',
-                   num_anchors=NUM_ANCHORS,loss_decay_gamma=None,objective_chunk_blocks=16,loss_type='dflash')
+                   num_anchors=NUM_ANCHORS,loss_decay_gamma=None,objective_chunk_blocks=32,loss_type='dflash')
     from objectives import configure
     configure(wrapper,OBJECTIVE)
     n=sum(p.numel() for p in wrapper.parameters() if p.requires_grad)
@@ -91,7 +91,7 @@ def build(kind):
     assert n==expected
     if int(os.environ.get('LOCAL_RANK','0'))==0:put(R/f'model-contract-{kind}.json',{'family':TRANSFER['family'],'base_sha256':TRANSFER['base_sha256'],
         'input_width':INPUT_WIDTH,'source_width':width,'trainable_parameters':n,'variant':kind,'rank':56 if kind in ('fusion_r56','five_ba56') else None,'alpha':56 if kind in ('fusion_r56','five_ba56') else None,
-        'block_size':block,'mask_token_id':mask,'num_anchors':NUM_ANCHORS,'objective_chunk_blocks':16,
+        'block_size':block,'mask_token_id':mask,'num_anchors':NUM_ANCHORS,'objective_chunk_blocks':32,
         'objective':OBJECTIVE,'normalize_input':kind=='normal_ce','target_adapters':None,'initialization':initialization,'base_training_epochs':TRANSFER['base_training_epochs'],
         'loss_source_sha256':sha(Path(__file__).parent/'objectives.py'),'source_head_untied':TRANSFER['family']=='llama'})
     return wrapper.cuda(),cfg

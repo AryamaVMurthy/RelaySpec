@@ -1,0 +1,869 @@
+[
+  {
+    "job": 32215,
+    "name": "e1-32-q8-five_maps-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": null,
+    "script": "fit.sbatch",
+    "supersedes": 32174,
+    "superseded_jobs": [
+      32174,
+      32214
+    ]
+  },
+  {
+    "job": 32175,
+    "name": "e1-128-q8-five_maps-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32215,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32176,
+    "name": "e1-32-q8-five_maps-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32175,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32177,
+    "name": "e1-128-q8-five_maps-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32176,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32178,
+    "name": "e1-32-q8-normal_ce-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "normal_ce",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32177,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32179,
+    "name": "e1-128-q8-normal_ce-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "normal_ce",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32178,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32180,
+    "name": "e1-32-q8-dense_fusion-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32179,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32181,
+    "name": "e1-128-q8-dense_fusion-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32180,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32182,
+    "name": "e1-32-q8-dense_fusion-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32181,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32183,
+    "name": "e1-128-q8-dense_fusion-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32182,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32184,
+    "name": "e1-32-q8-five_ba56-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0003,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32183,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32185,
+    "name": "e1-128-q8-five_ba56-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0003,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32184,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32186,
+    "name": "e1-32-q8-five_ba56-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0003,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32185,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32187,
+    "name": "e1-128-q8-five_ba56-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0003,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32186,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32188,
+    "name": "e1-feature-q8-feature_ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "feature_ce",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32187,
+    "script": "feature_fit.sbatch"
+  },
+  {
+    "job": 32189,
+    "name": "e1-128-q8-feature_ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "feature_ce",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32188,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32190,
+    "name": "e1-feature-q8-forward_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "forward_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32189,
+    "script": "feature_fit.sbatch"
+  },
+  {
+    "job": 32191,
+    "name": "e1-128-q8-forward_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "forward_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32190,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32192,
+    "name": "e1-feature-q8-reverse_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "reverse_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32191,
+    "script": "feature_fit.sbatch"
+  },
+  {
+    "job": 32193,
+    "name": "e1-128-q8-reverse_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "reverse_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32192,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32194,
+    "name": "e1-32-llama-five_maps-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32173,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32195,
+    "name": "e1-128-llama-five_maps-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32194,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32196,
+    "name": "e1-32-llama-five_maps-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32195,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32197,
+    "name": "e1-128-llama-five_maps-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32196,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32198,
+    "name": "e1-32-llama-normal_ce-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "normal_ce",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32197,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32199,
+    "name": "e1-128-llama-normal_ce-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "normal_ce",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32198,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32200,
+    "name": "e1-32-llama-dense_fusion-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32199,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32201,
+    "name": "e1-128-llama-dense_fusion-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32200,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32202,
+    "name": "e1-32-llama-dense_fusion-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32201,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32203,
+    "name": "e1-128-llama-dense_fusion-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32202,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32204,
+    "name": "e1-32-llama-five_ba56-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32203,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32205,
+    "name": "e1-128-llama-five_ba56-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32204,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32206,
+    "name": "e1-32-llama-five_ba56-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32205,
+    "script": "fit.sbatch"
+  },
+  {
+    "job": 32207,
+    "name": "e1-128-llama-five_ba56-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32206,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32208,
+    "name": "e1-feature-llama-feature_ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "feature_ce",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32207,
+    "script": "feature_fit.sbatch"
+  },
+  {
+    "job": 32209,
+    "name": "e1-128-llama-feature_ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "feature_ce",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32208,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32210,
+    "name": "e1-feature-llama-forward_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "forward_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32209,
+    "script": "feature_fit.sbatch"
+  },
+  {
+    "job": 32211,
+    "name": "e1-128-llama-forward_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "forward_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32210,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32212,
+    "name": "e1-feature-llama-reverse_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "reverse_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32211,
+    "script": "feature_fit.sbatch"
+  },
+  {
+    "job": 32213,
+    "name": "e1-128-llama-reverse_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "reverse_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32212,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32216,
+    "name": "e1-cross-full-data",
+    "node": "node07",
+    "env": {},
+    "dependency": 32193,
+    "script": "../cross_data_array.sbatch"
+  },
+  {
+    "job": 32217,
+    "name": "e1-cross-assemble",
+    "node": "node07",
+    "env": {},
+    "dependency": 32216,
+    "script": "../cross_assemble.sbatch"
+  },
+  {
+    "job": 32218,
+    "name": "e1-cross-initializers",
+    "node": "node07",
+    "env": {
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32217,
+    "script": "cross_initializers.sbatch"
+  },
+  {
+    "job": 32219,
+    "name": "e1-32-cross-five_maps-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32218,
+    "script": "cross_fit.sbatch"
+  },
+  {
+    "job": 32220,
+    "name": "e1-128-cross-five_maps-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32219,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32221,
+    "name": "e1-32-cross-five_maps-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32220,
+    "script": "cross_fit.sbatch"
+  },
+  {
+    "job": 32222,
+    "name": "e1-128-cross-five_maps-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32221,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32223,
+    "name": "e1-32-cross-normal_ce-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "normal_ce",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32222,
+    "script": "cross_fit.sbatch"
+  },
+  {
+    "job": 32224,
+    "name": "e1-128-cross-normal_ce-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "normal_ce",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32223,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32225,
+    "name": "e1-32-cross-dense_fusion-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32224,
+    "script": "cross_fit.sbatch"
+  },
+  {
+    "job": 32226,
+    "name": "e1-128-cross-dense_fusion-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32225,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32227,
+    "name": "e1-32-cross-dense_fusion-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32226,
+    "script": "cross_fit.sbatch"
+  },
+  {
+    "job": 32228,
+    "name": "e1-128-cross-dense_fusion-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32227,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32229,
+    "name": "e1-32-cross-five_ba56-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32228,
+    "script": "cross_fit.sbatch"
+  },
+  {
+    "job": 32230,
+    "name": "e1-128-cross-five_ba56-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32229,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32231,
+    "name": "e1-32-cross-five_ba56-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32230,
+    "script": "cross_fit.sbatch"
+  },
+  {
+    "job": 32232,
+    "name": "e1-128-cross-five_ba56-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32231,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32233,
+    "name": "e1-feature-cross-feature_ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "feature_ce",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32232,
+    "script": "feature_fit.sbatch"
+  },
+  {
+    "job": 32234,
+    "name": "e1-128-cross-feature_ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "feature_ce",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32233,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32235,
+    "name": "e1-feature-cross-forward_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "forward_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32234,
+    "script": "feature_fit.sbatch"
+  },
+  {
+    "job": 32236,
+    "name": "e1-128-cross-forward_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "forward_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32235,
+    "script": "eval.sbatch"
+  },
+  {
+    "job": 32237,
+    "name": "e1-feature-cross-reverse_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "reverse_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32236,
+    "script": "feature_fit.sbatch"
+  },
+  {
+    "job": 32238,
+    "name": "e1-128-cross-reverse_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "reverse_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32237,
+    "script": "eval.sbatch"
+  }
+]

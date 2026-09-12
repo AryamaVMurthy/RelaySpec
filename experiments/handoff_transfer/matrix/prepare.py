@@ -15,7 +15,7 @@ def prepare(base,out,kind,objective,lr):
         normal=base/'normal/export'
         transfer.update(normal_export=str(normal),normal_sha256=digest(normal/'model.safetensors'))
     contract={'family':transfer['family'],'kind':kind,'objective':objective,'lr':lr,
-        'num_anchors':int(os.environ.get('MATRIX_NUM_ANCHORS','512')),'objective_chunk_blocks':16,'records':4096,'global_batch':8,
+        'num_anchors':int(os.environ.get('MATRIX_NUM_ANCHORS','512')),'objective_chunk_blocks':32,'records':4096,'global_batch':8,'world_size':1,'batch_per_gpu':8,'gradient_accumulation':1,
         'transfer_source_sha256':digest(base/'transfer.json')}
     out.mkdir(parents=True,exist_ok=True)
     for name,data in [('transfer.json',transfer),('cell.json',contract)]:

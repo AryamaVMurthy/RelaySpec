@@ -21,7 +21,7 @@ def main(args):
     assert os.environ.get('VLLM_BATCH_INVARIANT')=='1'
     assert 0<=args.worker_index<args.workers
     batch_size=getattr(args,'request_batch_size',1)
-    assert batch_size in (1,4,8)
+    assert 1<=batch_size<=128
     if batch_size>1:assert args.workers==1, 'Fixed-batch serving is a single-GPU workload'
     target=args.target_path or args.models/{'llama':'llama3-target','q14':'qwen14-target','q8':'qwen8-target'}[args.family]
     assert not (args.export and args.native_draft)
@@ -40,7 +40,7 @@ def main(args):
             assert os.environ.get('CROSS_SOURCE_TOKENIZER'),'Cross source tokenizer must be explicit'
             from experiments.handoff_transfer.cross.runtime import install as install_cross
             install_cross()
-    config=dict(model=str(target),dtype='bfloat16',max_model_len=5120,max_num_seqs=8,
+    config=dict(model=str(target),dtype='bfloat16',max_model_len=5120,max_num_seqs=max(8,batch_size),
                 max_num_batched_tokens=8192,gpu_memory_utilization=.9 if args.family=='q14' else .8,
                 enable_prefix_caching=False,generation_config='vllm',async_scheduling=False,
                 seed=0,disable_log_stats=False,worker_extension_cls='experiments.auf_vllm.family_metrics.FamilyMetricsWorker',
@@ -90,8 +90,8 @@ def main(args):
     reference=llm.generate([{'prompt_token_ids':tokenizer.encode(text,add_special_tokens=False)}],SamplingParams(temperature=0,max_tokens=32),use_tqdm=False)[0].outputs[0]
     assert reference.text.strip()=='4',reference.text
     start=time.perf_counter()
-    for row in warm:
-        llm.generate([{'prompt_token_ids':row['prompt_token_ids']}],params,use_tqdm=False)
+    for start_index in range(0,len(warm),batch_size):
+        llm.generate([{'prompt_token_ids':row['prompt_token_ids']} for row in warm[start_index:start_index+batch_size]],params,use_tqdm=False)
     warm_seconds=time.perf_counter()-start
     before=llm.collective_rpc('sd_stats')
     if args.profile_dir:llm.start_profile()
@@ -129,7 +129,7 @@ def main(args):
                 if (index//args.workers+1)%16==0:
                     print(json.dumps({'mode':args.mode,'completed':index//args.workers+1,'last_seconds':seconds}),flush=True)
     if args.profile_dir:llm.stop_profile()
-    write(summary_path,{'contract':contract,'setup_seconds':setup,'warmup_seconds':warm_seconds,
+    write(summary_path,{'contract':contract,'setup_seconds':setup,'warmup_seconds':warm_seconds,'warmup_request_batch_size':batch_size,
                         'asset_checks':assets,'gpu_before':before,'gpu_after':llm.collective_rpc('sd_stats'),
                         'job_id':os.environ.get('SLURM_JOB_ID'),'timing_valid':not bool(args.profile_dir),
                         'batch_measurements':batch_measurements,'timing_contract':('fixed-batch generate wall; per-row wall is amortized, not individual latency' if batch_size>1 else 'per-request generate wall; compilation-affected request retried once, cold time retained; prefix cache off')})
@@ -151,5 +151,5 @@ if __name__=='__main__':
     parser.add_argument('--worker-index',type=int,default=0)
     parser.add_argument('--repeat',type=int,default=0)
     parser.add_argument('--profile-dir',type=Path)
-    parser.add_argument('--request-batch-size',type=int,choices=[1,4,8],default=1)
+    parser.add_argument('--request-batch-size',type=int,choices=[1,4,8,16,32,64,128],default=1)
     main(parser.parse_args())

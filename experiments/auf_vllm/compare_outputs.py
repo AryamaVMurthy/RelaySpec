@@ -19,7 +19,7 @@ def compare(ar, method):
             batch_size=contract.get('request_batch_size',1);batch_sizes.add(batch_size)
             rows=[json.loads(line) for line in path.read_text().splitlines()]
             if batch_size>1:
-                assert batch_size in (4,8) and contract['workers']==1
+                assert 2<=batch_size<=128 and contract['workers']==1
                 batches=summary['batch_measurements']
                 assert len({b['batch_id'] for b in batches})==len(batches)
                 assert {r['batch_id'] for r in rows}=={b['batch_id'] for b in batches}

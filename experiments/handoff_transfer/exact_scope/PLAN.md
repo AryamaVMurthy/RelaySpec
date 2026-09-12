@@ -1,47 +1,104 @@
-# Exact requested comparison — supersedes the broad matrix sweep
+# Locked experiment configuration — batch8 per GPU
 
-Frozen paper targets: Qwen4→Qwen8, Llama8→Llama3, Qwen4→Llama8.
-Seven unique architecture/loss cells per family:
-- Original RelaySpec initialization + CE (`normal_ce/ce`).
-- ZIP initialization + CE on the folded fusion matrix (`dense_fusion/ce`).
-- Five dense matrices + CE and AUF (`five_maps`).
-- One dense final-fusion matrix + CE and AUF (`dense_fusion`; CE overlaps ZIP CE).
-- Five BA rank56 adapters + CE and AUF (`five_ba56`).
+Selected node: Turing node07, four L40S GPUs. Each token fit uses exactly one GPU
+and batch8, without gradient accumulation or cross-GPU gradient synchronization.
+Up to four different jobs run concurrently. This supersedes the two-GPU lanes.
+No further training batch-size tuning. Batched warmup is used in subsequent vLLM jobs; warmup and any compilation-affected first pass remain outside timing. Dataset and evaluation selections stay fixed.
 
-No fresh dense controls, single fusion BA, native drafter baseline, extra seed,
-capacity, data-size, or regularization sweep is scheduled. No new LR sweep:
-same-family LRs come from already completed independent validation; cross
-uses 1e-4, explicitly untuned. Existing artifacts are retained.
+## Transfers
 
-4096 distinct fitting records, rollout cap4096, up to32 distinct eligible
-anchors per record, 2000 updates × global batch8 =16000 presentations.
-BF16, frozen drafter/target, cached features, fused AdamW, length grouping,
-2 GPU DDP and gradient accumulation. Short records supply fewer anchors.
+| Family | Source/drafter interface | Frozen new target |
+|---|---|---|
+| q8 | Qwen3-4B | Qwen3-8B |
+| llama | Llama3.1-8B | Llama3.2-3B |
+| cross | Qwen3-4B | Llama3.1-8B |
 
-Final vLLM evaluation:128 fixed requests, cap2048, greedy, natural EOS,
-batch4 throughput first and batch1 latency comparison, 3 timing repetitions.
-AR and unchanged original/ZIP initializers are reference measurements.
-Full token and finish equality checked against AR; no final-set selection.
-Adapters folded for inference. GPU utilization/memory/power logged.
+Qwen uses a shared tokenizer/token-ID vocabulary. Cross-family runs use the explicit
+text/tokenizer alignment bridge; they are not evidence of direct vocabulary-ID reuse.
+All target transformers and all drafter parameters outside the named interfaces remain
+frozen. There is no target LoRA. Existing Qwen/Llama initializer checkpoints are reused;
+new cross-family original/ZIP initializers are fit for one epoch each.
 
-Two serial dependency lanes, each at most2 GPUs: Qwen node07, Llama node06.
-Each trained cell is evaluated immediately before the next fit. Cross data
-and cross fits use node07 after Qwen finishes, at most2 GPUs even if Llama
-continues. This enforces max4 total without waiting for unrelated studies.
+## Fits per family
 
-## Confirmed amendments
-Use32 anchors in every token-block training run;512 artifacts stay isolated.
-Feature-only original-interface objectives: forward KL(source||mapped), reverse
-KL(mapped||source), and soft-target CE. Treat normalized fused feature vectors
-as logits with standard softmax T=1. No extra exponential or positional weights.
-All three are run on the same cache/initialization/seed/schedule. Forward KL and
-CE gradients are algebraically identical; the numerical unit test confirms this.
-These three fits use the existing feature sampler, not block anchors. They are
-three-epoch fits at1e-3 matching the reconstruction baseline's feature protocol;
-not a compute-matched comparison to2000-update token training.
+| Cell | Trainable interface | Objective |
+|---|---|---|
+| normal_ce/ce | Original RelaySpec normalized linear interface | Token CE |
+| dense_fusion/ce | ZIP initializer folded into one fusion matrix | Token CE |
+| five_maps/ce | Five dense matrices, frozen native fusion | Token CE |
+| five_maps/auf | Five dense matrices, frozen native fusion | AUF |
+| dense_fusion/auf | One full fusion matrix | AUF |
+| five_ba56/ce | Five BA updates, rank56, alpha56 | Token CE |
+| five_ba56/auf | Five BA updates, rank56, alpha56 | AUF |
+| feature_ce | Original normalized linear interface | Soft-target feature CE |
+| forward_kl | Original normalized linear interface | KL(source || mapped) |
+| reverse_kl | Original normalized linear interface | KL(mapped || source) |
 
-Total:7 token-objective cells +3 feature-objective cells per family =30 fits.
-AR, unchanged original feature-MSE and unchanged ZIP feature-loss exports are
-reference evaluations. Loss variants never modify the target or vocabulary IDs.
-32-anchor token fits reuse learning rates selected earlier at512 anchors;
-they are not newly optimized for32 anchors. Cross rates remain untuned1e-4.
+ZIP+CE and one-fusion-matrix+CE are one cell, not duplicate experiments.
+Thirty comparison fits: ten per family. Baseline evaluations per family: AR,
+unchanged original RelaySpec feature-MSE initializer, unchanged ZIP initializer.
+AUF supervises the correct prefix plus its first failure. No exponential positional
+weighting or additional MSE/KL term is mixed into token CE/AUF. Feature CE/KL uses
+softmax over normalized fused feature coordinates at temperature1; no extra positional
+weights. Feature CE and forward KL have identical gradients with a fixed teacher.
+
+## Token fitting
+
+- 4096 distinct training records; rollout cap4096 generated tokens.
+- One epoch: 512 updates ×8 records =4096 record presentations.
+- Up to32 distinct eligible anchors per record, sampled in the response; short records
+  provide fewer. Clean anchor and padding excluded from prediction loss.
+- Per GPU batch8; one GPU per fit; accumulation1. CE/AUF normalized within this batch8.
+- BF16 operations, FP32 trainable interface weights/loss reductions, cached frozen features.
+- Fused AdamW, weight decay0, gradient clip1, 5% warmup then cosine decay; seed42.
+- Loss-processing chunks32 blocks; native checkpoint block sizes retained.
+- Final checkpoint only for main comparisons. A two-update check verifies fit/export
+  integrity before each full same-family fit; full128 evaluation verifies deployment.
+- Different batching changes random anchor draws and floating-point reductions relative
+  to the archived two-GPU pilot; all new comparison cells use the same batch8 protocol.
+
+| Interface | Qwen4→8 LR | Llama8→3 LR | Qwen4→Llama8 LR |
+|---|---:|---:|---:|
+| Original / five dense maps | 1e-4 | 1e-4 | 1e-4 |
+| Dense fusion | 1e-4 | 6e-4 | 1e-4 |
+| Five BA56 | 3e-4 | 6e-4 | 1e-4 |
+
+Rates reuse existing validation selection; cross-family rates are untuned. No fresh LR,
+seed, capacity, data-size or regularization sweep. Feature-only fits use one cache epoch,
+position batch2048 and LR1e-3; these bypass block anchors and are not512-update token fits.
+
+## Evaluation
+
+- vLLM0.28 primary backend; same fixed128 requests per family, cap2048 output tokens.
+- Greedy temperature0, natural EOS, seed0; cap is a maximum, not forced length.
+- Submit128 requests together; max_num_seqs128, max_num_batched_tokens8192,
+  max_model_len5120, GPU memory utilization0.8, prefix cache disabled.
+- vLLM schedules active requests within KV-cache capacity; submission batch128 does not
+  assert all128 remain resident simultaneously. This is a target setting, not a measured
+  maximum until the full run succeeds. Only explicit memory failures trigger128→64→32→16→8.
+- Lock the passing serving batch for AR, original, ZIP and all methods within a family.
+- Three timing repetitions, one training seed. Setup/compilation/warmup excluded; logged.
+- Report aggregate generated tokens / batch wall time, speedup against matched AR and
+  original/ZIP, acceptance/progress, full output-token equality and finish equality.
+- GPU utilization, memory, power and temperature recorded. Batched throughput is distinct
+  from the older single-request latency numbers.
+- Final Transformers checks remain limited to1–2 representative completed cases.
+
+## Initial parallel launch
+
+Jobs32239–32242 on node07: Qwen five_maps/CE, five_maps/AUF, dense_fusion/CE,
+and five_ba56/AUF respectively. Each requests one GPU and executes batch8.
+Llama token/paired caches are being staged from node06, which was fully allocated.
+All remaining fits, reference evaluations and cross-family data preparation are
+submitted under the same total four-GPU ceiling. Evaluations serialize only within
+a family to keep a single writer for shared baseline artifacts. Superseded job ledgers/results are retained separately.
+
+## Execution evidence
+Initial four batch8 fits completed with export verification in285.22–292.44 fitting
+seconds each. Qwen batch128 AR repetition0 completed128 requests,122768 generated
+tokens,99.8542 measured seconds,1229.4725 aggregate tokens/s. No trained-method
+speedup claim follows until its matching full output comparison passes.
+Transformers jobs32304–32306 run one128-request/2048-cap pass each for AR and Qwen
+five-map CE/AUF after the entire vLLM matrix. The standalone decoder currently
+supports one request at a time; these are backend confirmation checks with separately
+reported timing, not substitutes for the batch128 primary results.

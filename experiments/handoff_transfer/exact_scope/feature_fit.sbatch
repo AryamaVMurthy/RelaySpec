@@ -30,7 +30,7 @@ base="$root/$FAMILY"
 case "$FAMILY" in
  q8) target="$TRANSFER_WORK/models/8b/target";;
  llama) target="$study/models/llama3-target";;
- cross) target="$study/models/llama8-source";base="$root/cross-full4096/initializers";;
+ cross) target="$study/models/llama8-source";base="$root/cross-full4096/initializers-e1";;
  *) exit 2;;
 esac
-"$study_python" -m experiments.handoff_transfer.train_normal --family "$FAMILY" --root "$base" --study "$study" --target "$target" --epochs 3 --seed 42 --lr 1e-3 --objective "$MATRIX_OBJECTIVE" --out "$root/feature-objectives/$FAMILY/$MATRIX_OBJECTIVE"
+"$study_python" -m experiments.handoff_transfer.train_normal --family "$FAMILY" --root "$base" --study "$study" --target "$target" --epochs 1 --seed 42 --lr 1e-3 --objective "$MATRIX_OBJECTIVE" --out "$root/feature-objectives-e1/$FAMILY/$MATRIX_OBJECTIVE"

@@ -68,3 +68,23 @@ def test_comparison_rejects_invalid_token_accounting(tmp_path):
     summary=dict(timing_valid=True,contract=dict(cap=1,workers=1,request_batch_size=4),batch_measurements=batches)
     a.with_suffix('.summary.json').write_text(json.dumps(summary))
     with pytest.raises(AssertionError,match='Invalid token accounting'):compare([a],[a])
+
+
+def test_all_128_requests_submitted_together(tmp_path):
+    engine=Engine();path=tmp_path/'all.jsonl'
+    result=bm.measure(engine,selected(128),None,path,128,engine.counters)
+    assert engine.calls==1 and result[0]['requests']==128
+    rows=[json.loads(line) for line in path.read_text().splitlines()]
+    assert len(rows)==128 and [r['index'] for r in rows]==list(range(128))
+    assert sum(r['output_tokens'] for r in rows)==result[0]['output_tokens']==256
+
+
+def test_full128_comparison(tmp_path):
+    from experiments.auf_vllm.compare_outputs import compare
+    engine=Engine();a=tmp_path/'ar.jsonl';b=tmp_path/'method.jsonl'
+    measurements=bm.measure(engine,selected(128),None,a,128,engine.counters)
+    b.write_text(a.read_text())
+    summary=dict(timing_valid=True,contract=dict(cap=2048,workers=1,request_batch_size=128),batch_measurements=measurements)
+    for path in (a,b):path.with_suffix('.summary.json').write_text(json.dumps(summary))
+    result=compare([a],[b])
+    assert result['exact_matches']==128 and result['throughput_ratio']==1

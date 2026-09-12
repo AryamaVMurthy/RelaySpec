@@ -1,765 +1,470 @@
 [
   {
-    "job": 32109,
-    "name": "exact32-q8-five_maps-ce",
+    "job": 32239,
+    "name": "b8-q8-five_maps-ce",
     "node": "node07",
     "env": {
       "FAMILY": "q8",
       "KIND": "five_maps",
       "MATRIX_OBJECTIVE": "ce",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
+      "TRAIN_STEPS": 512
     },
     "dependency": null,
-    "script": "fit.sbatch"
+    "script": "fit.sbatch",
+    "gpus": 1,
+    "batch_per_gpu": 8
   },
   {
-    "job": 32110,
-    "name": "exact128-q8-five_maps-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "five_maps",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32109,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32111,
-    "name": "exact32-q8-five_maps-auf",
+    "job": 32240,
+    "name": "b8-q8-five_maps-auf",
     "node": "node07",
     "env": {
       "FAMILY": "q8",
       "KIND": "five_maps",
       "MATRIX_OBJECTIVE": "auf",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32110,
-    "script": "fit.sbatch"
-  },
-  {
-    "job": 32113,
-    "name": "exact128-q8-five_maps-auf",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "five_maps",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32111,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32114,
-    "name": "exact32-q8-normal_ce-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "normal_ce",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32113,
-    "script": "fit.sbatch"
-  },
-  {
-    "job": 32115,
-    "name": "exact128-q8-normal_ce-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "normal_ce",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32114,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32116,
-    "name": "exact32-q8-dense_fusion-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "dense_fusion",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32115,
-    "script": "fit.sbatch"
-  },
-  {
-    "job": 32118,
-    "name": "exact128-q8-dense_fusion-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "dense_fusion",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32116,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32119,
-    "name": "exact32-q8-dense_fusion-auf",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "dense_fusion",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32118,
-    "script": "fit.sbatch"
-  },
-  {
-    "job": 32120,
-    "name": "exact128-q8-dense_fusion-auf",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "dense_fusion",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32119,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32122,
-    "name": "exact32-q8-five_ba56-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "five_ba56",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0003,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32120,
-    "script": "fit.sbatch"
-  },
-  {
-    "job": 32123,
-    "name": "exact128-q8-five_ba56-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "five_ba56",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0003,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32122,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32124,
-    "name": "exact32-q8-five_ba56-auf",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "five_ba56",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0003,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32123,
-    "script": "fit.sbatch"
-  },
-  {
-    "job": 32125,
-    "name": "exact128-q8-five_ba56-auf",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "five_ba56",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0003,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32124,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32126,
-    "name": "exact-feature-q8-feature_ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "feature_ce",
-      "MATRIX_LR": 0.001
-    },
-    "dependency": 32125,
-    "script": "feature_fit.sbatch"
-  },
-  {
-    "job": 32127,
-    "name": "exact128-q8-feature_ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "feature_ce",
-      "MATRIX_LR": 0.001
-    },
-    "dependency": 32126,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32128,
-    "name": "exact-feature-q8-forward_kl",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "forward_kl",
-      "MATRIX_LR": 0.001
-    },
-    "dependency": 32127,
-    "script": "feature_fit.sbatch"
-  },
-  {
-    "job": 32129,
-    "name": "exact128-q8-forward_kl",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "forward_kl",
-      "MATRIX_LR": 0.001
-    },
-    "dependency": 32128,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32130,
-    "name": "exact-feature-q8-reverse_kl",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "reverse_kl",
-      "MATRIX_LR": 0.001
-    },
-    "dependency": 32129,
-    "script": "feature_fit.sbatch"
-  },
-  {
-    "job": 32131,
-    "name": "exact128-q8-reverse_kl",
-    "node": "node07",
-    "env": {
-      "FAMILY": "q8",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "reverse_kl",
-      "MATRIX_LR": 0.001
-    },
-    "dependency": 32130,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32132,
-    "name": "exact32-llama-five_maps-ce",
-    "node": "node06",
-    "env": {
-      "FAMILY": "llama",
-      "KIND": "five_maps",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
+      "TRAIN_STEPS": 512
     },
     "dependency": null,
-    "script": "fit.sbatch"
+    "script": "fit.sbatch",
+    "gpus": 1,
+    "batch_per_gpu": 8
   },
   {
-    "job": 32133,
-    "name": "exact128-llama-five_maps-ce",
-    "node": "node06",
+    "job": 32241,
+    "name": "b8-q8-dense_fusion-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1,
+    "batch_per_gpu": 8
+  },
+  {
+    "job": 32242,
+    "name": "b8-q8-five_ba56-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0003,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1,
+    "batch_per_gpu": 8
+  },
+  {
+    "job": 32244,
+    "name": "b8-eval-q8-five_maps-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32239,
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32245,
+    "name": "b8-q8-normal_ce-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "normal_ce",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32246,
+    "name": "b8-q8-dense_fusion-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32247,
+    "name": "b8-q8-five_ba56-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0003,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32248,
+    "name": "b8-feature-q8-feature_ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "feature_ce",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": null,
+    "script": "feature_fit.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32249,
+    "name": "b8-feature-q8-forward_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "forward_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": null,
+    "script": "feature_fit.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32250,
+    "name": "b8-feature-q8-reverse_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "reverse_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": null,
+    "script": "feature_fit.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32251,
+    "name": "b8-llama-five_maps-ce",
+    "node": "node07",
     "env": {
       "FAMILY": "llama",
       "KIND": "five_maps",
       "MATRIX_OBJECTIVE": "ce",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
+      "TRAIN_STEPS": 512
     },
-    "dependency": 32132,
-    "script": "eval.sbatch"
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32134,
-    "name": "exact32-llama-five_maps-auf",
-    "node": "node06",
+    "job": 32252,
+    "name": "b8-llama-five_maps-auf",
+    "node": "node07",
     "env": {
       "FAMILY": "llama",
       "KIND": "five_maps",
       "MATRIX_OBJECTIVE": "auf",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
+      "TRAIN_STEPS": 512
     },
-    "dependency": 32133,
-    "script": "fit.sbatch"
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32135,
-    "name": "exact128-llama-five_maps-auf",
-    "node": "node06",
-    "env": {
-      "FAMILY": "llama",
-      "KIND": "five_maps",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32134,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32136,
-    "name": "exact32-llama-normal_ce-ce",
-    "node": "node06",
+    "job": 32253,
+    "name": "b8-llama-normal_ce-ce",
+    "node": "node07",
     "env": {
       "FAMILY": "llama",
       "KIND": "normal_ce",
       "MATRIX_OBJECTIVE": "ce",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
+      "TRAIN_STEPS": 512
     },
-    "dependency": 32135,
-    "script": "fit.sbatch"
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32137,
-    "name": "exact128-llama-normal_ce-ce",
-    "node": "node06",
-    "env": {
-      "FAMILY": "llama",
-      "KIND": "normal_ce",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32136,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32138,
-    "name": "exact32-llama-dense_fusion-ce",
-    "node": "node06",
+    "job": 32254,
+    "name": "b8-llama-dense_fusion-ce",
+    "node": "node07",
     "env": {
       "FAMILY": "llama",
       "KIND": "dense_fusion",
       "MATRIX_OBJECTIVE": "ce",
       "MATRIX_LR": 0.0006,
-      "TRAIN_STEPS": 2000
+      "TRAIN_STEPS": 512
     },
-    "dependency": 32137,
-    "script": "fit.sbatch"
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32139,
-    "name": "exact128-llama-dense_fusion-ce",
-    "node": "node06",
-    "env": {
-      "FAMILY": "llama",
-      "KIND": "dense_fusion",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0006,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32138,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32140,
-    "name": "exact32-llama-dense_fusion-auf",
-    "node": "node06",
+    "job": 32255,
+    "name": "b8-llama-dense_fusion-auf",
+    "node": "node07",
     "env": {
       "FAMILY": "llama",
       "KIND": "dense_fusion",
       "MATRIX_OBJECTIVE": "auf",
       "MATRIX_LR": 0.0006,
-      "TRAIN_STEPS": 2000
+      "TRAIN_STEPS": 512
     },
-    "dependency": 32139,
-    "script": "fit.sbatch"
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32141,
-    "name": "exact128-llama-dense_fusion-auf",
-    "node": "node06",
-    "env": {
-      "FAMILY": "llama",
-      "KIND": "dense_fusion",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0006,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32140,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32142,
-    "name": "exact32-llama-five_ba56-ce",
-    "node": "node06",
+    "job": 32256,
+    "name": "b8-llama-five_ba56-ce",
+    "node": "node07",
     "env": {
       "FAMILY": "llama",
       "KIND": "five_ba56",
       "MATRIX_OBJECTIVE": "ce",
       "MATRIX_LR": 0.0006,
-      "TRAIN_STEPS": 2000
+      "TRAIN_STEPS": 512
     },
-    "dependency": 32141,
-    "script": "fit.sbatch"
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32143,
-    "name": "exact128-llama-five_ba56-ce",
-    "node": "node06",
-    "env": {
-      "FAMILY": "llama",
-      "KIND": "five_ba56",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0006,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32142,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32144,
-    "name": "exact32-llama-five_ba56-auf",
-    "node": "node06",
+    "job": 32257,
+    "name": "b8-llama-five_ba56-auf",
+    "node": "node07",
     "env": {
       "FAMILY": "llama",
       "KIND": "five_ba56",
       "MATRIX_OBJECTIVE": "auf",
       "MATRIX_LR": 0.0006,
-      "TRAIN_STEPS": 2000
+      "TRAIN_STEPS": 512
     },
-    "dependency": 32143,
-    "script": "fit.sbatch"
+    "dependency": null,
+    "script": "fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32145,
-    "name": "exact128-llama-five_ba56-auf",
-    "node": "node06",
-    "env": {
-      "FAMILY": "llama",
-      "KIND": "five_ba56",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0006,
-      "TRAIN_STEPS": 2000
-    },
-    "dependency": 32144,
-    "script": "eval.sbatch"
+    "job": 32258,
+    "name": "b8-llama-paired-ready",
+    "node": "node07",
+    "env": {},
+    "dependency": null,
+    "script": "assets_ready.sbatch",
+    "gpus": 0
   },
   {
-    "job": 32146,
-    "name": "exact-feature-llama-feature_ce",
-    "node": "node06",
+    "job": 32259,
+    "name": "b8-feature-llama-feature_ce",
+    "node": "node07",
     "env": {
       "FAMILY": "llama",
       "KIND": "feature",
       "MATRIX_OBJECTIVE": "feature_ce",
       "MATRIX_LR": 0.001
     },
-    "dependency": 32145,
-    "script": "feature_fit.sbatch"
+    "dependency": 32258,
+    "script": "feature_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32147,
-    "name": "exact128-llama-feature_ce",
-    "node": "node06",
-    "env": {
-      "FAMILY": "llama",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "feature_ce",
-      "MATRIX_LR": 0.001
-    },
-    "dependency": 32146,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32148,
-    "name": "exact-feature-llama-forward_kl",
-    "node": "node06",
+    "job": 32260,
+    "name": "b8-feature-llama-forward_kl",
+    "node": "node07",
     "env": {
       "FAMILY": "llama",
       "KIND": "feature",
       "MATRIX_OBJECTIVE": "forward_kl",
       "MATRIX_LR": 0.001
     },
-    "dependency": 32147,
-    "script": "feature_fit.sbatch"
+    "dependency": 32258,
+    "script": "feature_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32149,
-    "name": "exact128-llama-forward_kl",
-    "node": "node06",
-    "env": {
-      "FAMILY": "llama",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "forward_kl",
-      "MATRIX_LR": 0.001
-    },
-    "dependency": 32148,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32150,
-    "name": "exact-feature-llama-reverse_kl",
-    "node": "node06",
+    "job": 32261,
+    "name": "b8-feature-llama-reverse_kl",
+    "node": "node07",
     "env": {
       "FAMILY": "llama",
       "KIND": "feature",
       "MATRIX_OBJECTIVE": "reverse_kl",
       "MATRIX_LR": 0.001
     },
-    "dependency": 32149,
-    "script": "feature_fit.sbatch"
+    "dependency": 32258,
+    "script": "feature_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32151,
-    "name": "exact128-llama-reverse_kl",
-    "node": "node06",
+    "job": 32262,
+    "name": "b8-cross-data",
+    "node": "node07",
+    "env": {},
+    "dependency": null,
+    "script": "../cross_data_array.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32263,
+    "name": "b8-cross-assemble",
+    "node": "node07",
+    "env": {},
+    "dependency": 32262,
+    "script": "../cross_assemble.sbatch",
+    "gpus": 0
+  },
+  {
+    "job": 32264,
+    "name": "b8-cross-initializers",
+    "node": "node07",
     "env": {
-      "FAMILY": "llama",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "reverse_kl",
-      "MATRIX_LR": 0.001
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
-    "dependency": 32150,
-    "script": "eval.sbatch"
+    "dependency": 32263,
+    "script": "cross_initializers.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32152,
-    "name": "exact32-cross-five_maps-ce",
+    "job": 32265,
+    "name": "b8-cross-five_maps-ce",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
       "KIND": "five_maps",
       "MATRIX_OBJECTIVE": "ce",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
+      "TRAIN_STEPS": 512,
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
-    "dependency": 31808,
-    "script": "cross_fit.sbatch"
+    "dependency": 32264,
+    "script": "cross_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32153,
-    "name": "exact128-cross-five_maps-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "cross",
-      "KIND": "five_maps",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
-      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
-    },
-    "dependency": 32152,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32154,
-    "name": "exact32-cross-five_maps-auf",
+    "job": 32266,
+    "name": "b8-cross-five_maps-auf",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
       "KIND": "five_maps",
       "MATRIX_OBJECTIVE": "auf",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
+      "TRAIN_STEPS": 512,
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
-    "dependency": 32153,
-    "script": "cross_fit.sbatch"
+    "dependency": 32264,
+    "script": "cross_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32155,
-    "name": "exact128-cross-five_maps-auf",
-    "node": "node07",
-    "env": {
-      "FAMILY": "cross",
-      "KIND": "five_maps",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
-      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
-    },
-    "dependency": 32154,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32156,
-    "name": "exact32-cross-normal_ce-ce",
+    "job": 32267,
+    "name": "b8-cross-normal_ce-ce",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
       "KIND": "normal_ce",
       "MATRIX_OBJECTIVE": "ce",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
+      "TRAIN_STEPS": 512,
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
-    "dependency": 32155,
-    "script": "cross_fit.sbatch"
+    "dependency": 32264,
+    "script": "cross_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32157,
-    "name": "exact128-cross-normal_ce-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "cross",
-      "KIND": "normal_ce",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
-      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
-    },
-    "dependency": 32156,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32158,
-    "name": "exact32-cross-dense_fusion-ce",
+    "job": 32268,
+    "name": "b8-cross-dense_fusion-ce",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
       "KIND": "dense_fusion",
       "MATRIX_OBJECTIVE": "ce",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
+      "TRAIN_STEPS": 512,
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
-    "dependency": 32157,
-    "script": "cross_fit.sbatch"
+    "dependency": 32264,
+    "script": "cross_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32159,
-    "name": "exact128-cross-dense_fusion-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "cross",
-      "KIND": "dense_fusion",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
-      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
-    },
-    "dependency": 32158,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32160,
-    "name": "exact32-cross-dense_fusion-auf",
+    "job": 32269,
+    "name": "b8-cross-dense_fusion-auf",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
       "KIND": "dense_fusion",
       "MATRIX_OBJECTIVE": "auf",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
+      "TRAIN_STEPS": 512,
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
-    "dependency": 32159,
-    "script": "cross_fit.sbatch"
+    "dependency": 32264,
+    "script": "cross_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32161,
-    "name": "exact128-cross-dense_fusion-auf",
-    "node": "node07",
-    "env": {
-      "FAMILY": "cross",
-      "KIND": "dense_fusion",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
-      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
-    },
-    "dependency": 32160,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32162,
-    "name": "exact32-cross-five_ba56-ce",
+    "job": 32270,
+    "name": "b8-cross-five_ba56-ce",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
       "KIND": "five_ba56",
       "MATRIX_OBJECTIVE": "ce",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
+      "TRAIN_STEPS": 512,
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
-    "dependency": 32161,
-    "script": "cross_fit.sbatch"
+    "dependency": 32264,
+    "script": "cross_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32163,
-    "name": "exact128-cross-five_ba56-ce",
-    "node": "node07",
-    "env": {
-      "FAMILY": "cross",
-      "KIND": "five_ba56",
-      "MATRIX_OBJECTIVE": "ce",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
-      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
-    },
-    "dependency": 32162,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32164,
-    "name": "exact32-cross-five_ba56-auf",
+    "job": 32271,
+    "name": "b8-cross-five_ba56-auf",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
       "KIND": "five_ba56",
       "MATRIX_OBJECTIVE": "auf",
       "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
+      "TRAIN_STEPS": 512,
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
-    "dependency": 32163,
-    "script": "cross_fit.sbatch"
+    "dependency": 32264,
+    "script": "cross_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32165,
-    "name": "exact128-cross-five_ba56-auf",
-    "node": "node07",
-    "env": {
-      "FAMILY": "cross",
-      "KIND": "five_ba56",
-      "MATRIX_OBJECTIVE": "auf",
-      "MATRIX_LR": 0.0001,
-      "TRAIN_STEPS": 2000,
-      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
-    },
-    "dependency": 32164,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32166,
-    "name": "exact-feature-cross-feature_ce",
+    "job": 32272,
+    "name": "b8-feature-cross-feature_ce",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
@@ -767,12 +472,504 @@
       "MATRIX_OBJECTIVE": "feature_ce",
       "MATRIX_LR": 0.001
     },
-    "dependency": 32165,
-    "script": "feature_fit.sbatch"
+    "dependency": 32264,
+    "script": "feature_fit.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32167,
-    "name": "exact128-cross-feature_ce",
+    "job": 32273,
+    "name": "b8-feature-cross-forward_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "forward_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32264,
+    "script": "feature_fit.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32274,
+    "name": "b8-feature-cross-reverse_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "reverse_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": 32264,
+    "script": "feature_fit.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32275,
+    "name": "b8-eval-q8-five_maps-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32240,
+      32244
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32276,
+    "name": "b8-eval-q8-normal_ce-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "normal_ce",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32245,
+      32275
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32277,
+    "name": "b8-eval-q8-dense_fusion-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32241,
+      32276
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32278,
+    "name": "b8-eval-q8-dense_fusion-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32246,
+      32277
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32279,
+    "name": "b8-eval-q8-five_ba56-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0003,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32247,
+      32278
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32280,
+    "name": "b8-eval-q8-five_ba56-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0003,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32242,
+      32279
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32281,
+    "name": "b8-eval-q8-feature-feature_ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "feature_ce",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": [
+      32248,
+      32280
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32282,
+    "name": "b8-eval-q8-feature-forward_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "forward_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": [
+      32249,
+      32281
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32283,
+    "name": "b8-eval-q8-feature-reverse_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "q8",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "reverse_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": [
+      32250,
+      32282
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32284,
+    "name": "b8-eval-llama-five_maps-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": 32251,
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32285,
+    "name": "b8-eval-llama-five_maps-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32252,
+      32284
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32286,
+    "name": "b8-eval-llama-normal_ce-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "normal_ce",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32253,
+      32285
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32287,
+    "name": "b8-eval-llama-dense_fusion-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32254,
+      32286
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32288,
+    "name": "b8-eval-llama-dense_fusion-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32255,
+      32287
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32289,
+    "name": "b8-eval-llama-five_ba56-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32256,
+      32288
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32290,
+    "name": "b8-eval-llama-five_ba56-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0006,
+      "TRAIN_STEPS": 512
+    },
+    "dependency": [
+      32257,
+      32289
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32291,
+    "name": "b8-eval-llama-feature-feature_ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "feature_ce",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": [
+      32259,
+      32290
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32292,
+    "name": "b8-eval-llama-feature-forward_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "forward_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": [
+      32260,
+      32291
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32293,
+    "name": "b8-eval-llama-feature-reverse_kl",
+    "node": "node07",
+    "env": {
+      "FAMILY": "llama",
+      "KIND": "feature",
+      "MATRIX_OBJECTIVE": "reverse_kl",
+      "MATRIX_LR": 0.001
+    },
+    "dependency": [
+      32261,
+      32292
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32294,
+    "name": "b8-eval-cross-five_maps-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": 32265,
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32295,
+    "name": "b8-eval-cross-five_maps-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": [
+      32266,
+      32294
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32296,
+    "name": "b8-eval-cross-normal_ce-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "normal_ce",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": [
+      32267,
+      32295
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32297,
+    "name": "b8-eval-cross-dense_fusion-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": [
+      32268,
+      32296
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32298,
+    "name": "b8-eval-cross-dense_fusion-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "dense_fusion",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": [
+      32269,
+      32297
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32299,
+    "name": "b8-eval-cross-five_ba56-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": [
+      32270,
+      32298
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32300,
+    "name": "b8-eval-cross-five_ba56-auf",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_ba56",
+      "MATRIX_OBJECTIVE": "auf",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": [
+      32271,
+      32299
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32301,
+    "name": "b8-eval-cross-feature-feature_ce",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
@@ -780,12 +977,16 @@
       "MATRIX_OBJECTIVE": "feature_ce",
       "MATRIX_LR": 0.001
     },
-    "dependency": 32166,
-    "script": "eval.sbatch"
+    "dependency": [
+      32272,
+      32300
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32168,
-    "name": "exact-feature-cross-forward_kl",
+    "job": 32302,
+    "name": "b8-eval-cross-feature-forward_kl",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
@@ -793,25 +994,16 @@
       "MATRIX_OBJECTIVE": "forward_kl",
       "MATRIX_LR": 0.001
     },
-    "dependency": 32167,
-    "script": "feature_fit.sbatch"
+    "dependency": [
+      32273,
+      32301
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32169,
-    "name": "exact128-cross-forward_kl",
-    "node": "node07",
-    "env": {
-      "FAMILY": "cross",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "forward_kl",
-      "MATRIX_LR": 0.001
-    },
-    "dependency": 32168,
-    "script": "eval.sbatch"
-  },
-  {
-    "job": 32170,
-    "name": "exact-feature-cross-reverse_kl",
+    "job": 32303,
+    "name": "b8-eval-cross-feature-reverse_kl",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
@@ -819,20 +1011,137 @@
       "MATRIX_OBJECTIVE": "reverse_kl",
       "MATRIX_LR": 0.001
     },
-    "dependency": 32169,
-    "script": "feature_fit.sbatch"
+    "dependency": [
+      32274,
+      32302
+    ],
+    "script": "eval.sbatch",
+    "gpus": 1
   },
   {
-    "job": 32171,
-    "name": "exact128-cross-reverse_kl",
+    "job": 32304,
+    "name": "b8-transformers-q8-ar",
     "node": "node07",
     "env": {
-      "FAMILY": "cross",
-      "KIND": "feature",
-      "MATRIX_OBJECTIVE": "reverse_kl",
-      "MATRIX_LR": 0.001
+      "MODE": "ar"
     },
-    "dependency": 32170,
-    "script": "eval.sbatch"
+    "dependency": [
+      32244,
+      32275,
+      32276,
+      32277,
+      32278,
+      32279,
+      32280,
+      32281,
+      32282,
+      32283,
+      32284,
+      32285,
+      32286,
+      32287,
+      32288,
+      32289,
+      32290,
+      32291,
+      32292,
+      32293,
+      32294,
+      32295,
+      32296,
+      32297,
+      32298,
+      32299,
+      32300,
+      32301,
+      32302,
+      32303
+    ],
+    "script": "transformers.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32305,
+    "name": "b8-transformers-q8-ce",
+    "node": "node07",
+    "env": {
+      "MODE": "ce"
+    },
+    "dependency": [
+      32244,
+      32275,
+      32276,
+      32277,
+      32278,
+      32279,
+      32280,
+      32281,
+      32282,
+      32283,
+      32284,
+      32285,
+      32286,
+      32287,
+      32288,
+      32289,
+      32290,
+      32291,
+      32292,
+      32293,
+      32294,
+      32295,
+      32296,
+      32297,
+      32298,
+      32299,
+      32300,
+      32301,
+      32302,
+      32303
+    ],
+    "script": "transformers.sbatch",
+    "gpus": 1
+  },
+  {
+    "job": 32306,
+    "name": "b8-transformers-q8-auf",
+    "node": "node07",
+    "env": {
+      "MODE": "auf"
+    },
+    "dependency": [
+      32244,
+      32275,
+      32276,
+      32277,
+      32278,
+      32279,
+      32280,
+      32281,
+      32282,
+      32283,
+      32284,
+      32285,
+      32286,
+      32287,
+      32288,
+      32289,
+      32290,
+      32291,
+      32292,
+      32293,
+      32294,
+      32295,
+      32296,
+      32297,
+      32298,
+      32299,
+      32300,
+      32301,
+      32302,
+      32303
+    ],
+    "script": "transformers.sbatch",
+    "gpus": 1
   }
 ]

@@ -3,7 +3,7 @@ import json,time
 
 
 def measure(llm,selected,params,path,batch_size,counters,profile=False):
-    assert batch_size in (4,8)
+    assert 2<=batch_size<=128
     batches=[]
     with path.open('x') as handle:
         for batch_id,start_index in enumerate(range(0,len(selected),batch_size)):

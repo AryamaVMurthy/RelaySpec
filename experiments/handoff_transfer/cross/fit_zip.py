@@ -20,9 +20,9 @@ def main(args):
     mapper=LayerContextMapper(weights['fc.weight'],weights['hidden_norm.weight']).cuda()
     assert sum(p.numel() for p in mapper.parameters())==52428800
     optimizer=torch.optim.AdamW(mapper.parameters(),lr=.001,weight_decay=0,fused=True)
-    total=sum(r['positions'] for r in items);steps_epoch=math.ceil(total/2048);steps=3*steps_epoch
+    total=sum(r['positions'] for r in items);steps_epoch=math.ceil(total/2048);steps=args.epochs*steps_epoch
     warm=max(1,int(.05*steps));history=[];step=0;first_epoch=0
-    contract=dict(records=4096,epochs=3,lr=.001,seed=42,position_batch=2048,
+    contract=dict(records=4096,epochs=args.epochs,lr=.001,seed=42,position_batch=2048,
         index_sha256=digest(args.index),paired_files_sha256={r['path']:r['sha256'] for r in items},
         base_sha256=reference['base_sha256'],sampling='25% target strata intersected with exact shared text boundaries',
         weighting='equal total example mass',objective='layer relative MSE + normalized fused-context relative MSE')
@@ -32,7 +32,7 @@ def main(args):
         assert saved['contract']==contract
         mapper.load_state_dict(saved['mapper']);optimizer.load_state_dict(saved['optimizer'])
         history=saved['history'];step=saved['step'];first_epoch=saved['epoch']+1
-    for epoch in range(first_epoch,3):
+    for epoch in range(first_epoch,args.epochs):
         began=time.perf_counter();loss_sum=0.;seen=0
         for x,y,w in batches(items,2048,42+epoch):
             rate=(step+1)/warm if step<warm else .5*(1+math.cos(math.pi*(step-warm)/max(1,steps-warm)))
@@ -53,13 +53,13 @@ def main(args):
     state=load_file(str(base/'model.safetensors'))
     assert all(torch.equal(v,state[k]) for k,v in weights.items() if k!='fc.weight')
     state['fc.weight']=mapper.folded().detach().to(device='cpu',dtype=torch.bfloat16).contiguous()
-    export=args.out/'epoch-3/export';export.mkdir(parents=True,exist_ok=True)
+    export=args.out/f'epoch-{args.epochs}/export';export.mkdir(parents=True,exist_ok=True)
     save_file(state,str(export/'model.safetensors'))
     config=json.loads((base/'config.json').read_text());config['dflash_config']['target_layer_ids']=[1,8,15,22,29];config['num_target_layers']=32
     write(export/'config.json',config)
     write(args.out/'transfer.json',dict(status='complete',family='cross',target_adapters=None,input_width=20480,
         draft=str(native),base_export=str(export),base_sha256=digest(export/'model.safetensors'),
-        base_training_epochs=3,records=4096,initializer_records=4096,map_checkpoint=str(resume),
+        base_training_epochs=args.epochs,records=4096,initializer_records=4096,map_checkpoint=str(resume),
         full_data_index_sha256=digest(args.index),full_data_index_path=str(args.index),feature_manifests={str(args.index):digest(args.index)},scope='full cross-family ZIP initializer; no decoding claim'))
     write(args.out/'summary.json',dict(status='feature_fit_complete',contract=contract,history=history,
         steps=step,checkpoint_sha256=digest(resume),export_sha256=digest(export/'model.safetensors'),
@@ -69,4 +69,5 @@ def main(args):
 if __name__=='__main__':
     p=argparse.ArgumentParser()
     for key in ['index','reference','out']:p.add_argument('--'+key,type=Path,required=True)
+    p.add_argument('--epochs',type=int,default=3,choices=[1,3])
     main(p.parse_args())
