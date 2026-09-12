@@ -22,6 +22,21 @@ def objective_control_transfer_hash(transfer):
     return hashlib.sha256(json.dumps(relevant,sort_keys=True).encode()).hexdigest()
 
 
+def check_transformers_contract(summary,mode,manifest_hash,export_hash):
+    contract=summary['contract'];runtime=contract['runtime_config']
+    expected=dict(family='q8',mode=mode,count=128,cap=2048,repeat=0,
+                  manifest_sha256=manifest_hash,export_sha256=export_hash)
+    for key,value in expected.items():
+        if contract[key]!=value:raise ValueError(f'Transformers {mode}: mismatched {key}')
+    expected_runtime=dict(backend='transformers',dtype='bfloat16',attention='sdpa',
+                          selective_capture=True,temperature=0)
+    if not summary['timing_valid'] or any(runtime[k]!=v for k,v in expected_runtime.items()):
+        raise ValueError(f'Transformers {mode}: unexpected runtime or invalid timing')
+    if contract.get('request_batch_size',1)!=1:
+        raise ValueError('Standalone Transformers confirmation requires batch one')
+    return runtime
+
+
 def check_groups(training,evaluation,warmup):
     train={r['group_id'] for r in training};evaluated={r['group_id'] for r in evaluation};warm={r['group_id'] for r in warmup}
     if len(training)!=len(train) or len(evaluation)!=len(evaluated) or len(warmup)!=len(warm):
@@ -94,6 +109,7 @@ def audit(root,config_root):
                 suffix=f'-b{batch}' if batch>1 else ''
                 weights=(fit/'export/model.safetensors') if kind=='feature' else fit/f'exports/steps-512/{kind}/model.safetensors'
                 export_hash=sha(weights)
+                cell['export_sha256']=export_hash
                 initial_root=root/'cross-full4096/initializers-e1' if family=='cross' else root/family
                 if family not in reference_hashes:
                     transfer=read(initial_root/'transfer.json')
@@ -132,18 +148,24 @@ def audit(root,config_root):
     from experiments.handoff_transfer.exact_scope.matched import audit_matched
     matched=audit_matched(root,[c for c in cells if '/feature/' not in c['cell']])
     issues.extend(matched['issues'])
-    tf=[]
+    tf=[];tf_observations=[]
     for mode in ['ce','auf']:
         try:
             folder=root/'transformers-e1b8/q8'
+            manifest_hash=sha(root/'exact32e1b8-results/q8/evaluation/eval.json')
+            export_hash=next(c['export_sha256'] for c in cells if c['cell']==f'q8/five_maps/{mode}')
+            ar_runtime=check_transformers_contract(read(folder/'ar/ar-r0-w0.summary.json'),'ar',manifest_hash,None)
+            method_runtime=check_transformers_contract(read(folder/f'{mode}/{mode}-r0-w0.summary.json'),mode,manifest_hash,export_hash)
+            if ar_runtime!=method_runtime:raise ValueError('Transformers AR and method runtime configurations differ')
             result=compare([folder/'ar/ar-r0-w0.jsonl'],[folder/f'{mode}/{mode}-r0-w0.jsonl'])
+            tf_observations.append(dict(mode=mode,**result))
             assert result['count']==result['exact_matches']==result['finish_matches']==128
             tf.append(dict(mode=mode,**result))
         except (OSError,KeyError,AssertionError,ValueError) as error:
             issues.append(dict(cell=f'transformers/{mode}',phase='evaluation',error=str(error)))
     return dict(status='complete' if not issues else 'incomplete',expected_fits=len(cells),expected_primary_fits=21,archived_feature_fits=6,
                 verified_fits=sum(c['training'] for c in cells),verified_evaluated_cells=sum(c['evaluation'] for c in cells),
-                transformers_verified=len(tf),cells=cells,comparisons=rows,transformers=tf,split_audits=splits,initializers=initializers,
+                transformers_verified=len(tf),cells=cells,comparisons=rows,transformers=tf,transformers_observations=tf_observations,split_audits=splits,initializers=initializers,
                 gpu_matched_verified_cells=matched['verified_cells'],gpu_matched_comparisons=matched['comparisons'],issues=issues)
 
 if __name__=='__main__':
@@ -156,5 +178,5 @@ if __name__=='__main__':
         from experiments.handoff_transfer.exact_scope.archive import archive
         result['artifact_archive']=archive(result,args.root,args.out.parent/'artifacts',Path(__file__).parent)
         args.out.write_text(json.dumps(result,indent=2)+'\n')
-    print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','gpu_matched_comparisons','transformers','split_audits','initializers','issues']}))
+    print(json.dumps({k:v for k,v in result.items() if k not in ['cells','comparisons','gpu_matched_comparisons','transformers','transformers_observations','split_audits','initializers','issues']}))
     if args.require_complete and result['status']!='complete':sys.exit(1)

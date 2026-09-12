@@ -296,3 +296,16 @@ The16:37 audit verifies17/21 physical-GPU-matched comparisons. Reference job3232
 is still running; standalone Transformers checks and final archive remain
 pending. Reporting tests pass13/13. See the objective-contrast and GPU-matched
 reports for all nine objective pairs and the available baseline ratios.
+
+## Standalone backend audit contract
+
+The final collector now verifies the Transformers checkpoint hash against the
+corresponding audited five-map export, the evaluation-manifest hash, family,
+objective,128 requests, cap2048, repetition0 and batch1. It also requires the
+recorded standalone BF16/SDPA greedy runtime and identical AR/method runtime
+configurations. Output and finish-reason equality remain required for the exact
+agreement gate. Observed comparison metrics are retained even if that gate
+fails, so numerical disagreement cannot silently discard diagnostic evidence.
+This audit-only change adds no runs and changes no training or decoding config.
+Twenty-five focused audit/report tests pass; the collector is synced before the
+queued final audit starts. Reference job32325 is still live at50 minutes elapsed.
