@@ -18,7 +18,12 @@ def serial(value):
 def main(args):
     from vllm import LLM,SamplingParams
     from transformers import AutoTokenizer
-    assert os.environ.get('VLLM_BATCH_INVARIANT')=='1'
+    runtime_profile=getattr(args,'runtime_profile','invariant')
+    if runtime_profile=='optimized-ar':
+        assert args.mode=='ar' and not args.export and not args.native_draft
+        assert os.environ.get('VLLM_BATCH_INVARIANT')=='0'
+    else:
+        assert os.environ.get('VLLM_BATCH_INVARIANT')=='1'
     assert 0<=args.worker_index<args.workers
     batch_size=getattr(args,'request_batch_size',1)
     assert 1<=batch_size<=128
@@ -45,6 +50,9 @@ def main(args):
                 enable_prefix_caching=False,generation_config='vllm',async_scheduling=False,
                 seed=0,disable_log_stats=False,worker_extension_cls='experiments.auf_vllm.family_metrics.FamilyMetricsWorker',
                 compilation_config={'mode':0,'cudagraph_mode':'FULL_DECODE_ONLY'})
+    if runtime_profile=='optimized-ar':
+        config.pop('compilation_config')
+        config.update(optimization_level=3,async_scheduling=True)
     if args.export:
         export_config=json.loads((args.export/'config.json').read_text())
         block=export_config['block_size']
@@ -75,6 +83,8 @@ def main(args):
               'count':args.count,'cap':args.cap,'worker_index':args.worker_index,'workers':args.workers,
               'repeat':args.repeat,'export_sha256':sha(args.export/'model.safetensors') if args.export else None,
               'runtime_config':config}
+    if runtime_profile!='invariant':
+        contract.update(runtime_profile=runtime_profile,batch_invariant=False,request_batch_size=batch_size)
     if batch_size>1:contract.update(request_batch_size=batch_size,workload='fixed synchronous request batches')
     if args.native_draft:
         contract.update(native_draft_sha256=sha(args.native_draft/'model.safetensors'),
@@ -133,7 +143,7 @@ def main(args):
                 if (index//args.workers+1)%16==0:
                     print(json.dumps({'mode':args.mode,'completed':index//args.workers+1,'last_seconds':seconds}),flush=True)
     if args.profile_dir:llm.stop_profile()
-    write(summary_path,{'contract':contract,'setup_seconds':setup,'warmup_seconds':warm_seconds,'warmup_request_batch_size':batch_size,
+    write(summary_path,{'contract':contract,'resolved_runtime_config':str(llm.llm_engine.vllm_config),'setup_seconds':setup,'warmup_seconds':warm_seconds,'warmup_request_batch_size':batch_size,
                         'asset_checks':assets,'gpu_before':before,'gpu_after':llm.collective_rpc('sd_stats'),
                         'job_id':os.environ.get('SLURM_JOB_ID'),'timing_valid':not bool(args.profile_dir),
                         'batch_measurements':batch_measurements,'timing_contract':('fixed-batch generate wall; per-row wall is amortized, not individual latency' if batch_size>1 else 'per-request generate wall; compilation-affected request retried once, cold time retained; prefix cache off')})
@@ -154,6 +164,7 @@ if __name__=='__main__':
     parser.add_argument('--workers',type=int,default=1)
     parser.add_argument('--worker-index',type=int,default=0)
     parser.add_argument('--repeat',type=int,default=0)
+    parser.add_argument('--runtime-profile',choices=['invariant','optimized-ar'],default='invariant')
     parser.add_argument('--profile-dir',type=Path)
     parser.add_argument('--request-batch-size',type=int,choices=[1,4,8,16,32,64,128],default=1)
     main(parser.parse_args())

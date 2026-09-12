@@ -1450,5 +1450,33 @@
       32473
     ],
     "status": "submitted"
+  },
+  {
+    "job": 32533,
+    "name": "optimized-ar128",
+    "node": "node07",
+    "script": "optimized_ar.sbatch",
+    "array": "0-3%4",
+    "gpus_per_task": 1,
+    "max_gpus": 4,
+    "targets": [
+      "q8",
+      "cross"
+    ],
+    "requests_per_target": 128,
+    "cap": 2048,
+    "batch": 1,
+    "optimization_level": 3,
+    "batch_invariant": false,
+    "async_scheduling": true,
+    "paired_by_physical_gpu": true
+  },
+  {
+    "job": 32537,
+    "name": "optimized-ar-final",
+    "node": "node07",
+    "script": "collect_optimized_ar.sbatch",
+    "dependency": "afterok:32533",
+    "gpus": 0
   }
 ]
