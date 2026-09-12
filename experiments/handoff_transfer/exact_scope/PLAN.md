@@ -90,8 +90,9 @@ Jobs32239–32242 on node07: Qwen five_maps/CE, five_maps/AUF, dense_fusion/CE,
 and five_ba56/AUF respectively. Each requests one GPU and executes batch8.
 Llama token/paired caches are being staged from node06, which was fully allocated.
 All remaining fits, reference evaluations and cross-family data preparation are
-submitted under the same total four-GPU ceiling. Evaluations serialize only within
-a family to keep a single writer for shared baseline artifacts. Superseded job ledgers/results are retained separately.
+submitted under the same total four-GPU ceiling. Each family first completes its shared baselines and serving-batch selection;
+remaining evaluations then run independently, reading the completed reference
+artifacts. Reference comparison JSON writes are atomic. Superseded job ledgers/results are retained separately.
 
 ## Execution evidence
 Initial four batch8 fits completed with export verification in285.22–292.44 fitting

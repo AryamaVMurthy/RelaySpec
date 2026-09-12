@@ -6,7 +6,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --gres=gpu:1
 #SBATCH --mem=80G
-#SBATCH --time=06:00:00
+#SBATCH --time=00:30:00
 #SBATCH --job-name=cross-full-fit
 #SBATCH --output=/home/aryama.murthy/relayspec-auf-20260911/logs/%x-%j.out
 #SBATCH --error=/home/aryama.murthy/relayspec-auf-20260911/logs/%x-%j.err

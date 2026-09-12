@@ -1,7 +1,7 @@
 """Idempotent batch8 scheduling on node07's four physical GPUs.
 
-Fits are independent one-GPU jobs. Evaluations are serialized per family only
-so the shared AR/original/ZIP outputs have a single writer.
+Fits are independent one-GPU jobs. Each family first creates its shared
+AR/original/ZIP references, then remaining evaluations can run in parallel.
 """
 import json,shlex,subprocess
 from pathlib import Path
@@ -42,11 +42,12 @@ def features(family,dep=None):
     return result
 
 def evaluate(cases,first=None):
-    previous=first
+    reference=first
     for fit,env in cases:
         family=env['FAMILY'];name=f'b8-eval-{family}-{env["KIND"]}-{env["MATRIX_OBJECTIVE"]}'
-        previous=submit('eval.sbatch',name,env,[fit,previous] if previous else fit)
-    return previous
+        job=submit('eval.sbatch',name,env,[fit,reference] if reference else fit)
+        if reference is None:reference=job
+    return reference
 
 # Start the first full-batch evaluation immediately while more fits fill the GPUs.
 first=next(j for j in jobs if j['name']=='b8-q8-five_maps-ce')
