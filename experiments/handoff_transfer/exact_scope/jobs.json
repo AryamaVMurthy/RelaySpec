@@ -977,7 +977,7 @@
   },
   {
     "job": 32294,
-    "name": "b8-eval-cross-five_maps-ce",
+    "name": "b8-eval-cross-five_maps-ce-failed-32294",
     "node": "node07",
     "env": {
       "FAMILY": "cross",
@@ -992,7 +992,10 @@
       32264
     ],
     "script": "eval.sbatch",
-    "gpus": 1
+    "gpus": 1,
+    "status": "superseded",
+    "superseded_by": 32457,
+    "failure": "vLLM prefill lookahead buffer indexed on wrong axis; first-row request-slot indexing fixed"
   },
   {
     "job": 32295,
@@ -1007,11 +1010,17 @@
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
     "dependency": [
-      32266,
-      32294
+      32457
     ],
     "script": "eval.sbatch",
-    "gpus": 1
+    "gpus": 1,
+    "completed_dependency_evidence": [
+      32266
+    ],
+    "previous_dependency": [
+      32266,
+      32294
+    ]
   },
   {
     "job": 32296,
@@ -1026,11 +1035,17 @@
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
     "dependency": [
-      32267,
-      32294
+      32457
     ],
     "script": "eval.sbatch",
-    "gpus": 1
+    "gpus": 1,
+    "completed_dependency_evidence": [
+      32267
+    ],
+    "previous_dependency": [
+      32267,
+      32294
+    ]
   },
   {
     "job": 32297,
@@ -1045,11 +1060,17 @@
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
     "dependency": [
-      32268,
-      32294
+      32457
     ],
     "script": "eval.sbatch",
-    "gpus": 1
+    "gpus": 1,
+    "completed_dependency_evidence": [
+      32268
+    ],
+    "previous_dependency": [
+      32268,
+      32294
+    ]
   },
   {
     "job": 32298,
@@ -1064,11 +1085,17 @@
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
     "dependency": [
-      32269,
-      32294
+      32457
     ],
     "script": "eval.sbatch",
-    "gpus": 1
+    "gpus": 1,
+    "completed_dependency_evidence": [
+      32269
+    ],
+    "previous_dependency": [
+      32269,
+      32294
+    ]
   },
   {
     "job": 32299,
@@ -1083,11 +1110,17 @@
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
     "dependency": [
-      32270,
-      32294
+      32457
     ],
     "script": "eval.sbatch",
-    "gpus": 1
+    "gpus": 1,
+    "completed_dependency_evidence": [
+      32270
+    ],
+    "previous_dependency": [
+      32270,
+      32294
+    ]
   },
   {
     "job": 32300,
@@ -1102,11 +1135,17 @@
       "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
     },
     "dependency": [
-      32271,
-      32294
+      32457
     ],
     "script": "eval.sbatch",
-    "gpus": 1
+    "gpus": 1,
+    "completed_dependency_evidence": [
+      32271
+    ],
+    "previous_dependency": [
+      32271,
+      32294
+    ]
   },
   {
     "job": 32301,
@@ -1217,7 +1256,7 @@
     "node": "node07",
     "env": {},
     "dependency": [
-      32294,
+      32457,
       32295,
       32296,
       32297,
@@ -1239,7 +1278,16 @@
       32282,
       32283
     ],
-    "purpose": "Same physical GPU AR/original/ZIP references; four independent workers"
+    "purpose": "Same physical GPU AR/original/ZIP references; four independent workers",
+    "previous_dependency": [
+      32294,
+      32295,
+      32296,
+      32297,
+      32298,
+      32299,
+      32300
+    ]
   },
   {
     "job": 32332,
@@ -1262,5 +1310,23 @@
     "gpus": 1,
     "array": "47%1",
     "purpose": "Retain full4096 target rollout; exclude proven incomplete UTF8 tail only from source alignment"
+  },
+  {
+    "job": 32457,
+    "name": "b8-eval-cross-five_maps-ce",
+    "node": "node07",
+    "env": {
+      "FAMILY": "cross",
+      "KIND": "five_maps",
+      "MATRIX_OBJECTIVE": "ce",
+      "MATRIX_LR": 0.0001,
+      "TRAIN_STEPS": 512,
+      "CROSS_INDEX": "/scratch/aryama.murthy/handoff-transfer-20260911/cross-full4096/index.json"
+    },
+    "dependency": null,
+    "script": "eval.sbatch",
+    "gpus": 1,
+    "replaces": 32294,
+    "readiness_evidence": "Completed five_maps CE verification and original/ZIP initializers audited; no refit"
   }
 ]

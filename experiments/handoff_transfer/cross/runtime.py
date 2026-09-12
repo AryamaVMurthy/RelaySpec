@@ -48,13 +48,19 @@ def install():
         positions=batch.positions[:batch.num_tokens].cpu().tolist();ids=batch.input_ids[:batch.num_tokens].cpu().tolist()
         rejected=a['num_rejected'][:n].cpu().tolist();sampled=a['num_sampled'][:n].cpu().tolist()
         last=a['last_sampled'].clone();prefill=a['next_prefill_tokens'].clone()
+        # vLLM V2 stores prefill lookahead as [lookahead, request slot].
+        # DFlash's kernel consumes the first row; preserve the full buffer shape
+        # and any later lookahead rows when replacing the source anchor.
+        if prefill.ndim==2 and prefill.shape[0]>0:prefill_anchor=prefill[0]
+        elif prefill.ndim==1:prefill_anchor=prefill
+        else:raise ValueError(f'Unsupported next_prefill_tokens shape: {tuple(prefill.shape)}')
         for i,key in enumerate(indices):
             if float(a['temperature'][key])!=0:raise ValueError('Cross bridge currently supports greedy targets only')
             end=starts[i+1]-rejected[i]
-            bonus=int(a['last_sampled'][key] if sampled[i]>0 else a['next_prefill_tokens'][key])
+            bonus=int(a['last_sampled'][key] if sampled[i]>0 else prefill_anchor[key])
             anchor=self._text_bridge.anchor(key,positions[starts[i]:end],ids[starts[i]:end],bonus)
             if sampled[i]>0:last[key]=anchor
-            else:prefill[key]=anchor
+            else:prefill_anchor[key]=anchor
         a['last_sampled']=last;a['next_prefill_tokens']=prefill
         source_tokens=original(*bound.args,**bound.kwargs)
         converted=[self._text_bridge.proposals(row,self.num_speculative_steps) for row in source_tokens.cpu().tolist()]

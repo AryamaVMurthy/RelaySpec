@@ -65,7 +65,7 @@ x=token_tasks('cross',init)+features('cross',init)
 evaluate([case for case in q if case[0]!=first['job']],q_first)
 evaluate(l);evaluate(x)
 # Two method cross-checks plus one shared AR reference, after the primary matrix.
-all_evals=[j['job'] for j in jobs if j['script']=='eval.sbatch' and j.get('status')!='withdrawn']
+all_evals=[j['job'] for j in jobs if j['script']=='eval.sbatch' and j.get('status') not in ('withdrawn','superseded')]
 references=submit('gpu_references.sbatch','b8-gpu-matched-references',{},all_evals,gpus=4)
 for mode in ['ar','ce','auf']:
     submit('transformers.sbatch',f'b8-transformers-q8-{mode}',{'MODE':mode},references)

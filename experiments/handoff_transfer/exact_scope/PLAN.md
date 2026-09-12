@@ -211,3 +211,18 @@ node07's four GPUs. Original-interface tokenCE32267 still waits for32264.
 First cross evaluation32294 now explicitly requires both32265 and32264; all
 subsequent evaluations continue to require its completed shared baselines.
 This changes scheduling only, with no new fitting variants or training settings.
+
+## Cross-family evaluation runtime repair — September 12
+
+First evaluation32294 completed AR repetition0, then failed during the original
+interface pass when a mixed prefill/decode batch accessed request slot64. The
+installed vLLM stores next_prefill_tokens as [lookahead, request slot], while
+the bridge indexed it as one-dimensional. The bridge now changes only the
+first-lookahead anchor row, preserving the native buffer shape, other rows and
+the original request-state tensors. Six bridge/runtime tests pass, including
+a regression that failed before the fix at sparse slot64. Replacement32457
+runs the same128-request,2048-token, batch128 evaluation, reusing valid completed
+AR output through the existing contract check. The failed job and logs remain
+recorded; downstream comparisons now wait for the replacement. No fitting
+objectives, training settings or experiment variants were added. Feature CE,
+forward KL and reverse KL remain disabled for all future runs.
