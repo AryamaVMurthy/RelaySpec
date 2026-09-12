@@ -30,3 +30,14 @@ def test_different_ar_references_and_duplicate_repetitions_are_rejected():
     with pytest.raises(ValueError,match='Different AR reference'):summarize(data)
     data=example();data['comparisons'].append(data['comparisons'][-1])
     with pytest.raises(ValueError,match='Duplicate timing repetition'):summarize(data)
+
+
+def test_reports_use_revised_scope_counts(tmp_path):
+    from experiments.handoff_transfer.exact_scope.report import write_report
+    data=example()
+    data.update(status="incomplete",expected_fits=27,expected_primary_fits=21,verified_fits=20,
+                verified_evaluated_cells=20,transformers_verified=0,gpu_matched_verified_cells=5)
+    path=tmp_path/'audit.json'
+    write_report(data,path)
+    assert '20/27' in path.with_suffix('.benchmarks.md').read_text()
+    assert '**5/21**' in path.with_suffix('.gpu-matched.md').read_text()

@@ -1,4 +1,4 @@
-GPU-matched comparisons verified: **5/30**.
+GPU-matched comparisons verified: **5/21**.
 
 Each method is compared with references on the same physical GPU, using the same 128 requests, 2048-token cap, serving batch and repetition index. Three timing repetitions and one fitting seed. These remain development measurements, not untouched confirmation results.
 

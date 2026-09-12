@@ -51,8 +51,8 @@ def write_report(audit,path):
     lines=[f"Experiment audit: **{audit['status']}**.",
            '\n**Provisional references: this table can compare different physical GPUs. '
            'Do not interpret small differences as isolated method gains. Use the GPU-matched report for final comparisons.**',
-           f"\nVerified fits: {audit['verified_fits']}/30. Fully evaluated trained cells: "
-           f"{audit['verified_evaluated_cells']}/30. Transformers confirmations: {audit['transformers_verified']}/2.",
+           f"\nVerified fits: {audit['verified_fits']}/{audit['expected_fits']}. Fully evaluated trained cells: "
+           f"{audit['verified_evaluated_cells']}/{audit['expected_fits']}. Transformers confirmations: {audit['transformers_verified']}/2.",
            '\nOnly complete, audited three-repetition comparisons appear below. These are fixed development '
            'requests, one fitting seed, 128 requests per pass, and a 2048-token cap with natural EOS. '
            'Throughput is aggregate batched output tokens/s, not single-request latency. '
@@ -85,7 +85,7 @@ def write_report(audit,path):
     fields=['family','method','tps_mean','ar_tps_mean','original_tps_mean','zip_tps_mean','speedup_ar','speedup_original','speedup_zip']
     with path.with_suffix('.gpu-matched.csv').open('w',newline='') as handle:
         writer=csv.DictWriter(handle,fieldnames=fields,lineterminator='\n');writer.writeheader();writer.writerows(corrected)
-    lines=[f"GPU-matched comparisons verified: **{audit.get('gpu_matched_verified_cells',0)}/30**.",
+    lines=[f"GPU-matched comparisons verified: **{audit.get('gpu_matched_verified_cells',0)}/{audit['expected_primary_fits']}**.",
            '\nEach method is compared with references on the same physical GPU, using the same '
            '128 requests, 2048-token cap, serving batch and repetition index. Three timing repetitions '
            'and one fitting seed. These remain development measurements, not untouched confirmation results.',
