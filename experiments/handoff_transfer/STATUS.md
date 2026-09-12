@@ -658,3 +658,12 @@ validation31783 is eligible with no dependencies remaining but pending
 Resources on node06; scheduler estimate08:21:48 is not guaranteed.
 Two GPUs currently allocated. No new final128x2048 benchmark evidence.
 Next routine check08:26:45IST.
+
+## 2026-09-12 08:26:45 IST
+
+Validation arrays: Qwen17/36 completed, tasks17/18 running; Llama4/36
+completed, tasks4/5 running. Four GPUs allocated across node07/node06.
+No Slurm failures observed. Completed task16 Qwen and task3 Llama logs
+confirm32/32 token and finish matches; these are32-request screening
+runs, not final128x2048 benchmarks. Promotions31786/31787 pending.
+Next routine check08:51:45IST.
