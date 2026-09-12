@@ -1,0 +1,103 @@
+{
+  "contract": {
+    "family": "llama",
+    "mode": "matrix",
+    "manifest_sha256": "e7458db9ca03c521423b51d7bb1896c9d426ff589347eea41131aeba6f959537",
+    "count": 128,
+    "cap": 2048,
+    "worker_index": 0,
+    "workers": 1,
+    "repeat": 0,
+    "export_sha256": "6477b029e2e2b045c52a0ee63272317002cf96716c85b8bb13424b1d309328a3",
+    "runtime_config": {
+      "model": "/scratch/aryama.murthy/relayspec-auf-20260911/models/llama3-target",
+      "dtype": "bfloat16",
+      "max_model_len": 5120,
+      "max_num_seqs": 128,
+      "max_num_batched_tokens": 8192,
+      "gpu_memory_utilization": 0.8,
+      "enable_prefix_caching": false,
+      "generation_config": "vllm",
+      "async_scheduling": false,
+      "seed": 0,
+      "disable_log_stats": false,
+      "worker_extension_cls": "experiments.auf_vllm.family_metrics.FamilyMetricsWorker",
+      "compilation_config": {
+        "mode": 0,
+        "cudagraph_mode": "FULL_DECODE_ONLY"
+      },
+      "speculative_config": {
+        "method": "dflash",
+        "model": "/scratch/aryama.murthy/handoff-transfer-20260911/feature-objectives-e1/llama/feature_ce/export",
+        "num_speculative_tokens": 9
+      }
+    },
+    "request_batch_size": 128,
+    "workload": "fixed synchronous request batches"
+  },
+  "setup_seconds": 14.798851907253265,
+  "warmup_seconds": 12.658144370187074,
+  "warmup_request_batch_size": 128,
+  "asset_checks": [
+    {
+      "passed": true,
+      "checks": [
+        "target_embedding",
+        "target_head",
+        "draft_embed_tokens.weight",
+        "draft_lm_head.weight",
+        "draft_fc.weight",
+        "draft_hidden_norm.weight",
+        "normal_input_rms_before_projection"
+      ],
+      "verification": "matrix shape and deterministic samples; full norm vector",
+      "draft_projections": {
+        "passed": true,
+        "projection_elements_verified": 964689920,
+        "full_tensor_equality": true,
+        "fused_context_kv_verified": true
+      },
+      "normal_projection": {
+        "normalized_reference_relative_mse": 0.0,
+        "unnormalized_negative_control_relative_mse": 1703.388427734375
+      },
+      "target_adapters": null
+    }
+  ],
+  "gpu_before": [
+    {
+      "jit_events": 5,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b1c59d5d-db4e-3c67-a31a-2fc61e93adde",
+      "allocated": 38363422720,
+      "reserved": 39713767424,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "gpu_after": [
+    {
+      "jit_events": 5,
+      "device_name": "NVIDIA L40S",
+      "device_uuid": "b1c59d5d-db4e-3c67-a31a-2fc61e93adde",
+      "allocated": 38363422720,
+      "reserved": 39713767424,
+      "teacher_graph_captures": 0,
+      "teacher_eager_prefills": 0
+    }
+  ],
+  "job_id": "32291",
+  "timing_valid": true,
+  "batch_measurements": [
+    {
+      "batch_id": 0,
+      "requests": 128,
+      "output_tokens": 87836,
+      "wall_seconds": 78.68658129079267,
+      "cold_wall_seconds": null,
+      "verification_iterations": 73336,
+      "accepted_draft_tokens": 14374
+    }
+  ],
+  "timing_contract": "fixed-batch generate wall; per-row wall is amortized, not individual latency"
+}

@@ -65,7 +65,7 @@ def main(args):
             dest.with_suffix('.tmp').replace(dest)
             write(dest.with_suffix('.json'),dict(sha256=digest(dest),manifest_sha256=manifest_hash,
                 group_id=row['group_id'],positions=len(selected),target_feature_sha256=provenance['sha256'],
-                sampling='original25% target strata intersected with exact shared text boundaries',
+                sampling='original25% target strata intersected with exact source-token prefixes under native source normalization',
                 weighting='equal total example mass; per-position weight1/retained_count',
                 target_taps=[1,8,15,22,29],source_taps=taps,job_id=os.environ.get('SLURM_JOB_ID')))
         print(json.dumps(dict(paired_records=start+len(outputs))),flush=True)

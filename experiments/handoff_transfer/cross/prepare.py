@@ -19,7 +19,8 @@ def main(a):
           'rollout_sha256':sha(a.out/'train.json'),'labels_sha256':sha(a.out/'source-label-alignment.json'),
           'seconds':time.perf_counter()-start,'status':'labels_audited_training_and_inference_not_yet_validated',
           'source':str(a.models/'qwen4-source'),'target':str(a.models/'llama8-source'),
-          'protocol':'exact stable shared text-prefix anchors; target context strictly before anchor',
+          'protocol':'exact source-token prefix equality under native source text normalization; target context strictly before anchor',
+          'source_normalizer':str(source.backend_tokenizer.normalizer),
           'vocabulary_units':'source labels; target conditioning positions; not target-token AUF'})
     assert all(r['blocks'] for r in results), 'A rollout has no valid source-label anchors'
 if __name__=='__main__':

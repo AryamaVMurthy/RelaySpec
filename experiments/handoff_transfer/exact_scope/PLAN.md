@@ -139,3 +139,19 @@ than ready evaluations). It continues to share node07 with evaluation jobs and f
 all four GPUs once those finish; every study job is pinned to node07, which has four
 physical GPUs. This avoids leaving two GPUs idle under the original array throttle2.
 Record counts, chunk contents and fitting/evaluation configurations are unchanged.
+
+## Native tokenizer normalization repair
+
+Cross chunk12 exposed a valid rollout whose prompt contains U+2001 spaces. Qwen's
+native NFC tokenizer maps them to U+2003, whereas Llama preserves the original
+text. The former raw-text round-trip guard rejected all597 otherwise valid source
+prefixes. Alignment now compares decoded source text with the source tokenizer's
+native normalized prefix, while retaining exact full-sequence source-prefix token
+ID equality and strictly past target conditioning. It does not normalize or replace
+the target rollout, change training records, or alter the inference bridge.
+
+The first1024 records were audited; chunks7 and12 contain affected text. Repair
+array32332 rebuilds these two alignment/paired-feature chunks, preserving prior
+artifacts in their repair-history directories. Assembly32263 explicitly depends on
+the remaining original chunks and this repair array. Chunks14 and15 began from old snapshots; both were audited and contain no
+normalization-affected text. Later chunks use the corrected source snapshot.

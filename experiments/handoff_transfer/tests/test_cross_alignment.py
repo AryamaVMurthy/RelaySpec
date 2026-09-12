@@ -1,5 +1,7 @@
 from experiments.handoff_transfer.cross.alignment import aligned_blocks
 import pytest
+import unicodedata
+from types import SimpleNamespace
 
 class Tokenizer:
     def __init__(self, pieces):
@@ -45,3 +47,32 @@ def test_selected_alignment_retains_unicode_rejection():
     tok=Tokenizer(list('ab\ufffdc'))
     with pytest.raises(ValueError,match='Lossy Unicode'):
         aligned_blocks(tok.encode('ab\ufffdc'),1,tok,tok,candidate_positions=[])
+
+
+def test_native_source_normalization_keeps_causal_token_prefixes():
+    class NFCTokenizer(Tokenizer):
+        backend_tokenizer=SimpleNamespace(normalizer=SimpleNamespace(
+            normalize_str=lambda text:unicodedata.normalize('NFC',text)))
+        def __call__(self,text,**kwargs):
+            # U+2001 -> U+2003 has equal character length and reproduces the
+            # real Qwen/Llama failed prompt without downloading tokenizers.
+            return super().__call__(unicodedata.normalize('NFC',text),**kwargs)
+    target=Tokenizer(list('abcde\u2001'))
+    source=NFCTokenizer(list('abcde\u2003'))
+    ids=target.encode('a\u2001bcde')
+    result=aligned_blocks(ids,2,source,target,block_size=3)
+    assert len(result['blocks'])==3
+    for block in result['blocks']:
+        k,j=block['target_anchor'],block['source_anchor']
+        prefix=target.decode(ids[:k+1])
+        assert source.encode(prefix)==result['source_ids'][:j+1]
+        assert source.decode(result['source_ids'][:j+1])==unicodedata.normalize('NFC',prefix)
+        assert block['context_exclusive_end']==k
+
+
+def test_decoder_text_changes_without_declared_normalization_stay_rejected():
+    class LossyTokenizer(Tokenizer):
+        def decode(self,ids,**kwargs):return super().decode(ids,**kwargs).replace('b','a')
+    target=Tokenizer(list('abcde'));source=LossyTokenizer(list('abcde'))
+    result=aligned_blocks(target.encode('abcde'),2,source,target)
+    assert result['blocks']==[]

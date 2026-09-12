@@ -1,7 +1,9 @@
 """Conservative source-label anchors for target-token conditioning.
 
 No token-ID lookup bridge. An eligible target anchor is a complete, round-trip
-stable text prefix in both tokenizers. Source labels are source tokens following
+stable text prefix under the source tokenizer's native normalization. Source
+prefix token IDs must match the full-sequence token prefix exactly, so this does
+not permit future text to influence an anchor. Source labels are tokens following
 that prefix. Context visibility must remain target positions strictly BEFORE
 this target anchor: the clean source anchor is supplied as a token embedding.
 """
@@ -18,6 +20,8 @@ def aligned_blocks(target_ids, prompt_length, source_tokenizer, target_tokenizer
     source = source_tokenizer(text, add_special_tokens=False,
                               return_offsets_mapping=True)
     source_ids = source['input_ids']
+    normalizer = getattr(getattr(source_tokenizer, 'backend_tokenizer', None),
+                         'normalizer', None)
     # Candidate character boundaries only. Offset overlap/partial bytes are
     # not enough: prefix encoding and decoding are both checked below.
     ends = {}
@@ -45,9 +49,10 @@ def aligned_blocks(target_ids, prompt_length, source_tokenizer, target_tokenizer
             reasons['no_shared_boundary'] += 1
             continue
         encoded_prefix = source_tokenizer.encode(prefix, add_special_tokens=False)
+        source_prefix = normalizer.normalize_str(prefix) if normalizer is not None else prefix
         if encoded_prefix != source_ids[:j+1] or source_tokenizer.decode(
                 encoded_prefix, skip_special_tokens=False,
-                clean_up_tokenization_spaces=False) != prefix:
+                clean_up_tokenization_spaces=False) != source_prefix:
             reasons['unstable_source_prefix'] += 1
             continue
         labels = source_ids[j:j+block_size]
