@@ -7,6 +7,62 @@ not permit future text to influence an anchor. Source labels are tokens followin
 that prefix. Context visibility must remain target positions strictly BEFORE
 this target anchor: the clean source anchor is supplied as a token embedding.
 """
+import json
+
+
+def complete_unicode_prefix(target_ids, tokenizer, decoded):
+    """Handle only a byte-level rollout capped inside its final UTF-8 character.
+
+    The target rollout is retained verbatim. Source supervision ends at the last
+    whole target token before that partial character; malformed interior bytes
+    and literal replacement characters remain errors.
+    """
+    failure = 'Lossy Unicode decode: cannot establish exact prefixes'
+    decoder = getattr(getattr(tokenizer, 'backend_tokenizer', None), 'decoder', None)
+    if decoder is None or json.loads(decoder.__getstate__()).get('type') != 'ByteLevel':
+        raise ValueError(failure)
+    # Invert the byte-level BPE alphabet (printable bytes retain their codepoint;
+    # other bytes map, in byte order, to codepoints starting at256).
+    kept = list(range(33,127)) + list(range(161,173)) + list(range(174,256))
+    alphabet = {chr(b):b for b in kept}
+    for i,b in enumerate(b for b in range(256) if b not in kept):
+        alphabet[chr(256+i)] = b
+    try:
+        pieces = [bytes(alphabet[c] for c in piece)
+                  for piece in tokenizer.convert_ids_to_tokens(target_ids)]
+    except KeyError as error:
+        raise ValueError(failure) from error
+    raw = b''.join(pieces)
+    if raw.decode('utf8',errors='replace') != decoded:
+        raise ValueError(failure)
+    try:
+        raw.decode('utf8',errors='strict')
+    except UnicodeDecodeError as error:
+        if error.reason != 'unexpected end of data' or error.end != len(raw):
+            raise ValueError(failure) from error
+        valid_bytes = error.start
+    else:
+        raise ValueError(failure)  # Literal U+FFFD is not an incomplete byte tail.
+    cutoff = 0;offset = 0
+    for piece in pieces:
+        if offset + len(piece) > valid_bytes:
+            break
+        offset += len(piece);cutoff += 1
+    # A token can finish one character and begin another. Back up to a whole
+    # character as well as a whole token, without synthesizing replacement text.
+    while cutoff:
+        try:
+            raw[:offset].decode('utf8',errors='strict')
+            break
+        except UnicodeDecodeError:
+            cutoff -= 1;offset -= len(pieces[cutoff])
+    prefix = tokenizer.decode(target_ids[:cutoff],skip_special_tokens=False,
+                              clean_up_tokenization_spaces=False)
+    if '\ufffd' in prefix or prefix != raw[:offset].decode('utf8',errors='strict'):
+        raise ValueError(failure)
+    return prefix,dict(aligned_target_tokens=cutoff,
+                       excluded_trailing_target_tokens=len(target_ids)-cutoff,
+                       reason='rollout ends inside a UTF-8 character; target IDs unchanged')
 
 
 def aligned_blocks(target_ids, prompt_length, source_tokenizer, target_tokenizer,
@@ -15,8 +71,11 @@ def aligned_blocks(target_ids, prompt_length, source_tokenizer, target_tokenizer
         raise ValueError('Need a nonempty prompt and generated continuation')
     text = target_tokenizer.decode(target_ids, skip_special_tokens=False,
                                    clean_up_tokenization_spaces=False)
+    unicode_tail = None
     if '\ufffd' in text:
-        raise ValueError('Lossy Unicode decode: cannot establish exact prefixes')
+        text,unicode_tail = complete_unicode_prefix(target_ids,target_tokenizer,text)
+        if unicode_tail['aligned_target_tokens'] <= prompt_length:
+            raise ValueError('No complete generated Unicode prefix')
     source = source_tokenizer(text, add_special_tokens=False,
                               return_offsets_mapping=True)
     source_ids = source['input_ids']
@@ -63,6 +122,7 @@ def aligned_blocks(target_ids, prompt_length, source_tokenizer, target_tokenizer
                        'prefix_characters': len(prefix), 'source_labels': labels,
                        'context_exclusive_end': k})
     return {'source_ids': source_ids, 'blocks': blocks, 'rejected': reasons,
+            **({'unicode_tail':unicode_tail} if unicode_tail else {}),
             'context_position_units': 'target tokens',
             'label_position_units': 'source tokens',
             'scope': 'AUF source-token prefix extension; not target-token AUF'}

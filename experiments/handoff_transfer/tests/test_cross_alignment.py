@@ -99,3 +99,32 @@ def test_paired_cache_rejects_different_source_sequence():
     assert hasattr(alignment,'paired_from_cache'), 'Missing validated cache reuse'
     with pytest.raises(ValueError,match='source sequence'):
         alignment.paired_from_cache(ids,4,source,target,range(10),cached)
+
+
+class ByteTokenizer(Tokenizer):
+    backend_tokenizer=SimpleNamespace(decoder=SimpleNamespace(__getstate__=lambda:b'{"type":"ByteLevel"}'))
+    def __init__(self):
+        super().__init__(list('abcdef')+['â','Ī','ļ'])
+    def convert_ids_to_tokens(self,ids):return [self.pieces[i] for i in ids]
+    def decode(self,ids,**kwargs):
+        values={'â':0xe2,'Ī':0x88,'ļ':0x9a}
+        raw=bytes(values.get(self.pieces[i],ord(self.pieces[i])) for i in ids)
+        return raw.decode('utf8',errors='replace')
+
+
+def test_incomplete_utf8_tail_excludes_only_unalignable_target_tokens():
+    target=ByteTokenizer();source=Tokenizer(list('abcdef'))
+    ids=[0,1,2,3,4,5,6,7]  # abcdef plus two bytes of the three-byte sqrt sign
+    result=aligned_blocks(ids,1,source,target,block_size=3)
+    assert result['source_ids']==source.encode('abcdef')
+    assert result['unicode_tail']['excluded_trailing_target_tokens']==2
+    assert result['unicode_tail']['aligned_target_tokens']==6
+    assert all(b['target_anchor']<6 and b['context_exclusive_end']==b['target_anchor'] for b in result['blocks'])
+    assert result['blocks']==aligned_blocks(ids[:6],1,source,target,block_size=3)['blocks']
+    assert ids==[0,1,2,3,4,5,6,7]  # The full target rollout is never changed.
+
+
+def test_interior_invalid_utf8_still_rejected():
+    target=ByteTokenizer();source=Tokenizer(list('abcdef'))
+    with pytest.raises(ValueError,match='Lossy Unicode'):
+        aligned_blocks([0,1,6,2,3,4],1,source,target)

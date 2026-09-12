@@ -42,6 +42,8 @@ def main(a):
           'source':str(a.models/'qwen4-source'),'target':str(a.models/'llama8-source'),
           'protocol':'exact source-token prefix equality under native source text normalization; target context strictly before anchor',
           'source_normalizer':str(source.backend_tokenizer.normalizer),
+          'unicode_tail_records':[dict(group_id=r['group_id'],**r['unicode_tail'])
+                                  for r in results if 'unicode_tail' in r],
           'vocabulary_units':'source labels; target conditioning positions; not target-token AUF'})
     assert all(r['blocks'] for r in results), 'A rollout has no valid source-label anchors'
 if __name__=='__main__':

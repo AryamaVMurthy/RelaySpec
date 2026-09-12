@@ -185,3 +185,17 @@ in the27-fit archive/audit, but excluded from further dedicated physical-GPU ref
 measurements and the21-cell matched primary comparison requirement. No new feature
 CE, forward-KL or reverse-KL training/evaluation is scheduled by the launcher.
 All data sizes, epoch counts, anchors, token losses and batching remain unchanged.
+
+## Incomplete UTF-8 tail repair — September 12
+
+Chunk47 row3 reaches its4096 generated-token cap inside the final square-root
+character. Its last target token contains only the first two UTF-8 bytes of that
+character. A strict byte-level check now distinguishes this incomplete suffix
+from malformed interior bytes and literal replacement characters. All4194 target
+IDs remain unchanged. Source alignment uses the last complete target-token/text
+prefix (4193 tokens); the affected record retains3805 eligible anchors and972
+paired fitting positions. `unicode-tail-audit.json` verifies the actual rollout,
+complete-prefix label equivalence and paired-cache equivalence. Every affected
+alignment summary records its excluded trailing token count. Other records retain
+the original algorithm. Repair32446_47 reruns the failed chunk from its existing
+rollout; assembly32263 depends on this repair and original chunks48–63.
