@@ -1,0 +1,85 @@
+protocol_version: 1
+run_name: matched-warm-training-budget-development
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 256
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/eval_manifest.json
+  benchmarks:
+  - math500
+  methods:
+  - native_ar
+  - native_target_dflash
+  - optimized_source_reuse
+  - relay_initial
+  - relay_budget025_feature
+  - relay_budget025_connector_ce
+  - relay_budget025_lora32_s1729
+  - relay_budget025_lora32_s1730
+  - relay_budget100_feature
+  - relay_budget100_connector_ce
+  - relay_budget100_lora32_s1729
+  - relay_budget100_lora32_s1730
+  - relay_budget400_feature
+  - relay_budget400_connector_ce
+  - relay_budget400_lora32_s1729
+  - relay_budget400_lora32_s1730
+  - relay_dense8192_reference
+  max_prompts: 16
+  warmups: 1
+  block_size: 16
+  profile_regions: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants:
+    relay_initial: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-000128.pt
+    relay_budget025_feature: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-quarter-pilot-27861/feature/step-002026.pt
+    relay_budget025_connector_ce: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-quarter-pilot-27861/rank1/mapper.pt
+    relay_budget025_lora32_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-000128.pt
+    relay_budget025_lora32_s1730: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-000128.pt
+    relay_budget100_feature: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-one-27864/feature/step-008144.pt
+    relay_budget100_connector_ce: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-one-27864/rank1/mapper.pt
+    relay_budget100_lora32_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-000128.pt
+    relay_budget100_lora32_s1730: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-000128.pt
+    relay_budget400_feature: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-four-27865/feature/step-032446.pt
+    relay_budget400_connector_ce: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-four-27865/rank1/mapper.pt
+    relay_budget400_lora32_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-000128.pt
+    relay_budget400_lora32_s1730: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-000128.pt
+    relay_dense8192_reference: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt
+  drafter_updates:
+    relay_budget025_lora32_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-quarter-pilot-27861/rank2/adaptation.pt
+    relay_budget025_lora32_s1730: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-quarter-pilot-27861/rank3/adaptation.pt
+    relay_budget100_lora32_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-one-27864/rank2/adaptation.pt
+    relay_budget100_lora32_s1730: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-one-27864/rank3/adaptation.pt
+    relay_budget400_lora32_s1729: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-four-27865/rank2/adaptation.pt
+    relay_budget400_lora32_s1730: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-time-four-27865/rank3/adaptation.pt
+native_target_proposer:
+  id: z-lab/Qwen3-8B-DFlash-b16
+  revision: 9b41424b7109f9c5413454f481b09a82b85333f4

@@ -1,0 +1,51 @@
+protocol_version: 1
+run_name: controlled-mlp512-l2-directional-27715-step1024
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 256
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/eval_manifest.json
+  benchmarks:
+  - math500
+  methods:
+  - native_ar
+  - native_target_dflash
+  - optimized_source_reuse
+  - relay_p
+  max_prompts: 16
+  warmups: 1
+  block_size: 16
+  profile_regions: false
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  checkpoint_path: /home/aryama.murthy/relayspec-mapper-scaling-v2-20260905/outputs/rs-mlp512-l2-directional-27715/relay-step-001024.pt
+  repetitions: 1
+native_target_proposer:
+  id: z-lab/Qwen3-8B-DFlash-b16
+  revision: 9b41424b7109f9c5413454f481b09a82b85333f4

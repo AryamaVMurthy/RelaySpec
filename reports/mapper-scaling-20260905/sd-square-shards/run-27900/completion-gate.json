@@ -1,0 +1,75 @@
+{
+  "status": "pass",
+  "config_sha256": "57123c4be523b2b1e9275c8981c4cd09a39a15407c3d0926e9b058ce57b965dc",
+  "records": 72,
+  "requests": 8,
+  "methods": [
+    "native_ar",
+    "sd2_independent",
+    "sd2_zero_guidance",
+    "sd2_tvd_lr1e-05",
+    "sd2_kl_lr1e-05",
+    "sd2_tvd_lr4e-06",
+    "sd2_tvd_lr2e-05",
+    "sd2_kl_lr4e-06",
+    "sd2_kl_lr2e-05"
+  ],
+  "input_sha256": {
+    "campaign-rank0.json": "d496b4ea5f023713342e6d975c8f07a1a668fdb2660141bae00ccc4702048962",
+    "benchmark-rank0.jsonl": "9f835ee8de5217c9addf90d8a14a017155bbe3b1315a15ed19579a5701da9f98",
+    "campaign-rank1.json": "d0bb2a5b74c7f48469302247a9d415b430f44628dcc2d4aca97e7279ac060939",
+    "benchmark-rank1.jsonl": "f94531ebf263da107524200d6acc639745d379f8c92dfa4c50e3a08fc10c5e46",
+    "campaign-rank2.json": "d3d17ec7c429457fc7cabb3973aeef539b267e8ecab0f5abda4dafe711302e72",
+    "benchmark-rank2.jsonl": "42e2b5e9e5712a01dc064e0094a40c7c9bd258ae5afd2fef9d87b7c3340fd8b0",
+    "campaign-rank3.json": "e81468a08afd7b74dbd3f554fba7e1a3898812f9ab9c3d803d4f7474deb645f2",
+    "benchmark-rank3.jsonl": "c0746c030e5c4c07c9bb14c4038d62c35b534fdc77d991abbee401c50d7c89e0"
+  },
+  "inference_precision": {
+    "target": "float16",
+    "drafter": "bfloat16",
+    "steering": "bfloat16",
+    "autocast": "bfloat16"
+  },
+  "steering_fingerprints": {
+    "sd2_zero_guidance": {
+      "training_sha256": null,
+      "inference_sha256": "de09a3160502853fe9cffd89983090525871dce20d9bbcf7cc542e6ae78d08c9"
+    },
+    "sd2_tvd_lr1e-05": {
+      "training_sha256": "cb283499cd1be8f9a51d9d4a6fac985540346e528d57b79b85c7f7f007407616",
+      "inference_sha256": "f56759a4a7eb35372ce12c12bc78eb1fe881f47e40fe9bfeb912c73e3301b567"
+    },
+    "sd2_kl_lr1e-05": {
+      "training_sha256": "68a969ab2e41c62cc9314e3ff830e32e0ac01d11e26d47c280ce0a330d07e165",
+      "inference_sha256": "11ed068132211a66f65bd65d473570130dce54c34e7d4f2bceecbdca470d109d"
+    },
+    "sd2_tvd_lr4e-06": {
+      "training_sha256": "c4fb7eabdb096421aedfff401d540214c7f8371122ec70eb2748a9e401835857",
+      "inference_sha256": "3903319638d54c4b0a6fc0b09634cd7125bd2e8f2a30b252e6f1362b931e8c51"
+    },
+    "sd2_tvd_lr2e-05": {
+      "training_sha256": "3ea9dea54f13dea3ef0663ff4870529d17e721472927d70290aaaf9bf5ab205b",
+      "inference_sha256": "d1ef1d46b9db784e75b10efcbfbf571d1ec9c0f84309080fb8dc308a0549f2c9"
+    },
+    "sd2_kl_lr4e-06": {
+      "training_sha256": "e863b421e960547c6b20cccb6c7c2ead724afeacfaf9d7142283a4ecec6f189a",
+      "inference_sha256": "ad1673f8ddac04223494b8da8819a3f274ef0c7b887533098d94caef599a044d"
+    },
+    "sd2_kl_lr2e-05": {
+      "training_sha256": "58cbb1bd6b23ff77455172b2d0409465f4e414633fedee59b5d2f9d89dd05517",
+      "inference_sha256": "fe6deea656bd83eb8cfbe12a6ef19fc52a63ef3170a60ac4c667dc9a921499c8"
+    }
+  },
+  "ar_exact_counts": {
+    "native_ar": 8,
+    "sd2_independent": 3,
+    "sd2_zero_guidance": 3,
+    "sd2_tvd_lr1e-05": 2,
+    "sd2_kl_lr1e-05": 5,
+    "sd2_tvd_lr4e-06": 2,
+    "sd2_tvd_lr2e-05": 4,
+    "sd2_kl_lr4e-06": 2,
+    "sd2_kl_lr2e-05": 5
+  },
+  "scope": "Public eval.py inference storage uses FP16 target and BF16 drafter/steering with BF16 autocast. Training and converted inference steering fingerprints are separately verified. Six predeclared512-example SD-square objective/rate fits, zero-guidance and independent-drafter controls, and correct runtime-local AR. Sixteen paired exposed development requests with256-token cap. Immediate/deferred observer equality is checked before measurements. GPU decision capture is timed, CPU materialization and verification occur after the timer. Each ten-minute job covers one disjoint eight-request shard of the fixed sixteen. Shared resident steering storage prevents isolated serving-memory claims. No full-answer quality, untouched confirmation or cross-runtime algorithm-only ranking. Old exact-AR failures are preserved."
+}

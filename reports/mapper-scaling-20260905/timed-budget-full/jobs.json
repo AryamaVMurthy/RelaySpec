@@ -1,0 +1,25 @@
+{
+  "max_gpus": 4,
+  "source_commit": "1c8a72f82a150667d8037e5f06ff697f5c495752",
+  "process_timeout_seconds": 540,
+  "slurm_limit_seconds": 600,
+  "large_data_scaling": "paused",
+  "jobs": [
+    {
+      "id": 27864,
+      "kind": "timed_budget_fit",
+      "remote": "/home/aryama.murthy/relayspec-timed-budget-1c8a72f/outputs/rs-time-one-27864",
+      "local": "reports/mapper-scaling-20260905/timed-budget-full/run-27864",
+      "multiplier": 1,
+      "dependency": "afterok:27861"
+    },
+    {
+      "id": 27865,
+      "kind": "timed_budget_fit",
+      "remote": "/home/aryama.murthy/relayspec-timed-budget-1c8a72f/outputs/rs-time-four-27865",
+      "local": "reports/mapper-scaling-20260905/timed-budget-full/run-27865",
+      "multiplier": 4,
+      "dependency": "afterok:27864"
+    }
+  ]
+}

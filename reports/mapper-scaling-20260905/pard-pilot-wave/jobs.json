@@ -1,0 +1,27 @@
+{
+  "max_gpus": 4,
+  "source_commit": "358ffd28cad2b3c01e4e23a862f242ec73dc277c",
+  "config_sha256": "765b37011e10bdf5772e4058e80877305c626e0f5520e8a78c3bf643c2f7e79a",
+  "cpu_setup_gpus": 0,
+  "gpu_pilot_gpus": 4,
+  "pilot_dependency": "afterok:27823,afterany:27811",
+  "cancelled_before_allocation": [
+    27822
+  ],
+  "jobs": [
+    {
+      "id": 27823,
+      "kind": "external_setup",
+      "remote": "/home/aryama.murthy/relayspec-pard-358ffd2/outputs/rs-pard-setup-27823",
+      "local": "reports/mapper-scaling-20260905/pard-pilot-wave/run-27823",
+      "config": "configs/submission/baselines/pard-pilot.yaml"
+    },
+    {
+      "id": 27824,
+      "kind": "pard_pilot",
+      "remote": "/home/aryama.murthy/relayspec-pard-358ffd2/outputs/rs-pard-pilot-27824",
+      "local": "reports/mapper-scaling-20260905/pard-pilot-wave/run-27824",
+      "config": "configs/submission/baselines/pard-pilot.yaml"
+    }
+  ]
+}

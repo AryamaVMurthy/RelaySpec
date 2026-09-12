@@ -1,0 +1,38 @@
+{
+  "name": "dflash14-mlp4096-n512-s1729",
+  "study": "target14_small_capacity",
+  "architecture": "mlp",
+  "seed": 1729,
+  "steps": 8192,
+  "distinct_examples": 512,
+  "learning_rate": 0.0006,
+  "l2_weight": 0.0,
+  "weight_decay": 0.0,
+  "checkpoint_steps": [
+    128,
+    256,
+    384,
+    512,
+    1024,
+    2048,
+    4096,
+    8192
+  ],
+  "validation_records": 1024,
+  "diagnostic_train_records": 256,
+  "feature_objective": "relative_interface_mse",
+  "normalize_input": true,
+  "budget_panels": {
+    "fixed_exposure": {
+      "checkpoint_step": 8192,
+      "presentations": 32768
+    },
+    "fixed_passes": {
+      "checkpoint_step": 512,
+      "presentations": 2048
+    }
+  },
+  "width": 4096,
+  "cache_backend": "buffer",
+  "device_cache": false
+}

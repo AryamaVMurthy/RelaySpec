@@ -1,0 +1,142 @@
+{
+  "source_config": "configs/submission/baselines/sd-square-compatibility.json",
+  "source_config_sha256": "4f882be369fc364b60b33b0b0ac75fc4d6f973c5be7ada71c62217e22d78519a",
+  "verification_protocol": "configs/submission/baselines/external-verification-protocol.json",
+  "verification_protocol_sha256": "488d60999dcb0b80fba7e8c1106aa474fc15a8bfe0af4296fa359e153b65b9f0",
+  "seed": 1729,
+  "inference_precision": {
+    "target": "float16",
+    "drafter": "bfloat16",
+    "steering": "bfloat16",
+    "autocast": "bfloat16"
+  },
+  "manifest_path": "configs/eval_manifest.json",
+  "requests": 8,
+  "request_offset": 8,
+  "total_development_requests": 16,
+  "max_new_tokens": 256,
+  "observer_pilot_tokens": 64,
+  "warmup_tokens": 16,
+  "variants": {
+    "native_ar": {
+      "kind": "ar"
+    },
+    "sd2_independent": {
+      "kind": "independent"
+    },
+    "sd2_zero_guidance": {
+      "kind": "zero_guidance"
+    },
+    "sd2_tvd_lr1e-05": {
+      "kind": "steering",
+      "objective": "tvd",
+      "learning_rate": 1e-05,
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/sd-square-fits/27888/rank0/steering-state.pt",
+      "checkpoint_sha256": "3b4e7d0add6adf07b3cc2dbd9213a028fe9a7c939c28ab8d27ec840457ce1bea",
+      "trainable_sha256": "cb283499cd1be8f9a51d9d4a6fac985540346e528d57b79b85c7f7f007407616",
+      "fitting_gate_sha256": "904ca4d5a7b3d052d158629243bf511b07363e5cc15cadfee5c6eff6750d69bf",
+      "fitting_rank": 0,
+      "distinct_examples": 512,
+      "updates": 128
+    },
+    "sd2_kl_lr1e-05": {
+      "kind": "steering",
+      "objective": "kl",
+      "learning_rate": 1e-05,
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/sd-square-fits/27888/rank2/steering-state.pt",
+      "checkpoint_sha256": "853da192869d3e483b5a97e3bdaea8852799c81223045cf230010084149834e9",
+      "trainable_sha256": "68a969ab2e41c62cc9314e3ff830e32e0ac01d11e26d47c280ce0a330d07e165",
+      "fitting_gate_sha256": "904ca4d5a7b3d052d158629243bf511b07363e5cc15cadfee5c6eff6750d69bf",
+      "fitting_rank": 2,
+      "distinct_examples": 512,
+      "updates": 128
+    },
+    "sd2_tvd_lr4e-06": {
+      "kind": "steering",
+      "objective": "tvd",
+      "learning_rate": 4e-06,
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/sd-square-fits/27890/rank0/steering-state.pt",
+      "checkpoint_sha256": "2b94011dc24f06a073e9d8d61203a07719f9b2a8d0832e15c26e23546aef3e41",
+      "trainable_sha256": "c4fb7eabdb096421aedfff401d540214c7f8371122ec70eb2748a9e401835857",
+      "fitting_gate_sha256": "4c5c038129d7a38957ca1a8f613abf9efad245be75c1f994732c38b4afbd1b38",
+      "fitting_rank": 0,
+      "distinct_examples": 512,
+      "updates": 128
+    },
+    "sd2_tvd_lr2e-05": {
+      "kind": "steering",
+      "objective": "tvd",
+      "learning_rate": 2e-05,
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/sd-square-fits/27890/rank1/steering-state.pt",
+      "checkpoint_sha256": "0a65072aa9fbde2aadacd323c15e0f4d20750539ee3a7d8742678d70cb44c0ad",
+      "trainable_sha256": "3ea9dea54f13dea3ef0663ff4870529d17e721472927d70290aaaf9bf5ab205b",
+      "fitting_gate_sha256": "4c5c038129d7a38957ca1a8f613abf9efad245be75c1f994732c38b4afbd1b38",
+      "fitting_rank": 1,
+      "distinct_examples": 512,
+      "updates": 128
+    },
+    "sd2_kl_lr4e-06": {
+      "kind": "steering",
+      "objective": "kl",
+      "learning_rate": 4e-06,
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/sd-square-fits/27890/rank2/steering-state.pt",
+      "checkpoint_sha256": "b3ce986fe95bb1b0a59317dcbc7827b9404dbba795d73ebffd6baf487e7ce609",
+      "trainable_sha256": "e863b421e960547c6b20cccb6c7c2ead724afeacfaf9d7142283a4ecec6f189a",
+      "fitting_gate_sha256": "4c5c038129d7a38957ca1a8f613abf9efad245be75c1f994732c38b4afbd1b38",
+      "fitting_rank": 2,
+      "distinct_examples": 512,
+      "updates": 128
+    },
+    "sd2_kl_lr2e-05": {
+      "kind": "steering",
+      "objective": "kl",
+      "learning_rate": 2e-05,
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/sd-square-fits/27890/rank3/steering-state.pt",
+      "checkpoint_sha256": "ac31fb6c39a853c8ebf222ce4fd8a81025871757aae28481196f5152f16f01ec",
+      "trainable_sha256": "58cbb1bd6b23ff77455172b2d0409465f4e414633fedee59b5d2f9d89dd05517",
+      "fitting_gate_sha256": "4c5c038129d7a38957ca1a8f613abf9efad245be75c1f994732c38b4afbd1b38",
+      "fitting_rank": 3,
+      "distinct_examples": 512,
+      "updates": 128
+    }
+  },
+  "fitting_input_sha256": {
+    "sd-square-fullpilot/pilot-rank0.json": "6d8c56bc1f67f43d9221a7e4d54023cad249c18d7b4a353d3a6f8e874ed7051c",
+    "sd-square-fullpilot/pilot-rank1.json": "6177810abd0aeb5333fc14e14428e5a9cff979acdad7b81afed5981b708c8f79",
+    "sd-square-fullpilot/pilot-rank2.json": "ec2dba2598e2cc7183b79511cf1a8f3a579ec562a810be0bb99ba369b3a88353",
+    "sd-square-fullpilot/pilot-rank3.json": "6d82102cf741edd180488081c4aaa4959cd8c6dc55de7dde05ce3910023954df",
+    "sd-square-fullpilot/training-rank0.json": "2c3ca5f3807d4134ad21c96d2de1cb35c1a7ad6aaf5d72f360a4aeb14a36ffea",
+    "sd-square-fullpilot/training-rank1.json": "0d462f2161dc56444f799ad4fe6220928e99939cc4a68b6e3ece06a4372ad7de",
+    "sd-square-fullpilot/training-rank2.json": "e032d510b33fb667a6bb75ec792e940aeac9d11baa4f20ca0ccef138ddf1a61f",
+    "sd-square-fullpilot/training-rank3.json": "151e4a80577de2a06460a9bf328b829bcd6a0e8a928acc139dd4c8cf15a0b870",
+    "sd-square-fullpilot/decoding-rank0.json": "b865fffd9e578b3da6cb992e95c0ff0eecc20c142659e2bc17e3f857a0892186",
+    "sd-square-fullpilot/decoding-rank1.json": "9291c5efdc5160096cccdcddf1640df6f7594be9333647fc188ca70269ddaa21",
+    "sd-square-fullpilot/decoding-rank2.json": "12ffbfd6b544b1a8c23e31ccab0a4278a8e5441d0a8f878a300d5d7a21806ca2",
+    "sd-square-fullpilot/decoding-rank3.json": "324c0bcd48abcde8c5c8cbe93dfab1351b2aa7dcb18d112ed6e84da4a465a4e7",
+    "sd-square-fullpilot/gate": "904ca4d5a7b3d052d158629243bf511b07363e5cc15cadfee5c6eff6750d69bf",
+    "sd-square-fullpilot/config": "fa9afded2c3658563342e2e5024c418d48f213aaf9f39236a77a4da98809c09a",
+    "sd-square-fullpilot/source": "af19dc1e0af44aa3168adca604ceccb9c024e6929327e58ebfd70905e43f783f",
+    "sd-square-fullpilot/ledger": "3e8fc6c0707edd64cda5b46289f8986bebbe4f25190c4f59b42f9adeef3e8519",
+    "sd-square-rates/pilot-rank0.json": "4cdc430ea604684eb4c7c99bbe41867bbbc29f3e59565113c756fa2103c52d8e",
+    "sd-square-rates/pilot-rank1.json": "8d3e37b4b7d709ac9d085e63a0126abb22228ad9518f915e57b8448b7088a668",
+    "sd-square-rates/pilot-rank2.json": "8bb66157edd980cfadc20cbc0dc01471f9570db59142edbb6f5d077669a9c39f",
+    "sd-square-rates/pilot-rank3.json": "b2b1ee8e583b41f2487f65a0a5d58099aa18f6efb6ce8ee29b148a5e72408891",
+    "sd-square-rates/training-rank0.json": "154476f948790a0a5a6449c8a1a9c77d1f0580a951505b47f998e58c332ee138",
+    "sd-square-rates/training-rank1.json": "ee4bfb8c41936fe8531bf4fda1bee547f6e7eca72f63fa2cd7020882c54dbcbf",
+    "sd-square-rates/training-rank2.json": "8ee35007cd1435e3e824215363506ed5033b0309b74cbc2cbfac5f6b01e432e0",
+    "sd-square-rates/training-rank3.json": "ad4aad805a62efe7bdaaa3107661797aa18dd6dbe86c460bdfd22b76276de192",
+    "sd-square-rates/decoding-rank0.json": "8ff612b0bfbc55e4383fed260ff65b3acdfa3ef9490e9c1672ae353aa1e08902",
+    "sd-square-rates/decoding-rank1.json": "29f4942d7b744dfeb06b6f834e5d9173d36a429f42a94cf0cabb4bdd3a2e2742",
+    "sd-square-rates/decoding-rank2.json": "591244c11466173a21ddaa954e6a34c3b6912daea767f6e4ae81139986c68d84",
+    "sd-square-rates/decoding-rank3.json": "9fe27cb90eda0b90c9fbd33bd4b7cd1f72a5f41be7fb1abc873259e5fc772ae3",
+    "sd-square-rates/gate": "4c5c038129d7a38957ca1a8f613abf9efad245be75c1f994732c38b4afbd1b38",
+    "sd-square-rates/config": "ea48dc1642891e21b08b578c56e24c9595087c113bd3218726f4248474891e4f",
+    "sd-square-rates/source": "39f4f4eea98fcda851b13ec80e969d9d06b5d1d94107b56730fb226594b89dc2",
+    "sd-square-rates/ledger": "7fc82d333addba4813fc89e992a9b4f58ac07a375da2e781dd83667e0c4eec51"
+  },
+  "original_exact_ar_gates": {
+    "sd_square_job27869": "failed_preserved",
+    "pard_job27831": "failed_preserved"
+  },
+  "scope": "Public eval.py inference storage uses FP16 target and BF16 drafter/steering with BF16 autocast. Training and converted inference steering fingerprints are separately verified. Six predeclared512-example SD-square objective/rate fits, zero-guidance and independent-drafter controls, and correct runtime-local AR. Sixteen paired exposed development requests with256-token cap. Immediate/deferred observer equality is checked before measurements. GPU decision capture is timed, CPU materialization and verification occur after the timer. Each ten-minute job covers one disjoint eight-request shard of the fixed sixteen. Shared resident steering storage prevents isolated serving-memory claims. No full-answer quality, untouched confirmation or cross-runtime algorithm-only ranking. Old exact-AR failures are preserved."
+}

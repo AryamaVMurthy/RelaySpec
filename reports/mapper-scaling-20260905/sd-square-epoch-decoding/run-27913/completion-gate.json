@@ -1,0 +1,57 @@
+{
+  "status": "pass",
+  "config_sha256": "7111e992dbd6cc03a5e7136d988638eb908d8027d78ae66d1575b9fd04872088",
+  "records": 48,
+  "requests": 8,
+  "methods": [
+    "native_ar",
+    "sd2_independent",
+    "sd2_epoch1",
+    "sd2_epoch2",
+    "sd2_epoch4",
+    "sd2_epoch8"
+  ],
+  "input_sha256": {
+    "campaign-rank0.json": "10e20113d13907b297e992bcb60636fdb8ac10442a4ddee2bd39d6f72f58794c",
+    "benchmark-rank0.jsonl": "f800e495daf289f6949a1b9a8b5e9267b1b5b0c851f85fe457ba35b802a1f8c5",
+    "campaign-rank1.json": "3ba858aa9b2ec7c6fec9488a2c17c0e864c93fb67792e6a7b1b0fe2925d3109c",
+    "benchmark-rank1.jsonl": "f3252cad1132fddca357e9f4ea92fe43046aed24c9e901948b7651c01d75f57a",
+    "campaign-rank2.json": "23483dddf219fd5e18fd680ac348bf42c195849609f5cc7907d4c3b79fa899a8",
+    "benchmark-rank2.jsonl": "dda73cbfe27e4ce8c17196d53c7309e6e29914f075947fc0f3226bc7a0167c4b",
+    "campaign-rank3.json": "22e66d0b67aef2e5736f5dc160453daf4909f9ab7a95f39c463e369da5445f88",
+    "benchmark-rank3.jsonl": "8a52f1c21c1af6ce6518b5aff13703ef98c691855d3e5148802447ceca2e606e"
+  },
+  "inference_precision": {
+    "target": "float16",
+    "drafter": "bfloat16",
+    "steering": "bfloat16",
+    "autocast": "bfloat16"
+  },
+  "steering_fingerprints": {
+    "sd2_epoch1": {
+      "training_sha256": "e863b421e960547c6b20cccb6c7c2ead724afeacfaf9d7142283a4ecec6f189a",
+      "inference_sha256": "ad1673f8ddac04223494b8da8819a3f274ef0c7b887533098d94caef599a044d"
+    },
+    "sd2_epoch2": {
+      "training_sha256": "b0497d0bd0084fe5957ce40ff69f8f81d5216dcb789dbbf0aa69d3071f454e8e",
+      "inference_sha256": "c7fdd06b3e0d65dcee46c4084625aa18805b64f34cd6b5456327f62b2f4b601f"
+    },
+    "sd2_epoch4": {
+      "training_sha256": "0229e7c3c51c55e3060a69098e14148f30f3c7894dc4ae1c47523c61388178be",
+      "inference_sha256": "7f381587859d31c27252ddff172fd1787a200863fa6bfdb495f26c9f543202be"
+    },
+    "sd2_epoch8": {
+      "training_sha256": "f92d49630c3469d2012796d952e835793315f09d7e292a55fe26eaf55279c29d",
+      "inference_sha256": "8f525ddfa34dae26295bd01939251c20d0f70670af7ebc7e958dc0504450d987"
+    }
+  },
+  "ar_exact_counts": {
+    "native_ar": 8,
+    "sd2_independent": 3,
+    "sd2_epoch1": 2,
+    "sd2_epoch2": 4,
+    "sd2_epoch4": 3,
+    "sd2_epoch8": 4
+  },
+  "scope": "Four SD-square epoch endpoints fitted on the same512 examples with frozen KL4e-6 rate. Separate1/2/4/8-epoch decay schedules, with one-epoch exact fitting reproduction. Sixteen paired exposed development prompts in two disjoint eight-request shards,256-token cap. Public FP16 target and BF16 drafter/steering storage with BF16 autocast. Training and inference fingerprints are checked separately. Immediate/deferred observation must preserve all decisions. Full request timing includes GPU observation and excludes CPU materialization and detokenization. Correct runtime-local AR and independent-drafter controls. No full-answer quality, untouched confirmation, isolated serving-memory or cross-runtime algorithm-only ranking. Prior AR failures remain preserved."
+}

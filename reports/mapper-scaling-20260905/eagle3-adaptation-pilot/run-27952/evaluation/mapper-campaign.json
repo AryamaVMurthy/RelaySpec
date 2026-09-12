@@ -1,0 +1,117 @@
+{
+  "variants": {
+    "relay_initial": {
+      "checkpoint_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-small03-27802/eagle3-dense-n512-s1729/step-000128.pt",
+      "checkpoint_sha256": "92c5e2648d98d014d2a9968464c4ab73dba8b3905a7cce27da8d7f1b99048e33",
+      "parameters": 52428800,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ]
+    },
+    "relay_connector_ce": {
+      "checkpoint_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-adapt-pilot-27952/rank0/mapper.pt",
+      "checkpoint_sha256": "ec3ae9acfd32c072a4fd7b5418fdbe71abf0da4681d73c5ece8bdf4c29d217c5",
+      "parameters": 52428800,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ]
+    },
+    "relay_lora8": {
+      "checkpoint_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-small03-27802/eagle3-dense-n512-s1729/step-000128.pt",
+      "checkpoint_sha256": "92c5e2648d98d014d2a9968464c4ab73dba8b3905a7cce27da8d7f1b99048e33",
+      "parameters": 52428800,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "drafter_update": {
+        "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-adapt-pilot-27952/rank1/adaptation.pt",
+        "sha256": "ef9cb3421b16a4c6a0f3a96ba931064645ddd9d8708505a0fcdb1c2ecac9aa23",
+        "base_sha256": "3eadb432d84f2d032f9d66906a1403d56cc1d70e1c4ffec6e7eb60e0959d039a",
+        "updated_weights": [
+          "layers.0.self_attn.q_proj.weight",
+          "layers.0.self_attn.v_proj.weight"
+        ],
+        "resident_parameter_bytes": 1854689792
+      }
+    },
+    "relay_lora32": {
+      "checkpoint_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-small03-27802/eagle3-dense-n512-s1729/step-000128.pt",
+      "checkpoint_sha256": "92c5e2648d98d014d2a9968464c4ab73dba8b3905a7cce27da8d7f1b99048e33",
+      "parameters": 52428800,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "drafter_update": {
+        "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-adapt-pilot-27952/rank2/adaptation.pt",
+        "sha256": "f865bb4ff7293be791b4db54712ee313dd32ec233b23bb29ab892dc75813115a",
+        "base_sha256": "3eadb432d84f2d032f9d66906a1403d56cc1d70e1c4ffec6e7eb60e0959d039a",
+        "updated_weights": [
+          "layers.0.self_attn.q_proj.weight",
+          "layers.0.self_attn.v_proj.weight"
+        ],
+        "resident_parameter_bytes": 1854689792
+      }
+    },
+    "relay_lora32_duplicate": {
+      "checkpoint_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-small03-27802/eagle3-dense-n512-s1729/step-000128.pt",
+      "checkpoint_sha256": "92c5e2648d98d014d2a9968464c4ab73dba8b3905a7cce27da8d7f1b99048e33",
+      "parameters": 52428800,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "drafter_update": {
+        "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-adapt-pilot-27952/rank3/adaptation.pt",
+        "sha256": "f865bb4ff7293be791b4db54712ee313dd32ec233b23bb29ab892dc75813115a",
+        "base_sha256": "3eadb432d84f2d032f9d66906a1403d56cc1d70e1c4ffec6e7eb60e0959d039a",
+        "updated_weights": [
+          "layers.0.self_attn.q_proj.weight",
+          "layers.0.self_attn.v_proj.weight"
+        ],
+        "resident_parameter_bytes": 1854689792
+      }
+    },
+    "relay_lora_zero": {
+      "checkpoint_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-small03-27802/eagle3-dense-n512-s1729/step-000128.pt",
+      "checkpoint_sha256": "92c5e2648d98d014d2a9968464c4ab73dba8b3905a7cce27da8d7f1b99048e33",
+      "parameters": 52428800,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "drafter_update": {
+        "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-eagle-adapt-pilot-27952/rank2/zero-adaptation.pt",
+        "sha256": "44ff72a415ecbe2f6c2cf9a2bbca4fb5ffb804da6f7c7abefc6a8172451ee010",
+        "base_sha256": "3eadb432d84f2d032f9d66906a1403d56cc1d70e1c4ffec6e7eb60e0959d039a",
+        "updated_weights": [
+          "layers.0.self_attn.q_proj.weight",
+          "layers.0.self_attn.v_proj.weight"
+        ],
+        "resident_parameter_bytes": 1854689792
+      }
+    }
+  },
+  "scope": "Paired EAGLE-3 candidate decoding with shared frozen models, fresh request providers and rotated method order. Resident memory includes all candidates; it is not isolated deployment memory."
+}

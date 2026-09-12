@@ -1,0 +1,37 @@
+{
+  "status": "pass",
+  "config_sha256": "99b081ff74928667be1fe055a6a0ab68c631d4bae2bb979a0411d5b22ac1c54b",
+  "records": 8,
+  "requests": 4,
+  "methods": [
+    "native_ar",
+    "sd2_selected"
+  ],
+  "input_sha256": {
+    "campaign-rank0.json": "7de4a3dbdd2c854828e98c6b98f504af99a858c4b1dd70905f4b1c2510febc5b",
+    "benchmark-rank0.jsonl": "3dd62b4c8f2d695a8b07d6fe48fa53848c8034d3e6f75989b63626c0ea83e25f",
+    "campaign-rank1.json": "85adccbd203b5fa56ac0c5a29618ee42eebe0076c899093d6561d3dbb612d256",
+    "benchmark-rank1.jsonl": "eca4ce16f5bf3bbdf15998082446954d7581f2b93dd583eafbc673782879b8da",
+    "campaign-rank2.json": "1b54b23e620f01ca6421f3b5aa720954b5df7d131c371799d4528603246892fe",
+    "benchmark-rank2.jsonl": "c66a78868f5a2ee95c1fbf1a0e9a67102bbb8ae3128d905cc1a1c0e8534e89d4",
+    "campaign-rank3.json": "eea07476b563348d77486a988caa3ad3cda1c4338e1009fdd8fceea77bdf9967",
+    "benchmark-rank3.jsonl": "aad8ded041adc870f34b6d0570585e9280fdb0ced537e9882db8cfe7183c6ac0"
+  },
+  "inference_precision": {
+    "target": "float16",
+    "drafter": "bfloat16",
+    "steering": "bfloat16",
+    "autocast": "bfloat16"
+  },
+  "steering_fingerprints": {
+    "sd2_selected": {
+      "training_sha256": "e863b421e960547c6b20cccb6c7c2ead724afeacfaf9d7142283a4ecec6f189a",
+      "inference_sha256": "ad1673f8ddac04223494b8da8819a3f274ef0c7b887533098d94caef599a044d"
+    }
+  },
+  "ar_exact_counts": {
+    "native_ar": 4,
+    "sd2_selected": 1
+  },
+  "scope": "Selected SD-square epoch frozen before eight exposed development requests at2048-token cap. Two disjoint four-request pilot shards and correct runtime-local AR. Public FP16 target/BF16 drafter and steering with BF16 autocast. Training and inference identities must match prior decoding. Strict actual-verifier checks and immediate/deferred observer equivalence. Full request time includes GPU observation and excludes CPU materialization/detokenization. Capped answer scoring is separate from timing. This pilot does not establish final quality noninferiority, untouched confirmation, isolated memory or an algorithm-only cross-runtime ranking."
+}

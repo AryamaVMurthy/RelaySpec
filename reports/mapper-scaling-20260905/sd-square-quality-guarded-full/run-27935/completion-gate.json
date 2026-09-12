@@ -1,0 +1,37 @@
+{
+  "status": "pass",
+  "config_sha256": "a620817eccd4e2d742c86334a43bbd4a569c2d57cb79c3e5af74d40166c9ec91",
+  "records": 128,
+  "requests": 64,
+  "methods": [
+    "native_ar",
+    "sd2_selected"
+  ],
+  "input_sha256": {
+    "campaign-rank0.json": "75f40659c1eef4e5e70a582b13936fa2ab2eb69f6dd3e683988c6863b7a05172",
+    "benchmark-rank0.jsonl": "59ff524fb813385f3b0ebd14b4609a29735b4b4b85d200cdf4fef5d107f01cb7",
+    "campaign-rank1.json": "1a782c05406433b75a0beb337e41b605145c284ce3de620eda4561001486433e",
+    "benchmark-rank1.jsonl": "2d0a5874461dac52a3dc44d55a35a268b4451b4b153ba5ab9e3cec16754e3723",
+    "campaign-rank2.json": "adf8c50fa6bdfadb6d46a587b1eda042329f0417789cb1736c876e2a155cfcac",
+    "benchmark-rank2.jsonl": "53ee9bfdd6186bd4c91092a30c87f43cbc0cd582e63b1b42bc353e2ff63bb46f",
+    "campaign-rank3.json": "7c1f2184be4d3d759853682b25e4d8bae6d501ae9fe0d3e05318639b67942a3c",
+    "benchmark-rank3.jsonl": "85876ef7ad973d9008ab1cf16683717b010eb511df6c7853cd0c6d922c18b46a"
+  },
+  "inference_precision": {
+    "target": "float16",
+    "drafter": "bfloat16",
+    "steering": "bfloat16",
+    "autocast": "bfloat16"
+  },
+  "steering_fingerprints": {
+    "sd2_selected": {
+      "training_sha256": "e863b421e960547c6b20cccb6c7c2ead724afeacfaf9d7142283a4ecec6f189a",
+      "inference_sha256": "ad1673f8ddac04223494b8da8819a3f274ef0c7b887533098d94caef599a044d"
+    }
+  },
+  "ar_exact_counts": {
+    "native_ar": 64,
+    "sd2_selected": 23
+  },
+  "scope": "Selected SD-square epoch unchanged after the eight-request quality pilot. 128 exposed development requests in two disjoint 64-request shards at2048-token cap. Matched public FP16 target/BF16 drafter and steering runtime with BF16 autocast. Training and inference identities match the frozen epoch selection and pilot. Strict actual-verifier checks and immediate/deferred observer equivalence. Full request time includes GPU observation and excludes CPU materialization/detokenization. Capped answer scoring is separate. No untouched confirmation, final quality-margin claim, isolated memory or algorithm-only cross-runtime ranking. Untimed16-token warmup records the public physical-slot guard as a known termination reason. Actual verifier equality stays strict, and scored generation still requires EOS or cap. Guard-policy pilot uses development indices24--31 including failed index26."
+}

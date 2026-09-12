@@ -1,0 +1,90 @@
+{
+  "methods": {
+    "native_ar": {
+      "decode_seconds": 27.03735803393647,
+      "decode_tokens_per_second": 37.87352294979067,
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "mean_acceptance_length": 1.0,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 1.0
+    },
+    "native_target_dflash": {
+      "decode_seconds": 6.085828676819801,
+      "decode_tokens_per_second": 168.25974807675647,
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 7,
+      "mean_acceptance_length": 6.781490042575001,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 4.44267485493283
+    },
+    "optimized_source_reuse": {
+      "decode_seconds": 10.398351642303169,
+      "decode_tokens_per_second": 98.47714668872176,
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 7,
+      "mean_acceptance_length": 6.742130411441557,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_native_ar": 2.6001580792807144
+    },
+    "relay_p": {
+      "decode_seconds": 23.285790276248008,
+      "decode_tokens_per_second": 43.975316613776315,
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 7,
+      "mean_acceptance_length": 1.599039083450537,
+      "output_tokens": 1024,
+      "requests": 8,
+      "speedup_vs_naive_source_reuse": 0.44655352122232694,
+      "speedup_vs_native_ar": 1.1611097460374853
+    }
+  },
+  "paired_requests": 8,
+  "pairwise": {
+    "native_target_dflash_vs_native_ar": {
+      "candidate_method": "native_target_dflash",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 7,
+      "reference_method": "native_ar",
+      "throughput_speedup": 4.44267485493283
+    },
+    "optimized_source_reuse_vs_native_ar": {
+      "candidate_method": "optimized_source_reuse",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 7,
+      "reference_method": "native_ar",
+      "throughput_speedup": 2.6001580792807144
+    },
+    "optimized_source_reuse_vs_native_target_dflash": {
+      "candidate_method": "optimized_source_reuse",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.5852685970015753
+    },
+    "relay_p_vs_native_ar": {
+      "candidate_method": "relay_p",
+      "exact_sequence_match_rate": 0.875,
+      "exact_sequence_matches": 7,
+      "reference_method": "native_ar",
+      "throughput_speedup": 1.1611097460374853
+    },
+    "relay_p_vs_native_target_dflash": {
+      "candidate_method": "relay_p",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "native_target_dflash",
+      "throughput_speedup": 0.26135375285190443
+    },
+    "relay_p_vs_optimized_source_reuse": {
+      "candidate_method": "relay_p",
+      "exact_sequence_match_rate": 1.0,
+      "exact_sequence_matches": 8,
+      "reference_method": "optimized_source_reuse",
+      "throughput_speedup": 0.44655352122232694
+    }
+  }
+}

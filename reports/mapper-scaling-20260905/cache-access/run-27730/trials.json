@@ -1,0 +1,78 @@
+{
+  "trials": [
+    {
+      "name": "stream-buffer",
+      "architecture": "mlp",
+      "distinct_examples": 4096,
+      "steps": 2048,
+      "seed": 1729,
+      "learning_rate": 0.0006,
+      "l2_weight": 1e-06,
+      "weight_decay": 0.0,
+      "validation_records": 32,
+      "diagnostic_train_records": 32,
+      "checkpoint_steps": [
+        1,
+        2048
+      ],
+      "cache_backend": "buffer",
+      "device_cache": false,
+      "width": 512
+    },
+    {
+      "name": "stream-mmap",
+      "architecture": "mlp",
+      "distinct_examples": 4096,
+      "steps": 2048,
+      "seed": 1729,
+      "learning_rate": 0.0006,
+      "l2_weight": 1e-06,
+      "weight_decay": 0.0,
+      "validation_records": 32,
+      "diagnostic_train_records": 32,
+      "checkpoint_steps": [
+        1,
+        2048
+      ],
+      "cache_backend": "mmap",
+      "device_cache": false,
+      "width": 512
+    },
+    {
+      "name": "dense-host",
+      "architecture": "dense",
+      "distinct_examples": 512,
+      "steps": 1024,
+      "seed": 1729,
+      "learning_rate": 0.0006,
+      "l2_weight": 0,
+      "weight_decay": 0.0,
+      "validation_records": 32,
+      "diagnostic_train_records": 32,
+      "checkpoint_steps": [
+        1,
+        1024
+      ],
+      "cache_backend": "buffer",
+      "device_cache": false
+    },
+    {
+      "name": "dense-device",
+      "architecture": "dense",
+      "distinct_examples": 512,
+      "steps": 1024,
+      "seed": 1729,
+      "learning_rate": 0.0006,
+      "l2_weight": 0,
+      "weight_decay": 0.0,
+      "validation_records": 32,
+      "diagnostic_train_records": 32,
+      "checkpoint_steps": [
+        1,
+        1024
+      ],
+      "cache_backend": "mmap",
+      "device_cache": true
+    }
+  ]
+}

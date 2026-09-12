@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "data_inputs": {
+    "manifest_gate_sha256": "f8ca68ff7a666e64ad8ed1aabc2c648c24f5d25f6a11ef52633585a860f890fd",
+    "report_domain_diagnostics": true,
+    "files": {
+      "train": {
+        "name": "train-mixed-2048.json",
+        "sha256": "e6d9dbcf4f6e42a773adf7a1719a1489f9b9e65f36ac016967ed6dd55cb36fa5",
+        "available_records": 2048,
+        "domain_counts": {
+          "general_instruction": 1024,
+          "math": 1024
+        }
+      },
+      "validation": {
+        "name": "validation.json",
+        "sha256": "4581ca42c4c4faa3eda1b2d4802178dafc29fee9c1083b2fba4c336e578d7037",
+        "available_records": 2048,
+        "domain_counts": {
+          "general_instruction": 1024,
+          "math": 1024
+        }
+      }
+    }
+  },
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27945",
+  "feature_cache_index_sha256": "953e6dc488cf2fb6f104809464014c9cfc7eb356c32816b09b36376f70c0d302",
+  "training_config_sha256": "b5448fcce53b40927966e389091cf3e43ebede5eaa6152a20b404be57c8d3187",
+  "models": {
+    "target": {
+      "id": "Qwen/Qwen3-8B",
+      "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+    },
+    "proposer": {
+      "family": "dflash",
+      "id": "z-lab/Qwen3-4B-DFlash-b16",
+      "revision": "b74e3a329c4d963783143b1e970d95b002be72bd",
+      "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+    }
+  },
+  "fitted_maps": [
+    "dense",
+    "factor512",
+    "mlp512",
+    "mlp512-l2"
+  ],
+  "evaluation": "/home/aryama.murthy/relayspec-composition-ce00aab/outputs/rs-comp-mixed-pilot-27945/evaluation",
+  "scope": "Cache integrity, BF16 gradient equivalence within declared tolerances, independent four-GPU fitting, finite checkpoints, paired decoding and duplicate-map isolation. No full-answer quality or scaling claim."
+}

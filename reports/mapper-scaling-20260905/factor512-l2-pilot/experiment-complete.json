@@ -1,0 +1,24 @@
+{
+  "status": "pass",
+  "experiment": "pilot",
+  "evaluated_steps": [
+    16
+  ],
+  "pilot": true,
+  "trial": {
+    "name": "factor512-l2-pilot",
+    "stage": "pilot",
+    "architecture": "factorized",
+    "distinct_examples": 512,
+    "seed": 1729,
+    "l2_weight": 1e-06,
+    "weight_decay": 0,
+    "timeout_seconds": 540,
+    "hypothesis": "A matched-capacity interface can retain useful acceptance with lower deployed parameter count; explicit L2 may improve fitting validation.",
+    "falsifier": "Nonfinite fitting or checkpoint failure invalidates the path; worse validation and acceptance without a cost benefit rejects promotion.",
+    "parent_run": "controlled-data512-27580",
+    "promotion": "Pilot: finite gradients, saved/reloaded checkpoint, diagnostics and complete paired outputs. Directional: useful validation/acceptance or deployment-cost tradeoff; full-answer quality requires separate evaluation.",
+    "width": 512
+  },
+  "evaluation_role": "development; capped outputs do not establish full-answer quality"
+}

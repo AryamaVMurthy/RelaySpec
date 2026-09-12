@@ -1,0 +1,48 @@
+{
+  "checkpoint": {
+    "step": 1024,
+    "weights_sha256": "6109477f894466ec5c407356ded4b086af547d3cb104e2cdd00cda64b6e7bbd9",
+    "optimizer_step_verified": true,
+    "checkpoint": "/home/aryama.murthy/relayspec-scaling-20260905/outputs/rs-continuous-27583/relay-step-001024.pt",
+    "data_accounting": {
+      "manifest_records": 4096,
+      "distinct_records": 4096,
+      "record_presentations": 4096,
+      "records_per_update": 4,
+      "ordered_ids_sha256": "d4d9c840071f3f9cf839144ff5908e6114bc92dda17c5cca76766a564701ce44",
+      "distinct_records_seen": 4096
+    },
+    "training_seconds": 97.19462982006371
+  },
+  "methods": {
+    "native_ar": {
+      "tokens_per_second": 37.68579425884942,
+      "speedup_vs_ar": 1.0,
+      "native_throughput_retained": 0.18408941079882754
+    },
+    "native_target_dflash": {
+      "tokens_per_second": 204.71462261364053,
+      "speedup_vs_ar": 5.432142976940686,
+      "native_throughput_retained": 1.0
+    },
+    "optimized_source_reuse": {
+      "tokens_per_second": 121.21842547477519,
+      "accepted_draft_tokens": 75944,
+      "proposed_draft_tokens": 174375,
+      "proposed_token_acceptance": 0.435521146953405,
+      "mean_cycle_progress": 7.532817204301075,
+      "speedup_vs_ar": 3.2165548811887,
+      "native_throughput_retained": 0.5921336928801205
+    },
+    "relay_p": {
+      "tokens_per_second": 184.64189149786148,
+      "accepted_draft_tokens": 74809,
+      "proposed_draft_tokens": 191565,
+      "proposed_token_acceptance": 0.39051496880954245,
+      "mean_cycle_progress": 6.857724532143137,
+      "speedup_vs_ar": 4.899509089011801,
+      "native_throughput_retained": 0.9019477413996827
+    }
+  },
+  "acceptance_scope": "All verified draft positions, before final EOS/output-cap trimming. Target-supplied positions excluded. Task scoring and paired uncertainty follow on CPU."
+}

@@ -1,0 +1,38 @@
+{
+  "name": "mlp512-n128-s1729",
+  "study": "core",
+  "architecture": "mlp",
+  "seed": 1729,
+  "steps": 8192,
+  "distinct_examples": 128,
+  "learning_rate": 0.0006,
+  "l2_weight": 0.0,
+  "weight_decay": 0.0,
+  "checkpoint_steps": [
+    32,
+    64,
+    96,
+    128,
+    256,
+    512,
+    1024,
+    2048,
+    4096,
+    8192
+  ],
+  "validation_records": 1024,
+  "diagnostic_train_records": 128,
+  "feature_objective": "relative_interface_mse",
+  "normalize_input": true,
+  "budget_panels": {
+    "fixed_exposure": {
+      "checkpoint_step": 8192,
+      "presentations": 32768
+    },
+    "fixed_passes": {
+      "checkpoint_step": 128,
+      "presentations": 512
+    }
+  },
+  "width": 512
+}

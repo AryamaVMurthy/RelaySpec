@@ -1,0 +1,43 @@
+{
+  "config_sha256": "74e202a0d12e159607d01cc0ace6b05dd904af3fde7765e93648312197d91034",
+  "campaign_sha256": "4884ccb1159fb5b7a31d0d7c398b63ffc323f18b02b08d9bca629a82caf58a0e",
+  "prerequisite_gate_sha256": "75d2366b92293edc68208ee035305a2d13628be41406639ca3a3aea726a7af00",
+  "variants": {
+    "relay_initial": {
+      "mapper_sha256": "c4cdbfc1645e6e59314113d57d1d4b91f42e6836933df516e76d9ab3dd2699a3"
+    },
+    "relay_ce_lr2e4": {
+      "mapper": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-adaptation512-27841/rank0/mapper.pt",
+      "mapper_sha256": "1e4e5860f363f261fdde3d18de83b910da5f22a18a5dc0182a107ce595cabbb0"
+    },
+    "relay_lora32_lr2e4": {
+      "mapper": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-000128.pt",
+      "mapper_sha256": "c4cdbfc1645e6e59314113d57d1d4b91f42e6836933df516e76d9ab3dd2699a3",
+      "drafter_update": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-adaptation512-27841/rank2/adaptation.pt",
+      "drafter_update_sha256": "4dd7cd6d678e5069d85ac65bb7b163d5bb08ad4c8b6e9426c068d7734691c097"
+    },
+    "relay_dense_endpoint": {
+      "mapper": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-008192.pt",
+      "mapper_sha256": "b4562dc664748ec2da6e0f1ccac13820bfd0fa9c413a7a3235ebec5f1d84b613"
+    },
+    "relay_ce_lr2e5": {
+      "mapper_sha256": "c0e083b6d7f403991893d7a9c69ed59038512d3559e45a82a067ce4e0492ed5f"
+    },
+    "relay_ce_lr6e5": {
+      "mapper_sha256": "7eb499b36f33333520dab00f5c78755e9fc80d924d688a7b65da1eb82e455389"
+    },
+    "relay_lora32_lr2e5": {
+      "mapper_sha256": "c4cdbfc1645e6e59314113d57d1d4b91f42e6836933df516e76d9ab3dd2699a3",
+      "drafter_update_sha256": "ed76a23f9d356e192cc993aff2db5d6672ef806e4bbf75efaef3bf9fbcc9624f"
+    },
+    "relay_lora32_lr6e5": {
+      "mapper_sha256": "c4cdbfc1645e6e59314113d57d1d4b91f42e6836933df516e76d9ab3dd2699a3",
+      "drafter_update_sha256": "8a7e9c5ad97f446d1c9e237109c71c16175c377edacf349d45c7aff169f36790"
+    },
+    "relay_lora_zero": {
+      "mapper_sha256": "c4cdbfc1645e6e59314113d57d1d4b91f42e6836933df516e76d9ab3dd2699a3",
+      "drafter_update_sha256": "370cf289d7bc7a2a66e58a099f16d23c5aab290c93fed05d57d1aad52a1ed2d9"
+    }
+  },
+  "scope": "Fixed equal-data learning-rate screen on 512 existing records and 128 updates per arm. Two new lower rates per connector CE and rank32 drafter LoRA, with the existing 0.0002 fits reused in one paired decoding campaign. Equal three-rate search per family. No matched-compute, quality, or untouched-confirmation claim."
+}

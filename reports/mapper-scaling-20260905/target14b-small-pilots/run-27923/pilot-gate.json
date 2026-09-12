@@ -1,0 +1,26 @@
+{
+  "status": "pass",
+  "feature_cache": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27923",
+  "feature_cache_index_sha256": "be3eb45e12869b8eb14b1c13bfc9865820d407edff8dcf28f94f8d0d285fc803",
+  "training_config_sha256": "37980d84567fb15da5eb2ddca9b60d5090150865e67029d2cee4454f306e63da",
+  "models": {
+    "target": {
+      "id": "Qwen/Qwen3-14B",
+      "revision": "40c069824f4251a91eefaf281ebe4c544efd3e18"
+    },
+    "proposer": {
+      "family": "dflash",
+      "id": "z-lab/Qwen3-4B-DFlash-b16",
+      "revision": "b74e3a329c4d963783143b1e970d95b002be72bd",
+      "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+    }
+  },
+  "fitted_maps": [
+    "dense",
+    "factor512",
+    "mlp512",
+    "mlp512-l2"
+  ],
+  "evaluation": "/home/aryama.murthy/relayspec-target14-small-e1df8ba/outputs/rs-dflash14-small-pilot-27923/evaluation",
+  "scope": "Cache integrity, BF16 gradient equivalence within declared tolerances, independent four-GPU fitting, finite checkpoints, paired decoding and duplicate-map isolation. No full-answer quality or scaling claim."
+}

@@ -1,0 +1,135 @@
+{
+  "status": "pass",
+  "trial": {
+    "name": "mlp512-l2",
+    "architecture": "mlp",
+    "seed": 1729,
+    "steps": 16,
+    "distinct_examples": 64,
+    "learning_rate": 0.0006,
+    "l2_weight": 1e-06,
+    "weight_decay": 0.0,
+    "checkpoint_steps": [
+      8,
+      16
+    ],
+    "validation_records": 16,
+    "width": 512,
+    "report_domain_diagnostics": true,
+    "validation_required_domains": [
+      "general_instruction",
+      "math"
+    ]
+  },
+  "parameters": 11796480,
+  "steps": 16,
+  "start_step": 0,
+  "updates_this_job": 16,
+  "tokens_seen": 10142,
+  "record_presentations": 64,
+  "epochs": 1.0,
+  "distinct_records_seen": 64,
+  "loop_seconds": 0.7033818070776761,
+  "training_update_seconds": 0.22825840068981051,
+  "previous_update_seconds": 0.2172841066494584,
+  "warm_time_budget_seconds": null,
+  "initial_validation_seconds": 0.09323263820260763,
+  "checkpoint_export_seconds": 0.3151196357794106,
+  "worker_total_seconds": 4.432412839960307,
+  "timing_scope": "Training-update time includes data access, loss/gradient computation, optimizer steps and training-log writes. It excludes validation and checkpoint export. Worker total includes model/cache setup and initial validation, but excludes Python import startup and this completion-record/hash write. Outer batch wall time records the full launched process cost.",
+  "validation_seconds": 0.15976361883804202,
+  "input_io_seconds": 0.11457821913063526,
+  "setup_seconds": 0.8244830467738211,
+  "cache_backend": "buffer",
+  "device_cache": false,
+  "peak_gpu_bytes": 391458816,
+  "feature_cache_index_sha256": "953e6dc488cf2fb6f104809464014c9cfc7eb356c32816b09b36376f70c0d302",
+  "cache_extraction_metadata": {
+    "config": {
+      "protocol_version": 1,
+      "run_name": "qwen3-8b-dflash4b-relay-relative-final",
+      "seed": 1729,
+      "resources": {
+        "gpu_count": 4
+      },
+      "paths": {
+        "scratch": "/scratch/aryama.murthy/relayspec/train"
+      },
+      "target": {
+        "id": "Qwen/Qwen3-8B",
+        "revision": "b968826d9c46dd6066d109eabc6255188de91218"
+      },
+      "proposer": {
+        "family": "dflash",
+        "id": "z-lab/Qwen3-4B-DFlash-b16",
+        "revision": "b74e3a329c4d963783143b1e970d95b002be72bd",
+        "source_commit": "94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756"
+      },
+      "source_trunk": {
+        "model": {
+          "id": "Qwen/Qwen3-4B",
+          "revision": "1cfa9a7208912126459214e8b04321603b3df60c"
+        },
+        "layers": 34,
+        "tap_layers": [
+          1,
+          9,
+          17,
+          25,
+          33
+        ]
+      }
+    },
+    "relay_training": {
+      "manifest_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/composition-data/math-dolly-v2/train-mixed-2048.json",
+      "fit_examples": 4096,
+      "steps": 1024,
+      "max_length": 192,
+      "learning_rate": 0.0006,
+      "weight_decay": 0.0,
+      "gradient_clip": 1.0,
+      "target_layer_ids": [
+        1,
+        9,
+        17,
+        25,
+        33
+      ],
+      "relay_architecture": "normalized_linear",
+      "feature_objective": "relative_interface_mse",
+      "proposal_kl_weight": 0.0,
+      "validation_manifest_path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/composition-data/math-dolly-v2/validation.json",
+      "feature_cache": {
+        "train_records": 64,
+        "validation_records": 16
+      }
+    },
+    "config_sha256": "fd14e230d14bda3e0cc234647856a98fe2cd2421e728e99a23fed89cdb4e87fd",
+    "manifest_sha256": {
+      "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/composition-data/math-dolly-v2/train-mixed-2048.json": "e6d9dbcf4f6e42a773adf7a1719a1489f9b9e65f36ac016967ed6dd55cb36fa5",
+      "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/composition-data/math-dolly-v2/validation.json": "4581ca42c4c4faa3eda1b2d4802178dafc29fee9c1083b2fba4c336e578d7037"
+    },
+    "target_layer_ids": [
+      1,
+      9,
+      17,
+      25,
+      33
+    ],
+    "target_hidden_size": 4096,
+    "draft_hidden_size": 2560,
+    "rms_norm_eps": 1e-06,
+    "family": "dflash",
+    "split": {
+      "training_records": 64,
+      "validation_records": 16,
+      "validation_content_sha256": "c96f1a4fae65ba602a8b8b7b3490c1c1049f771b42c153597ccf5617ac22380c",
+      "scope": "Fitting validation; not untouched decoding evaluation. Exact normalized problem overlap checked; near-overlap audit is separate."
+    },
+    "output_norm_sha256": "2f229279873aec032e948a0dffa2f2d9718652e10c6c16cbad54ee37c5b02492",
+    "torch_version": "2.9.1+cu128",
+    "elapsed_seconds": 2.1517658759839833,
+    "normalization": "Raw target taps; teacher includes the released proposer interface. DFlash predictions must use output-norm.pt; EAGLE-3 predictions use identity."
+  },
+  "continuation_sha256": "ef770ed93849615e2e9cfb48133197ac51ced7019e8a9be4c2773f7f957ef5c0"
+}

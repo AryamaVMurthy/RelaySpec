@@ -1,0 +1,30 @@
+{
+  "name": "budget-timing-128-r2",
+  "study": "baseline_time_calibration",
+  "architecture": "dense",
+  "seed": 1729,
+  "steps": 128,
+  "distinct_examples": 512,
+  "learning_rate": 0.0006,
+  "l2_weight": 0.0,
+  "weight_decay": 0.0,
+  "checkpoint_steps": [
+    128
+  ],
+  "validation_records": 1024,
+  "diagnostic_train_records": 256,
+  "feature_objective": "relative_interface_mse",
+  "normalize_input": true,
+  "budget_panels": {
+    "measured_endpoint": {
+      "checkpoint_step": 128,
+      "presentations": 512
+    }
+  },
+  "cache_backend": "mmap",
+  "device_cache": true,
+  "reference_checkpoint": {
+    "path": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-000128.pt",
+    "sha256": "c4cdbfc1645e6e59314113d57d1d4b91f42e6836933df516e76d9ab3dd2699a3"
+  }
+}

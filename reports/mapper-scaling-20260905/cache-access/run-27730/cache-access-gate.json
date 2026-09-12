@@ -1,0 +1,50 @@
+{
+  "status": "pass",
+  "feature_cache_index_sha256": "a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5",
+  "pairs": [
+    {
+      "baseline": "stream-buffer",
+      "candidate": "stream-mmap",
+      "weights_optimizer_and_loss_trajectory_bit_identical": true,
+      "loop_speedup": 1.5496786489671834
+    },
+    {
+      "baseline": "dense-host",
+      "candidate": "dense-device",
+      "weights_optimizer_and_loss_trajectory_bit_identical": true,
+      "loop_speedup": 1.471273187310401
+    }
+  ],
+  "timings": {
+    "stream-buffer": {
+      "loop_seconds": 106.72825441416353,
+      "setup_seconds": 0.9258208861574531,
+      "input_io_seconds": 95.34611535165459,
+      "validation_seconds": 0.35013934783637524,
+      "peak_gpu_bytes": 381699584
+    },
+    "stream-mmap": {
+      "loop_seconds": 68.87121693603694,
+      "setup_seconds": 0.6358176940120757,
+      "input_io_seconds": 57.64586497051641,
+      "validation_seconds": 0.23935676831752062,
+      "peak_gpu_bytes": 381699584
+    },
+    "dense-host": {
+      "loop_seconds": 19.725346544291824,
+      "setup_seconds": 6.41419031471014,
+      "input_io_seconds": 6.729344053193927,
+      "validation_seconds": 0.3089206418953836,
+      "peak_gpu_bytes": 1262231552
+    },
+    "dense-device": {
+      "loop_seconds": 13.406991111114621,
+      "setup_seconds": 6.224626066163182,
+      "input_io_seconds": 0.33919886453077197,
+      "validation_seconds": 0.21975895250216126,
+      "peak_gpu_bytes": 5710205952
+    }
+  },
+  "wall_seconds": 117.8345037298277,
+  "scope": "Unchanged data/order/masking/optimizer and bit-identical weights, optimizer states and every recorded loss/validation point. Cache access timing only; no new decoding performance claim."
+}

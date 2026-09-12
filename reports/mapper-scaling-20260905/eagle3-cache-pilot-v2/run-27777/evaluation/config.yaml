@@ -1,0 +1,60 @@
+protocol_version: 1
+run_name: eagle3-8b-cached-mapper-pilot
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: eagle3
+  id: deepseek-ai/eagle3_qwen3_4b_ttt7
+  revision: b0b90fd15d052217c226be5e46d468d8d129e0cd
+  source_commit: 005e03b81cec38b7da6399833d609ee89a2587f2
+native_target_proposer:
+  id: deepseek-ai/eagle3_qwen3_8b_ttt7
+  revision: f6485ba8d21e11942958617dbe7e71b467f38f38
+generation:
+  enable_thinking: false
+  max_new_tokens: 128
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/eval_manifest.json
+  benchmarks:
+  - math500
+  methods:
+  - native_ar
+  - native_target_eagle3
+  - source_reuse_eagle3
+  - relay_dense_a
+  - relay_factor512
+  - relay_mlp512
+  - relay_dense_b
+  - relay_mlp512_l2
+  max_prompts: 8
+  warmups: 1
+  draft_length: 7
+  profile_regions: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants:
+    relay_dense_a: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27777/fits/dense/step-000016.pt
+    relay_factor512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27777/fits/factor512/step-000016.pt
+    relay_mlp512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27777/fits/mlp512/step-000016.pt
+    relay_dense_b: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27777/fits/dense/step-000016.pt
+    relay_mlp512_l2: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27777/fits/mlp512-l2/step-000016.pt

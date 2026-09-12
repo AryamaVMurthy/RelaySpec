@@ -1,0 +1,70 @@
+{
+  "source_config": "configs/submission/baselines/sd-square-compatibility.json",
+  "source_config_sha256": "4f882be369fc364b60b33b0b0ac75fc4d6f973c5be7ada71c62217e22d78519a",
+  "verification_protocol": "configs/submission/baselines/external-verification-protocol.json",
+  "verification_protocol_sha256": "488d60999dcb0b80fba7e8c1106aa474fc15a8bfe0af4296fa359e153b65b9f0",
+  "prerequisites": {
+    "reports/external-baselines-20260906/sd-square-epoch-decoding.json": "8b7c1d211f976f44eb5c13f855baef362042bb931e10f032ff0bf82792160895",
+    "reports/external-baselines-20260906/sd-square-termination.json": "7f2ea22df922c0a174ab90a70c542773709d29865da1c4d2c2dc2bc389c9a8be"
+  },
+  "phase": "quality_pilot",
+  "selected_epoch_method": "sd2_epoch1",
+  "selection_rule": "highest throughput point among all four predeclared epoch settings",
+  "seed": 1729,
+  "manifest_path": "configs/eval_manifest.json",
+  "requests": 4,
+  "request_offset": 24,
+  "total_development_requests": 8,
+  "max_new_tokens": 2048,
+  "observer_pilot_tokens": 64,
+  "warmup_tokens": 16,
+  "inference_precision": {
+    "target": "float16",
+    "drafter": "bfloat16",
+    "steering": "bfloat16",
+    "autocast": "bfloat16"
+  },
+  "variants": {
+    "native_ar": {
+      "kind": "ar"
+    },
+    "sd2_selected": {
+      "kind": "steering",
+      "checkpoint": "/scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/sd-square-fits/27912/rank0/steering-state.pt",
+      "checkpoint_sha256": "4209d9bbfb61edb96136f4de781c1c5153e935506a7b81b16070fa13cb729b27",
+      "trainable_sha256": "e863b421e960547c6b20cccb6c7c2ead724afeacfaf9d7142283a4ecec6f189a",
+      "updates": 128,
+      "epochs": 1,
+      "learning_rate": 4e-06,
+      "objective": "kl",
+      "distinct_examples": 512,
+      "inference_sha256": "ad1673f8ddac04223494b8da8819a3f274ef0c7b887533098d94caef599a044d"
+    }
+  },
+  "fitting_input_sha256": {
+    "sd-square-epochs.json": "59146c7af9fb5bb5887333e7b52ee633de44422f8dd8627d2aa5050b0856916a",
+    "jobs.json": "513e63537f5606e5ce83606cf6f97da32531f142276886bd7fba62032959f5bd",
+    "sd-square-decoding.json": "f4a6bf36a2126112b3c6515dd68758bd5384948d59bfda86f20d5aacb0088699",
+    "source-commit.txt": "4a4f08e6046ae5fbe331fcbb2cdb7dcefe2687a90c0dd0852da0a5b2b5858d5c",
+    "sd-square-full-pilot-gate.json": "77ce3148f9c088176beb06faf6b0c3c9484b9bc94571c398f5f221877abbb3f4",
+    "pilot-rank0.json": "b33f2d436440ef3b686a26aa9e1d554105f39067df8fbc60f2d9c407d0e087d0",
+    "training-rank0.json": "a52d96789c957bf4ae2a0133bb4b4d733dbef48e1e4a151c7b97f314c2e6525b",
+    "decoding-rank0.json": "fc899363affb838d8181edc0f11fe6e3ba206475c0f7b52e6cf8ae469ad5dcb0",
+    "pilot-rank1.json": "8effcf6ba5be5de88e632fe1ce4605df3f93a3cef9886953a172599c9fd62eb9",
+    "training-rank1.json": "bd05637b99e246b6632bf162c3a1d4207a40dfbe2323a3637d690ea4370aa7e6",
+    "decoding-rank1.json": "a41e78185bba6181a8cdde8bacf2b48c6a284ba3831dae628a7ba56e7c4fcaa0",
+    "pilot-rank2.json": "e66f280f68ee98f35033e2d096749466b17f2db6ab5cc3bf8c1cfef04a93acc3",
+    "training-rank2.json": "9dca9405edecee866442d0e0cce12fd9fa9b502c062e32d4018d0b0f23a7ccff",
+    "decoding-rank2.json": "0db5127d04a7204a19d7f5c1b46451ba79015760637feb78566d1f587700eeef",
+    "pilot-rank3.json": "2a9486def2cd9dd7e312ee182178c20402e9c522096d6a253abf77ffd7f2f57e",
+    "training-rank3.json": "0d7a2f3f97fcc50b8dc6dd2cbbaa4c12922ec1e7eb0fc07d9247a88a9443dfc2",
+    "decoding-rank3.json": "8e6e849dbb62fa87d6b72d44e22e68534112ebf0c862e7fa3f85b7e9d3ed06de",
+    "epoch_registry": "67ae6e843a303aa0ed31c40ac312659574ae2e3b24c0562ff2410c8164e35f69"
+  },
+  "original_exact_ar_gates": {
+    "sd_square_job27869": "failed_preserved",
+    "pard_job27831": "failed_preserved"
+  },
+  "scope": "Selected SD-square epoch frozen before eight exposed development requests at2048-token cap. Two disjoint four-request pilot shards and correct runtime-local AR. Public FP16 target/BF16 drafter and steering with BF16 autocast. Training and inference identities must match prior decoding. Strict actual-verifier checks and immediate/deferred observer equivalence. Full request time includes GPU observation and excludes CPU materialization/detokenization. Capped answer scoring is separate from timing. This pilot does not establish final quality noninferiority, untouched confirmation, isolated memory or an algorithm-only cross-runtime ranking. Untimed16-token warmup records the public physical-slot guard as a known termination reason. Actual verifier equality stays strict, and scored generation still requires EOS or cap. Guard-policy pilot uses development indices24--31 including failed index26.",
+  "warmup_policy": "record_public_physical_slot_guard_only_for_untimed_warmup"
+}

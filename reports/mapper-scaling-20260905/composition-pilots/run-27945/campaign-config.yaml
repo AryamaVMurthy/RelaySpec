@@ -1,0 +1,60 @@
+protocol_version: 1
+run_name: mapper-campaign-isolation-pilot
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 128
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/eval_manifest.json
+  benchmarks:
+  - math500
+  methods:
+  - native_ar
+  - native_target_dflash
+  - optimized_source_reuse
+  - relay_dense_a
+  - relay_factor512
+  - relay_mlp512
+  - relay_dense_b
+  - relay_mlp512_l2
+  max_prompts: 8
+  warmups: 1
+  block_size: 16
+  profile_regions: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants:
+    relay_dense_a: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27945/fits/dense/step-000016.pt
+    relay_factor512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27945/fits/factor512/step-000016.pt
+    relay_mlp512: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27945/fits/mlp512/step-000016.pt
+    relay_dense_b: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27945/fits/dense/step-000016.pt
+    relay_mlp512_l2: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/feature-caches/pilot-27945/fits/mlp512-l2/step-000016.pt
+native_target_proposer:
+  id: z-lab/Qwen3-8B-DFlash-b16
+  revision: 9b41424b7109f9c5413454f481b09a82b85333f4

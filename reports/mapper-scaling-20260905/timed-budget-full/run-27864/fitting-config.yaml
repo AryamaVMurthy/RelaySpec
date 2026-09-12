@@ -1,0 +1,105 @@
+protocol_version: 1
+run_name: dflash-small-drafter-adaptation-512-calibration
+seed: 1729
+resources:
+  gpu_count: 4
+paths:
+  scratch: /scratch/aryama.murthy/relayspec/final
+target:
+  id: Qwen/Qwen3-8B
+  revision: b968826d9c46dd6066d109eabc6255188de91218
+proposer:
+  family: dflash
+  id: z-lab/Qwen3-4B-DFlash-b16
+  revision: b74e3a329c4d963783143b1e970d95b002be72bd
+  source_commit: 94e4abc5e0c31b67bc1a9d30f1cc34ece28a8756
+generation:
+  enable_thinking: false
+  max_new_tokens: 128
+  temperature: 0.0
+  top_p: 1.0
+  top_k: 0
+benchmark:
+  manifest_path: configs/eval_manifest.json
+  benchmarks:
+  - math500
+  methods:
+  - native_ar
+  - native_target_dflash
+  - optimized_source_reuse
+  - relay_dense_a
+  - relay_factor512
+  - relay_mlp512
+  - relay_dense_b
+  max_prompts: 8
+  warmups: 1
+  block_size: 16
+  profile_regions: true
+source_trunk:
+  model:
+    id: Qwen/Qwen3-4B
+    revision: 1cfa9a7208912126459214e8b04321603b3df60c
+  layers: 34
+  tap_layers:
+  - 1
+  - 9
+  - 17
+  - 25
+  - 33
+relay_probe:
+  repetitions: 1
+  variants:
+    relay_dense_a: /home/aryama.murthy/relayspec-scaling-20260905/outputs/rs-data512-27580/relay-step-001024.pt
+    relay_factor512: /home/aryama.murthy/relayspec-mapper-scaling-v2-20260905/outputs/rs-factor512-pilot-v2-27695/relay-step-000016.pt
+    relay_mlp512: /home/aryama.murthy/relayspec-mapper-scaling-v2-20260905/outputs/rs-mlp512-pilot-v2-27696/relay-step-000016.pt
+    relay_dense_b: /home/aryama.murthy/relayspec-scaling-20260905/outputs/rs-data512-27580/relay-step-001024.pt
+native_target_proposer:
+  id: z-lab/Qwen3-8B-DFlash-b16
+  revision: 9b41424b7109f9c5413454f481b09a82b85333f4
+adaptation_pilot:
+  diagnostics: false
+  feature_cache_index_sha256: a2fd012df1da5554f8e211cf0b60aec098d3754d866bc50e9623f3117f43f8e5
+  initial_mapper: /scratch/aryama.murthy/factorspec-runtime-20260826/relayspec/cached-fits/rs-focused-p00-27737/dense-n512-s1729/step-000128.pt
+  initial_mapper_sha256: c4cdbfc1645e6e59314113d57d1d4b91f42e6836933df516e76d9ab3dd2699a3
+  initial_mapper_distinct_examples: 512
+  initial_mapper_updates: 128
+  pilot_distinct_examples: 512
+  pilot_updates: 65536
+  batch_size: 4
+  learning_rate: 0.0002
+  lora_ranks:
+  - 8
+  - 32
+  lora_alpha_multiplier: 2
+  target_suffixes:
+  - q_proj
+  - v_proj
+  scope: Equal-data calibration on exactly 512 existing cached records and 128 batch-four
+    updates. Connector-only CE versus frozen-connector LoRA ranks8/32 with duplicate
+    rank32. Deterministic fitting, raw trainable-state export, direct-fusion placement
+    check, merged reload and actual decoding. Measures teacher preparation and fitting
+    separately for the subsequent quarter/one/four baseline-time budgets. No large-data
+    expansion or matched-compute superiority claim.
+  deterministic_algorithms: true
+  cublas_workspace_config: :4096:8
+  prepared_records_device: cpu
+  check_direct_fusion_equivalence: false
+  worker_trials:
+  - name: feature_dispatch
+    lora_rank: 0
+    learning_rate: 0.0006
+  - name: connector_ce
+    lora_rank: 0
+    learning_rate: 2.0e-05
+    seed: 1729
+    warm_time_budget_seconds: 89.86708884011023
+  - name: lora32_s1729
+    lora_rank: 32
+    learning_rate: 2.0e-05
+    seed: 1729
+    warm_time_budget_seconds: 89.86708884011023
+  - name: lora32_s1730
+    lora_rank: 32
+    learning_rate: 2.0e-05
+    seed: 1730
+    warm_time_budget_seconds: 89.86708884011023
