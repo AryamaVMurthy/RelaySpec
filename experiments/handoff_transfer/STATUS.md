@@ -675,3 +675,13 @@ completed, tasks24/25 running. Four GPUs allocated across node07/node06.
 No Slurm failures observed. Promotions31786/31787 pending. These are
 32-request tuning screens; final128x2048 benchmarks remain pending.
 Next routine check09:16:45IST.
+
+## 2026-09-12 09:16:45 IST
+
+All 36 Qwen and 36 Llama initial validation screens completed with Slurm
+exit 0. Promotion jobs31786/31787 completed successfully. The first
+500-update fits31788_0 (node07) and31789_0 (node06) are running, two GPUs
+each, approximately six minutes elapsed. Remaining23 tasks per family
+are queued. No failures observed in this check. Final128x2048 evaluations
+remain pending; screen artifacts and selected learning rates still need
+archival and detailed review. Next routine check09:41:45IST.
