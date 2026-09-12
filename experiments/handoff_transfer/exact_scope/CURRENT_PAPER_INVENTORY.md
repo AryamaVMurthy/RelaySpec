@@ -95,3 +95,40 @@ and calibration cost, not only records seen by the refinement stage.
 
 These entries document the old evidence only. No historical result becomes an
 AUF result by relabeling it, and this inventory does not launch new experiments.
+
+## Layer and native-interface studies checked
+
+- **Retargeted depth ablation** (line1022): DFlash/EAGLE8B; equal-capacity
+  two-input-layer maps at[1,9],[9,25],[25,33],512 records,8192 batch-four
+  updates, seed1729. Early-input nonlinear control compares factorized linear
+  and GELU MLP width1950 at exactly20,966,400 weights. The historical compact
+  mapper is a fused interface, not five independent layerwise maps: converting
+  this study requires an explicit architecture definition in the new plan.
+  Full-map and two-layer measurements include14B development replication.
+- **Posthoc retargeting compression** (line868): rank1024 weight-only SVD
+  versus output-subspace projection, using512 records and up to eight cached
+  positions per record for the latter, alongside directly fitted compact maps.
+- **Native projection studies** (line1137 onward): these are a secondary
+  same-target application, separate from retargeting. Native SVD rank1536
+  retains37.75M projection weights; one/two-layer native students retain16.78M/
+  33.55M. The full projection has83.89M weights. Student fits use512 records
+  and8192 updates. Native initialization controls use16/128 records and128
+  updates, with1024/8192-update continuations; random/inherited/crop controls
+  are distinct. Scalar controls train two gains at rates0.003/0.03. Low-rank
+  additive correction rank128 changes trainable count but folds into the same
+  dense deployment. Historical extra seeds and disjoint calibration windows
+  cannot automatically be copied into the new one-seed ablation protocol.
+- **Native EAGLE depth extension** (line1357): add layer1,9 or17 to[25,33],
+  keeping512 math records and128 updates. All three additions and the two-layer
+  control remain reported; the resulting late triple is[17,25,33]. Untrained
+  column crops distinguish inherited performance from calibration.
+- **Exposure and confirmation** (line2551): the original256-question GSM8K
+  confirmation and all256 reserve questions were already consumed. Those
+  reserve questions are not unused holdouts for the new study. Any future
+  frozen final cohort requires an explicit exposure audit; reused questions
+  must remain labeled as such.
+
+The native initialization finding includes a failed primary16-record fresh-set
+retention criterion. The original frozen GSM8K study passes its speed criterion
+but does not establish its tighter joint speed-and-quality criterion. Those
+outcomes must not be omitted or relabeled if these historical claims are retained.
