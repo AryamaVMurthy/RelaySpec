@@ -226,3 +226,17 @@ AR output through the existing contract check. The failed job and logs remain
 recorded; downstream comparisons now wait for the replacement. No fitting
 objectives, training settings or experiment variants were added. Feature CE,
 forward KL and reverse KL remain disabled for all future runs.
+
+## Overlap remaining full adapter measurements
+
+After original and ZIP repetition0 both passed128/128 output and finish checks
+at batch128, array32458 (tasks1–6, at most three concurrent GPUs) was released
+to measure the six existing pending adapter cells while32457 finishes shared
+references and five-matrix CE. Each array task runs the same three full128/cap2048
+measurements into the existing exact evaluator's output paths using its benchmark
+module and argument contract. It checks output agreement against the completed
+AR repetition0, but does not declare final evaluation complete. Jobs32295–32300
+wait for both32457 and32458, reuse these cached measurements, and perform the
+original matching-repetition reference checks. The final collector independently
+recomputes all comparisons. This adds no experimental cells, fitting, seeds,
+timing repetitions or probes. All jobs remain pinned to node07's four GPUs.
