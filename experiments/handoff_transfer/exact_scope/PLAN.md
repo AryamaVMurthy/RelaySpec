@@ -240,3 +240,14 @@ wait for both32457 and32458, reuse these cached measurements, and perform the
 original matching-repetition reference checks. The final collector independently
 recomputes all comparisons. This adds no experimental cells, fitting, seeds,
 timing repetitions or probes. All jobs remain pinned to node07's four GPUs.
+
+## Archive preflight and executed source preservation
+
+A read-only preflight verified all388 expected training/calibration files,
+including3.168GiB of unmerged trainable parameters. All21 token-fit source
+snapshots and the completed feature/evaluation snapshots are present. The final
+archive now also preserves compressed executed source snapshots for training,
+evaluation and Transformers confirmation, plus the overlay/vendor support code.
+It excludes model weights, data, caches and environments from source bundles.
+This retains the cross-family runtime correction with the resulting artifacts;
+archive tests verify code contents and reject missing snapshots.

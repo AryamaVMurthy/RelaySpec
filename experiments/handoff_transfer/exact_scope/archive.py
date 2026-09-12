@@ -1,7 +1,9 @@
 """Preserve compact inference interfaces and experiment evidence off scratch."""
 import hashlib
 import json
+import os
 import shutil
+import tarfile
 from pathlib import Path
 
 
@@ -19,6 +21,25 @@ def extract_interface(source,destination):
     temporary=destination.with_suffix(destination.suffix+'.tmp')
     with safe_open(source,framework='pt',device='cpu') as weights:
         save_file({'fc.weight':weights.get_tensor('fc.weight')},temporary)
+    temporary.replace(destination)
+
+
+def archive_source_snapshot(source,destination):
+    """Preserve actual job code while excluding model/data/cache payloads."""
+    source,destination=Path(source),Path(destination)
+    files=[]
+    for folder,directories,names in os.walk(source):
+        directories[:]=sorted(d for d in directories if d not in {
+            '.git','.venv','__pycache__','reports','node_modules','.pytest_cache'})
+        for name in sorted(names):
+            path=Path(folder)/name
+            if path.suffix in {'.py','.sh','.sbatch','.toml','.lock','.patch'}:
+                files.append(path)
+    if not files:raise ValueError(f'No source files in snapshot: {source}')
+    destination.parent.mkdir(parents=True,exist_ok=True)
+    temporary=destination.with_suffix(destination.suffix+'.tmp')
+    with tarfile.open(temporary,'w:gz',dereference=True) as bundle:
+        for path in sorted(files):bundle.add(path,arcname=str(path.relative_to(source)),recursive=False)
     temporary.replace(destination)
 
 
@@ -43,6 +64,10 @@ def archive(audit,root,destination,config_root):
         for path in sorted(source.rglob('*')):
             if path.is_file() and path.suffix in ('.json','.jsonl'):
                 copy(path,Path(relative)/path.relative_to(source))
+
+    def snapshot(source,relative):
+        target=destination/'sources'/relative
+        archive_source_snapshot(source,target);record(target,source)
 
     for family in ('q8','llama','cross'):
         tasks=json.loads((config_root/f'{family}-tasks.json').read_text())
@@ -69,6 +94,10 @@ def archive(audit,root,destination,config_root):
                 parameters='parameters.pt' if family=='cross' else 'final.pt'
                 copy(module/parameters,relative/'trainable-parameters.pt')
                 for path in sorted((fit/'logs').glob('gpu-*.csv')):copy(path,relative/path.name)
+                sources=sorted(fit.glob('source-*'))
+                if not sources:raise ValueError(f'Missing executed training source: {fit}')
+                for source in sources:
+                    snapshot(source,Path('fits')/family/f'{kind}-{obj}'/(source.name+'.tar.gz'))
         json_tree(root/'exact32e1b8-results'/family,Path('evaluations')/family)
         initial=root/'cross-full4096/initializers-e1' if family=='cross' else root/family
         copy(initial/'transfer.json',Path('initializers')/family/'transfer.json')
@@ -91,6 +120,8 @@ def archive(audit,root,destination,config_root):
     json_tree(root/'gpu-matched-references',Path('gpu-matched-references'))
     for path in sorted((root/'transformers-e1b8/q8').rglob('gpu-*.csv')):
         copy(path,Path('transformers/q8')/path.relative_to(root/'transformers-e1b8/q8'))
+    for source in sorted((root/'transformers-e1b8').glob('source-*')):
+        snapshot(source,Path('transformers')/(source.name+'.tar.gz'))
     # Device identity stays in each benchmark summary. These CSVs describe
     # whole jobs, including setup and warmup, rather than isolated timed passes.
     jobs={row['benchmark_job_id'] for row in audit['comparisons']}
@@ -101,6 +132,10 @@ def archive(audit,root,destination,config_root):
         if 'job_id' in summary:jobs.add(summary['job_id'])
     for job in sorted(map(str,jobs)):
         copy(root.parent/f'exact32-source-{job}/gpu.csv',Path('telemetry')/f'job-{job}.csv')
+        snapshot(root.parent/f'exact32-source-{job}',Path('jobs')/f'{job}.tar.gz')
+    # These include the imported overlay/vendor training support as well as
+    # the final audit code. Per-job snapshots above retain executed versions.
+    snapshot(config_root.parent,Path('handoff-support-at-archive.tar.gz'))
     for path in sorted(config_root.glob('*')):
         if path.suffix in ('.json','.py','.sbatch','.md'):copy(path,Path('configuration')/path.name)
     manifest=dict(status='complete',files=entries,total_bytes=sum(e['bytes'] for e in entries),
