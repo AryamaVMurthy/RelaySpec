@@ -42,7 +42,7 @@ def main(a):
     began=time.perf_counter()-elapsed
     for step in range(first_step,a.steps):
         opt.zero_grad(set_to_none=True);losses=[]
-        # Reproducible record permutations, global batch8, two microbatches.
+        # Reproducible record permutations, one batch8 on this single GPU.
         epoch=(step*8)//len(cache);offset=(step*8)%len(cache)
         order=epoch_order(len(cache),epoch)
         indices=[order[(offset+j)%len(cache)] for j in range(8)]

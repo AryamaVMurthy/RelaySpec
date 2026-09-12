@@ -8,8 +8,15 @@ def read(path):
     return json.loads(path.read_text())
 
 
+def sha(path):
+    digest=hashlib.sha256()
+    with path.open('rb') as handle:
+        for chunk in iter(lambda:handle.read(8*1024*1024),b''):digest.update(chunk)
+    return digest.hexdigest()
+
+
 def audit(root,config_root):
-    cells=[];issues=[];comparison_rows=[]
+    cells=[];issues=[];comparison_rows=[];reference_hashes={}
     for family in ['q8','llama','cross']:
         tasks=read(config_root/f'{family}-tasks.json')
         tasks += [dict(kind='feature',objective=o,lr=.001) for o in ['feature_ce','forward_kl','reverse_kl']]
@@ -26,6 +33,9 @@ def audit(root,config_root):
                     summary=read(fit/'summary.json');contract=read(fit/'contract.json')
                     assert summary['status']=='complete' and contract['epochs']==1 and contract['records']==4096
                     assert contract['objective']==obj and contract['seed']==42
+                    assert summary['contract']==contract and summary['export_relative_mse']<1e-6
+                    assert len(summary['history'])==1 and summary['history'][0]['epoch']==1
+                    assert summary['history'][0]['step']==(contract['positions']+contract['position_batch']-1)//contract['position_batch']
                 else:
                     summary=read(fit/f'modules/steps-512/{kind}/summary.json')
                     verification=read(fit/f'modules/steps-512/{kind}/verification.json')
@@ -33,6 +43,11 @@ def audit(root,config_root):
                     assert summary['processed_examples']==4096 and summary['optimizer_steps']==512
                     assert summary['world_size']==1 and summary['batch_per_gpu']==8 and summary['gradient_accumulation']==1
                     assert summary['anchors_per_example']==32 and summary['objective']==obj and summary['seed']==42
+                    assert summary['records_rank0']==4096 and 0<summary['actual_anchors_rank0']<=4096*32
+                    assert summary['objective_chunk_blocks']==32 and summary['checkpoint']=='final'
+                    if family!='cross':
+                        assert len(summary['history'])==1 and summary['history'][0]['epoch']==1
+                        assert summary['history'][0]['microbatches']==512
                 cell['training']=True;cell['training_summary']=summary
             except (OSError,KeyError,AssertionError,ValueError) as error:
                 issues.append(dict(cell=label,phase='training',error=str(error)))
@@ -43,16 +58,23 @@ def audit(root,config_root):
                 batch=serving['request_batch_size'];assert completion['batches']==[batch]
                 suffix=f'-b{batch}' if batch>1 else ''
                 weights=(fit/'export/model.safetensors') if kind=='feature' else fit/f'exports/steps-512/{kind}/model.safetensors'
-                digest=hashlib.sha256()
-                with weights.open('rb') as handle:
-                    for chunk in iter(lambda:handle.read(8*1024*1024),b''):digest.update(chunk)
-                export_hash=digest.hexdigest()
+                export_hash=sha(weights)
+                initial_root=root/'cross-full4096/initializers-e1' if family=='cross' else root/family
+                if family not in reference_hashes:
+                    transfer=read(initial_root/'transfer.json')
+                    reference_hashes[family]={'original':sha(initial_root/'normal/export/model.safetensors'),
+                                              'zip':transfer['base_sha256']}
+                expected_exports={**reference_hashes[family],label:export_hash}
                 for repeat in range(3):
                     ar=result_root/f'ar/ar-r{repeat}-w0{suffix}.jsonl'
                     eval_summary=read(case/f'matrix-r{repeat}-w0{suffix}.summary.json')
                     assert eval_summary['contract']['export_sha256']==export_hash
                     assert eval_summary['contract']['count']==128 and eval_summary['contract']['cap']==2048
                     for name,folder in [('original',result_root/'original'),('zip',result_root/'zip'),(label,case)]:
+                        measured=read(folder/f'matrix-r{repeat}-w0{suffix}.summary.json')
+                        assert measured['contract']['export_sha256']==expected_exports[name]
+                        assert measured['contract']['repeat']==repeat and measured['contract']['request_batch_size']==batch
+                        assert measured['contract']['runtime_config']['max_num_seqs']==batch and measured['timing_valid']
                         result=compare([ar],[folder/f'matrix-r{repeat}-w0{suffix}.jsonl'])
                         assert result['count']==result['exact_matches']==result['finish_matches']==128
                         comparison_rows.append(dict(family=family,method=name,repeat=repeat,**result))
