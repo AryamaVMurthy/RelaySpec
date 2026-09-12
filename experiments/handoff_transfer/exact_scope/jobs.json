@@ -1249,25 +1249,31 @@
   },
   {
     "job": 32305,
-    "name": "b8-transformers-q8-ce",
+    "name": "b8-transformers-q8-ce-failed-32305",
     "node": "node07",
     "env": {
       "MODE": "ce"
     },
     "dependency": 32325,
     "script": "transformers.sbatch",
-    "gpus": 1
+    "gpus": 1,
+    "status": "superseded",
+    "superseded_by": 32467,
+    "reason": "Working directory shadowed PYTHONPATH with older /home/aryama.murthy/relayspec package; unexpected selective_capture argument before evaluation"
   },
   {
     "job": 32306,
-    "name": "b8-transformers-q8-auf",
+    "name": "b8-transformers-q8-auf-failed-32306",
     "node": "node07",
     "env": {
       "MODE": "auf"
     },
     "dependency": 32325,
     "script": "transformers.sbatch",
-    "gpus": 1
+    "gpus": 1,
+    "status": "superseded",
+    "superseded_by": 32468,
+    "reason": "Working directory shadowed PYTHONPATH with older /home/aryama.murthy/relayspec package; unexpected selective_capture argument before evaluation"
   },
   {
     "job": 32307,
@@ -1276,11 +1282,12 @@
     "env": {},
     "dependency": [
       32304,
-      32305,
-      32306
+      32467,
+      32468
     ],
     "script": "collect.sbatch",
-    "gpus": 0
+    "gpus": 0,
+    "dependency_change_reason": "Replace the two failed warmup jobs with their corrected submissions; retain AR with verified AST-identical generator functions"
   },
   {
     "job": 32325,
@@ -1319,7 +1326,8 @@
       32298,
       32299,
       32300
-    ]
+    ],
+    "status": "complete"
   },
   {
     "job": 32332,
@@ -1375,5 +1383,33 @@
     "purpose": "Move the same six pending adapter measurements earlier; existing evaluator reuses exact output contracts",
     "status": "complete",
     "completion_evidence": "reports/progress-audit.json: all27 fits/evaluations independently verified; cross-family128 output/finish matches in every repetition"
+  },
+  {
+    "job": 32467,
+    "name": "b8-transformers-q8-ce",
+    "node": "node07",
+    "env": {
+      "MODE": "ce"
+    },
+    "dependency": null,
+    "script": "transformers.sbatch",
+    "gpus": 1,
+    "status": "submitted",
+    "supersedes": 32305,
+    "reason": "Correct working directory so the archived RelaySpec package is imported; original failed in warmup before evaluation"
+  },
+  {
+    "job": 32468,
+    "name": "b8-transformers-q8-auf",
+    "node": "node07",
+    "env": {
+      "MODE": "auf"
+    },
+    "dependency": null,
+    "script": "transformers.sbatch",
+    "gpus": 1,
+    "status": "submitted",
+    "supersedes": 32306,
+    "reason": "Correct working directory so the archived RelaySpec package is imported; original failed in warmup before evaluation"
   }
 ]

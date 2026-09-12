@@ -309,3 +309,20 @@ fails, so numerical disagreement cannot silently discard diagnostic evidence.
 This audit-only change adds no runs and changes no training or decoding config.
 Twenty-five focused audit/report tests pass; the collector is synced before the
 queued final audit starts. Reference job32325 is still live at50 minutes elapsed.
+
+## Transformers import correction
+
+Reference job32325 completed. Standalone CE/AUF jobs32305/32306 failed in
+warmup because Slurm started in /home/aryama.murthy, where an older regular
+relayspec package shadowed the intended PYTHONPATH snapshot. The snapshot
+itself had the required selective_capture API. A CPU import check reproduced
+the wrong module and verified that changing cwd to the snapshot loads the
+correct module/API. The benchmark now checks its generation-module path before
+loading models and records its source hash in completed summaries.
+
+Replacement jobs32467/32468 retain the exact fitting/evaluation configuration;
+failed logs and snapshots remain preserved. AR32304 continues because AST
+comparisons prove both native_autoregressive_generate and greedy_sample match
+the intended implementation. Its actually imported source and equivalence
+proof are retained in the archive inputs. Final audit32307 now depends on
+32304/32467/32468. No measurement outputs existed for the failed CE/AUF jobs.

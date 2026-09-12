@@ -10,11 +10,15 @@ from safetensors.torch import load_file
 from transformers import AutoModelForCausalLM, AutoTokenizer, Qwen3Config
 from relayspec.dflash import import_official_dflash
 from relayspec.generation import native_autoregressive_generate, relay_dflash_generate
+import relayspec.generation as generation_module
 from experiments.handoff_transfer.pack_transfer import sha, write
 
 
 @torch.inference_mode()
 def main(a):
+    expected_source=Path(__file__).resolve().parents[2]/'src/relayspec/generation.py'
+    if Path(generation_module.__file__).resolve()!=expected_source:
+        raise RuntimeError(f'Wrong RelaySpec import: {generation_module.__file__}; expected {expected_source}')
     a.out.mkdir(parents=True,exist_ok=True)
     path=a.out/f'{a.mode}-r0-w0.jsonl'
     assert not path.exists(), 'Use a fresh output directory; retain prior runs'
@@ -80,6 +84,7 @@ def main(a):
             stream.write(json.dumps(record)+'\n');stream.flush()
             if (index+1)%16==0:print(json.dumps({'mode':a.mode,'completed':index+1}),flush=True)
     write(path.with_suffix('.summary.json'),{'contract':contract,'timing_valid':True,
+          'generation_source':str(expected_source),'generation_source_sha256':sha(expected_source),
           'timing_contract':'Synchronized request wall time including prefill; warmed standalone Transformers',
           'torch_version':torch.__version__,'peak_cuda_bytes':torch.cuda.max_memory_allocated()})
 

@@ -26,4 +26,5 @@ mkdir -p "$out"
 nvidia-smi --query-gpu=timestamp,index,uuid,name,utilization.gpu,memory.used,power.draw,temperature.gpu --format=csv -l 5 > "$out/gpu-$SLURM_JOB_ID.csv" &
 monitor=$!
 trap 'kill "$monitor"' EXIT
+cd "$snapshot"
 "$python" -u -m experiments.handoff_transfer.transformers_benchmark --family q8 --target /scratch/aryama.murthy/transfer-reproduction-20260907/work/models/8b/target --data "$root/exact32e1b8-results/q8/evaluation" --out "$out" --dflash-source /home/aryama.murthy/factorspec/vendor/dflash --mode "$MODE" "${extra[@]}" --count 128 --cap 2048
