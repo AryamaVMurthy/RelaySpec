@@ -46,7 +46,7 @@ def archive(audit,root,destination,config_root):
 
     for family in ('q8','llama','cross'):
         tasks=json.loads((config_root/f'{family}-tasks.json').read_text())
-        tasks += [dict(kind='feature',objective=o,lr=.001) for o in ('feature_ce','forward_kl','reverse_kl')]
+        if family != 'cross': tasks += [dict(kind='feature',objective=o,lr=.001) for o in ('feature_ce','forward_kl','reverse_kl')]
         for task in tasks:
             kind,obj,lr=task['kind'],task['objective'],task['lr']
             fit=(root/'feature-objectives-e1'/family/obj if kind=='feature' else

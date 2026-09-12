@@ -19,7 +19,7 @@ All target transformers and all drafter parameters outside the named interfaces 
 frozen. There is no target LoRA. Existing Qwen/Llama initializer checkpoints are reused;
 new cross-family original/ZIP initializers are fit for one epoch each.
 
-## Fits per family
+## Fits per family (revised September 12)
 
 | Cell | Trainable interface | Objective |
 |---|---|---|
@@ -30,12 +30,12 @@ new cross-family original/ZIP initializers are fit for one epoch each.
 | dense_fusion/auf | One full fusion matrix | AUF |
 | five_ba56/ce | Five BA updates, rank56, alpha56 | Token CE |
 | five_ba56/auf | Five BA updates, rank56, alpha56 | AUF |
-| feature_ce | Original normalized linear interface | Soft-target feature CE |
-| forward_kl | Original normalized linear interface | KL(source || mapped) |
-| reverse_kl | Original normalized linear interface | KL(mapped || source) |
+| feature_ce (completed Qwen/Llama only) | Original normalized linear interface | Soft-target feature CE |
+| forward_kl (completed Qwen/Llama only) | Original normalized linear interface | KL(source || mapped) |
+| reverse_kl (completed Qwen/Llama only) | Original normalized linear interface | KL(mapped || source) |
 
 ZIP+CE and one-fusion-matrix+CE are one cell, not duplicate experiments.
-Thirty comparison fits: ten per family. Baseline evaluations per family: AR,
+Twenty-one retained token fits: seven per family. The six already-completed Qwen/Llama feature fits are historical artifacts only; cross-family feature CE/forward KL/reverse KL are cancelled, and no further feature-loss fits or dedicated timing measurements are authorized. Baseline evaluations per family: AR,
 unchanged original RelaySpec feature-MSE initializer, unchanged ZIP initializer.
 AUF supervises the correct prefix plus its first failure. No exponential positional
 weighting or additional MSE/KL term is mixed into token CE/AUF. Feature CE/KL uses
@@ -126,10 +126,10 @@ variation over time; three timing repetitions and the one-fitting-seed caveat re
 
 Job32325 supplies missing references with four independent one-GPU workers after the
 main vLLM matrix; existing references are reused only on their recorded physical GPU.
-Workers skip family/card combinations absent from all ten completed method evaluations.
+Workers skip family/card combinations absent from all seven retained token-method evaluations.
 The reference plan refuses to run from an incomplete family. This adds at most81
-reference passes to the original117 vLLM passes (up to198 total),
-without adding training variants or changing the30 comparison fits. Transformers
+reference passes to the revised108 vLLM passes (up to189 total, including six historical feature evaluations),
+without adding training variants or changing the21 retained token fits. Transformers
 jobs32304–32306 depend on32325; final audit32307 follows those checks. The collector
 writes separate provisional and GPU-matched tables and rejects incomplete matched
 comparisons at finalization.
@@ -174,3 +174,14 @@ record identity, rollout/label hashes and native-normalizer provenance. Actual-t
 comparisons covering short, full-length and Unicode regression records passed;
 `paired-alignment-cache-audit.json` records the equivalence check. This avoids a
 second scan of already-verified generated prefixes without changing the sample.
+
+## User scope reduction — September 12
+
+Cancelled pending fit jobs32272–32274 and evaluation jobs32301–32303 before execution.
+The active cross-family variants are original-interface tokenCE, dense-fusion CE/AUF,
+five-matrix CE/AUF and five-BA56 CE/AUF. Job32325 now depends only on
+cross evaluations32294–32300. Completed Qwen/Llama feature-loss artifacts are retained
+in the27-fit archive/audit, but excluded from further dedicated physical-GPU reference
+measurements and the21-cell matched primary comparison requirement. No new feature
+CE, forward-KL or reverse-KL training/evaluation is scheduled by the launcher.
+All data sizes, epoch counts, anchors, token losses and batching remain unchanged.

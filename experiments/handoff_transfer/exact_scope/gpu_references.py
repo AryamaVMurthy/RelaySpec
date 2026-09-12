@@ -19,10 +19,10 @@ def run(module,*arguments):
 
 
 def required_devices(folder):
-    """Only benchmark reference cards actually used by the ten trained cells."""
-    cases=sorted(folder.glob('*/complete.json'))
-    if len(cases)!=10:
-        raise ValueError(f'Expected all ten completed trained cells in {folder}; found {len(cases)}')
+    """Only benchmark reference cards actually used by the seven retained token-fit cells."""
+    cases=sorted(p for p in folder.glob('*/complete.json') if not p.parent.name.startswith('feature-'))
+    if len(cases)!=7:
+        raise ValueError(f'Expected all seven completed trained cells in {folder}; found {len(cases)}')
     batch=read(folder/'evaluation-batch.json')['request_batch_size']
     devices=set()
     for complete in cases:

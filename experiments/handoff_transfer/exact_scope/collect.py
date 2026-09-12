@@ -1,4 +1,4 @@
-"""Audit all30 fits and paired128-request evaluations from actual artifacts."""
+"""Audit 21 token fits and six completed historical feature fits and paired128-request evaluations from actual artifacts."""
 import argparse,json,sys,hashlib
 from pathlib import Path
 from experiments.auf_vllm.compare_outputs import compare
@@ -29,7 +29,7 @@ def audit(root,config_root):
     cells=[];issues=[];comparison_rows=[];reference_hashes={};splits=[]
     for family in ['q8','llama','cross']:
         tasks=read(config_root/f'{family}-tasks.json')
-        tasks += [dict(kind='feature',objective=o,lr=.001) for o in ['feature_ce','forward_kl','reverse_kl']]
+        if family != 'cross': tasks += [dict(kind='feature',objective=o,lr=.001) for o in ['feature_ce','forward_kl','reverse_kl']]
         result_root=root/'exact32e1b8-results'/family
         serving=read(result_root/'evaluation-batch.json') if (result_root/'evaluation-batch.json').exists() else None
         try:
@@ -114,7 +114,7 @@ def audit(root,config_root):
     # Deduplicate shared baseline entries from the per-cell audit above.
     rows=list({(row['family'],row['method'],row['repeat']):row for row in comparison_rows}.values())
     from experiments.handoff_transfer.exact_scope.matched import audit_matched
-    matched=audit_matched(root,cells)
+    matched=audit_matched(root,[c for c in cells if '/feature/' not in c['cell']])
     issues.extend(matched['issues'])
     tf=[]
     for mode in ['ce','auf']:
@@ -125,7 +125,7 @@ def audit(root,config_root):
             tf.append(dict(mode=mode,**result))
         except (OSError,KeyError,AssertionError,ValueError) as error:
             issues.append(dict(cell=f'transformers/{mode}',phase='evaluation',error=str(error)))
-    return dict(status='complete' if not issues else 'incomplete',expected_fits=30,
+    return dict(status='complete' if not issues else 'incomplete',expected_fits=len(cells),expected_primary_fits=21,archived_feature_fits=6,
                 verified_fits=sum(c['training'] for c in cells),verified_evaluated_cells=sum(c['evaluation'] for c in cells),
                 transformers_verified=len(tf),cells=cells,comparisons=rows,transformers=tf,split_audits=splits,
                 gpu_matched_verified_cells=matched['verified_cells'],gpu_matched_comparisons=matched['comparisons'],issues=issues)

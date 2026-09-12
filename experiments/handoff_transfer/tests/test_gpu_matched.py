@@ -25,17 +25,20 @@ def test_same_gpu_still_requires_same_workload_and_repeat():
 
 def test_reference_plan_uses_actual_cards_across_all_repetitions(tmp_path):
     (tmp_path/'evaluation-batch.json').write_text(json.dumps(dict(request_batch_size=128)))
-    for index in range(10):
+    for index in range(7):
         folder=tmp_path/f'cell-{index}';folder.mkdir()
         (folder/'complete.json').write_text(json.dumps(dict(status='complete',timing_repetitions=3)))
         for repeat in range(3):
             record=summary()
-            if index==9 and repeat==2:
+            if index==6 and repeat==2:
                 for key in ('gpu_before','gpu_after'):record[key][0]['device_uuid']='card-b'
             (folder/f'matrix-r{repeat}-w0-b128.summary.json').write_text(json.dumps(record))
+    # Withdrawn feature objectives must not request further GPU measurements.
+    feature=tmp_path/'feature-feature_ce-lr0.001';feature.mkdir()
+    (feature/'complete.json').write_text('{}')
     assert required_devices(tmp_path)=={'card-a','card-b'}
 
 
 def test_reference_plan_does_not_treat_missing_cells_as_unused_cards(tmp_path):
-    with pytest.raises(ValueError,match='all ten completed'):
+    with pytest.raises(ValueError,match='all seven completed'):
         required_devices(tmp_path)

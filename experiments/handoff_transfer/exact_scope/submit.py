@@ -36,12 +36,10 @@ def token_tasks(family,dep=None):
     return result
 
 def features(family,dep=None):
-    result=[]
-    for objective in ['feature_ce','forward_kl','reverse_kl']:
-        env=dict(FAMILY=family,KIND='feature',MATRIX_OBJECTIVE=objective,MATRIX_LR=.001)
-        job=submit('feature_fit.sbatch',f'b8-feature-{family}-{objective}',env,dep)
-        result.append((job,env))
-    return result
+    # User withdrew these objectives from all future work on September12.
+    # Historical completed artifacts remain in the collector/archive only.
+    return []
+
 
 def evaluate(cases,first=None):
     reference=first
@@ -67,7 +65,7 @@ x=token_tasks('cross',init)+features('cross',init)
 evaluate([case for case in q if case[0]!=first['job']],q_first)
 evaluate(l);evaluate(x)
 # Two method cross-checks plus one shared AR reference, after the primary matrix.
-all_evals=[j['job'] for j in jobs if j['script']=='eval.sbatch']
+all_evals=[j['job'] for j in jobs if j['script']=='eval.sbatch' and j.get('status')!='withdrawn']
 references=submit('gpu_references.sbatch','b8-gpu-matched-references',{},all_evals,gpus=4)
 for mode in ['ar','ce','auf']:
     submit('transformers.sbatch',f'b8-transformers-q8-{mode}',{'MODE':mode},references)
