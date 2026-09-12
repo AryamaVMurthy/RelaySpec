@@ -2,7 +2,7 @@ Experiment audit: **incomplete**.
 
 **Provisional references: this table can compare different physical GPUs. Do not interpret small differences as isolated method gains. Use the GPU-matched report for final comparisons.**
 
-Verified fits: 20/27. Fully evaluated trained cells: 20/27. Transformers confirmations: 0/2.
+Verified fits: 24/27. Fully evaluated trained cells: 20/27. Transformers confirmations: 0/2.
 
 Only complete, audited three-repetition comparisons appear below. These are fixed development requests, one fitting seed, 128 requests per pass, and a 2048-token cap with natural EOS. Throughput is aggregate batched output tokens/s, not single-request latency. Ranges describe timing repetitions, not fitting-seed uncertainty. Each speedup is the mean of ratios paired by timing repetition and model family. Reference passes are reused across jobs on the same node and GPU model; comparisons can involve different physical GPUs. The audit retains benchmark job IDs and GPU UUIDs. Accepted/draft is the measured accepted draft-token count divided by the draft-block count; it excludes the verifier bonus token.
 
